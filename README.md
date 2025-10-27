@@ -14,7 +14,8 @@ Yet Another PKMS
 
 ## Phase 1: Lithic v1.0 (The Core MVP)
 
-* **Goal:** A fast, functional, local-first editor built around your "Lith" file concept.
+* **Goal:** A fast, functional, local-first editor built around the "Lith" file concept. A Lith is a monolith markdown file delimited by # Headers; each header becomes it's own Milkdown Editor instance.
+  
 * **Features:**
     * **Integrates your 'Qharbox' component** as the primary way to display and edit code blocks.
     * **Tech Stack:** Svelte + Tanstack Virtual.
@@ -26,7 +27,7 @@ Yet Another PKMS
         * Each H1 creates its own separate Milkdown element (using Tanstack Virtual for performance).
         * Daily Journal as a 1-year lith.
     * **Editor Experience:**
-        * In-place, infinite-scroll, folder-aware WSYWIG Editor.
+        * In-place, infinite-scroll, folder-aware true WSYWIG Editor.
         * Supports basic slash commands, page refs (within the same lith), and *read-only* page-embeds (transclusion).
 
 ## Phase 2: Lithic v2.0 (The Power-Ups)
