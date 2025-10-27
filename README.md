@@ -1,4 +1,5 @@
-yet another pkms
+Yet Another PKMS
+
 # Lithic Project Roadmap
 
 ## Phase 0: The 'Qharbox' Component (The UI Innovation)
@@ -18,6 +19,7 @@ yet another pkms
     * **Integrates your 'Qharbox' component** as the primary way to display and edit code blocks.
     * **Tech Stack:** Svelte + Tanstack Virtual.
     * **Core Concept:** Pure client-side, local-first webapp.
+    * **Backend:** Uses Quarkdown (or markdown) as Backend; with front matter.
     * **"Lith" Structure:**
         * Base units are "liths" (long monolith markdown files).
         * Each H1 creates its own separate Milkdown element (using Tanstack Virtual for performance).
