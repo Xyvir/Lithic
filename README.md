@@ -19,6 +19,7 @@ Yet Another PKMS
     * **Integrates your 'Qharbox' component** as the primary way to display and edit code blocks.
     * **Tech Stack:** Svelte + Tanstack Virtual.
     * **Core Concept:** Pure client-side, local-first webapp.
+    * Section and Code folding (tracked via - vs *)
     * **Backend:** Uses Quarkdown (or markdown) as Backend; with front matter.
     * **"Lith" Structure:**
         * Base units are "liths" (long monolith markdown files).
