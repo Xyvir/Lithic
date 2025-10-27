@@ -1,22 +1,44 @@
-# Lithic
-Yet Another PKMS
+yet another pkms
+# Lithic Project Roadmap
 
-Design Goals:
-- Pure client-side, local-first webapp
-- Modular Design. (passing user control and state change monads between modules)
-- In-place Infinite-scroll, folder-aware WSYWIG Editor (toggle-able plaintextmode)
-- Uses Quarkdown (or markdown) as Backend; with front matter.
-- Built on Milkdown, Svelte, and Tanstack Virtual
-- supports slashcommands and pagerefs, and page-embeds.
-- 'embeds' are bi-directionally synced deep copies; allowing for "clean seperation" when needed. 
-- Base units are "liths" long, long monolith markdown files delimited by # H1 (pages) and a corresponding 'data' folder (assets and an optional tbd database)
-  - Liths are intended to correspand with 'concrete' items; a projects, a subtopic, a hobby, a class, etc.
-  - Liths should natrually evolve into some kind of singular media; a book, a blog, a help knowledgebase, etc. 
-- Each H1 creates it's own seperate Milkdown element
-- Daily Jouranly is 1 year lith
-- Uses plaintext *.state yaml files for undo history and magic 'flat-file' realtime collab.
-- Supports notebook-style runnable codeblocks 
-- companion SSG that creates 1to1 non-editble versions of the editable wsywig experience; export lith to SSG diect menu option.
-- Git integration? for syncing and version control
-- For Forms Dataentry? Supports generating form-fillable PDFs and ingesting them.
-  
+## Phase 0: The 'Qharbox' Component (The UI Innovation)
+
+* **Goal:** Build a standalone, reusable Svelte/Prosemirror component for annotatable code.
+* **Tech:** Prosemirror (likely via Milkdown) and an SVG overlay.
+* **Core Features:**
+    * A standard Prosemirror code block.
+    * A precisely positioned SVG overlay that accepts pen/mouse/touch input.
+    * The core logic to map coordinates on the SVG layer to character/line positions within the code block.
+    * A data model for serializing these SVG annotations alongside the code.
+
+## Phase 1: Lithic v1.0 (The Core MVP)
+
+* **Goal:** A fast, functional, local-first editor built around your "Lith" file concept.
+* **Features:**
+    * **Integrates your 'Qharbox' component** as the primary way to display and edit code blocks.
+    * **Tech Stack:** Svelte + Tanstack Virtual.
+    * **Core Concept:** Pure client-side, local-first webapp.
+    * **"Lith" Structure:**
+        * Base units are "liths" (long monolith markdown files).
+        * Each H1 creates its own separate Milkdown element (using Tanstack Virtual for performance).
+        * Daily Journal as a 1-year lith.
+    * **Editor Experience:**
+        * In-place, infinite-scroll, folder-aware WSYWIG Editor.
+        * Supports basic slash commands, page refs (within the same lith), and *read-only* page-embeds (transclusion).
+
+## Phase 2: Lithic v2.0 (The Power-Ups)
+
+* **Goal:** Add major, distinct features to the stable v1.0. These are "sub-projects" you can tackle one at a time.
+* **Features (in no particular order):**
+    * **Notebook-style runnable codeblocks:** This is the *runtime* part. You'd be adding a "run" button to your Qharbox component that executes the code (via Pyodide, a kernel, etc.) and displays the output.
+    * **Git Integration:** For syncing and version control.
+    * **Companion SSG:** The static site generator to export liths to a non-editable website.
+    * **Forms Data Entry (PDFs):** The PDF generation/ingestion feature.
+
+## Phase 3: Lithic v3.0+ (The "Ambition Traps")
+
+* **Goal:** The extremely difficult, long-term ambitions that require deep computer science work.
+* **Features:**
+    * **"Magic 'flat-file' realtime collab"**: Requires implementing CRDTs or OT.
+    * **"Embeds' are bi-directionally synced deep copies"**: This is block-level real-time collab, which is just as hard.
+    * `*.state` yaml files for undo history/collab state (this is the *implementation* of the collab feature).
