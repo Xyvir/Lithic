@@ -48,3 +48,38 @@ Yet Another PKMS
     * **"Magic 'flat-file' realtime collab"**: Requires implementing CRDTs or OT.
     * **"Embeds' are bi-directionally synced deep copies"**: This is block-level real-time collab, which is just as hard.
     * `*.state` yaml files for undo history/collab state (this is the *implementation* of the collab feature).
+ 
+* Example Monorepo:
+  ```
+/lithic-monorepo/
+├── apps/
+│   └── lithic-app/
+│       └── src/
+│           └── routes/
+│               └── +page.svelte  <-- Imports <LithicEditor />
+│
+└── packages/
+    ├── qharbox-component/
+    │   └── src/
+    │       └── Qharbox.svelte    <-- Your Phase 0 component
+    │
+    └── lithic-editor/
+        ├── src/
+        │   ├── nodeviews/        <-- 📍 YOUR NODEVIEWS GO HERE
+        │   │   ├── ColumnBlock.svelte
+        │   │   ├── AlertBox.svelte
+        │   │   ├── PageBreak.svelte
+        │   │   └── QharboxView.svelte  <-- This Svelte component imports and wraps your 'qharbox-component'
+        │   │
+        │   ├── schema/
+        │   │   └── index.js          <-- Defines all your Quarkdown nodes for Prosemirror
+        │   │
+        │   ├── plugins/
+        │   │   └── index.js          <-- Connects schema nodes to their Svelte NodeViews
+        │   │
+        │   └── LithicEditor.svelte   <-- The final, complete editor component that lithic-app imports
+        │
+        └── package.json
+```
+
+
