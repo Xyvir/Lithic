@@ -29,6 +29,8 @@ Yet Another PKMS
     * **Editor Experience:**
         * In-place, infinite-scroll, folder-aware true WSYWIG Editor.
         * Supports basic slash commands, page refs (within the same lith), and *read-only* page-embeds (transclusion).
+     * ** Dumb Share **
+        * Share small pages (not full liths) via URL to an online-hosted lithic stat site where the content is encoded in a comprseed base-64 query string.    
 
 ## Phase 2: Lithic v2.0 (The Power-Ups)
 
