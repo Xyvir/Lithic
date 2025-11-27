@@ -1,4 +1,6 @@
-Yet Another PKMS
+Lithic is a 'yet-another-PKMS' opinionated outliner built on TiddlyWiki, inspired by Logseq.
+
+Old ROadmap before I started using TiddlyWiki:
 
 # Lithic Project Roadmap
 
