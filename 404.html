@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redirecting to Lithic...</title>
+    <script>
+        // 1. Define your main wiki file
+        var targetPage = "/lithic.html"; 
+        
+        // If your site is in a subdirectory (like username.github.io/repo-name/), 
+        // you might need to prepend the repo name: "/repo-name/lithic.html"
+
+        // 2. Capture the current URL parts
+        var query = window.location.search; // ?foo=bar
+        var fragment = window.location.hash; // #MyTiddler
+
+        // 3. Optional: Convert "Clean URLs" to TiddlyWiki Permalinks
+        // If someone visits /MyTiddler, this turns it into lithic.html#MyTiddler
+        var path = window.location.pathname;
+        var segment = path.split("/").pop();
+        if (segment && segment !== "lithic.html" && !fragment) {
+            // Only convert if there isn't already a hash
+            fragment = "#" + decodeURIComponent(segment);
+        }
+
+        // 4. Perform the redirect
+        // We use 'replace' so the 404 page doesn't get stuck in the browser history
+        window.location.replace(targetPage + query + fragment);
+    </script>
+</head>
+<body>
+    <p>Redirecting to <a href="/lithic.html">lithic.html</a>...</p>
+</body>
+</html>
