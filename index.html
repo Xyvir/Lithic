@@ -3,14 +3,119 @@
   <title>Lithic Launcher</title>
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.json">
+  
   <style>
-    body { font-family: sans-serif; padding: 20px; line-height: 1.5; }
-    button { padding: 10px 15px; cursor: pointer; font-size: 1rem; margin: 5px 0; }
-    h1 { margin-bottom: 5px; }
-    ul { list-style-type: none; padding-left: 0; }
-    li { margin-bottom: 5px; }
-    .section { margin-bottom: 2rem; border-bottom: 1px solid #ccc; padding-bottom: 1rem; }
+    @import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap');
+
+    :root {
+      --bg-color: #1a1a1a;
+      --text-color: #e0e0e0;
+      --card-bg: #262626;
+      --button-bg: #333333;
+      --button-hover: #454545;
+      --border-color: #404040;
+      --accent-color: #8ab4f8; /* Muted blue for links/focus */
+    }
+
+    body {
+      font-family: 'Vollkorn', serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 40px;
+      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Container to center the launcher interface */
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 2.5rem;
+      margin-top: 0;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+
+    h3 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #bbbbbb;
+      margin-bottom: 0.5rem;
+      margin-top: 0;
+    }
+
+    .section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    button {
+      background-color: var(--button-bg);
+      color: var(--text-color);
+      font-family: 'Vollkorn', serif;
+      font-size: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px 20px;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: background-color 0.2s, transform 0.1s;
+      margin-top: 5px;
+    }
+
+    button:hover {
+      background-color: var(--button-hover);
+      border-color: #666;
+    }
+
+    button:active {
+      transform: scale(0.99);
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    /* Support message styling */
+    #support-message {
+      color: #ff8a80; /* Light red for warnings */
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* Clear list button specific styling */
+    .clear-btn {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      text-align: center;
+      background: transparent;
+      border: 1px dashed var(--border-color);
+      opacity: 0.7;
+    }
+    .clear-btn:hover {
+      background-color: rgba(255,255,255,0.05);
+      opacity: 1;
+    }
   </style>
+
   <script type="module">
     /* From https://github.com/jakearchibald/idb-keyval */
     let idbKeyval = (function (exports) {
@@ -225,6 +330,14 @@
         twFileManager.getRecent().
           then(recentFiles => {
             if (recentFiles && recentFiles.length > 0) {
+              // Create wrapper for consistent styling
+              const sectionDiv = document.createElement('div');
+              sectionDiv.className = 'section';
+
+              const title = document.createElement('h3');
+              title.innerText = 'Open Recent Lith';
+              sectionDiv.appendChild(title);
+
               const list = document.createElement('ul');
               for (const recent of recentFiles) {
                 const li = document.createElement('li'),
@@ -236,16 +349,18 @@
                 li.appendChild(button);
                 list.appendChild(li);
               }
+              sectionDiv.appendChild(list);
+
+              // Clear button outside the main list logic slightly
               const clearButton = Object.assign(document.createElement('button'), {
                 type: 'button',
                 onclick: clearRecent,
-                innerText: 'Clear List'
+                innerText: 'Clear Recent List',
+                className: 'clear-btn'
               });
+              sectionDiv.appendChild(clearButton);
               
-              // UPDATED TITLE HERE
-              elem.innerHTML = '<h3>Open Recent Lith</h3>';
-              elem.appendChild(list);
-              elem.appendChild(clearButton);
+              elem.appendChild(sectionDiv);
             }
           })
       }
@@ -264,7 +379,7 @@
   </script>
 </head>
 <body>
-    <div>
+    <div class="container">
       <h1>Lithic</h1>
       
       <div id="support-message"></div>
