@@ -1,15 +1,20 @@
 <html>
 <head>
-  <title>TiddlyStow - stow TiddlyWiki files locally using the browser file system api</title>
+  <title>Lithic Launcher</title>
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.json">
+  <style>
+    body { font-family: sans-serif; padding: 20px; line-height: 1.5; }
+    button { padding: 10px 15px; cursor: pointer; font-size: 1rem; margin: 5px 0; }
+    h1 { margin-bottom: 5px; }
+    ul { list-style-type: none; padding-left: 0; }
+    li { margin-bottom: 5px; }
+    .section { margin-bottom: 2rem; border-bottom: 1px solid #ccc; padding-bottom: 1rem; }
+  </style>
   <script type="module">
     /* From https://github.com/jakearchibald/idb-keyval */
-    /* Retreived 2020-04-10 */
-
     let idbKeyval = (function (exports) {
       'use strict';
-
       class Store {
           constructor(dbName = 'keyval-store', storeName = 'keyval') {
               this.storeName = storeName;
@@ -17,7 +22,6 @@
                   const openreq = indexedDB.open(dbName, 1);
                   openreq.onerror = () => reject(openreq.error);
                   openreq.onsuccess = () => resolve(openreq.result);
-                  // First time setup: create an empty object store
                   openreq.onupgradeneeded = () => {
                       openreq.result.createObjectStore(storeName);
                   };
@@ -34,8 +38,7 @@
       }
       let store;
       function getDefaultStore() {
-          if (!store)
-              store = new Store();
+          if (!store) store = new Store();
           return store;
       }
       function get(key, store = getDefaultStore()) {
@@ -62,33 +65,23 @@
       function keys(store = getDefaultStore()) {
           const keys = [];
           return store._withIDBStore('readonly', store => {
-              // This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
-              // And openKeyCursor isn't supported by Safari.
               (store.openKeyCursor || store.openCursor).call(store).onsuccess = function () {
-                  if (!this.result)
-                      return;
+                  if (!this.result) return;
                   keys.push(this.result.key);
                   this.result.continue();
               };
           }).then(() => keys);
       }
-
       exports.Store = Store;
       exports.get = get;
       exports.set = set;
       exports.del = del;
       exports.clear = clear;
       exports.keys = keys;
-
       return exports;
-
     }({}));
 
-
-    /*
-     * Returns a function which can be used as a TiddlyWiki saver.
-     * The saver will write the given text to the given fileHandle
-     */
+    /* Saver Logic */
     function createTwCustomSaver(fileHandle) {
       return function(text, method, callback) {
         fileHandle.createWritable()
@@ -105,26 +98,16 @@
       }
     }
 
-    /* This saver is used when a local file is opened from disk */
     function setTwCustomSaver(fileHandle) {
-       // Tiddlywiki Version 5.1.23 introduced the "custom saver" which will call
-       // a window.$tw.customSaver.save function from its current frame
-       // or parent frame.
       window.$tw = {customSaver: {save: createTwCustomSaver(fileHandle)}};
     }
 
-    /*
-     * This "SaveAs" saver is used when new wiki is loaded from url.
-     * The user is not prompted for a file to save to until the first save
-     */
     function setTwCustomSaveAsSaver() {
       let writeTw;
       let save = function(text, method, callback) {
         if (writeTw) {
           writeTw(text, method, callback);
         } else {
-           // writeTw function is empty, so prompt the user for file handle
-           // and create the writeTw function
           window.showSaveFilePicker()
             .then(fileHandle => {
               writeTw = createTwCustomSaver(fileHandle);
@@ -140,13 +123,11 @@
     const twFileManager = {
       openFile: async function(fileHandle) {
         if (fileHandle) {
-          // fileHandle may have come from indexDB in which case permission must be re-queried
           const options = {mode: 'read'};
           if ((await fileHandle.queryPermission(options)) !== 'granted') {
             await fileHandle.requestPermission(options);
           }
         } else {
-          // No fileHandle given. Prompt user to choose one from disk
           [fileHandle] = await window.showOpenFilePicker();
         }
         const file = await fileHandle.getFile();
@@ -161,36 +142,15 @@
         return {contents};
       },
 
-      /* This code modified from https://github.com/GoogleChromeLabs/text-editor/blob/main/src/inline-scripts/menu-recent.js */
-      /* as retrieved on 2022/03/20 */
-      /*
-       * File handles can be serialized, but only to IndexDB. Localstorage is not supported.
-       */
       addRecent: async function(fileHandle) {
         let recentFiles = (await idbKeyval.get('recentFiles')) || [];
+        if (!fileHandle.isSameEntry) return recentFiles;
 
-        // If isSameEntry isn't available, we can't store the file handle
-        if (!fileHandle.isSameEntry) {
-          console.warn('Saving of recents is unavailable.');
-          return recentFiles;
-        }
+        const inList = await Promise.all(recentFiles.map((f) => fileHandle.isSameEntry(f)));
+        if (inList.some((val) => val)) return recentFiles;
 
-        // Loop through the list of recent files and make sure the file we're
-        // adding isn't already there. This is gross.
-        const inList = await Promise.all(recentFiles.map((f) => {
-          return fileHandle.isSameEntry(f);
-        }));
-        if (inList.some((val) => val)) {
-          return recentFiles;
-        }
-
-        // Add the new file handle to the top of the list, and remove any old ones.
         recentFiles.unshift(fileHandle);
-        if (recentFiles.length > 5) {
-          recentFiles.pop();
-        }
-
-        // Save the list of recent files.
+        if (recentFiles.length > 5) recentFiles.pop();
         idbKeyval.set('recentFiles', recentFiles);
         return recentFiles;
       },
@@ -204,17 +164,17 @@
       }
     }
 
-    // Allow indexdb to be disabled
+    /* URL Hash checks */
     if (window.location.hash.search("norecent") >= 0) {
       const noop = async () => {return []};
       twFileManager.addRecent = noop;
       twFileManager.getRecent = noop;
     }
     
-    // Prevent errors if the browser doesn't support file system api
+    /* Browser Support Check */
     if (!window.showOpenFilePicker) {
       twFileManager.openFile = async () => {
-        window.alert("This browser doesn't support opening files");
+        window.alert("This browser doesn't support opening files locally.");
         return {}
       }
     }
@@ -222,6 +182,7 @@
       setTwCustomSaveAsSaver = () => {}
     }
 
+    /* Page Replacement Logic */
     function replacePageContents(contents) {
       if (contents) {
         document.open();
@@ -245,22 +206,19 @@
 
     function displayBrowserSupportMessage() {
       const elem = document.getElementById("support-message");
-      if (elem) {
-        elem.innerHTML = window.showSaveFilePicker ?
-          "Good news, your browser supports it." :
-          "<b>Unfortunately your browser does not support it.</b>"
+      if (elem && !window.showSaveFilePicker) {
+         elem.innerHTML = "<b>Note: Your current browser does not support the File System Access API required for local saving.</b>";
       }
     }
 
     function clearRecent() {
       twFileManager.clearRecent().then(() => {
         const elem = document.getElementById("recent-files");
-        if (elem) {
-          elem.innerText = "";
-        }
+        if (elem) elem.innerHTML = ""; // Clear content
       });
     }
 
+    /* UPDATED: Dynamic Recent List Text */
     function displayRecentFiles() {
       const elem = document.getElementById("recent-files");
       if (elem) {
@@ -281,9 +239,11 @@
               const clearButton = Object.assign(document.createElement('button'), {
                 type: 'button',
                 onclick: clearRecent,
-                innerText: 'Clear recent file list'
+                innerText: 'Clear List'
               });
-              elem.innerText = 'Open existing from a recent file:';
+              
+              // UPDATED TITLE HERE
+              elem.innerHTML = '<h3>Open Recent Lith</h3>';
               elem.appendChild(list);
               elem.appendChild(clearButton);
             }
@@ -297,11 +257,7 @@
   </script>
   <script>
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./offline-service-worker.js')
-    .then(function(registration) {
-      console.log('Service Worker registered with scope:', registration.scope);
-    })
-    .catch(function(error) {
+    navigator.serviceWorker.register('./offline-service-worker.js').catch(function(error) {
       console.error('Service Worker registration failed:', error);
     });
   }
@@ -309,33 +265,22 @@
 </head>
 <body>
     <div>
-      <h1>TiddlyStow</h1>
-      <p>This simple page is a helper for loading a local <a href="https://tiddlywiki.com">TiddlyWiki</a>
-      file and storing it back to the same local file.</p>
-      <ul>
-        <li>Be sure to have a backup of any file before opening it here!</li>
-        <li>Be sure to make frequent backups of your file!</li>
-        <li>
-          Not all browsers <a href="https://caniuse.com/mdn-api_window_showopenfilepicker">support the local files feature</a>.
-          <span id="support-message"></span>
-        </li>
-        <li>Only works with single file TiddlyWiki instances.</li>
-        <li>Requires the <a href="https://github.com/Jermolene/TiddlyWiki5/pull/4908">custom saver feature</a> introduced in TiddlyWiki version 5.1.23. Older versions will fall back to the download saver in which case using this page provides no benefit.</li>
-        <li>Prefer not to keep a list of recent files in your browser storage? Click <a href="#norecent">here</a> and refresh the page.</li>
-        <li><a href="https://github.com/slaymaker1907/TW5-browser-nativesaver">TW5 browser nativesaver</a> is a similar project, but has more features and is bundled as a TiddlyWiki plugin.</li>
-        <li>Source code available at <a href="https://github.com/btheado/tiddlystow">github</a> or use "view page source" in the browser.</li>
-        <li>After loading a Tiddlywiki file, refresh the page to get back to the file picker.</li>
-      </ul>
-      </p>
-      <button type="button" onclick="openFile()">open existing from a local file...</button>
-      <div id="recent-files"></div>
-      <div>
-      Open new from a remote url:
-      <ul>
-        <li><button type="button" onclick="openFromUrl('https://tiddlywiki.com/empty.html')">tiddlywiki.com/empty.html</button></li>
-        <li><button type="button" onclick="openFromUrl('https://tiddlywiki.com/prerelease')">tiddlywiki.com/prerelease</button></li>
-      </ul>
+      <h1>Lithic</h1>
+      
+      <div id="support-message"></div>
+
+      <div class="section">
+        <h3>Start New</h3>
+        <button type="button" onclick="openFromUrl('https://lithic.uk/lithic.html')">Use "Starter Lith"</button>
       </div>
+
+      <div class="section">
+        <h3>Existing File</h3>
+        <button type="button" onclick="openFile()">Sideload a Lith...</button>
+      </div>
+
+      <div id="recent-files"></div>
+
     </div>
 </body>
 </html>
