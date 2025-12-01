@@ -1,9 +1,10 @@
+<!DOCTYPE html>
 <html>
 <head>
   <title>Lithic - Launcher</title>
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.json">
-  
+   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap');
 
@@ -41,7 +42,19 @@
       margin-bottom: 2rem;
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 1rem;
+      /* Ensure flex alignment for icon and text */
+      display: flex;
+      align-items: center;
     }
+
+    /* --- NEW CSS FOR THE TITLE ICON --- */
+    h1 img {
+      height: 1em; /* Scale to font size */
+      width: auto;
+      margin-right: 15px; /* Space between icon and text */
+      border-radius: 4px; /* Optional: rounding corners slightly looks good with tiles */
+    }
+    /* ---------------------------------- */
 
     h3 {
       font-weight: 600;
@@ -275,7 +288,7 @@
       twFileManager.addRecent = noop;
       twFileManager.getRecent = noop;
     }
-    
+     
     /* Browser Support Check */
     if (!window.showOpenFilePicker) {
       twFileManager.openFile = async () => {
@@ -359,7 +372,7 @@
                 className: 'clear-btn'
               });
               sectionDiv.appendChild(clearButton);
-              
+               
               elem.appendChild(sectionDiv);
             }
           })
@@ -380,8 +393,8 @@
 </head>
 <body>
     <div class="container">
-      <h1>Lithic - Launcher</h1>
-      
+      <h1><img src="mstile-150x150.png" alt="Lithic Icon"> Lithic - Launcher</h1>
+       
       <div id="support-message"></div>
 
       <div class="section">
