@@ -1,7 +1,7 @@
 {
-  "name": "Tiddlystow",
-  "short_name": "Tiddlystow",
-  "description": "stow TiddlyWiki files locally using the browser file system api",
+  "name": "Lithic",
+  "short_name": "Lithic",
+  "description": "Portability-first Outliner PKMS",
   "start_url": "index.html",
   "icons": [
     {
