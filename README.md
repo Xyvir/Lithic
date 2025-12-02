@@ -1,6 +1,6 @@
 # Lithic PKMS
 
-**The Architecture of Thought: Portable, Academic, and Print-Ready.**
+**A Portability-first PKMS.**
 
 <p align="center">
   <img src="mstile-150x150.png" alt="Lithic Icon" width="150"/>
