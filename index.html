@@ -4,7 +4,7 @@
   <title>Lithic - Launcher</title>
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.json">
-   
+    
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap');
 
@@ -16,6 +16,7 @@
       --button-hover: #454545;
       --border-color: #404040;
       --accent-color: #8ab4f8;
+      --accent-text: #1a1a1a;
     }
 
     body {
@@ -42,19 +43,16 @@
       margin-bottom: 2rem;
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 1rem;
-      /* Ensure flex alignment for icon and text */
       display: flex;
       align-items: center;
     }
 
-    /* --- NEW CSS FOR THE TITLE ICON --- */
     h1 img {
-      height: 1em; /* Scale to font size */
+      height: 1em; 
       width: auto;
-      margin-right: 15px; /* Space between icon and text */
-      border-radius: 4px; /* Optional: rounding corners slightly looks good with tiles */
+      margin-right: 15px; 
+      border-radius: 4px; 
     }
-    /* ---------------------------------- */
 
     h3 {
       font-weight: 600;
@@ -83,7 +81,7 @@
       padding: 12px 20px;
       cursor: pointer;
       width: 100%;
-      text-align: center; /* UPDATED: Centered text */
+      text-align: center; 
       transition: background-color 0.2s, transform 0.1s;
       margin-top: 5px;
     }
@@ -107,14 +105,12 @@
       margin-bottom: 8px;
     }
 
-    /* Support message styling */
     #support-message {
       color: #ff8a80;
       margin-bottom: 1rem;
       font-size: 0.9rem;
     }
 
-    /* Clear list button specific styling */
     .clear-btn {
       margin-top: 15px;
       font-size: 0.9rem;
@@ -126,6 +122,36 @@
     .clear-btn:hover {
       background-color: rgba(255,255,255,0.05);
       opacity: 1;
+    }
+
+    /* --- PWA INSTALL BUTTON STYLES --- */
+    #install-pwa {
+        display: none; /* Hidden by default, shown via JS */
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: auto; /* Override the 100% width */
+        background-color: var(--accent-color);
+        color: var(--accent-text);
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        border: none;
+        z-index: 1000;
+        animation: fadein 1s;
+    }
+    #install-pwa:hover {
+        background-color: #abc9ff;
+        transform: translateY(-2px);
+    }
+
+    @keyframes fadein {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Double safety: Force hide if running in standalone (PWA) mode */
+    @media all and (display-mode: standalone) {
+        #install-pwa { display: none !important; }
     }
   </style>
 
@@ -288,7 +314,7 @@
       twFileManager.addRecent = noop;
       twFileManager.getRecent = noop;
     }
-     
+      
     /* Browser Support Check */
     if (!window.showOpenFilePicker) {
       twFileManager.openFile = async () => {
@@ -372,7 +398,7 @@
                 className: 'clear-btn'
               });
               sectionDiv.appendChild(clearButton);
-               
+                
               elem.appendChild(sectionDiv);
             }
           })
@@ -394,7 +420,7 @@
 <body>
     <div class="container">
       <h1><img src="mstile-150x150.png" alt="Lithic Icon"> Lithic - Launcher</h1>
-       
+        
       <div id="support-message"></div>
 
       <div class="section">
@@ -410,5 +436,43 @@
       <div id="recent-files"></div>
 
     </div>
+
+    <button id="install-pwa">Install App</button>
+
+    <script>
+      let deferredPrompt;
+      const installBtn = document.getElementById('install-pwa');
+
+      // 1. Capture the event when the browser says "This site can be installed"
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+        // Update UI notify the user they can install the PWA
+        installBtn.style.display = 'block';
+      });
+
+      // 2. Handle the install click
+      installBtn.addEventListener('click', async () => {
+        // Hide the app provided install promotion
+        installBtn.style.display = 'none';
+        // Show the install prompt
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          // Wait for the user to respond to the prompt
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log(`User response to the install prompt: ${outcome}`);
+          // We've used the prompt, so we can't use it again, discard it
+          deferredPrompt = null;
+        }
+      });
+
+      // 3. Optional: Hide button if they successfully installed it just now
+      window.addEventListener('appinstalled', () => {
+        installBtn.style.display = 'none';
+        deferredPrompt = null;
+      });
+    </script>
 </body>
 </html>
