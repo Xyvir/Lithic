@@ -1,6 +1,6 @@
 # Lithic PKMS
 
-**Portability First.**
+**A Portability-First Outliner Knowledgebase**
 
 <p align="center">
   <img src="mstile-150x150.png" alt="Lithic Icon" width="150"/>
