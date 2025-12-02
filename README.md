@@ -1,16 +1,28 @@
-# tiddlystow
-Store TiddlyWiki files locally using the browser file system api
+# Lithic PKMS
 
-This simple web page is a helper for loading a local [TiddlyWiki](https://tiddlywiki.com) file and storing it back to the same local file.
+**The Architecture of Thought: Portable, Academic, and Print-Ready.**
 
-Features:
+<p align="center">
+  <img src="mstile-150x150.png" alt="Lithic Icon" width="150"/>
+</p>
 
-- Works with any single-file TiddlyWiki instance version 5.1.23 and later. No plugins required!
-- Open from and save back to local files
-- Shortcut buttons for recently opened files
-- Open a new, blank TiddlyWiki instance from https://tiddlywiki.com and save it to a local file
+[**Try it here: lithic.uk**](https://lithic.uk)
 
-Try it at https://btheado.github.io/tiddlystow/.
+Lithic is a bespoke Personal Knowledge Management System (PKMS) built on the powerful **TiddlyWiki** engine, re-engineered for the modern academic and engineering workflow. It bridges the gap between the database flexibility of TiddlyWiki and the rapid, outlining experience of **Logseq**.
 
+### The Core Philosophy
 
-[TW5 browser nativesaver](https://github.com/slaymaker1907/TW5-browser-nativesaver) is a similar project, but has more features and is bundled as a TiddlyWiki plugin.
+* **Logseq-Inspired, Markdown Native:**
+    Lithic abandons traditional wikitext in favor of standard **Markdown**. This ensures a frictionless writing experience familiar to Logseq users, keeping your data portable and compatible with industry-standard editors.
+
+* **Academic Rigor:**
+    Designed as a digital lab bench, Lithic excels at managing complex project notebooks, typed research, and handwritten notes. It provides a cohesive environment for tracking engineering projects from ideation to documentation.
+
+* **Sane, Print-Ready PDFs:**
+    Web-based knowledge bases often fail when physical media is required. Lithic prioritizes "paper-first" CSS, ensuring that your digital notes convert into clean, professional, and sane PDFs for homework submissions, lab reports, and archiving.
+
+* **True Portability:**
+    A single-file application that lives on your local machine or thumb drive—no cloud dependency required.
+
+---
+*Based on TiddlyWiki 5.*
