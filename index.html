@@ -252,7 +252,16 @@
         if (writeTw) {
           writeTw(text, method, callback);
         } else {
-          window.showSaveFilePicker()
+          /* UPDATED: Forced HTML type and default name 'lith.html' */
+          const saveOptions = {
+            suggestedName: 'lith.html',
+            types: [{
+                description: 'Lithic HTML File',
+                accept: {'text/html': ['.html', '.htm']},
+            }],
+          };
+          
+          window.showSaveFilePicker(saveOptions)
             .then(fileHandle => {
               writeTw = createTwCustomSaver(fileHandle);
               writeTw(text, method, callback);
@@ -272,7 +281,14 @@
             await fileHandle.requestPermission(options);
           }
         } else {
-          [fileHandle] = await window.showOpenFilePicker();
+          /* Added filter for open dialog as well */
+          const openOptions = {
+             types: [{
+                description: 'HTML Files',
+                accept: {'text/html': ['.html', '.htm']},
+            }]
+          };
+          [fileHandle] = await window.showOpenFilePicker(openOptions);
         }
         const file = await fileHandle.getFile();
         const contents = await file.text();
@@ -362,7 +378,7 @@
       });
     }
 
-    /* UPDATED: Dynamic Recent List Text */
+    /* UPDATED: Removed tooltips, kept dynamic logic */
     function displayRecentFiles() {
       const elem = document.getElementById("recent-files");
       if (elem) {
