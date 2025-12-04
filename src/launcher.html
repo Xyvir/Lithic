@@ -124,6 +124,30 @@
       opacity: 1;
     }
 
+    /* --- GITHUB LINK STYLES --- */
+    #github-link {
+        position: fixed;
+        bottom: 25px;
+        left: 25px;
+        background-color: var(--button-bg);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 0.75rem; /* Smaller size */
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        transition: background-color 0.2s, transform 0.1s;
+        z-index: 1000;
+        text-align: center; /* Center align multi-line text */
+        line-height: 1.2; /* Tighter leading */
+    }
+    #github-link:hover {
+        background-color: var(--button-hover);
+        border-color: #666;
+        transform: translateY(-1px);
+    }
+
     /* --- PWA INSTALL BUTTON STYLES --- */
     #install-pwa {
         display: none; /* Hidden by default, shown via JS */
@@ -260,7 +284,7 @@
                 accept: {'text/html': ['.html', '.htm']},
             }],
           };
-          
+           
           window.showSaveFilePicker(saveOptions)
             .then(fileHandle => {
               writeTw = createTwCustomSaver(fileHandle);
@@ -453,7 +477,11 @@
 
     </div>
 
+    <!-- PWA Install Button (Bottom Right) -->
     <button id="install-pwa">Install App</button>
+
+    <!-- Github Link (Bottom Left) -->
+    <a id="github-link" href="https://github.com/Xyvir/Lithic" target="_blank">View<br>Github</a>
 
     <script>
       let deferredPrompt;
