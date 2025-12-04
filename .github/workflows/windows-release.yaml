@@ -26,39 +26,43 @@ jobs:
         run: npm install
 
       # --- DEBUG STEP ---
-      # Lists file structure and Tauri environment info to troubleshoot path errors.
       - name: Debug - List Files & Tauri Info
         run: |
           Write-Host "--- CURRENT DIRECTORY ---"
           Get-Location
-          
           Write-Host "`n--- FILE STRUCTURE (Depth 3) ---"
           Get-ChildItem -Path . -Recurse -Depth 3 | Select-Object FullName
-          
           Write-Host "`n--- TAURI INFO ---"
           npm run tauri info
 
-      # --- FIX PATHS ---
-      # Injects the absolute path into tauri.conf.json to satisfy the file watcher
+      # --- FIX PATHS (Double Backslash + DevPath Bypass) ---
       - name: Fix Tauri Config Paths
         run: |
-          $srcAbsPath = (Resolve-Path "src").Path.Replace("\", "/")
+          # 1. Get Absolute Path
+          $srcAbsPath = (Resolve-Path "src").Path
+          
+          # 2. Escape for JSON (Windows requires double backslashes D:\\a\\...)
+          $srcJsonPath = $srcAbsPath.Replace("\", "\\")
+          
           Write-Host "Resolved absolute src path: $srcAbsPath"
+          Write-Host "JSON escaped path: $srcJsonPath"
           
           $configPath = "src-tauri/tauri.conf.json"
           
           if (Test-Path $configPath) {
             $json = Get-Content $configPath -Raw | ConvertFrom-Json
             
-            # Replace relative paths with absolute paths
-            $json.build.distDir = $srcAbsPath
-            $json.build.devPath = $srcAbsPath
+            # FIX A: Use valid Windows JSON path for distDir
+            $json.build.distDir = $srcJsonPath
+            
+            # FIX B: Set devPath to a URL to prevent the CLI from trying to watch files
+            $json.build.devPath = "http://localhost:1420"
             
             # Save it back
             $json | ConvertTo-Json -Depth 10 | Set-Content $configPath
-            Write-Host "Updated tauri.conf.json with absolute paths."
+            Write-Host "Updated tauri.conf.json successfully."
             
-            # Print content to verify
+            # Verify content
             Get-Content $configPath
           } else {
             Write-Error "CRITICAL: tauri.conf.json not found at $configPath"
