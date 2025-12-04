@@ -1,0 +1,11 @@
+{
+  "name": "lithic-build",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^1"
+  }
+}
