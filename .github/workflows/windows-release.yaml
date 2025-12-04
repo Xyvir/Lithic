@@ -22,13 +22,28 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # --- 1. INSTALL DEPENDENCIES ---
-      # This relies on the package.json you committed to the root
       - name: Install Dependencies
         run: npm install
 
-      # --- 2. ICONS (Optional) ---
-      # Checks if the icon exists before trying to generate it
+      # --- CRITICAL FIX: INJECT ABSOLUTE PATHS ---
+      # Tauri v1 CI often fails to watch relative paths like "../src".
+      # This step forces the config to use the runner's full absolute path.
+      - name: Fix Tauri Config Paths
+        run: |
+          $srcAbsPath = (Resolve-Path "src").Path.Replace("\", "/")
+          Write-Host "Resolved absolute src path: $srcAbsPath"
+          
+          $configPath = "src-tauri/tauri.conf.json"
+          $json = Get-Content $configPath -Raw | ConvertFrom-Json
+          
+          # Replace relative paths with absolute paths
+          $json.build.distDir = $srcAbsPath
+          $json.build.devPath = $srcAbsPath
+          
+          # Save it back
+          $json | ConvertTo-Json -Depth 10 | Set-Content $configPath
+          Write-Host "Updated tauri.conf.json with absolute paths."
+
       - name: Generate Icons
         run: |
           if (Test-Path "src/app-icon.png") {
@@ -37,12 +52,10 @@ jobs:
             Write-Host "Icon file 'src/app-icon.png' not found, skipping icon generation."
           }
 
-      # --- 3. BUILD OFFLINE ---
       - name: Build Offline Executable
         run: npm run tauri build
 
       - name: Rename Offline Artifact
-        # Finds any .exe in the release folder (e.g., Lithic.exe) and renames it
         run: |
           $exe = Get-ChildItem -Path "src-tauri/target/release/*.exe" | Select-Object -First 1
           if ($exe) {
@@ -52,25 +65,18 @@ jobs:
             Write-Error "Build failed: No .exe found in release folder."
           }
 
-      # --- 4. SWITCH CONFIG TO ONLINE ---
       - name: Switch Config to Online Mode
         run: |
           $configPath = "src-tauri/tauri.conf.json"
-          if (Test-Path $configPath) {
-            $json = Get-Content $configPath -Raw | ConvertFrom-Json
-            
-            # Change the entry point to the live website
-            # Checks for standard Tauri v1 structure
-            if ($json.tauri -and $json.tauri.windows) {
-               $json.tauri.windows[0].url = "https://lithic.uk"
-            } 
-            
-            $json | ConvertTo-Json -Depth 10 | Set-Content $configPath
-          } else {
-            Write-Error "tauri.conf.json not found! Ensure it is in the src-tauri folder."
+          $json = Get-Content $configPath -Raw | ConvertFrom-Json
+          
+          # Change entry point to website
+          if ($json.tauri -and $json.tauri.windows) {
+             $json.tauri.windows[0].url = "https://lithic.uk"
           }
+          
+          $json | ConvertTo-Json -Depth 10 | Set-Content $configPath
 
-      # --- 5. BUILD ONLINE ---
       - name: Build Online Executable
         run: npm run tauri build
 
@@ -82,7 +88,6 @@ jobs:
              Write-Host "Created Lithic-Online.exe"
           }
 
-      # --- 6. RELEASE ---
       - name: Generate Date-Based Tag
         id: tag
         run: echo "date=v$(Get-Date -Format 'yyyy.MM.dd-HHmm')" >> $env:GITHUB_OUTPUT
