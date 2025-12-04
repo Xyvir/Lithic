@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          # Removed cache: 'npm' because it requires a lock file, which is not present in the repo
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
