@@ -18,48 +18,180 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # Removed cache: 'npm' because it requires a lock file, which is not present in the repo
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
+      # --- 1. GENERATE PACKAGE.JSON ---
+      - name: Create Minimal package.json
+        run: |
+          $pkg = @{
+            name = "lithic-build"
+            version = "0.0.0"
+            private = $true
+            scripts = @{
+              tauri = "tauri"
+            }
+            devDependencies = @{
+              "@tauri-apps/cli" = "^1"
+            }
+          }
+          $pkg | ConvertTo-Json | Out-File package.json -Encoding UTF8
+
       - name: Install Dependencies
         run: npm install
 
-      - name: Generate Icons
-        run: npm run tauri icon src/app-icon.png
+      # --- 2. SCAFFOLD TAURI BACKEND ---
+      # Since the repo has no skeleton, we create the Rust project structure manually.
+      - name: Scaffold Tauri Project (src-tauri)
+        run: |
+          New-Item -ItemType Directory -Force -Path src-tauri/src
 
-      # --- BUILD 1: OFFLINE VERSION ---
+          # 2a. Create Cargo.toml
+          $cargoToml = @"
+          [package]
+          name = "lithic"
+          version = "0.0.0"
+          description = "A Tauri App"
+          authors = ["you"]
+          edition = "2021"
+
+          [build-dependencies]
+          tauri-build = { version = "1", features = [] }
+
+          [dependencies]
+          tauri = { version = "1", features = ["api-all"] }
+          serde = { version = "1.0", features = ["derive"] }
+          serde_json = "1.0"
+
+          [features]
+          custom-protocol = ["tauri/custom-protocol"]
+          "@
+          $cargoToml | Out-File "src-tauri/Cargo.toml" -Encoding UTF8
+
+          # 2b. Create tauri.conf.json
+          # Points distDir to "../src" assuming your HTML is there
+          $tauriConf = @"
+          {
+            "build": {
+              "beforeBuildCommand": "",
+              "beforeDevCommand": "",
+              "devPath": "../src",
+              "distDir": "../src"
+            },
+            "package": {
+              "productName": "Lithic",
+              "version": "0.1.0"
+            },
+            "tauri": {
+              "allowlist": {
+                "all": true
+              },
+              "bundle": {
+                "active": true,
+                "targets": "all",
+                "identifier": "com.lithic.app",
+                "icon": [
+                  "icons/32x32.png",
+                  "icons/128x128.png",
+                  "icons/128x128@2x.png",
+                  "icons/icon.icns",
+                  "icons/icon.ico"
+                ]
+              },
+              "security": {
+                "csp": null
+              },
+              "windows": [
+                {
+                  "fullscreen": false,
+                  "height": 600,
+                  "resizable": true,
+                  "title": "Lithic",
+                  "width": 800
+                }
+              ]
+            }
+          }
+          "@
+          $tauriConf | Out-File "src-tauri/tauri.conf.json" -Encoding UTF8
+
+          # 2c. Create src/main.rs
+          $mainRs = @"
+          #![cfg_attr(
+            all(not(debug_assertions), target_os = "windows"),
+            windows_subsystem = "windows"
+          )]
+
+          fn main() {
+            tauri::Builder::default()
+              .run(tauri::generate_context!())
+              .expect("error while running tauri application");
+          }
+          "@
+          $mainRs | Out-File "src-tauri/src/main.rs" -Encoding UTF8
+
+          # 2d. Create build.rs
+          $buildRs = @"
+          fn main() {
+            tauri_build::build()
+          }
+          "@
+          $buildRs | Out-File "src-tauri/build.rs" -Encoding UTF8
+
+      # --- 3. ICONS (Optional) ---
+      - name: Generate Icons
+        run: |
+          if (Test-Path "src/app-icon.png") {
+            # Move icon to where tauri expects source icons to be relative to the command
+            # But the 'tauri icon' command takes a path.
+            npm run tauri icon src/app-icon.png
+          } else {
+            Write-Host "Icon file not found, skipping icon generation."
+          }
+
+      # --- 4. BUILD OFFLINE ---
       - name: Build Offline Executable
         run: npm run tauri build
 
       - name: Rename Offline Artifact
         run: |
-          Move-Item src-tauri/target/release/LithicApp.exe Lithic-Offline.exe
+          $exe = Get-ChildItem -Path "src-tauri/target/release/*.exe" | Select-Object -First 1
+          if ($exe) {
+            Move-Item $exe.FullName -Destination "Lithic-Offline.exe"
+            Write-Host "Created Lithic-Offline.exe"
+          } else {
+            Write-Error "Build failed: No .exe found in release folder."
+          }
 
-      # --- CONFIG MODIFICATION ---
+      # --- 5. SWITCH CONFIG TO ONLINE ---
       - name: Switch Config to Online Mode
         run: |
           $configPath = "src-tauri/tauri.conf.json"
-          $json = Get-Content $configPath -Raw | ConvertFrom-Json
-          
-          # Change the entry point to the live website
-          $json.tauri.windows[0].url = "https://lithic.uk"
-          
-          # Optional: Point distDir to a dummy location so we don't bundle the local HTML?
-          # For now, we leave it; bundling a few KB of unused HTML is safer than breaking the build.
-          
-          $json | ConvertTo-Json -Depth 10 | Set-Content $configPath
+          if (Test-Path $configPath) {
+            $json = Get-Content $configPath -Raw | ConvertFrom-Json
+            
+            # For Tauri v1 structure
+            if ($json.tauri -and $json.tauri.windows) {
+               $json.tauri.windows[0].url = "https://lithic.uk"
+            } 
+            
+            $json | ConvertTo-Json -Depth 10 | Set-Content $configPath
+          }
 
-      # --- BUILD 2: ONLINE VERSION ---
+      # --- 6. BUILD ONLINE ---
       - name: Build Online Executable
         run: npm run tauri build
 
       - name: Rename Online Artifact
         run: |
-          Move-Item src-tauri/target/release/LithicApp.exe Lithic-Online.exe
+          $exe = Get-ChildItem -Path "src-tauri/target/release/*.exe" | Select-Object -First 1
+          if ($exe) {
+            Move-Item $exe.FullName -Destination "Lithic-Online.exe"
+             Write-Host "Created Lithic-Online.exe"
+          }
 
-      # --- RELEASE ---
+      # --- 7. RELEASE ---
       - name: Generate Date-Based Tag
         id: tag
         run: echo "date=v$(Get-Date -Format 'yyyy.MM.dd-HHmm')" >> $env:GITHUB_OUTPUT
