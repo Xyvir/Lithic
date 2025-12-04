@@ -1,0 +1,50 @@
+name: Windows Manual Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install Dependencies
+        run: npm install
+
+      # We must generate the icons before building, using the file in /src
+      - name: Generate Icons
+        run: npm run tauri icon src/app-icon.png
+
+      - name: Build Portable Executable
+        run: npm run tauri build
+
+      - name: Generate Date-Based Tag
+        id: tag
+        # Generates a tag like v2025.12.04-1430
+        run: echo "date=v$(Get-Date -Format 'yyyy.MM.dd-HHmm')" >> $env:GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.date }}
+          name: Release ${{ steps.tag.outputs.date }}
+          draft: false
+          prerelease: false
+          # Since bundling is active:false, we look for the raw exe in release root.
+          # Using a wildcard (*.exe) ensures we catch it even if the Cargo.toml name differs slightly.
+          files: src-tauri/target/release/*.exe
