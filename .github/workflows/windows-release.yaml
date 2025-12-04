@@ -25,24 +25,44 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # --- CRITICAL FIX: INJECT ABSOLUTE PATHS ---
-      # Tauri v1 CI often fails to watch relative paths like "../src".
-      # This step forces the config to use the runner's full absolute path.
+      # --- DEBUG STEP ---
+      # Lists file structure and Tauri environment info to troubleshoot path errors.
+      - name: Debug - List Files & Tauri Info
+        run: |
+          Write-Host "--- CURRENT DIRECTORY ---"
+          Get-Location
+          
+          Write-Host "`n--- FILE STRUCTURE (Depth 3) ---"
+          Get-ChildItem -Path . -Recurse -Depth 3 | Select-Object FullName
+          
+          Write-Host "`n--- TAURI INFO ---"
+          npm run tauri info
+
+      # --- FIX PATHS ---
+      # Injects the absolute path into tauri.conf.json to satisfy the file watcher
       - name: Fix Tauri Config Paths
         run: |
           $srcAbsPath = (Resolve-Path "src").Path.Replace("\", "/")
           Write-Host "Resolved absolute src path: $srcAbsPath"
           
           $configPath = "src-tauri/tauri.conf.json"
-          $json = Get-Content $configPath -Raw | ConvertFrom-Json
           
-          # Replace relative paths with absolute paths
-          $json.build.distDir = $srcAbsPath
-          $json.build.devPath = $srcAbsPath
-          
-          # Save it back
-          $json | ConvertTo-Json -Depth 10 | Set-Content $configPath
-          Write-Host "Updated tauri.conf.json with absolute paths."
+          if (Test-Path $configPath) {
+            $json = Get-Content $configPath -Raw | ConvertFrom-Json
+            
+            # Replace relative paths with absolute paths
+            $json.build.distDir = $srcAbsPath
+            $json.build.devPath = $srcAbsPath
+            
+            # Save it back
+            $json | ConvertTo-Json -Depth 10 | Set-Content $configPath
+            Write-Host "Updated tauri.conf.json with absolute paths."
+            
+            # Print content to verify
+            Get-Content $configPath
+          } else {
+            Write-Error "CRITICAL: tauri.conf.json not found at $configPath"
+          }
 
       - name: Generate Icons
         run: |
