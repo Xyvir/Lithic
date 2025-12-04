@@ -5,7 +5,7 @@
     <title>Redirecting to Lithic...</title>
     <script>
         // 1. Define your main wiki file
-        var targetPage = "/lithic.html"; 
+        var targetPage = "/index.html"; 
         
         // If your site is in a subdirectory (like username.github.io/repo-name/), 
         // you might need to prepend the repo name: "/repo-name/lithic.html"
@@ -18,7 +18,7 @@
         // If someone visits /MyTiddler, this turns it into lithic.html#MyTiddler
         var path = window.location.pathname;
         var segment = path.split("/").pop();
-        if (segment && segment !== "lithic.html" && !fragment) {
+        if (segment && segment !== "index.html" && !fragment) {
             // Only convert if there isn't already a hash
             fragment = "#" + decodeURIComponent(segment);
         }
