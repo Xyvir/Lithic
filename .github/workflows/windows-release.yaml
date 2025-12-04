@@ -42,12 +42,34 @@ jobs:
         run: npm install
 
       # --- 2. SCAFFOLD TAURI BACKEND ---
-      # Since the repo has no skeleton, we create the Rust project structure manually.
       - name: Scaffold Tauri Project (src-tauri)
         run: |
+          # 2a. RESOLVE ABSOLUTE PATHS
+          if (Test-Path "src") {
+             $srcAbsPath = (Resolve-Path "src").Path.Replace("\", "/")
+             Write-Host "Resolved src path: $srcAbsPath"
+          } else {
+             New-Item -ItemType Directory -Force -Path "src"
+             $srcAbsPath = (Resolve-Path "src").Path.Replace("\", "/")
+             "<h1>Placeholder</h1>" | Out-File "src/launcher.html" -Encoding UTF8
+          }
+
+          # 2b. ENSURE ENTRY POINT (Targeting launcher.html)
+          # We explicitly look for launcher.html. If missing, we copy the first available HTML to it.
+          if (-not (Test-Path "src/launcher.html")) {
+             $existingHtml = Get-ChildItem -Path "src" -Filter "*.html" | Select-Object -First 1
+             if ($existingHtml) {
+                Write-Host "launcher.html not found. Copying $($existingHtml.Name) to src/launcher.html"
+                Copy-Item $existingHtml.FullName -Destination "src/launcher.html"
+             } else {
+                # Last resort fallback
+                "<h1>No HTML Found</h1>" | Out-File "src/launcher.html" -Encoding UTF8
+             }
+          }
+
           New-Item -ItemType Directory -Force -Path src-tauri/src
 
-          # 2a. Create Cargo.toml
+          # 2c. Create Cargo.toml
           $cargoToml = @"
           [package]
           name = "lithic"
@@ -69,15 +91,15 @@ jobs:
           "@
           $cargoToml | Out-File "src-tauri/Cargo.toml" -Encoding UTF8
 
-          # 2b. Create tauri.conf.json
-          # Points distDir to "../src" assuming your HTML is there
+          # 2d. Create tauri.conf.json
+          # Updated: "url": "launcher.html" to match your file structure.
           $tauriConf = @"
           {
             "build": {
               "beforeBuildCommand": "",
               "beforeDevCommand": "",
-              "devPath": "../src",
-              "distDir": "../src"
+              "devPath": "$srcAbsPath",
+              "distDir": "$srcAbsPath"
             },
             "package": {
               "productName": "Lithic",
@@ -104,6 +126,7 @@ jobs:
               },
               "windows": [
                 {
+                  "url": "launcher.html",
                   "fullscreen": false,
                   "height": 600,
                   "resizable": true,
@@ -116,7 +139,7 @@ jobs:
           "@
           $tauriConf | Out-File "src-tauri/tauri.conf.json" -Encoding UTF8
 
-          # 2c. Create src/main.rs
+          # 2e. Create src/main.rs
           $mainRs = @"
           #![cfg_attr(
             all(not(debug_assertions), target_os = "windows"),
@@ -131,7 +154,7 @@ jobs:
           "@
           $mainRs | Out-File "src-tauri/src/main.rs" -Encoding UTF8
 
-          # 2d. Create build.rs
+          # 2f. Create build.rs
           $buildRs = @"
           fn main() {
             tauri_build::build()
@@ -143,8 +166,6 @@ jobs:
       - name: Generate Icons
         run: |
           if (Test-Path "src/app-icon.png") {
-            # Move icon to where tauri expects source icons to be relative to the command
-            # But the 'tauri icon' command takes a path.
             npm run tauri icon src/app-icon.png
           } else {
             Write-Host "Icon file not found, skipping icon generation."
