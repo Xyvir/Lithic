@@ -26,16 +26,42 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # We must generate the icons before building, using the file in /src
       - name: Generate Icons
         run: npm run tauri icon src/app-icon.png
 
-      - name: Build Portable Executable
+      # --- BUILD 1: OFFLINE VERSION ---
+      - name: Build Offline Executable
         run: npm run tauri build
 
+      - name: Rename Offline Artifact
+        run: |
+          Move-Item src-tauri/target/release/LithicApp.exe Lithic-Offline.exe
+
+      # --- CONFIG MODIFICATION ---
+      - name: Switch Config to Online Mode
+        run: |
+          $configPath = "src-tauri/tauri.conf.json"
+          $json = Get-Content $configPath -Raw | ConvertFrom-Json
+          
+          # Change the entry point to the live website
+          $json.tauri.windows[0].url = "https://lithic.uk"
+          
+          # Optional: Point distDir to a dummy location so we don't bundle the local HTML?
+          # For now, we leave it; bundling a few KB of unused HTML is safer than breaking the build.
+          
+          $json | ConvertTo-Json -Depth 10 | Set-Content $configPath
+
+      # --- BUILD 2: ONLINE VERSION ---
+      - name: Build Online Executable
+        run: npm run tauri build
+
+      - name: Rename Online Artifact
+        run: |
+          Move-Item src-tauri/target/release/LithicApp.exe Lithic-Online.exe
+
+      # --- RELEASE ---
       - name: Generate Date-Based Tag
         id: tag
-        # Generates a tag like v2025.12.04-1430
         run: echo "date=v$(Get-Date -Format 'yyyy.MM.dd-HHmm')" >> $env:GITHUB_OUTPUT
 
       - name: Create Release
@@ -45,6 +71,6 @@ jobs:
           name: Release ${{ steps.tag.outputs.date }}
           draft: false
           prerelease: false
-          # Since bundling is active:false, we look for the raw exe in release root.
-          # Using a wildcard (*.exe) ensures we catch it even if the Cargo.toml name differs slightly.
-          files: src-tauri/target/release/*.exe
+          files: |
+            Lithic-Offline.exe
+            Lithic-Online.exe
