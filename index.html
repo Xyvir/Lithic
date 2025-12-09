@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Launcher</title>
+    <title>Lithic Loading...</title>
     <style>
-        /* Optional: Dark background to prevent a white flash while redirecting */
+        /* Dark background to prevent white flash during redirection */
         body {
             background-color: #1a1a1a; 
             margin: 0;
@@ -13,9 +13,33 @@
         }
     </style>
     <script>
-        // Immediately redirect to the new location of the main app file
-        // distinct from the root.
-        window.location.replace('src/launcher.html');
+        (function() {
+            /**
+             * ROUTING LOGIC
+             * Determine the destination based on your specific criteria.
+             */
+            
+            // Example 1: Check for a URL parameter (e.g., ?app=true)
+            const urlParams = new URLSearchParams(window.location.search);
+            const forceApp = urlParams.get('mode') === 'app';
+
+            // Example 2: Check LocalStorage (e.g., user preference)
+            const preferDashboard = localStorage.getItem('defaultView') === 'dashboard';
+
+            // DECISION TREE
+            let destination = 'src/launcher.html'; // Default fallback
+
+            if (forceApp) {
+                destination = 'src/app.html';
+            } else if (preferDashboard) {
+                destination = 'src/dashboard.html';
+            }
+
+            // Redirect immediately. 
+            // .replace() is preferred over .assign() so the user cannot back-button 
+            // into this empty redirect page.
+            window.location.replace(destination);
+        })();
     </script>
 </head>
 <body>
