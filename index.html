@@ -3,50 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lithic Loading...</title>
+    <title>Launcher</title>
     <style>
+        /* Optional: Dark background to prevent a white flash while redirecting */
         body {
-            background-color: #1a1a1a;
+            background-color: #1a1a1a; 
             margin: 0;
             overflow: hidden;
         }
     </style>
     <script>
-        (function() {
-            /**
-             * ROUTING LOGIC
-             * 1. Decide which file to load.
-             * 2. Fetch it as text.
-             * 3. Overwrite the current document with that text.
-             * * Benefit: The URL stays at root (/), so root-relative assets 
-             * (favicons, images) inside the target file still work.
-             */
-
-            // --- 1. Decision Logic ---
-            // Example: Check if we are in "App Mode" via URL or LocalStorage
-            // const isAppMode = new URLSearchParams(window.location.search).get('mode') === 'app';
-            const isAppMode = false; // Set your condition here
-
-            const targetFile = isAppMode ? 'src/lithic.html' : 'src/launcher.html';
-
-            // --- 2. Fetch & Inject ---
-            fetch(targetFile)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.text();
-                })
-                .then(html => {
-                    // --- 3. Overwrite Document ---
-                    document.open();
-                    document.write(html);
-                    document.close();
-                })
-                .catch(error => {
-                    console.error('Failed to load entry point:', error);
-                    // Fallback UI if something goes wrong
-                    document.body.innerHTML = '<h2 style="color:#fff; text-align:center; margin-top:20px;">Unable to load Lithic.</h2>';
-                });
-        })();
+        // Immediately redirect to the new location of the main app file
+        // distinct from the root.
+        window.location.replace('src/launcher.html');
     </script>
 </head>
 <body>
