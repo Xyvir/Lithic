@@ -2,6 +2,15 @@
 <html>
 <head>
   <title>Lithic - Launcher</title>
+  
+  <script>
+    if (!('showOpenFilePicker' in window) || !('showSaveFilePicker' in window)) {
+      // API not supported. Redirecting to the standalone file.
+      // We use .replace() to avoid trapping the user in a history loop.
+      window.location.replace('/src/lithic.html');
+    }
+  </script>
+
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.json">
     
@@ -105,6 +114,7 @@
       margin-bottom: 8px;
     }
 
+    /* JANE: Note - kept for completeness, though redirect happens first now */
     #support-message {
       color: #ff8a80;
       margin-bottom: 1rem;
@@ -284,7 +294,7 @@
                 accept: {'text/html': ['.html', '.htm']},
             }],
           };
-           
+            
           window.showSaveFilePicker(saveOptions)
             .then(fileHandle => {
               writeTw = createTwCustomSaver(fileHandle);
@@ -355,17 +365,6 @@
       twFileManager.getRecent = noop;
     }
       
-    /* Browser Support Check */
-    if (!window.showOpenFilePicker) {
-      twFileManager.openFile = async () => {
-        window.alert("This browser doesn't support opening files locally.");
-        return {}
-      }
-    }
-    if (!window.showSaveFilePicker) {
-      setTwCustomSaveAsSaver = () => {}
-    }
-
     /* Page Replacement Logic */
     function replacePageContents(contents) {
       if (contents) {
@@ -386,13 +385,6 @@
       const file = await twFileManager.openFromUrl(url);
       replacePageContents(file.contents);
       return file;
-    }
-
-    function displayBrowserSupportMessage() {
-      const elem = document.getElementById("support-message");
-      if (elem && !window.showSaveFilePicker) {
-         elem.innerHTML = "<b>Note: Your current browser does not support the File System Access API required for local saving.</b>";
-      }
     }
 
     function clearRecent() {
@@ -445,7 +437,7 @@
       }
     }
     window.onload = () => {
-      displayBrowserSupportMessage();
+      // displayBrowserSupportMessage(); // JANE: Commented out as redundant
       displayRecentFiles();
     }
   </script>
@@ -477,10 +469,8 @@
 
     </div>
 
-    <!-- PWA Install Button (Bottom Right) -->
     <button id="install-pwa">Install App</button>
 
-    <!-- Github Link (Bottom Left) -->
     <a id="github-link" href="https://github.com/Xyvir/Lithic" target="_blank">View<br>Github</a>
 
     <script>
