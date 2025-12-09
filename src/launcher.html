@@ -1,522 +1,522 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Lithic - Launcher</title>
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-  <link rel="manifest" href="manifest.json">
-    
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap');
+  <title>Lithic - Launcher</title>
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <link rel="manifest" href="manifest.json">
+    
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap');
 
-    :root {
-      --bg-color: #1a1a1a;
-      --text-color: #e0e0e0;
-      --card-bg: #262626;
-      --button-bg: #333333;
-      --button-hover: #454545;
-      --border-color: #404040;
-      --accent-color: #8ab4f8;
-      --accent-text: #1a1a1a;
-    }
+    :root {
+      --bg-color: #1a1a1a;
+      --text-color: #e0e0e0;
+      --card-bg: #262626;
+      --button-bg: #333333;
+      --button-hover: #454545;
+      --border-color: #404040;
+      --accent-color: #8ab4f8;
+      --accent-text: #1a1a1a;
+    }
 
-    body {
-      font-family: 'Vollkorn', serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      padding: 40px;
-      line-height: 1.6;
-      display: flex;
-      justify-content: center;
-    }
+    body {
+      font-family: 'Vollkorn', serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 40px;
+      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+    }
 
-    /* Container to center the launcher interface */
-    .container {
-      max-width: 600px;
-      width: 100%;
-    }
+    /* Container to center the launcher interface */
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
 
-    h1 {
-      font-weight: 600;
-      font-size: 2.5rem;
-      margin-top: 0;
-      margin-bottom: 2rem;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 1rem;
-      display: flex;
-      align-items: center;
-    }
+    h1 {
+      font-weight: 600;
+      font-size: 2.5rem;
+      margin-top: 0;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
 
-    h1 img {
-      height: 1em; 
-      width: auto;
-      margin-right: 15px; 
-      border-radius: 4px; 
-    }
+    h1 img {
+      height: 1em; 
+      width: auto;
+      margin-right: 15px; 
+      border-radius: 4px; 
+    }
 
-    h3 {
-      font-weight: 600;
-      font-size: 1.2rem;
-      color: #bbbbbb;
-      margin-bottom: 0.5rem;
-      margin-top: 0;
-    }
+    h3 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #bbbbbb;
+      margin-bottom: 0.5rem;
+      margin-top: 0;
+    }
 
-    .section {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
+    .section {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
 
-    button {
-      background-color: var(--button-bg);
-      color: var(--text-color);
-      font-family: 'Vollkorn', serif;
-      font-size: 1rem;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 12px 20px;
-      cursor: pointer;
-      width: 100%;
-      text-align: center; 
-      transition: background-color 0.2s, transform 0.1s;
-      margin-top: 5px;
-    }
+    button {
+      background-color: var(--button-bg);
+      color: var(--text-color);
+      font-family: 'Vollkorn', serif;
+      font-size: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 12px 20px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center; 
+      transition: background-color 0.2s, transform 0.1s;
+      margin-top: 5px;
+    }
 
-    button:hover {
-      background-color: var(--button-hover);
-      border-color: #666;
-    }
+    button:hover {
+      background-color: var(--button-hover);
+      border-color: #666;
+    }
 
-    button:active {
-      transform: scale(0.99);
-    }
+    button:active {
+      transform: scale(0.99);
+    }
 
-    ul {
-      list-style-type: none;
-      padding-left: 0;
-      margin: 0;
-    }
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin: 0;
+    }
 
-    li {
-      margin-bottom: 8px;
-    }
+    li {
+      margin-bottom: 8px;
+    }
 
-    #support-message {
-      color: #ff8a80;
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
-    }
+    #support-message {
+      color: #ff8a80;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
 
-    .clear-btn {
-      margin-top: 15px;
-      font-size: 0.9rem;
-      text-align: center;
-      background: transparent;
-      border: 1px dashed var(--border-color);
-      opacity: 0.7;
-    }
-    .clear-btn:hover {
-      background-color: rgba(255,255,255,0.05);
-      opacity: 1;
-    }
+    .clear-btn {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      text-align: center;
+      background: transparent;
+      border: 1px dashed var(--border-color);
+      opacity: 0.7;
+    }
+    .clear-btn:hover {
+      background-color: rgba(255,255,255,0.05);
+      opacity: 1;
+    }
 
-    /* --- GITHUB LINK STYLES --- */
-    #github-link {
-        position: fixed;
-        bottom: 25px;
-        left: 25px;
-        background-color: var(--button-bg);
-        color: var(--text-color);
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        padding: 6px 10px;
-        font-size: 0.75rem; /* Smaller size */
-        text-decoration: none;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        transition: background-color 0.2s, transform 0.1s;
-        z-index: 1000;
-        text-align: center; /* Center align multi-line text */
-        line-height: 1.2; /* Tighter leading */
-    }
-    #github-link:hover {
-        background-color: var(--button-hover);
-        border-color: #666;
-        transform: translateY(-1px);
-    }
+    /* --- GITHUB LINK STYLES --- */
+    #github-link {
+        position: fixed;
+        bottom: 25px;
+        left: 25px;
+        background-color: var(--button-bg);
+        color: var(--text-color);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 0.75rem; /* Smaller size */
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        transition: background-color 0.2s, transform 0.1s;
+        z-index: 1000;
+        text-align: center; /* Center align multi-line text */
+        line-height: 1.2; /* Tighter leading */
+    }
+    #github-link:hover {
+        background-color: var(--button-hover);
+        border-color: #666;
+        transform: translateY(-1px);
+    }
 
-    /* --- PWA INSTALL BUTTON STYLES --- */
-    #install-pwa {
-        display: none; /* Hidden by default, shown via JS */
-        position: fixed;
-        bottom: 25px;
-        right: 25px;
-        width: auto; /* Override the 100% width */
-        background-color: var(--accent-color);
-        color: var(--accent-text);
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        border: none;
-        z-index: 1000;
-        animation: fadein 1s;
-    }
-    #install-pwa:hover {
-        background-color: #abc9ff;
-        transform: translateY(-2px);
-    }
+    /* --- PWA INSTALL BUTTON STYLES --- */
+    #install-pwa {
+        display: none; /* Hidden by default, shown via JS */
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: auto; /* Override the 100% width */
+        background-color: var(--accent-color);
+        color: var(--accent-text);
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        border: none;
+        z-index: 1000;
+        animation: fadein 1s;
+    }
+    #install-pwa:hover {
+        background-color: #abc9ff;
+        transform: translateY(-2px);
+    }
 
-    @keyframes fadein {
-        from { opacity: 0; transform: translateY(10px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadein {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
 
-    /* Double safety: Force hide if running in standalone (PWA) mode */
-    @media all and (display-mode: standalone) {
-        #install-pwa { display: none !important; }
-    }
-  </style>
+    /* Double safety: Force hide if running in standalone (PWA) mode */
+    @media all and (display-mode: standalone) {
+        #install-pwa { display: none !important; }
+    }
+  </style>
 
-  <script type="module">
-    /* From https://github.com/jakearchibald/idb-keyval */
-    let idbKeyval = (function (exports) {
-      'use strict';
-      class Store {
-          constructor(dbName = 'keyval-store', storeName = 'keyval') {
-              this.storeName = storeName;
-              this._dbp = new Promise((resolve, reject) => {
-                  const openreq = indexedDB.open(dbName, 1);
-                  openreq.onerror = () => reject(openreq.error);
-                  openreq.onsuccess = () => resolve(openreq.result);
-                  openreq.onupgradeneeded = () => {
-                      openreq.result.createObjectStore(storeName);
-                  };
-              });
-          }
-          _withIDBStore(type, callback) {
-              return this._dbp.then(db => new Promise((resolve, reject) => {
-                  const transaction = db.transaction(this.storeName, type);
-                  transaction.oncomplete = () => resolve();
-                  transaction.onabort = transaction.onerror = () => reject(transaction.error);
-                  callback(transaction.objectStore(this.storeName));
-              }));
-          }
-      }
-      let store;
-      function getDefaultStore() {
-          if (!store) store = new Store();
-          return store;
-      }
-      function get(key, store = getDefaultStore()) {
-          let req;
-          return store._withIDBStore('readonly', store => {
-              req = store.get(key);
-          }).then(() => req.result);
-      }
-      function set(key, value, store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => {
-              store.put(value, key);
-          });
-      }
-      function del(key, store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => {
-              store.delete(key);
-          });
-      }
-      function clear(store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => {
-              store.clear();
-          });
-      }
-      function keys(store = getDefaultStore()) {
-          const keys = [];
-          return store._withIDBStore('readonly', store => {
-              (store.openKeyCursor || store.openCursor).call(store).onsuccess = function () {
-                  if (!this.result) return;
-                  keys.push(this.result.key);
-                  this.result.continue();
-              };
-          }).then(() => keys);
-      }
-      exports.Store = Store;
-      exports.get = get;
-      exports.set = set;
-      exports.del = del;
-      exports.clear = clear;
-      exports.keys = keys;
-      return exports;
-    }({}));
+  <script type="module">
+    /* From https://github.com/jakearchibald/idb-keyval */
+    let idbKeyval = (function (exports) {
+      'use strict';
+      class Store {
+          constructor(dbName = 'keyval-store', storeName = 'keyval') {
+              this.storeName = storeName;
+              this._dbp = new Promise((resolve, reject) => {
+                  const openreq = indexedDB.open(dbName, 1);
+                  openreq.onerror = () => reject(openreq.error);
+                  openreq.onsuccess = () => resolve(openreq.result);
+                  openreq.onupgradeneeded = () => {
+                      openreq.result.createObjectStore(storeName);
+                  };
+              });
+          }
+          _withIDBStore(type, callback) {
+              return this._dbp.then(db => new Promise((resolve, reject) => {
+                  const transaction = db.transaction(this.storeName, type);
+                  transaction.oncomplete = () => resolve();
+                  transaction.onabort = transaction.onerror = () => reject(transaction.error);
+                  callback(transaction.objectStore(this.storeName));
+              }));
+          }
+      }
+      let store;
+      function getDefaultStore() {
+          if (!store) store = new Store();
+          return store;
+      }
+      function get(key, store = getDefaultStore()) {
+          let req;
+          return store._withIDBStore('readonly', store => {
+              req = store.get(key);
+          }).then(() => req.result);
+      }
+      function set(key, value, store = getDefaultStore()) {
+          return store._withIDBStore('readwrite', store => {
+              store.put(value, key);
+          });
+      }
+      function del(key, store = getDefaultStore()) {
+          return store._withIDBStore('readwrite', store => {
+              store.delete(key);
+          });
+      }
+      function clear(store = getDefaultStore()) {
+          return store._withIDBStore('readwrite', store => {
+              store.clear();
+          });
+      }
+      function keys(store = getDefaultStore()) {
+          const keys = [];
+          return store._withIDBStore('readonly', store => {
+              (store.openKeyCursor || store.openCursor).call(store).onsuccess = function () {
+                  if (!this.result) return;
+                  keys.push(this.result.key);
+                  this.result.continue();
+              };
+          }).then(() => keys);
+      }
+      exports.Store = Store;
+      exports.get = get;
+      exports.set = set;
+      exports.del = del;
+      exports.clear = clear;
+      exports.keys = keys;
+      return exports;
+    }({}));
 
-    /* Saver Logic */
-    function createTwCustomSaver(fileHandle) {
-      return function(text, method, callback) {
-        fileHandle.createWritable()
-          .then(writable => {
-            writable.write(text);
-            return writable;
-          }).then(writable => {
-            writable.close();
-            callback(null);
-          }).catch(error => {
-            callback(error);
-          });
-        return true;
-      }
-    }
+    /* Saver Logic */
+    function createTwCustomSaver(fileHandle) {
+      return function(text, method, callback) {
+        fileHandle.createWritable()
+          .then(writable => {
+            writable.write(text);
+            return writable;
+          }).then(writable => {
+            writable.close();
+            callback(null);
+          }).catch(error => {
+            callback(error);
+          });
+        return true;
+      }
+    }
 
-    function setTwCustomSaver(fileHandle) {
-      window.$tw = {customSaver: {save: createTwCustomSaver(fileHandle)}};
-    }
+    function setTwCustomSaver(fileHandle) {
+      window.$tw = {customSaver: {save: createTwCustomSaver(fileHandle)}};
+    }
 
-    function setTwCustomSaveAsSaver() {
-      let writeTw;
-      let save = function(text, method, callback) {
-        if (writeTw) {
-          writeTw(text, method, callback);
-        } else {
-          /* UPDATED: Forced HTML type and default name 'lith.html' */
-          const saveOptions = {
-            suggestedName: 'lith.html',
-            types: [{
-                description: 'Lithic HTML File',
-                accept: {'text/html': ['.html', '.htm']},
-            }],
-          };
-           
-          window.showSaveFilePicker(saveOptions)
-            .then(fileHandle => {
-              writeTw = createTwCustomSaver(fileHandle);
-              writeTw(text, method, callback);
-              twFileManager.addRecent(fileHandle);
-            });
-        }
-        return true;
-      }
-      window.$tw = {customSaver: {save: save}};
-    }
+    function setTwCustomSaveAsSaver() {
+      let writeTw;
+      let save = function(text, method, callback) {
+        if (writeTw) {
+          writeTw(text, method, callback);
+        } else {
+          /* UPDATED: Forced HTML type and default name 'lith.html' */
+          const saveOptions = {
+            suggestedName: 'lith.html',
+            types: [{
+                description: 'Lithic HTML File',
+                accept: {'text/html': ['.html', '.htm']},
+            }],
+          };
+           
+          window.showSaveFilePicker(saveOptions)
+            .then(fileHandle => {
+              writeTw = createTwCustomSaver(fileHandle);
+              writeTw(text, method, callback);
+              twFileManager.addRecent(fileHandle);
+            });
+        }
+        return true;
+      }
+      window.$tw = {customSaver: {save: save}};
+    }
 
-    const twFileManager = {
-      openFile: async function(fileHandle) {
-        if (fileHandle) {
-          const options = {mode: 'read'};
-          if ((await fileHandle.queryPermission(options)) !== 'granted') {
-            await fileHandle.requestPermission(options);
-          }
-        } else {
-          /* Added filter for open dialog as well */
-          const openOptions = {
-             types: [{
-                description: 'HTML Files',
-                accept: {'text/html': ['.html', '.htm']},
-            }]
-          };
-          [fileHandle] = await window.showOpenFilePicker(openOptions);
-        }
-        const file = await fileHandle.getFile();
-        const contents = await file.text();
-        setTwCustomSaver(fileHandle);
-        return {fileHandle, contents};
-      },
+    const twFileManager = {
+      openFile: async function(fileHandle) {
+        if (fileHandle) {
+          const options = {mode: 'read'};
+          if ((await fileHandle.queryPermission(options)) !== 'granted') {
+            await fileHandle.requestPermission(options);
+          }
+        } else {
+          /* Added filter for open dialog as well */
+          const openOptions = {
+             types: [{
+                description: 'HTML Files',
+                accept: {'text/html': ['.html', '.htm']},
+            }]
+          };
+          [fileHandle] = await window.showOpenFilePicker(openOptions);
+        }
+        const file = await fileHandle.getFile();
+        const contents = await file.text();
+        setTwCustomSaver(fileHandle);
+        return {fileHandle, contents};
+      },
 
-      openFromUrl: async function(url) {
-        const contents = await fetch(url).then(res => res.text());
-        setTwCustomSaveAsSaver();
-        return {contents};
-      },
+      openFromUrl: async function(url) {
+        const contents = await fetch(url).then(res => res.text());
+        setTwCustomSaveAsSaver();
+        return {contents};
+      },
 
-      addRecent: async function(fileHandle) {
-        let recentFiles = (await idbKeyval.get('recentFiles')) || [];
-        if (!fileHandle.isSameEntry) return recentFiles;
+      addRecent: async function(fileHandle) {
+        let recentFiles = (await idbKeyval.get('recentFiles')) || [];
+        if (!fileHandle.isSameEntry) return recentFiles;
 
-        const inList = await Promise.all(recentFiles.map((f) => fileHandle.isSameEntry(f)));
-        if (inList.some((val) => val)) return recentFiles;
+        const inList = await Promise.all(recentFiles.map((f) => fileHandle.isSameEntry(f)));
+        if (inList.some((val) => val)) return recentFiles;
 
-        recentFiles.unshift(fileHandle);
-        if (recentFiles.length > 5) recentFiles.pop();
-        idbKeyval.set('recentFiles', recentFiles);
-        return recentFiles;
-      },
+        recentFiles.unshift(fileHandle);
+        if (recentFiles.length > 5) recentFiles.pop();
+        idbKeyval.set('recentFiles', recentFiles);
+        return recentFiles;
+      },
 
-      getRecent: async function () {
-        return (await idbKeyval.get('recentFiles')) || [];
-      },
+      getRecent: async function () {
+        return (await idbKeyval.get('recentFiles')) || [];
+      },
 
-      clearRecent: async function () {
-        await idbKeyval.del('recentFiles');
-      }
-    }
+      clearRecent: async function () {
+        await idbKeyval.del('recentFiles');
+      }
+    }
 
-    /* URL Hash checks */
-    if (window.location.hash.search("norecent") >= 0) {
-      const noop = async () => {return []};
-      twFileManager.addRecent = noop;
-      twFileManager.getRecent = noop;
-    }
-      
-    /* Browser Support Check */
-    if (!window.showOpenFilePicker) {
-      twFileManager.openFile = async () => {
-        window.alert("This browser doesn't support opening files locally.");
-        return {}
-      }
-    }
-    if (!window.showSaveFilePicker) {
-      setTwCustomSaveAsSaver = () => {}
-    }
+    /* URL Hash checks */
+    if (window.location.hash.search("norecent") >= 0) {
+      const noop = async () => {return []};
+      twFileManager.addRecent = noop;
+      twFileManager.getRecent = noop;
+    }
+      
+    /* Browser Support Check */
+    if (!window.showOpenFilePicker) {
+      twFileManager.openFile = async () => {
+        window.alert("This browser doesn't support opening files locally.");
+        return {}
+      }
+    }
+    if (!window.showSaveFilePicker) {
+      setTwCustomSaveAsSaver = () => {}
+    }
 
-    /* Page Replacement Logic */
-    function replacePageContents(contents) {
-      if (contents) {
-        document.open();
-        document.write(contents);
-        document.close();
-      }
-    }
-    window.openFile = async function (fileHandle) {
-      const file = await twFileManager.openFile(fileHandle);
-      replacePageContents(file.contents);
-      if (file.fileHandle) {
-        twFileManager.addRecent(file.fileHandle);
-      }
-      return file;
-    }
-    window.openFromUrl = async function (url) {
-      const file = await twFileManager.openFromUrl(url);
-      replacePageContents(file.contents);
-      return file;
-    }
+    /* Page Replacement Logic */
+    function replacePageContents(contents) {
+      if (contents) {
+        document.open();
+        document.write(contents);
+        document.close();
+      }
+    }
+    window.openFile = async function (fileHandle) {
+      const file = await twFileManager.openFile(fileHandle);
+      replacePageContents(file.contents);
+      if (file.fileHandle) {
+        twFileManager.addRecent(file.fileHandle);
+      }
+      return file;
+    }
+    window.openFromUrl = async function (url) {
+      const file = await twFileManager.openFromUrl(url);
+      replacePageContents(file.contents);
+      return file;
+    }
 
-    function displayBrowserSupportMessage() {
-      const elem = document.getElementById("support-message");
-      if (elem && !window.showSaveFilePicker) {
-         elem.innerHTML = "<b>Note: Your current browser does not support the File System Access API required for local saving.</b>";
-      }
-    }
+    function displayBrowserSupportMessage() {
+      const elem = document.getElementById("support-message");
+      if (elem && !window.showSaveFilePicker) {
+         elem.innerHTML = "<b>Note: Your current browser does not support the File System Access API required for local saving.</b>";
+      }
+    }
 
-    function clearRecent() {
-      twFileManager.clearRecent().then(() => {
-        const elem = document.getElementById("recent-files");
-        if (elem) elem.innerHTML = ""; // Clear content
-      });
-    }
+    function clearRecent() {
+      twFileManager.clearRecent().then(() => {
+        const elem = document.getElementById("recent-files");
+        if (elem) elem.innerHTML = ""; // Clear content
+      });
+    }
 
-    /* UPDATED: Removed tooltips, kept dynamic logic */
-    function displayRecentFiles() {
-      const elem = document.getElementById("recent-files");
-      if (elem) {
-        twFileManager.getRecent().
-          then(recentFiles => {
-            if (recentFiles && recentFiles.length > 0) {
-              // Create wrapper for consistent styling
-              const sectionDiv = document.createElement('div');
-              sectionDiv.className = 'section';
+    /* UPDATED: Removed tooltips, kept dynamic logic */
+    function displayRecentFiles() {
+      const elem = document.getElementById("recent-files");
+      if (elem) {
+        twFileManager.getRecent().
+          then(recentFiles => {
+            if (recentFiles && recentFiles.length > 0) {
+              // Create wrapper for consistent styling
+              const sectionDiv = document.createElement('div');
+              sectionDiv.className = 'section';
 
-              const title = document.createElement('h3');
-              title.innerText = 'Open Recent Lith';
-              sectionDiv.appendChild(title);
+              const title = document.createElement('h3');
+              title.innerText = 'Open Recent Lith';
+              sectionDiv.appendChild(title);
 
-              const list = document.createElement('ul');
-              for (const recent of recentFiles) {
-                const li = document.createElement('li'),
-                      button = Object.assign(document.createElement('button'), {
-                        type: 'button',
-                        onclick: openFile.bind(null, recent),
-                        innerText: recent.name
-                      });
-                li.appendChild(button);
-                list.appendChild(li);
-              }
-              sectionDiv.appendChild(list);
+              const list = document.createElement('ul');
+              for (const recent of recentFiles) {
+                const li = document.createElement('li'),
+                      button = Object.assign(document.createElement('button'), {
+                        type: 'button',
+                        onclick: openFile.bind(null, recent),
+                        innerText: recent.name
+                      });
+                li.appendChild(button);
+                list.appendChild(li);
+              }
+              sectionDiv.appendChild(list);
 
-              // Clear button outside the main list logic slightly
-              const clearButton = Object.assign(document.createElement('button'), {
-                type: 'button',
-                onclick: clearRecent,
-                innerText: 'Clear Recent List',
-                className: 'clear-btn'
-              });
-              sectionDiv.appendChild(clearButton);
-                
-              elem.appendChild(sectionDiv);
-            }
-          })
-      }
-    }
-    window.onload = () => {
-      displayBrowserSupportMessage();
-      displayRecentFiles();
-    }
-  </script>
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./offline-service-worker.js').catch(function(error) {
-      console.error('Service Worker registration failed:', error);
-    });
-  }
-  </script>
+              // Clear button outside the main list logic slightly
+              const clearButton = Object.assign(document.createElement('button'), {
+                type: 'button',
+                onclick: clearRecent,
+                innerText: 'Clear Recent List',
+                className: 'clear-btn'
+              });
+              sectionDiv.appendChild(clearButton);
+                
+              elem.appendChild(sectionDiv);
+            }
+          })
+      }
+    }
+    window.onload = () => {
+      displayBrowserSupportMessage();
+      displayRecentFiles();
+    }
+  </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./offline-service-worker.js').catch(function(error) {
+      console.error('Service Worker registration failed:', error);
+    });
+  }
+  </script>
 </head>
 <body>
-    <div class="container">
-      <h1><img src="mstile-150x150.png" alt="Lithic Icon"> Lithic - Launcher</h1>
-        
-      <div id="support-message"></div>
+    <div class="container">
+      <h1><img src="mstile-150x150.png" alt="Lithic Icon"> Lithic - Launcher</h1>
+        
+      <div id="support-message"></div>
 
-      <div class="section">
-        <h3>Start New</h3>
-        <button type="button" onclick="openFromUrl('https://lithic.uk/src/lithic.html')">Use "Starter Lith"</button>
-      </div>
+      <div class="section">
+        <h3>Start New</h3>
+        <button type="button" onclick="openFromUrl('https://lithic.uk/src/lithic.html')">Use "Starter Lith"</button>
+      </div>
 
-      <div class="section">
-        <h3>Existing File</h3>
-        <button type="button" onclick="openFile()">Sideload a Lith...</button>
-      </div>
+      <div class="section">
+        <h3>Existing File</h3>
+        <button type="button" onclick="openFile()">Sideload a Lith...</button>
+      </div>
 
-      <div id="recent-files"></div>
+      <div id="recent-files"></div>
 
-    </div>
+    </div>
 
-    <!-- PWA Install Button (Bottom Right) -->
-    <button id="install-pwa">Install App</button>
+    <!-- PWA Install Button (Bottom Right) -->
+    <button id="install-pwa">Install App</button>
 
-    <!-- Github Link (Bottom Left) -->
-    <a id="github-link" href="https://github.com/Xyvir/Lithic" target="_blank">View<br>Github</a>
+    <!-- Github Link (Bottom Left) -->
+    <a id="github-link" href="https://github.com/Xyvir/Lithic" target="_blank">View<br>Github</a>
 
-    <script>
-      let deferredPrompt;
-      const installBtn = document.getElementById('install-pwa');
+    <script>
+      let deferredPrompt;
+      const installBtn = document.getElementById('install-pwa');
 
-      // 1. Capture the event when the browser says "This site can be installed"
-      window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevent the mini-infobar from appearing on mobile
-        e.preventDefault();
-        // Stash the event so it can be triggered later.
-        deferredPrompt = e;
-        // Update UI notify the user they can install the PWA
-        installBtn.style.display = 'block';
-      });
+      // 1. Capture the event when the browser says "This site can be installed"
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+        // Update UI notify the user they can install the PWA
+        installBtn.style.display = 'block';
+      });
 
-      // 2. Handle the install click
-      installBtn.addEventListener('click', async () => {
-        // Hide the app provided install promotion
-        installBtn.style.display = 'none';
-        // Show the install prompt
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          // Wait for the user to respond to the prompt
-          const { outcome } = await deferredPrompt.userChoice;
-          console.log(`User response to the install prompt: ${outcome}`);
-          // We've used the prompt, so we can't use it again, discard it
-          deferredPrompt = null;
-        }
-      });
+      // 2. Handle the install click
+      installBtn.addEventListener('click', async () => {
+        // Hide the app provided install promotion
+        installBtn.style.display = 'none';
+        // Show the install prompt
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          // Wait for the user to respond to the prompt
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log(`User response to the install prompt: ${outcome}`);
+          // We've used the prompt, so we can't use it again, discard it
+          deferredPrompt = null;
+        }
+      });
 
-      // 3. Optional: Hide button if they successfully installed it just now
-      window.addEventListener('appinstalled', () => {
-        installBtn.style.display = 'none';
-        deferredPrompt = null;
-      });
-    </script>
+      // 3. Optional: Hide button if they successfully installed it just now
+      window.addEventListener('appinstalled', () => {
+        installBtn.style.display = 'none';
+        deferredPrompt = null;
+      });
+    </script>
 </body>
 </html>
