@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lithic Loading...</title>
     <style>
-        /* Dark background to prevent white flash during redirection */
         body {
             background-color: #1a1a1a; 
             margin: 0;
@@ -16,28 +15,20 @@
         (function() {
             /**
              * ROUTING LOGIC
-             * Determine the destination based on your specific criteria.
+             * Choose between the Launcher and the main Lithic app.
              */
             
-            // Example 1: Check for a URL parameter (e.g., ?app=true)
-            const urlParams = new URLSearchParams(window.location.search);
-            const forceApp = urlParams.get('mode') === 'app';
+            // Placeholder: Replace this with your actual condition
+            // e.g., checking if a specific file is open, or a user preference
+            const shouldOpenMainApp = false; 
 
-            // Example 2: Check LocalStorage (e.g., user preference)
-            const preferDashboard = localStorage.getItem('defaultView') === 'dashboard';
+            let destination = 'src/launcher.html'; // Default to Launcher
 
-            // DECISION TREE
-            let destination = 'src/launcher.html'; // Default fallback
-
-            if (forceApp) {
-                destination = 'src/app.html';
-            } else if (preferDashboard) {
-                destination = 'src/dashboard.html';
+            if (shouldOpenMainApp) {
+                destination = 'src/lithic.html';
             }
 
-            // Redirect immediately. 
-            // .replace() is preferred over .assign() so the user cannot back-button 
-            // into this empty redirect page.
+            // Redirect
             window.location.replace(destination);
         })();
     </script>
