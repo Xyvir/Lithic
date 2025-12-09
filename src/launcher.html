@@ -180,6 +180,14 @@
   </style>
 
   <script type="module">
+    /* ----------------------------------------------------------- */
+    /* IMMEDIATE BROWSER CHECK                                     */
+    /* If File System Access API is missing, redirect immediately. */
+    /* ----------------------------------------------------------- */
+    if (!window.showOpenFilePicker || !window.showSaveFilePicker) {
+        window.location.replace('/src/lithic.html');
+    }
+
     /* From https://github.com/jakearchibald/idb-keyval */
     let idbKeyval = (function (exports) {
       'use strict';
@@ -284,7 +292,7 @@
                 accept: {'text/html': ['.html', '.htm']},
             }],
           };
-           
+            
           window.showSaveFilePicker(saveOptions)
             .then(fileHandle => {
               writeTw = createTwCustomSaver(fileHandle);
@@ -310,7 +318,7 @@
              types: [{
                 description: 'HTML Files',
                 accept: {'text/html': ['.html', '.htm']},
-            }]
+             }]
           };
           [fileHandle] = await window.showOpenFilePicker(openOptions);
         }
@@ -355,17 +363,6 @@
       twFileManager.getRecent = noop;
     }
       
-    /* Browser Support Check */
-    if (!window.showOpenFilePicker) {
-      twFileManager.openFile = async () => {
-        window.alert("This browser doesn't support opening files locally.");
-        return {}
-      }
-    }
-    if (!window.showSaveFilePicker) {
-      setTwCustomSaveAsSaver = () => {}
-    }
-
     /* Page Replacement Logic */
     function replacePageContents(contents) {
       if (contents) {
@@ -386,13 +383,6 @@
       const file = await twFileManager.openFromUrl(url);
       replacePageContents(file.contents);
       return file;
-    }
-
-    function displayBrowserSupportMessage() {
-      const elem = document.getElementById("support-message");
-      if (elem && !window.showSaveFilePicker) {
-         elem.innerHTML = "<b>Note: Your current browser does not support the File System Access API required for local saving.</b>";
-      }
     }
 
     function clearRecent() {
@@ -445,7 +435,7 @@
       }
     }
     window.onload = () => {
-      displayBrowserSupportMessage();
+      /* Removed displayBrowserSupportMessage() call as we now redirect */
       displayRecentFiles();
     }
   </script>
@@ -477,10 +467,8 @@
 
     </div>
 
-    <!-- PWA Install Button (Bottom Right) -->
     <button id="install-pwa">Install App</button>
 
-    <!-- Github Link (Bottom Left) -->
     <a id="github-link" href="https://github.com/Xyvir/Lithic" target="_blank">View<br>Github</a>
 
     <script>
