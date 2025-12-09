@@ -6,7 +6,7 @@
     <title>Lithic Loading...</title>
     <style>
         body {
-            background-color: #1a1a1a; 
+            background-color: #1a1a1a;
             margin: 0;
             overflow: hidden;
         }
@@ -15,21 +15,37 @@
         (function() {
             /**
              * ROUTING LOGIC
-             * Choose between the Launcher and the main Lithic app.
+             * 1. Decide which file to load.
+             * 2. Fetch it as text.
+             * 3. Overwrite the current document with that text.
+             * * Benefit: The URL stays at root (/), so root-relative assets 
+             * (favicons, images) inside the target file still work.
              */
-            
-            // Placeholder: Replace this with your actual condition
-            // e.g., checking if a specific file is open, or a user preference
-            const shouldOpenMainApp = false; 
 
-            let destination = 'src/launcher.html'; // Default to Launcher
+            // --- 1. Decision Logic ---
+            // Example: Check if we are in "App Mode" via URL or LocalStorage
+            // const isAppMode = new URLSearchParams(window.location.search).get('mode') === 'app';
+            const isAppMode = false; // Set your condition here
 
-            if (shouldOpenMainApp) {
-                destination = 'src/lithic.html';
-            }
+            const targetFile = isAppMode ? 'src/lithic.html' : 'src/launcher.html';
 
-            // Redirect
-            window.location.replace(destination);
+            // --- 2. Fetch & Inject ---
+            fetch(targetFile)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.text();
+                })
+                .then(html => {
+                    // --- 3. Overwrite Document ---
+                    document.open();
+                    document.write(html);
+                    document.close();
+                })
+                .catch(error => {
+                    console.error('Failed to load entry point:', error);
+                    // Fallback UI if something goes wrong
+                    document.body.innerHTML = '<h2 style="color:#fff; text-align:center; margin-top:20px;">Unable to load Lithic.</h2>';
+                });
         })();
     </script>
 </head>
