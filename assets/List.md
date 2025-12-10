@@ -1,5 +1,18 @@
 ## Components
 
+### Offical Plugins
+Browser Storage: Local storage in the browser 
+$:/plugins/tiddlywiki/browser-storage
+STABLE5.3.8
+
+KaTeX: KaTeX library for mathematical typography 
+$:/plugins/tiddlywiki/katex
+STABLE5.3.8
+
+Markdown: Markdown parser based on markdown-it 
+$:/plugins/tiddlywiki/markdown
+STABLE5.3.8
+
 ### Whiteboard
 https://github.com/tiddly-gittly/tw-react/releases/tag/v1.0.0
 tw-react: Allow using ReactJS Components in TW widget. 
@@ -17,22 +30,7 @@ edit-comptext: Editor with some on-line completion capabilities
 $:/plugins/snowgoon88/edit-comptext
 0.9.3
 
-### Offical Plugins
-Browser Storage: Local storage in the browser 
-$:/plugins/tiddlywiki/browser-storage
-STABLE5.3.8
 
-Core: TiddlyWiki5 core 
-$:/core
-STABLE5.3.8
-
-KaTeX: KaTeX library for mathematical typography 
-$:/plugins/tiddlywiki/katex
-STABLE5.3.8
-
-Markdown: Markdown parser based on markdown-it 
-$:/plugins/tiddlywiki/markdown
-STABLE5.3.8
 
 ### Relink
 https://flibbles.github.io/tw5-relink/
