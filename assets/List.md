@@ -1,19 +1,79 @@
-Lithic TW Plugin Inventory
+## Components
 
-| Plugin Name | ID | Version | Description | Source / Repository |
-|-|-|-|-|-|
-| tw-react | $:/plugins/linonetwo/tw-react | 1.0.0 | Allow using ReactJS Components in TW widget. | linonetwo/tw-react |
-| tw-whiteboard | $:/plugins/linonetwo/tw-whiteboard |**0.3.5**| Tiny little drawing app in TW, using tldraw. | linonetwo/tw-whiteboard |
-| edit-comptext | $:/plugins/snowgoon88/edit-comptext | 0.9.3 | Editor with some on-line completion capabilities. | snowgoon88/TW5-extendedit |
-| Browser Storage | $:/plugins/tiddlywiki/browser-storage | 5.3.8 | Local storage in the browser. | Official TiddlyWiki Core |
-| Core | $:/core | 5.3.8 | TiddlyWiki5 core. | Official TiddlyWiki Core |
-| KaTeX | $:/plugins/tiddlywiki/katex | 5.3.8 | KaTeX library for mathematical typography. | Official TiddlyWiki Core |
-| Markdown | $:/plugins/tiddlywiki/markdown | 5.3.8 | Markdown parser based on markdown-it. | Official TiddlyWiki Core |
-| Relink | $:/plugins/flibbles/relink | 2.1.0 | Flexibility when relinking renamed tiddlers. | flibbles/tw5-relink |
-| Relink Titles | $:/plugins/flibbles/relink-titles | 2.0.0 | Renames tiddlers with titles derived from Relinked tiddler. | flibbles/tw5-relink-titles |
-| Streams | $:/plugins/sq/streams | 1.2.23 | Rapid data entry with a keyboard driven workflow. | SQ-TW (Saq Imtiaz) |
-| Streams Fusion | $:/plugins/phiv/streams-fusion | 0.0.16-beta | A streams addon to merge streams tiddlers. | phiv/streams-fusion |
-| tiddlystudy | $:/plugins/kebi/tiddlystudy | 1.0.1 | Core (TiddlyStudy Edition). | kebifurai/TiddlyStudy |
-| tiddlystudy-references | $:/plugins/kebi/tiddlystudy-references | 1.0.1 | Bidirectional linking. | kebifurai/TiddlyStudy |
-| Tweaks for Relink | $:/plugins/kebi/relink-tweaks | 1.0.0 | Tweaks for Relink (tiddlystudy). | kebifurai/TiddlyStudy |
-| Tweaks for streams | $:/plugins/kebi/streams-tweaks | 1.0.1 | Tweaks for streams (tiddlystudy). | kebifurai/TiddlyStudy |
+### Whiteboard
+tw-react: Allow using ReactJS Components in TW widget. 
+$:/plugins/linonetwo/tw-react
+STABLE1.0.0
+
+tw-whiteboard: Tiny little drawing app in TW, using tldraw. Providing diagram widget and whiteboard view. 
+$:/plugins/linonetwo/tw-whiteboard
+0.3.5
+
+
+https://snowgoon88.github.io/TW5-extendedit/
+edit-comptext: Editor with some on-line completion capabilities 
+$:/plugins/snowgoon88/edit-comptext
+0.9.3
+
+(Built in_
+Browser Storage: Local storage in the browser 
+$:/plugins/tiddlywiki/browser-storage
+STABLE5.3.8
+
+##
+Core: TiddlyWiki5 core 
+$:/core
+STABLE5.3.8
+
+##
+KaTeX: KaTeX library for mathematical typography 
+$:/plugins/tiddlywiki/katex
+STABLE5.3.8
+
+##
+Markdown: Markdown parser based on markdown-it 
+$:/plugins/tiddlywiki/markdown
+STABLE5.3.8
+
+
+https://flibbles.github.io/tw5-relink/
+Relink: Flexibility when relinking renamed tiddlers 
+$:/plugins/flibbles/relink
+2.1.0
+Relink Titles: Renames tiddlers with titles derived from Relinked tiddler 
+$:/plugins/flibbles/relink-titles
+2.0.0
+
+
+https://fastfreddy.gitlab.io/streams-fusion/
+Streams: Rapid data entry with a keyboard driven workflow. Divide content into smaller tiddlers as you write. 
+$:/plugins/sq/streams
+1.2.23
+Streams Fusion: Streams-fusion - a streams addon to merge streams tiddlers 
+$:/plugins/phiv/streams-fusion
+0.0.16-beta
+
+
+tiddlystudy: core 
+$:/plugins/kebi/tiddlystudy
+1.0.1
+
+tiddlystudy-references: bidirectional linking 
+$:/plugins/kebi/tiddlystudy-references
+1.0.1
+
+Tweaks for Relink (tiddlystudy): $:/plugins/kebi/relink-tweaks 
+$:/plugins/kebi/relink-tweaks
+1.0.0
+
+Tweaks for streams (tiddlystudy): $:/plugins/kebi/streams-tweaks 
+$:/plugins/kebi/streams-tweaks
+1.0.1
+
+## Dev Tools
+
+https://flibbles.github.io/tw5-uglify/uglified.html
+Uglifier
+
+Gatha
+https://kookma.github.io/TW-Gatha/
