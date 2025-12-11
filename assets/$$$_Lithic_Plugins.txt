@@ -1,10 +1,9 @@
 ## Manual Build Process:
 
 1. Start with TW5 empty.html
-2. Install official store plugins.
-3. Install all non zzz plugins.
-4. Uglifying removing cosmetics.
-5. import hellothere and pallettess
+2. Prune Server-Specifc items using uglifier (don't uglify or use wizard)
+3. Install official TiddlyWike store plugins.
+4. Install all Lithic Plugins.
 
 
 ## Components
@@ -85,4 +84,5 @@ $:/plugins/kebi/streams-tweaks
 1.0.1
 
 ## Dev Tools
+
 
