@@ -36,8 +36,10 @@ Lithic is a bespoke Personal Knowledge Management System (PKMS) built on the pow
 - Upgrade default editor to one with highlighting
 - Either uniedit or overtype
 - switch to AutoComplete plugin instead of comptext and integrate into the above.
+- include other relevant 'wilk-tweaks'
 
 3. Version 3 plans
+- automate build pipeline
 - Rust Backend for Launcher apps
 - Multiplatform Launcher apps
 - Failover webgui launcher for non-mac devices (TiddlyStow v2)
