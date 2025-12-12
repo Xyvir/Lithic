@@ -26,3 +26,25 @@ Lithic is a bespoke Personal Knowledge Management System (PKMS) built on the pow
 
 ---
 *An extension of [TiddlyStudy](https://github.com/postkevone/tiddlystudy) based on [TiddlyWiki](https://tiddlywiki.com/).*
+
+# Roadmap
+1. Version 1 Released: 
+- Lithic is packaged as a plugin
+- Standardized Manual Build steps
+
+2. Version 2 plans:
+- Upgrade default editor to one with highlighting
+- Either uniedit or overtype
+- switch to AutoComplete plugin instead of comptext and integrate into the above.
+
+3. Version 3 plans
+- Rust Backend for Launcher apps
+- Multiplatform Launcher apps
+- Failover webgui launcher for non-mac devices (TiddlyStow v2)
+- Payload URL sharing
+
+4. Version 4 plans:
+- Integrated 3rd party syncing
+- native e2ec p2p syncing via Iroh Docs?
+
+  
