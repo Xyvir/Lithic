@@ -27,6 +27,9 @@ Lithic is a bespoke Personal Knowledge Management System (PKMS) built on the pow
 ---
 *An extension of [TiddlyStudy](https://github.com/postkevone/tiddlystudy) based on [TiddlyWiki](https://tiddlywiki.com/).*
 
+# Todo
+- [ ] Include Vollkron fonts under /src/isntead of pulling them from Google CDN so they work offline.
+
 # Roadmap
 1. Version 1 Released: 
 - Lithic is packaged as a plugin
