@@ -3,21 +3,29 @@
 <head>
   <title>Lithic - Launcher</title>
   <link rel="manifest" href="/manifest.json">
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
   
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" 
+      href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap" 
+      media="print" 
+      onload="this.media='all'">
+
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap">
+  </noscript>
+
   <script>
     if (!('showOpenFilePicker' in window) || !('showSaveFilePicker' in window)) {
       // API not supported. Redirecting to the standalone file.
-      // We use .replace() to avoid trapping the user in a history loop.
       window.location.replace('/src/lithic.html');
     }
   </script>
 
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-  <link rel="manifest" href="manifest.json">
-    
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap');
-
+    /* CSS Variables & Styles */
     :root {
       --bg-color: #1a1a1a;
       --text-color: #e0e0e0;
@@ -40,7 +48,6 @@
       justify-content: center;
     }
 
-    /* Container to center the launcher interface */
     .container {
       max-width: 600px;
       width: 100%;
@@ -115,7 +122,6 @@
       margin-bottom: 8px;
     }
 
-    /* JANE: Note - kept for completeness, though redirect happens first now */
     #support-message {
       color: #ff8a80;
       margin-bottom: 1rem;
@@ -145,13 +151,13 @@
         border: 1px solid var(--border-color);
         border-radius: 6px;
         padding: 6px 10px;
-        font-size: 0.75rem; /* Smaller size */
+        font-size: 0.75rem; 
         text-decoration: none;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         transition: background-color 0.2s, transform 0.1s;
         z-index: 1000;
-        text-align: center; /* Center align multi-line text */
-        line-height: 1.2; /* Tighter leading */
+        text-align: center; 
+        line-height: 1.2; 
     }
     #github-link:hover {
         background-color: var(--button-hover);
@@ -161,11 +167,11 @@
 
     /* --- PWA INSTALL BUTTON STYLES --- */
     #install-pwa {
-        display: none; /* Hidden by default, shown via JS */
+        display: none; 
         position: fixed;
         bottom: 25px;
         right: 25px;
-        width: auto; /* Override the 100% width */
+        width: auto; 
         background-color: var(--accent-color);
         color: var(--accent-text);
         font-weight: 600;
@@ -184,13 +190,13 @@
         to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Double safety: Force hide if running in standalone (PWA) mode */
     @media all and (display-mode: standalone) {
         #install-pwa { display: none !important; }
     }
   </style>
 
   <script type="module">
+    /* ... (Your existing idb-keyval code remains exactly the same) ... */
     /* From https://github.com/jakearchibald/idb-keyval */
     let idbKeyval = (function (exports) {
       'use strict';
@@ -287,7 +293,6 @@
         if (writeTw) {
           writeTw(text, method, callback);
         } else {
-          /* UPDATED: Forced HTML type and default name 'lith.html' */
           const saveOptions = {
             suggestedName: 'lith.html',
             types: [{
@@ -316,7 +321,6 @@
             await fileHandle.requestPermission(options);
           }
         } else {
-          /* Added filter for open dialog as well */
           const openOptions = {
              types: [{
                 description: 'HTML Files',
@@ -359,14 +363,12 @@
       }
     }
 
-    /* URL Hash checks */
     if (window.location.hash.search("norecent") >= 0) {
       const noop = async () => {return []};
       twFileManager.addRecent = noop;
       twFileManager.getRecent = noop;
     }
       
-    /* Page Replacement Logic */
     function replacePageContents(contents) {
       if (contents) {
         document.open();
@@ -391,18 +393,16 @@
     function clearRecent() {
       twFileManager.clearRecent().then(() => {
         const elem = document.getElementById("recent-files");
-        if (elem) elem.innerHTML = ""; // Clear content
+        if (elem) elem.innerHTML = ""; 
       });
     }
 
-    /* UPDATED: Removed tooltips, kept dynamic logic */
     function displayRecentFiles() {
       const elem = document.getElementById("recent-files");
       if (elem) {
         twFileManager.getRecent().
           then(recentFiles => {
             if (recentFiles && recentFiles.length > 0) {
-              // Create wrapper for consistent styling
               const sectionDiv = document.createElement('div');
               sectionDiv.className = 'section';
 
@@ -423,7 +423,6 @@
               }
               sectionDiv.appendChild(list);
 
-              // Clear button outside the main list logic slightly
               const clearButton = Object.assign(document.createElement('button'), {
                 type: 'button',
                 onclick: clearRecent,
@@ -438,13 +437,14 @@
       }
     }
     window.onload = () => {
-      // displayBrowserSupportMessage(); // JANE: Commented out as redundant
       displayRecentFiles();
     }
   </script>
+  
   <script>
+  // Ensure this filename matches your actual file
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./offline-service-worker.js').catch(function(error) {
+    navigator.serviceWorker.register('/sw.js').catch(function(error) {
       console.error('Service Worker registration failed:', error);
     });
   }
@@ -452,13 +452,13 @@
 </head>
 <body>
     <div class="container">
-      <h1><img src="mstile-150x150.png" alt="Lithic Icon"> Lithic - Launcher</h1>
+      <h1><img src="/mstile-150x150.png" alt="Lithic Icon"> Lithic - Launcher</h1>
         
       <div id="support-message"></div>
 
       <div class="section">
         <h3>Start New</h3>
-        <button type="button" onclick="openFromUrl('https://lithic.uk/src/lithic.html')">Use "Starter Lith"</button>
+        <button type="button" onclick="openFromUrl('lithic.html')">Use "Starter Lith"</button>
       </div>
 
       <div class="section">
@@ -478,32 +478,22 @@
       let deferredPrompt;
       const installBtn = document.getElementById('install-pwa');
 
-      // 1. Capture the event when the browser says "This site can be installed"
       window.addEventListener('beforeinstallprompt', (e) => {
-        // Prevent the mini-infobar from appearing on mobile
         e.preventDefault();
-        // Stash the event so it can be triggered later.
         deferredPrompt = e;
-        // Update UI notify the user they can install the PWA
         installBtn.style.display = 'block';
       });
 
-      // 2. Handle the install click
       installBtn.addEventListener('click', async () => {
-        // Hide the app provided install promotion
         installBtn.style.display = 'none';
-        // Show the install prompt
         if (deferredPrompt) {
           deferredPrompt.prompt();
-          // Wait for the user to respond to the prompt
           const { outcome } = await deferredPrompt.userChoice;
           console.log(`User response to the install prompt: ${outcome}`);
-          // We've used the prompt, so we can't use it again, discard it
           deferredPrompt = null;
         }
       });
 
-      // 3. Optional: Hide button if they successfully installed it just now
       window.addEventListener('appinstalled', () => {
         installBtn.style.display = 'none';
         deferredPrompt = null;
