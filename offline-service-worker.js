@@ -7,9 +7,10 @@ self.addEventListener('install', (event) => {
         './',                     // Root alias
         'index.html',             // The redirector
         'src/launcher.html',      // The NEW main app
-        'src/lithic.html',       
+        'src/lithic.html',
+        'src/mstile-150x150.png', // Luancher Banner Icon     
         'manifest.json',
-        'favicon.ico',            // Assuming these are still at root?
+        'favicon.ico',            //  are still at root?
         'android-chrome-192x192.png',
         'android-chrome-512x512.png'
       ]);
