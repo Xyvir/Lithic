@@ -444,7 +444,7 @@
   <script>
   // Ensure this filename matches your actual file
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(function(error) {
+    navigator.serviceWorker.register('/offline-service-worker.js').catch(function(error) {
       console.error('Service Worker registration failed:', error);
     });
   }
