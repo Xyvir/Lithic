@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Lithic - Launcher</title>
+  
   <link rel="manifest" href="/manifest.json">
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
   
@@ -9,9 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <link rel="stylesheet" 
-      href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap" 
-      media="print" 
-      onload="this.media='all'">
+       href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap" 
+       media="print" 
+       onload="this.media='all'">
 
   <noscript>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap">
@@ -442,11 +443,16 @@
   </script>
   
   <script>
-  // Ensure this filename matches your actual file
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/offline-service-worker.js').catch(function(error) {
-      console.error('Service Worker registration failed:', error);
-    });
+    // We register the worker at the ROOT, and explicitly set the scope to ROOT
+    // so it can control everything.
+    navigator.serviceWorker.register('/offline-service-worker.js', { scope: '/' })
+      .then(function(registration) {
+         console.log('SW Registered. Scope is:', registration.scope);
+      })
+      .catch(function(error) {
+        console.error('Service Worker registration failed:', error);
+      });
   }
   </script>
 </head>
