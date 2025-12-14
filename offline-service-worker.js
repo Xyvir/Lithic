@@ -1,43 +1,21 @@
-const CACHE_NAME = 'lithic-v1'; // Renamed to match your project
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll([
-        './',                     // Root alias
-        'index.html',             // The redirector
-        'src/launcher.html',      // The NEW main app
-        'src/lithic.html',
-        'src/mstile-150x150.png', // Luancher Banner Icon     
-        'manifest.json',
-        'favicon.ico',            //  are still at root?
-        'android-chrome-192x192.png',
-        'android-chrome-512x512.png'
-      ]);
-    })
-  );
-});
-
 self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request).then(function(response) {
-      return response || fetch(event.request);
-    })
-  );
-});
+      if (response) {
+        return response; // Hit found in cache
+      }
 
-// Optional: Clean up old caches (like 'tiddlystow-001')
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log('Clearing old cache:', cache);
-            return caches.delete(cache);
-          }
-        })
-      );
+      // If not in cache, try to fetch, but catch errors!
+      return fetch(event.request).catch(function(error) {
+        // If we are here, we are offline AND the file wasn't in cache.
+        console.log('Offline fetch failed for:', event.request.url);
+        
+        // Return a plain 408 (Timeout) or 404 so the browser stops waiting
+        return new Response('Offline', { 
+           status: 408, 
+           statusText: 'Offline' 
+        });
+      });
     })
   );
 });
