@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Lithic - Launcher</title>
-  
+
   <link rel="manifest" href="/manifest.json">
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link rel="stylesheet" 
-       href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap" 
-       media="print" 
-       onload="this.media='all'">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap" media="print"
+    onload="this.media='all'">
 
   <noscript>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap">
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap">
   </noscript>
 
   <script>
@@ -66,10 +67,10 @@
     }
 
     h1 img {
-      height: 1em; 
+      height: 1em;
       width: auto;
-      margin-right: 15px; 
-      border-radius: 4px; 
+      margin-right: 15px;
+      border-radius: 4px;
     }
 
     h3 {
@@ -86,7 +87,7 @@
       border-radius: 8px;
       padding: 20px;
       margin-bottom: 1.5rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
     button {
@@ -99,7 +100,7 @@
       padding: 12px 20px;
       cursor: pointer;
       width: 100%;
-      text-align: center; 
+      text-align: center;
       transition: background-color 0.2s, transform 0.1s;
       margin-top: 5px;
     }
@@ -121,12 +122,98 @@
 
     li {
       margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* Override general button styles for the file button in the pair */
+    li>button:first-child {
+      flex-grow: 1;
+      text-align: left;
+      /* Better for filenames */
+      padding-left: 15px;
+    }
+
+    .remove-btn {
+      width: 46px !important;
+      /* Override 100% width from generic selector */
+      padding: 0 !important;
+      font-size: 1.5rem;
+      line-height: 1;
+      color: #888;
+      border-color: var(--border-color);
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 44px;
+      /* Match approximate height of text buttons */
+      margin-top: 5px;
+    }
+
+    .remove-btn:hover {
+      color: #ff8a80;
+      border-color: #ff8a80;
+      background-color: rgba(255, 138, 128, 0.1);
     }
 
     #support-message {
       color: #ff8a80;
       margin-bottom: 1rem;
       font-size: 0.9rem;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-row h3 {
+      margin-bottom: 0;
+    }
+
+    .search-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      background-color: var(--button-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 5px 25px 5px 10px;
+      /* Space for clear button */
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      width: 150px;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 5px;
+      background: none;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0;
+      line-height: 1;
+      display: none;
+      /* Hidden by default */
+    }
+
+    .search-clear:hover {
+      color: #fff;
     }
 
     .clear-btn {
@@ -137,62 +224,74 @@
       border: 1px dashed var(--border-color);
       opacity: 0.7;
     }
+
     .clear-btn:hover {
-      background-color: rgba(255,255,255,0.05);
+      background-color: rgba(255, 255, 255, 0.05);
       opacity: 1;
     }
 
     /* --- GITHUB LINK STYLES --- */
     #github-link {
-        position: fixed;
-        bottom: 25px;
-        left: 25px;
-        background-color: var(--button-bg);
-        color: var(--text-color);
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        padding: 6px 10px;
-        font-size: 0.75rem; 
-        text-decoration: none;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        transition: background-color 0.2s, transform 0.1s;
-        z-index: 1000;
-        text-align: center; 
-        line-height: 1.2; 
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      background-color: var(--button-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.2s, transform 0.1s;
+      z-index: 1000;
+      text-align: center;
+      line-height: 1.2;
     }
+
     #github-link:hover {
-        background-color: var(--button-hover);
-        border-color: #666;
-        transform: translateY(-1px);
+      background-color: var(--button-hover);
+      border-color: #666;
+      transform: translateY(-1px);
     }
 
     /* --- PWA INSTALL BUTTON STYLES --- */
     #install-pwa {
-        display: none; 
-        position: fixed;
-        bottom: 25px;
-        right: 25px;
-        width: auto; 
-        background-color: var(--accent-color);
-        color: var(--accent-text);
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        border: none;
-        z-index: 1000;
-        animation: fadein 1s;
+      display: none;
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: auto;
+      background-color: var(--accent-color);
+      color: var(--accent-text);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      border: none;
+      z-index: 1000;
+      animation: fadein 1s;
     }
+
     #install-pwa:hover {
-        background-color: #abc9ff;
-        transform: translateY(-2px);
+      background-color: #abc9ff;
+      transform: translateY(-2px);
     }
 
     @keyframes fadein {
-        from { opacity: 0; transform: translateY(10px); }
-        to   { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @media all and (display-mode: standalone) {
-        #install-pwa { display: none !important; }
+      #install-pwa {
+        display: none !important;
+      }
     }
   </style>
 
@@ -202,61 +301,61 @@
     let idbKeyval = (function (exports) {
       'use strict';
       class Store {
-          constructor(dbName = 'keyval-store', storeName = 'keyval') {
-              this.storeName = storeName;
-              this._dbp = new Promise((resolve, reject) => {
-                  const openreq = indexedDB.open(dbName, 1);
-                  openreq.onerror = () => reject(openreq.error);
-                  openreq.onsuccess = () => resolve(openreq.result);
-                  openreq.onupgradeneeded = () => {
-                      openreq.result.createObjectStore(storeName);
-                  };
-              });
-          }
-          _withIDBStore(type, callback) {
-              return this._dbp.then(db => new Promise((resolve, reject) => {
-                  const transaction = db.transaction(this.storeName, type);
-                  transaction.oncomplete = () => resolve();
-                  transaction.onabort = transaction.onerror = () => reject(transaction.error);
-                  callback(transaction.objectStore(this.storeName));
-              }));
-          }
+        constructor(dbName = 'keyval-store', storeName = 'keyval') {
+          this.storeName = storeName;
+          this._dbp = new Promise((resolve, reject) => {
+            const openreq = indexedDB.open(dbName, 1);
+            openreq.onerror = () => reject(openreq.error);
+            openreq.onsuccess = () => resolve(openreq.result);
+            openreq.onupgradeneeded = () => {
+              openreq.result.createObjectStore(storeName);
+            };
+          });
+        }
+        _withIDBStore(type, callback) {
+          return this._dbp.then(db => new Promise((resolve, reject) => {
+            const transaction = db.transaction(this.storeName, type);
+            transaction.oncomplete = () => resolve();
+            transaction.onabort = transaction.onerror = () => reject(transaction.error);
+            callback(transaction.objectStore(this.storeName));
+          }));
+        }
       }
       let store;
       function getDefaultStore() {
-          if (!store) store = new Store();
-          return store;
+        if (!store) store = new Store();
+        return store;
       }
       function get(key, store = getDefaultStore()) {
-          let req;
-          return store._withIDBStore('readonly', store => {
-              req = store.get(key);
-          }).then(() => req.result);
+        let req;
+        return store._withIDBStore('readonly', store => {
+          req = store.get(key);
+        }).then(() => req.result);
       }
       function set(key, value, store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => {
-              store.put(value, key);
-          });
+        return store._withIDBStore('readwrite', store => {
+          store.put(value, key);
+        });
       }
       function del(key, store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => {
-              store.delete(key);
-          });
+        return store._withIDBStore('readwrite', store => {
+          store.delete(key);
+        });
       }
       function clear(store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => {
-              store.clear();
-          });
+        return store._withIDBStore('readwrite', store => {
+          store.clear();
+        });
       }
       function keys(store = getDefaultStore()) {
-          const keys = [];
-          return store._withIDBStore('readonly', store => {
-              (store.openKeyCursor || store.openCursor).call(store).onsuccess = function () {
-                  if (!this.result) return;
-                  keys.push(this.result.key);
-                  this.result.continue();
-              };
-          }).then(() => keys);
+        const keys = [];
+        return store._withIDBStore('readonly', store => {
+          (store.openKeyCursor || store.openCursor).call(store).onsuccess = function () {
+            if (!this.result) return;
+            keys.push(this.result.key);
+            this.result.continue();
+          };
+        }).then(() => keys);
       }
       exports.Store = Store;
       exports.get = get;
@@ -269,7 +368,7 @@
 
     /* Saver Logic */
     function createTwCustomSaver(fileHandle) {
-      return function(text, method, callback) {
+      return function (text, method, callback) {
         fileHandle.createWritable()
           .then(writable => {
             writable.write(text);
@@ -285,23 +384,23 @@
     }
 
     function setTwCustomSaver(fileHandle) {
-      window.$tw = {customSaver: {save: createTwCustomSaver(fileHandle)}};
+      window.$tw = { customSaver: { save: createTwCustomSaver(fileHandle) } };
     }
 
     function setTwCustomSaveAsSaver() {
       let writeTw;
-      let save = function(text, method, callback) {
+      let save = function (text, method, callback) {
         if (writeTw) {
           writeTw(text, method, callback);
         } else {
           const saveOptions = {
             suggestedName: 'lith.html',
             types: [{
-                description: 'Lithic HTML File',
-                accept: {'text/html': ['.html', '.htm']},
+              description: 'Lithic HTML File',
+              accept: { 'text/html': ['.html', '.htm'] },
             }],
           };
-            
+
           window.showSaveFilePicker(saveOptions)
             .then(fileHandle => {
               writeTw = createTwCustomSaver(fileHandle);
@@ -311,21 +410,21 @@
         }
         return true;
       }
-      window.$tw = {customSaver: {save: save}};
+      window.$tw = { customSaver: { save: save } };
     }
 
     const twFileManager = {
-      openFile: async function(fileHandle) {
+      openFile: async function (fileHandle) {
         if (fileHandle) {
-          const options = {mode: 'read'};
+          const options = { mode: 'read' };
           if ((await fileHandle.queryPermission(options)) !== 'granted') {
             await fileHandle.requestPermission(options);
           }
         } else {
           const openOptions = {
-             types: [{
-                description: 'HTML Files',
-                accept: {'text/html': ['.html', '.htm']},
+            types: [{
+              description: 'HTML Files',
+              accept: { 'text/html': ['.html', '.htm'] },
             }]
           };
           [fileHandle] = await window.showOpenFilePicker(openOptions);
@@ -333,16 +432,30 @@
         const file = await fileHandle.getFile();
         const contents = await file.text();
         setTwCustomSaver(fileHandle);
-        return {fileHandle, contents};
+        return { fileHandle, contents };
       },
 
-      openFromUrl: async function(url) {
+      openFromUrl: async function (url) {
         const contents = await fetch(url).then(res => res.text());
         setTwCustomSaveAsSaver();
-        return {contents};
+        return { contents };
       },
 
-      addRecent: async function(fileHandle) {
+      mountFolder: async function () {
+        const dirHandle = await window.showDirectoryPicker();
+        // Request read permission implies we can read children
+        // Loop through and find html files
+        let count = 0;
+        for await (const entry of dirHandle.values()) {
+          if (entry.kind === 'file' && (entry.name.endsWith('.html') || entry.name.endsWith('.htm'))) {
+            await this.addRecent(entry);
+            count++;
+          }
+        }
+        return count;
+      },
+
+      addRecent: async function (fileHandle) {
         let recentFiles = (await idbKeyval.get('recentFiles')) || [];
         if (!fileHandle.isSameEntry) return recentFiles;
 
@@ -350,9 +463,22 @@
         if (inList.some((val) => val)) return recentFiles;
 
         recentFiles.unshift(fileHandle);
-        if (recentFiles.length > 5) recentFiles.pop();
-        idbKeyval.set('recentFiles', recentFiles);
+        if (recentFiles.length > 50) recentFiles.pop(); // Increased limit
+        await idbKeyval.set('recentFiles', recentFiles);
         return recentFiles;
+      },
+
+      removeRecent: async function (fileHandleToRemove) {
+        let recentFiles = (await idbKeyval.get('recentFiles')) || [];
+
+        // We have to filter asynchronously because isSameEntry is async
+        const retentionMask = await Promise.all(recentFiles.map(async (f) => {
+          return !(await f.isSameEntry(fileHandleToRemove));
+        }));
+
+        const newRecentFiles = recentFiles.filter((_, index) => retentionMask[index]);
+        await idbKeyval.set('recentFiles', newRecentFiles);
+        return newRecentFiles;
       },
 
       getRecent: async function () {
@@ -365,11 +491,11 @@
     }
 
     if (window.location.hash.search("norecent") >= 0) {
-      const noop = async () => {return []};
+      const noop = async () => { return [] };
       twFileManager.addRecent = noop;
       twFileManager.getRecent = noop;
     }
-      
+
     function replacePageContents(contents) {
       if (contents) {
         document.open();
@@ -391,35 +517,120 @@
       return file;
     }
 
+    window.mountFolder = async function () {
+      try {
+        await twFileManager.mountFolder();
+        displayRecentFiles(); // Refresh list logic
+      } catch (e) {
+        console.error("Folder mount cancelled or failed", e); // User probably cancelled
+      }
+    }
+
+    window.removeRecent = async function (fileHandle) {
+      await twFileManager.removeRecent(fileHandle);
+      displayRecentFiles();
+    }
+
     function clearRecent() {
       twFileManager.clearRecent().then(() => {
         const elem = document.getElementById("recent-files");
-        if (elem) elem.innerHTML = ""; 
+        if (elem) elem.innerHTML = "";
       });
     }
 
     function displayRecentFiles() {
       const elem = document.getElementById("recent-files");
       if (elem) {
+        // Clear existing content to prevent duplication
+        elem.innerHTML = "";
+
         twFileManager.getRecent().
           then(recentFiles => {
             if (recentFiles && recentFiles.length > 0) {
               const sectionDiv = document.createElement('div');
               sectionDiv.className = 'section';
 
+              // Header Row for Title and Search
+              const headerRow = document.createElement('div');
+              headerRow.className = 'header-row';
+
               const title = document.createElement('h3');
-              title.innerText = 'Open Recent Lith';
-              sectionDiv.appendChild(title);
+              title.innerText = 'Load a Lith from Disk';
+              headerRow.appendChild(title);
+
+              // Search Container
+              const searchContainer = document.createElement('div');
+              searchContainer.className = 'search-container';
+
+              const searchInput = document.createElement('input');
+              searchInput.type = 'text';
+              searchInput.className = 'search-input';
+              searchInput.placeholder = 'Search...';
+
+              const searchClear = document.createElement('button');
+              searchClear.className = 'search-clear';
+              searchClear.innerHTML = '&times;';
+              searchClear.title = 'Clear search';
+
+              // Filter Logic
+              function filterList() {
+                const filter = searchInput.value.toLowerCase();
+                const items = list.getElementsByTagName('li');
+                let hasVisible = false;
+
+                for (let i = 0; i < items.length; i++) {
+                  const button = items[i].getElementsByTagName('button')[0];
+                  const txtValue = button.textContent || button.innerText;
+                  if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    items[i].style.display = "";
+                    hasVisible = true;
+                  } else {
+                    items[i].style.display = "none";
+                  }
+                }
+
+                // Toggle clear button
+                searchClear.style.display = filter.length > 0 ? 'block' : 'none';
+              }
+
+              searchInput.addEventListener('input', filterList);
+
+              searchClear.onclick = () => {
+                searchInput.value = '';
+                filterList();
+              };
+
+              searchContainer.appendChild(searchInput);
+              searchContainer.appendChild(searchClear);
+              headerRow.appendChild(searchContainer);
+
+              sectionDiv.appendChild(headerRow);
 
               const list = document.createElement('ul');
               for (const recent of recentFiles) {
-                const li = document.createElement('li'),
-                      button = Object.assign(document.createElement('button'), {
-                        type: 'button',
-                        onclick: openFile.bind(null, recent),
-                        innerText: recent.name
-                      });
+                const li = document.createElement('li');
+
+                // Open Button
+                const button = Object.assign(document.createElement('button'), {
+                  type: 'button',
+                  onclick: openFile.bind(null, recent),
+                  innerText: recent.name
+                });
+
+                // Remove Button
+                const removeBtn = Object.assign(document.createElement('button'), {
+                  type: 'button',
+                  className: 'remove-btn',
+                  innerHTML: '&times;',
+                  title: 'Remove from list',
+                  onclick: (e) => {
+                    // Prevent triggering things if nested?? (It's not)
+                    window.removeRecent(recent);
+                  }
+                });
+
                 li.appendChild(button);
+                li.appendChild(removeBtn);
                 list.appendChild(li);
               }
               sectionDiv.appendChild(list);
@@ -427,11 +638,11 @@
               const clearButton = Object.assign(document.createElement('button'), {
                 type: 'button',
                 onclick: clearRecent,
-                innerText: 'Clear Recent List',
+                innerText: 'Clear All',
                 className: 'clear-btn'
               });
               sectionDiv.appendChild(clearButton);
-                
+
               elem.appendChild(sectionDiv);
             }
           })
@@ -441,69 +652,71 @@
       displayRecentFiles();
     }
   </script>
-  
+
   <script>
-  if ('serviceWorker' in navigator) {
-    // We register the worker at the ROOT, and explicitly set the scope to ROOT
-    // so it can control everything.
-    navigator.serviceWorker.register('/offline-service-worker.js', { scope: '/' })
-      .then(function(registration) {
-         console.log('SW Registered. Scope is:', registration.scope);
-      })
-      .catch(function(error) {
-        console.error('Service Worker registration failed:', error);
-      });
-  }
+    if ('serviceWorker' in navigator) {
+      // We register the worker at the ROOT, and explicitly set the scope to ROOT
+      // so it can control everything.
+      navigator.serviceWorker.register('/offline-service-worker.js', { scope: '/' })
+        .then(function (registration) {
+          console.log('SW Registered. Scope is:', registration.scope);
+        })
+        .catch(function (error) {
+          console.error('Service Worker registration failed:', error);
+        });
+    }
   </script>
 </head>
+
 <body>
-    <div class="container">
-      <h1><img src="/mstile-150x150.png" alt="Lithic Icon"> Lithic - Launcher</h1>
-        
-      <div id="support-message"></div>
+  <div class="container">
+    <h1><img src="/mstile-150x150.png" alt="Lithic Icon"> Lithic - Launcher</h1>
 
-      <div class="section">
-        <h3>Start New</h3>
-        <button type="button" onclick="openFromUrl('lithic.html')">Use "Starter Lith"</button>
-      </div>
+    <div id="support-message"></div>
 
-      <div class="section">
-        <h3>Existing File</h3>
-        <button type="button" onclick="openFile()">Mount a Lith from Disk...</button>
-      </div>
-
-      <div id="recent-files"></div>
-
+    <div class="section">
+      <h3>Start New</h3>
+      <button type="button" onclick="openFromUrl('lithic.html')">Use "Starter Lith"</button>
     </div>
 
-    <button id="install-pwa">Install App</button>
+    <div class="section">
+      <h3>Existing File</h3>
+      <button type="button" onclick="mountFolder()">Mount a Folder...</button>
+    </div>
 
-    <a id="github-link" href="https://github.com/Xyvir/Lithic" target="_blank">View<br>Github</a>
+    <div id="recent-files"></div>
 
-    <script>
-      let deferredPrompt;
-      const installBtn = document.getElementById('install-pwa');
+  </div>
 
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        installBtn.style.display = 'block';
-      });
+  <button id="install-pwa">Install App</button>
 
-      installBtn.addEventListener('click', async () => {
-        installBtn.style.display = 'none';
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
-          console.log(`User response to the install prompt: ${outcome}`);
-          deferredPrompt = null;
-        }
-      });
+  <a id="github-link" href="https://github.com/Xyvir/Lithic" target="_blank">View<br>Github</a>
 
-      window.addEventListener('appinstalled', () => {
-        installBtn.style.display = 'none';
+  <script>
+    let deferredPrompt;
+    const installBtn = document.getElementById('install-pwa');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      installBtn.style.display = 'none';
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
         deferredPrompt = null;
-      });
-    </script>
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBtn.style.display = 'none';
+      deferredPrompt = null;
+    });
+  </script>
 </body>
+
 </html>
