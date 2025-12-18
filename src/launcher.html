@@ -366,142 +366,8 @@
       return exports;
     }({}));
 
-    /* --- Inline Service Worker Logic --- */
-    async function registerInlineServiceWorker() {
-      if (!('serviceWorker' in navigator)) return;
 
-      // We need to embed the idb-keyval library into the worker so it can read the handle
-      // We'll just grab the source we already have in the page.
-      const idbKeyvalSource = `
-        let idbKeyval = (function (exports) {
-            'use strict';
-            class Store {
-                constructor(dbName = 'keyval-store', storeName = 'keyval') {
-                    this.storeName = storeName;
-                    this._dbp = new Promise((resolve, reject) => {
-                        const openreq = indexedDB.open(dbName, 1);
-                        openreq.onerror = () => reject(openreq.error);
-                        openreq.onsuccess = () => resolve(openreq.result);
-                        openreq.onupgradeneeded = () => {
-                            openreq.result.createObjectStore(storeName);
-                        };
-                    });
-                }
-                _withIDBStore(type, callback) {
-                    return this._dbp.then(db => new Promise((resolve, reject) => {
-                        const transaction = db.transaction(this.storeName, type);
-                        transaction.oncomplete = () => resolve();
-                        transaction.onabort = transaction.onerror = () => reject(transaction.error);
-                        callback(transaction.objectStore(this.storeName));
-                    }));
-                }
-            }
-            let store;
-            function getDefaultStore() {
-                if (!store) store = new Store();
-                return store;
-            }
-            function get(key, store = getDefaultStore()) {
-                let req;
-                return store._withIDBStore('readonly', store => {
-                    req = store.get(key);
-                }).then(() => req.result);
-            }
-            exports.Store = Store;
-            exports.get = get;
-            return exports;
-        }({}));
-        `;
 
-      const swCode = `
-            ${idbKeyvalSource}
-
-            self.addEventListener('install', (event) => {
-                self.skipWaiting();
-            });
-
-            self.addEventListener('activate', (event) => {
-                event.waitUntil(self.clients.claim());
-            });
-
-            self.addEventListener('fetch', (event) => {
-                // We only care about GET requests
-                if (event.request.method !== 'GET') return;
-
-                const url = new URL(event.request.url);
-                
-                // Ignore non-http(s) (e.g. chrome-extension://)
-                if (!url.protocol.startsWith('http')) return;
-
-                // Try to serve from local directory handle
-                event.respondWith(
-                    (async () => {
-                        // 1. Try to get the active directory handle
-                        const dirHandle = await idbKeyval.get('activeDirHandle');
-                        if (!dirHandle) {
-                             return fetch(event.request);
-                        }
-
-                        // 2. Resolve path relative to scope
-                        // The scope is usually the folder launcher.html is in. 
-                        // e.g. path /src/images/foo.png -> images/foo.png relative to the mounted folder root?
-                        // Or is the mounted folder REPLACING the root? 
-                        // Let's assume the user expects the mounted folder to be the "root" for these relative links.
-                        // Ideally we strip the leading path elements.
-                        
-                        let path = url.pathname;
-                        if (path.startsWith('/')) path = path.slice(1);
-                        
-                        // Heuristic: If we are running locally, the path might include the full path to launcher.html
-                        // But browser relative resolution usually handles this.
-                        // Let's try to find the file in the handle.
-                        
-                        // Recursive file search helper (bfs) as handles don't support direct path access easily without iteration
-                        // BUT standard File System Access API 'getFileHandle' usually takes the name.
-                        // Nested paths need recursive descent.
-
-                        try {
-                            const parts = path.split('/').filter(p => p.length > 0 && p !== '.');
-                            // Navigate down the handle
-                            let currentHandle = dirHandle;
-                            
-                            // If the first part matches the "launcher folder" or something we might ignore it?
-                            // For now, let's just try to walk the path.
-                            
-                            for (let i = 0; i < parts.length; i++) {
-                                const part = parts[i];
-                                if (i === parts.length - 1) {
-                                    // File
-                                    const fileHandle = await currentHandle.getFileHandle(part);
-                                    const file = await fileHandle.getFile();
-                                    return new Response(file);
-                                } else {
-                                    // Directory
-                                    currentHandle = await currentHandle.getDirectoryHandle(part);
-                                }
-                            }
-                        } catch (err) {
-                            // File not found in our handle, fall through to network
-                            // console.log("Not found in local handle:", path, err);
-                        }
-
-                        return fetch(event.request);
-                    })()
-                );
-            });
-        `;
-
-      const blob = new Blob([swCode], { type: 'application/javascript' });
-      const blobUrl = URL.createObjectURL(blob);
-
-      try {
-        const registration = await navigator.serviceWorker.register(blobUrl, { scope: './' });
-        console.log('Inline SW registered', registration);
-      } catch (err) {
-        console.error('Inline SW registration failed', err);
-      }
-    }
-    registerInlineServiceWorker();
 
     /* Saver Logic */
     function createTwCustomSaver(fileHandle) {
@@ -795,7 +661,17 @@
   </script>
 
   <script>
-    // Removed external SW registration in favor of inline SW
+    if ('serviceWorker' in navigator) {
+      // We register the worker at the ROOT, and explicitly set the scope to ROOT
+      // so it can control everything.
+      navigator.serviceWorker.register('/offline-service-worker.js', { scope: '/' })
+        .then(function (registration) {
+          console.log('SW Registered. Scope is:', registration.scope);
+        })
+        .catch(function (error) {
+          console.error('Service Worker registration failed:', error);
+        });
+    }
   </script>
 </head>
 

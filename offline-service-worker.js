@@ -1,21 +1,106 @@
-self.addEventListener('fetch', function(event) {
+/* 
+   idb-keyval minified standard implementation 
+   (Required to access the directory handle from IndexedDB)
+*/
+let idbKeyval = (function (exports) {
+  'use strict';
+  class Store {
+    constructor(dbName = 'keyval-store', storeName = 'keyval') {
+      this.storeName = storeName;
+      this._dbp = new Promise((resolve, reject) => {
+        const openreq = indexedDB.open(dbName, 1);
+        openreq.onerror = () => reject(openreq.error);
+        openreq.onsuccess = () => resolve(openreq.result);
+        openreq.onupgradeneeded = () => {
+          openreq.result.createObjectStore(storeName);
+        };
+      });
+    }
+    _withIDBStore(type, callback) {
+      return this._dbp.then(db => new Promise((resolve, reject) => {
+        const transaction = db.transaction(this.storeName, type);
+        transaction.oncomplete = () => resolve();
+        transaction.onabort = transaction.onerror = () => reject(transaction.error);
+        callback(transaction.objectStore(this.storeName));
+      }));
+    }
+  }
+  let store;
+  function getDefaultStore() {
+    if (!store) store = new Store();
+    return store;
+  }
+  function get(key, store = getDefaultStore()) {
+    let req;
+    return store._withIDBStore('readonly', store => {
+      req = store.get(key);
+    }).then(() => req.result);
+  }
+  exports.Store = Store;
+  exports.get = get;
+  return exports;
+}({}));
+
+/* Service Worker Logic */
+self.addEventListener('install', (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener('fetch', function (event) {
+  // Only handle GET requests
+  if (event.request.method !== 'GET') return;
+
+  const url = new URL(event.request.url);
+
+  // Filter out non-local/http requests
+  if (!url.protocol.startsWith('http')) return;
+
   event.respondWith(
-    caches.match(event.request).then(function(response) {
-      if (response) {
-        return response; // Hit found in cache
+    (async () => {
+      // 1. Try to serve from local directory handle (if active)
+      try {
+        const dirHandle = await idbKeyval.get('activeDirHandle');
+        if (dirHandle) {
+          // Remove leading slash if present
+          let path = url.pathname;
+          if (path.startsWith('/')) path = path.slice(1);
+
+          // Try to resolve file in the handle
+          const parts = path.split('/').filter(p => p.length > 0 && p !== '.');
+          let currentHandle = dirHandle;
+
+          for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+            if (i === parts.length - 1) {
+              // File found!
+              const fileHandle = await currentHandle.getFileHandle(part);
+              const file = await fileHandle.getFile();
+              return new Response(file);
+            } else {
+              // Descend directory
+              currentHandle = await currentHandle.getDirectoryHandle(part);
+            }
+          }
+        }
+      } catch (err) {
+        // Not found locally or permission error, proceed to network/cache
+        // console.log('Local resolution failed:', err);
       }
 
-      // If not in cache, try to fetch, but catch errors!
-      return fetch(event.request).catch(function(error) {
-        // If we are here, we are offline AND the file wasn't in cache.
+      // 2. Cache/Network Fallback (Original Logic)
+      const cachedResponse = await caches.match(event.request);
+      if (cachedResponse) return cachedResponse;
+
+      try {
+        return await fetch(event.request);
+      } catch (error) {
         console.log('Offline fetch failed for:', event.request.url);
-        
-        // Return a plain 408 (Timeout) or 404 so the browser stops waiting
-        return new Response('Offline', { 
-           status: 408, 
-           statusText: 'Offline' 
-        });
-      });
-    })
+        return new Response('Offline', { status: 408, statusText: 'Offline' });
+      }
+    })()
   );
 });
