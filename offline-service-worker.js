@@ -71,44 +71,55 @@ self.addEventListener('fetch', function (event) {
           let path = url.pathname;
           if (path.startsWith('/')) path = path.slice(1);
 
-          // Try to resolve file in the handle
-          const parts = path.split('/').filter(p => p.length > 0 && p !== '.');
-          console.log('[SW] Path parts:', parts);
+          // Try to resolve file in the handle with fallback support
+          // Problem: URL might be /src/states.png but mounted handle IS 'src', so file is at root.
+          // Solution: Try full path ['src', 'states.png']. If fail, try ['states.png'].
 
-          let currentHandle = dirHandle;
+          const fullParts = path.split('/').filter(p => p.length > 0 && p !== '.');
+          console.log('[SW] Initial path parts:', fullParts);
 
-          // HEURISTIC: If strict lookup fails, try stripping the first segment (e.g. 'src/') 
-          // in case the mount point is deeper than the URL implies.
-          // For now, let's just log traversal.
-
-          for (let i = 0; i < parts.length; i++) {
-            const part = parts[i];
-            try {
+          async function tryResolve(handle, parts) {
+            let current = handle;
+            for (let i = 0; i < parts.length; i++) {
+              const part = parts[i];
               if (i === parts.length - 1) {
-                // File check
-                console.log('[SW] Looking for file:', part);
-                const fileHandle = await currentHandle.getFileHandle(part);
-                const file = await fileHandle.getFile();
-                console.log('[SW] Found file!', part, file.size);
-                return new Response(file, {
-                  headers: {
-                    'Content-Type': file.type || 'application/octet-stream'
-                  }
-                });
+                // Expect file
+                const fileHandle = await current.getFileHandle(part);
+                return await fileHandle.getFile();
               } else {
-                // Directory check
-                console.log('[SW] Descending into dir:', part);
-                currentHandle = await currentHandle.getDirectoryHandle(part);
+                // Expect directory
+                current = await current.getDirectoryHandle(part);
               }
-            } catch (lookupErr) {
-              console.log('[SW] Traversal failed at part:', part, lookupErr.name);
-              // If this is the first part, maybe we are "inside" the folder already?
-              // e.g. URL is /src/foo.png but handle IS 'src'.
-              // Try to look for the *rest* of the path from the root?
-              // This is complex to guess correctly without more info.
-              throw lookupErr;
+            }
+            throw new Error('End of path without file');
+          }
+
+          let file = null;
+          // Loop: try full path, then shift(), then shift()...
+          // Limit to preventing excessive recursion if path is huge, but usually it's short.
+
+          let partsToTry = [...fullParts];
+          while (partsToTry.length > 0) {
+            try {
+              console.log('[SW] Trying resolve with:', partsToTry);
+              file = await tryResolve(dirHandle, partsToTry);
+              console.log('[SW] Success resolving:', partsToTry);
+              break; // Found it!
+            } catch (e) {
+              // console.log('[SW] Failed resolve:', partsToTry, e.name);
+              partsToTry.shift(); // Remove first segment and retry
             }
           }
+
+          if (file) {
+            return new Response(file, {
+              headers: {
+                'Content-Type': file.type || 'application/octet-stream'
+              }
+            });
+          }
+          console.log('[SW] Could not resolve file in local handle after all attempts.');
+
         }
       } catch (err) {
         // Not found locally or permission error, proceed to network/cache
