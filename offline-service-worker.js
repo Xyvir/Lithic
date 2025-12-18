@@ -64,6 +64,8 @@ self.addEventListener('fetch', function (event) {
       // 1. Try to serve from local directory handle (if active)
       try {
         const dirHandle = await idbKeyval.get('activeDirHandle');
+        console.log('[SW] Checking for activeDirHandle:', !!dirHandle, 'URL:', url.pathname);
+
         if (dirHandle) {
           // Remove leading slash if present
           let path = url.pathname;
@@ -71,24 +73,46 @@ self.addEventListener('fetch', function (event) {
 
           // Try to resolve file in the handle
           const parts = path.split('/').filter(p => p.length > 0 && p !== '.');
+          console.log('[SW] Path parts:', parts);
+
           let currentHandle = dirHandle;
+
+          // HEURISTIC: If strict lookup fails, try stripping the first segment (e.g. 'src/') 
+          // in case the mount point is deeper than the URL implies.
+          // For now, let's just log traversal.
 
           for (let i = 0; i < parts.length; i++) {
             const part = parts[i];
-            if (i === parts.length - 1) {
-              // File found!
-              const fileHandle = await currentHandle.getFileHandle(part);
-              const file = await fileHandle.getFile();
-              return new Response(file);
-            } else {
-              // Descend directory
-              currentHandle = await currentHandle.getDirectoryHandle(part);
+            try {
+              if (i === parts.length - 1) {
+                // File check
+                console.log('[SW] Looking for file:', part);
+                const fileHandle = await currentHandle.getFileHandle(part);
+                const file = await fileHandle.getFile();
+                console.log('[SW] Found file!', part, file.size);
+                return new Response(file, {
+                  headers: {
+                    'Content-Type': file.type || 'application/octet-stream'
+                  }
+                });
+              } else {
+                // Directory check
+                console.log('[SW] Descending into dir:', part);
+                currentHandle = await currentHandle.getDirectoryHandle(part);
+              }
+            } catch (lookupErr) {
+              console.log('[SW] Traversal failed at part:', part, lookupErr.name);
+              // If this is the first part, maybe we are "inside" the folder already?
+              // e.g. URL is /src/foo.png but handle IS 'src'.
+              // Try to look for the *rest* of the path from the root?
+              // This is complex to guess correctly without more info.
+              throw lookupErr;
             }
           }
         }
       } catch (err) {
         // Not found locally or permission error, proceed to network/cache
-        // console.log('Local resolution failed:', err);
+        console.log('[SW] Local resolution skipped/failed:', err);
       }
 
       // 2. Cache/Network Fallback (Original Logic)
