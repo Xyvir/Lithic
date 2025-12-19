@@ -79,7 +79,27 @@ self.addEventListener('fetch', function (event) {
           console.log(msg);
           self.clients.matchAll().then(c => c.forEach(cl => cl.postMessage({ type: 'LOG', msg })));
 
-          return fetch(targetUrl);
+          try {
+            const response = await fetch(targetUrl);
+            if (!response.ok) throw new Error(`Status ${response.status}`);
+            return response;
+          } catch (err) {
+            const errorMsg = `SW Error: ${err.message}\nPath: ${targetUrl}`;
+            console.error(errorMsg);
+
+            // Generate SVG with error text
+            const svg = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="400" height="100" style="background:#333; font-family:monospace; font-size:12px;">
+                 <rect width="100%" height="100%" fill="#222" stroke="#f55" stroke-width="2"/>
+                 <text x="10" y="20" fill="#f55" font-weight="bold">Service Worker Error</text>
+                 <text x="10" y="40" fill="#fff">${err.message}</text>
+                 <text x="10" y="60" fill="#ccc" font-size="10px">${targetUrl.substring(0, 50)}...</text>
+              </svg>`;
+
+            return new Response(svg, {
+              headers: { 'Content-Type': 'image/svg+xml' }
+            });
+          }
         }
 
         // --- PWA Mode ---
