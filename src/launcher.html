@@ -664,7 +664,7 @@
     if ('serviceWorker' in navigator) {
       // We register the worker at the ROOT, and explicitly set the scope to ROOT
       // so it can control everything.
-      navigator.serviceWorker.register('/offline-service-worker.js', { scope: '/' })
+      navigator.serviceWorker.register('offline-service-worker.js', { scope: './' })
         .then(function (registration) {
           console.log('SW Registered. Scope is:', registration.scope);
         })
