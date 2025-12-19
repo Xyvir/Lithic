@@ -56,8 +56,10 @@ self.addEventListener('fetch', function (event) {
 
   const url = new URL(event.request.url);
 
-  // Filter out non-local/http requests
-  if (!url.protocol.startsWith('http')) return;
+  // Filter out non-local requests (allow http, https, tauri, asset)
+  if (!url.protocol.startsWith('http') && !url.protocol.startsWith('tauri') && !url.protocol.startsWith('asset')) return;
+
+  console.log('[SW] Fetch event:', url.href, 'Protocol:', url.protocol);
 
   event.respondWith(
     (async () => {
