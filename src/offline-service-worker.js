@@ -66,14 +66,20 @@ self.addEventListener('fetch', function (event) {
         const rootPath = await idbKeyval.get('activeRootPath');
         if (rootPath) {
           // --- Native Tauri Mode ---
-          // Remove leading slash if present
-          let path = url.pathname;
-          if (path.startsWith('/')) path = path.slice(1);
 
-          // Construct asset URL. 
-          // On Windows, asset://localhost/<drive>:/path
-          // We need to ensure correct encoding.
-          const targetUrl = `asset://localhost/${encodeURIComponent(rootPath)}/${path}`;
+          // Construct asset URL with proper Windows normalization
+          // 1. Replace backslashes with forward slashes
+          const normalizedRoot = rootPath.replace(/\\/g, '/');
+
+          // 2. Remove leading slash from path if present
+          let relativePath = url.pathname;
+          if (relativePath.startsWith('/')) relativePath = relativePath.slice(1);
+
+          // 3. Combine: asset://localhost/<Drive>:/<Path>/<File>
+          // Note: encodeURIComponent would encoding ':' and '/' which breaks the protocol structure.
+          // We assume standard URI encoding for the parts if needed, but for local paths, raw string often works best in Tauri asset scope.
+          // Better safe: encodeURI handles spaces but leaves separators alone.
+          const targetUrl = `asset://localhost/${encodeURI(normalizedRoot)}/${encodeURI(relativePath)}`;
 
           const msg = `[SW] Native Proxy: ${targetUrl}`;
           console.log(msg);
