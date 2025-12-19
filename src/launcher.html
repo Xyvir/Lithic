@@ -445,14 +445,22 @@
       },
 
       mountFolder: async function () {
-        // Detect Tauri
+        // Detect Tauri - Enhanced Logging
+        console.log("Mount Folder clicked");
         if (window.__TAURI__) {
+          console.log("Tauri detected in window");
           try {
+            if (!window.__TAURI__.dialog) {
+              console.error("window.__TAURI__.dialog is missing! Check tauri.conf.json allowlist.");
+              return 0;
+            }
             const { open } = window.__TAURI__.dialog;
+            console.log("Opening native dialog...");
             const selected = await open({
               directory: true,
               multiple: false,
             });
+            console.log("Dialog result:", selected);
 
             if (selected) {
               console.log("Selected native path:", selected);
@@ -460,29 +468,27 @@
               // Clear handle to avoid ambiguity
               await idbKeyval.del('activeDirHandle');
 
-              // We can't easily scan directory in JS without fs API access
-              // So we just confirm success. User will open files via native dialog or known path.
-              // If we want to scan, we'd need fs.readDir. accessible via tauri.fs
-
-              // For now, let's try to list files to populate recent if possible, or just return 0
               try {
+                if (!window.__TAURI__.fs) {
+                  console.warn("window.__TAURI__.fs is missing. Skipping file scan.");
+                  return 1;
+                }
                 const { readDir } = window.__TAURI__.fs;
                 const entries = await readDir(selected);
                 let count = 0;
                 for (const entry of entries) {
                   if (entry.name && (entry.name.endsWith('.html') || entry.name.endsWith('.htm'))) {
-                    // We need to construct a "handle-like" object or just a path for recent list?
-                    // Recent list expects a handle. This is tricky. 
-                    // For now, simple "Mount" success is enough to enable SW.
-                    // We won't add to recent files for this sprint to keep it simple "bolt on".
                     count++;
                   }
                 }
+                console.log(`Found ${count} HTML files in ${selected}`);
                 return count;
               } catch (e) {
                 console.warn("Could not list directory files:", e);
                 return 1;
               }
+            } else {
+              console.log("User cancelled dialog");
             }
           } catch (e) {
             console.error("Tauri dialog failed:", e);
