@@ -63,6 +63,26 @@ self.addEventListener('fetch', function (event) {
     (async () => {
       // 1. Try to serve from local directory handle (if active)
       try {
+        const rootPath = await idbKeyval.get('activeRootPath');
+        if (rootPath) {
+          // --- Native Tauri Mode ---
+          // Remove leading slash if present
+          let path = url.pathname;
+          if (path.startsWith('/')) path = path.slice(1);
+
+          // Construct asset URL. 
+          // On Windows, asset://localhost/<drive>:/path
+          // We need to ensure correct encoding.
+          const targetUrl = `asset://localhost/${encodeURIComponent(rootPath)}/${path}`;
+
+          const msg = `[SW] Native Proxy: ${targetUrl}`;
+          console.log(msg);
+          self.clients.matchAll().then(c => c.forEach(cl => cl.postMessage({ type: 'LOG', msg })));
+
+          return fetch(targetUrl);
+        }
+
+        // --- PWA Mode ---
         const dirHandle = await idbKeyval.get('activeDirHandle');
         console.log('[SW] Checking for activeDirHandle:', !!dirHandle, 'URL:', url.pathname);
 
