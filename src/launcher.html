@@ -724,6 +724,55 @@
       deferredPrompt = null;
     });
   </script>
+  /* Debug Console Script */
+  const debugConsole = document.createElement('div');
+  debugConsole.id = 'debug-console';
+  debugConsole.style.cssText = `
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: rgba(0,0,0,0.85);
+  color: #0f0;
+  font-family: monospace;
+  font-size: 12px;
+  overflow-y: auto;
+  z-index: 9999;
+  pointer-events: none; /* Let clicks pass through */
+  padding: 10px;
+  box-sizing: border-box;
+  border-top: 1px solid #333;
+  `;
+  document.body.appendChild(debugConsole);
+
+  function logToScreen(msg, isError = false) {
+  const line = document.createElement('div');
+  line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  if (isError) line.style.color = '#f55';
+  debugConsole.appendChild(line);
+  debugConsole.scrollTop = debugConsole.scrollHeight;
+  }
+
+  // Override console.log/error
+  const originalLog = console.log;
+  const originalError = console.error;
+  console.log = function(...args) {
+  originalLog.apply(console, args);
+  logToScreen(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '));
+  };
+  console.error = function(...args) {
+  originalError.apply(console, args);
+  logToScreen(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), true);
+  };
+
+  // Listen for SW messages
+  navigator.serviceWorker.addEventListener('message', event => {
+  if (event.data && event.data.type === 'LOG') {
+  logToScreen(`[SW] ${event.data.msg}`);
+  }
+  });
+  </script>
 </body>
 
 </html>

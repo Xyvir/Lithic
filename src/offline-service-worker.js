@@ -59,7 +59,13 @@ self.addEventListener('fetch', function (event) {
   // Filter out non-local requests (allow http, https, tauri, asset)
   if (!url.protocol.startsWith('http') && !url.protocol.startsWith('tauri') && !url.protocol.startsWith('asset')) return;
 
-  console.log('[SW] Fetch event:', url.href, 'Protocol:', url.protocol);
+  const msg = `Fetch: ${url.href}`;
+  console.log('[SW]', msg);
+
+  // Broadcast to clients
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => client.postMessage({ type: 'LOG', msg: msg }));
+  });
 
   event.respondWith(
     (async () => {
