@@ -56,28 +56,30 @@ jobs:
             Write-Error "Build failed: No .exe found in release folder."
           }
 
-      - name: Switch Config to Online Mode
-        run: |
-          $configPath = "src-tauri/tauri.conf.json"
-          $json = Get-Content $configPath -Raw | ConvertFrom-Json
-          
-          # Change entry point to website
-          if ($json.tauri -and $json.tauri.windows) {
-             $json.tauri.windows[0].url = "https://lithic.uk"
-          }
-          
-          $json | ConvertTo-Json -Depth 10 | Set-Content $configPath
+      # --- ONLINE BUILD DISABLED ---
+      # - name: Switch Config to Online Mode
+      #   run: |
+      #     $configPath = "src-tauri/tauri.conf.json"
+      #     $json = Get-Content $configPath -Raw | ConvertFrom-Json
+      #
+      #     # Change entry point to website
+      #     if ($json.tauri -and $json.tauri.windows) {
+      #        $json.tauri.windows[0].url = "https://lithic.uk"
+      #     }
+      #
+      #     $json | ConvertTo-Json -Depth 10 | Set-Content $configPath
 
-      - name: Build Online Executable
-        run: npm run tauri build
+      # - name: Build Online Executable
+      #   run: npm run tauri build
 
-      - name: Rename Online Artifact
-        run: |
-          $exe = Get-ChildItem -Path "src-tauri/target/release/*.exe" | Select-Object -First 1
-          if ($exe) {
-            Move-Item $exe.FullName -Destination "Lithic-Online.exe"
-             Write-Host "Created Lithic-Online.exe"
-          }
+      # - name: Rename Online Artifact
+      #   run: |
+      #     $exe = Get-ChildItem -Path "src-tauri/target/release/*.exe" | Select-Object -First 1
+      #     if ($exe) {
+      #       Move-Item $exe.FullName -Destination "Lithic-Online.exe"
+      #        Write-Host "Created Lithic-Online.exe"
+      #     }
+      # -----------------------------
 
       - name: Generate Date-Based Tag
         id: tag
@@ -92,4 +94,4 @@ jobs:
           prerelease: false
           files: |
             Lithic-Offline.exe
-            Lithic-Online.exe
+            # Lithic-Online.exe
