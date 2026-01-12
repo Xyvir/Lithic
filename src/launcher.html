@@ -4,6 +4,8 @@
 <head>
   <title>Lithic - Launcher</title>
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <link rel="manifest" href="/manifest.json">
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 
@@ -21,13 +23,11 @@
 
   <script>
     if (!('showOpenFilePicker' in window) || !('showSaveFilePicker' in window)) {
-      // API not supported. Redirecting to the standalone file.
       window.location.replace('/src/lithic.html');
     }
   </script>
 
   <style>
-    /* CSS Variables & Styles */
     :root {
       --bg-color: #1a1a1a;
       --text-color: #e0e0e0;
@@ -39,13 +39,21 @@
       --accent-text: #1a1a1a;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: 'Vollkorn', serif;
       background-color: var(--bg-color);
       color: var(--text-color);
       margin: 0;
-      padding: 40px;
-      line-height: 1.6;
       display: flex;
       justify-content: center;
     }
@@ -53,24 +61,49 @@
     .container {
       max-width: 600px;
       width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      position: relative;
     }
 
     h1 {
       font-weight: 600;
-      font-size: 2.5rem;
-      margin-top: 0;
-      margin-bottom: 2rem;
+      font-size: 2rem;
+      margin-top: 10px;
+      margin-bottom: 1.5rem;
       border-bottom: 1px solid var(--border-color);
       padding-bottom: 1rem;
       display: flex;
       align-items: center;
+      flex-shrink: 0;
     }
 
     h1 img {
-      height: 1em;
+      height: 1.6em; /* Increased size to be logo-like */
       width: auto;
       margin-right: 15px;
-      border-radius: 4px;
+      border-radius: 6px;
+    }
+
+    /* FALLBACK ICON STYLE */
+    .icon-fallback {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 1.6em; /* Matches img height */
+      width: 1.6em;  /* Square box */
+      background-color: var(--button-bg);
+      border: 2px solid var(--border-color);
+      color: var(--text-color);
+      border-radius: 6px;
+      margin-right: 15px;
+      font-weight: 700;
+      font-size: 1.2em; /* Large L filling the box */
+      line-height: 1;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      flex-shrink: 0;
     }
 
     h3 {
@@ -85,9 +118,48 @@
       background-color: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 1.5rem;
+      padding: 15px;
+      margin-bottom: 1rem;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      flex-shrink: 0;
+    }
+
+    #recent-files {
+      flex-grow: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 60px;
+    }
+
+    #recent-files .section {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0;
+      flex-shrink: 1;
+    }
+
+    #recent-files ul {
+      overflow-y: auto;
+      flex-grow: 1;
+      padding-right: 5px;
+      margin-bottom: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--button-hover) transparent;
+    }
+
+    #recent-files ul::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #recent-files ul::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #recent-files ul::-webkit-scrollbar-thumb {
+      background-color: var(--button-hover);
+      border-radius: 20px;
     }
 
     button {
@@ -97,12 +169,13 @@
       font-size: 1rem;
       border: 1px solid var(--border-color);
       border-radius: 6px;
-      padding: 12px 20px;
+      padding: 12px 10px;
       cursor: pointer;
       width: 100%;
       text-align: center;
       transition: background-color 0.2s, transform 0.1s;
       margin-top: 5px;
+      touch-action: manipulation;
     }
 
     button:hover {
@@ -127,17 +200,18 @@
       align-items: center;
     }
 
-    /* Override general button styles for the file button in the pair */
     li>button:first-child {
       flex-grow: 1;
       text-align: left;
-      /* Better for filenames */
       padding-left: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .remove-btn {
-      width: 46px !important;
-      /* Override 100% width from generic selector */
+      width: 44px !important;
+      height: 44px;
       padding: 0 !important;
       font-size: 1.5rem;
       line-height: 1;
@@ -147,8 +221,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 44px;
-      /* Match approximate height of text buttons */
       margin-top: 5px;
     }
 
@@ -169,6 +241,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 0.5rem;
+      flex-shrink: 0;
     }
 
     .header-row h3 {
@@ -185,12 +258,11 @@
       background-color: var(--button-bg);
       border: 1px solid var(--border-color);
       color: var(--text-color);
-      padding: 5px 25px 5px 10px;
-      /* Space for clear button */
+      padding: 8px 30px 8px 10px;
       border-radius: 4px;
       font-family: inherit;
-      font-size: 0.9rem;
-      width: 150px;
+      font-size: 1rem;
+      width: 130px;
     }
 
     .search-input:focus {
@@ -206,23 +278,19 @@
       color: #888;
       cursor: pointer;
       font-size: 1.2rem;
-      padding: 0;
+      padding: 5px;
       line-height: 1;
       display: none;
-      /* Hidden by default */
-    }
-
-    .search-clear:hover {
-      color: #fff;
     }
 
     .clear-btn {
-      margin-top: 15px;
+      margin-top: auto;
       font-size: 0.9rem;
       text-align: center;
       background: transparent;
       border: 1px dashed var(--border-color);
       opacity: 0.7;
+      flex-shrink: 0;
     }
 
     .clear-btn:hover {
@@ -230,16 +298,15 @@
       opacity: 1;
     }
 
-    /* --- GITHUB LINK STYLES --- */
     #github-link {
       position: fixed;
-      bottom: 25px;
-      left: 25px;
+      bottom: 20px;
+      left: 20px;
       background-color: var(--button-bg);
       color: var(--text-color);
       border: 1px solid var(--border-color);
       border-radius: 6px;
-      padding: 6px 10px;
+      padding: 8px 12px;
       font-size: 0.75rem;
       text-decoration: none;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -249,18 +316,11 @@
       line-height: 1.2;
     }
 
-    #github-link:hover {
-      background-color: var(--button-hover);
-      border-color: #666;
-      transform: translateY(-1px);
-    }
-
-    /* --- PWA INSTALL BUTTON STYLES --- */
     #install-pwa {
       display: none;
       position: fixed;
-      bottom: 25px;
-      right: 25px;
+      bottom: 20px;
+      right: 20px;
       width: auto;
       background-color: var(--accent-color);
       color: var(--accent-text);
@@ -269,11 +329,9 @@
       border: none;
       z-index: 1000;
       animation: fadein 1s;
-    }
-
-    #install-pwa:hover {
-      background-color: #abc9ff;
-      transform: translateY(-2px);
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
     }
 
     @keyframes fadein {
@@ -297,7 +355,6 @@
 
   <script type="module">
     /* ... (Your existing idb-keyval code remains exactly the same) ... */
-    /* From https://github.com/jakearchibald/idb-keyval */
     let idbKeyval = (function (exports) {
       'use strict';
       class Store {
@@ -365,8 +422,6 @@
       exports.keys = keys;
       return exports;
     }({}));
-
-
 
 
     /* Saver Logic */
@@ -446,12 +501,7 @@
 
       mountFolder: async function () {
         const dirHandle = await window.showDirectoryPicker();
-
-        // Save as active handle for the Service Worker to use
         await idbKeyval.set('activeDirHandle', dirHandle);
-
-        // Request read permission implies we can read children
-        // Loop through and find html files
         let count = 0;
         for await (const entry of dirHandle.values()) {
           if (entry.kind === 'file' && (entry.name.endsWith('.html') || entry.name.endsWith('.htm'))) {
@@ -470,19 +520,16 @@
         if (inList.some((val) => val)) return recentFiles;
 
         recentFiles.unshift(fileHandle);
-        if (recentFiles.length > 50) recentFiles.pop(); // Increased limit
+        if (recentFiles.length > 50) recentFiles.pop();
         await idbKeyval.set('recentFiles', recentFiles);
         return recentFiles;
       },
 
       removeRecent: async function (fileHandleToRemove) {
         let recentFiles = (await idbKeyval.get('recentFiles')) || [];
-
-        // We have to filter asynchronously because isSameEntry is async
         const retentionMask = await Promise.all(recentFiles.map(async (f) => {
           return !(await f.isSameEntry(fileHandleToRemove));
         }));
-
         const newRecentFiles = recentFiles.filter((_, index) => retentionMask[index]);
         await idbKeyval.set('recentFiles', newRecentFiles);
         return newRecentFiles;
@@ -527,9 +574,9 @@
     window.mountFolder = async function () {
       try {
         await twFileManager.mountFolder();
-        displayRecentFiles(); // Refresh list logic
+        displayRecentFiles();
       } catch (e) {
-        console.error("Folder mount cancelled or failed", e); // User probably cancelled
+        console.error("Folder mount cancelled or failed", e);
       }
     }
 
@@ -548,16 +595,13 @@
     function displayRecentFiles() {
       const elem = document.getElementById("recent-files");
       if (elem) {
-        // Clear existing content to prevent duplication
         elem.innerHTML = "";
-
         twFileManager.getRecent().
           then(recentFiles => {
             if (recentFiles && recentFiles.length > 0) {
               const sectionDiv = document.createElement('div');
               sectionDiv.className = 'section';
 
-              // Header Row for Title and Search
               const headerRow = document.createElement('div');
               headerRow.className = 'header-row';
 
@@ -565,7 +609,6 @@
               title.innerText = 'Load a Lith from Disk';
               headerRow.appendChild(title);
 
-              // Search Container
               const searchContainer = document.createElement('div');
               searchContainer.className = 'search-container';
 
@@ -579,12 +622,10 @@
               searchClear.innerHTML = '&times;';
               searchClear.title = 'Clear search';
 
-              // Filter Logic
               function filterList() {
                 const filter = searchInput.value.toLowerCase();
                 const items = list.getElementsByTagName('li');
                 let hasVisible = false;
-
                 for (let i = 0; i < items.length; i++) {
                   const button = items[i].getElementsByTagName('button')[0];
                   const txtValue = button.textContent || button.innerText;
@@ -595,8 +636,6 @@
                     items[i].style.display = "none";
                   }
                 }
-
-                // Toggle clear button
                 searchClear.style.display = filter.length > 0 ? 'block' : 'none';
               }
 
@@ -610,32 +649,25 @@
               searchContainer.appendChild(searchInput);
               searchContainer.appendChild(searchClear);
               headerRow.appendChild(searchContainer);
-
               sectionDiv.appendChild(headerRow);
 
               const list = document.createElement('ul');
               for (const recent of recentFiles) {
                 const li = document.createElement('li');
-
-                // Open Button
                 const button = Object.assign(document.createElement('button'), {
                   type: 'button',
                   onclick: openFile.bind(null, recent),
                   innerText: recent.name
                 });
-
-                // Remove Button
                 const removeBtn = Object.assign(document.createElement('button'), {
                   type: 'button',
                   className: 'remove-btn',
                   innerHTML: '&times;',
                   title: 'Remove from list',
                   onclick: (e) => {
-                    // Prevent triggering things if nested?? (It's not)
                     window.removeRecent(recent);
                   }
                 });
-
                 li.appendChild(button);
                 li.appendChild(removeBtn);
                 list.appendChild(li);
@@ -649,7 +681,6 @@
                 className: 'clear-btn'
               });
               sectionDiv.appendChild(clearButton);
-
               elem.appendChild(sectionDiv);
             }
           })
@@ -662,8 +693,6 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      // We register the worker at the ROOT, and explicitly set the scope to ROOT
-      // so it can control everything.
       navigator.serviceWorker.register('/offline-service-worker.js', { scope: '/' })
         .then(function (registration) {
           console.log('SW Registered. Scope is:', registration.scope);
@@ -677,7 +706,12 @@
 
 <body>
   <div class="container">
-    <h1><img src="/mstile-150x150.png" alt="Lithic Icon"> Lithic - Launcher</h1>
+    <h1>
+      <img src="/mstile-150x150.png" 
+           alt="Lithic Icon" 
+           onerror="this.outerHTML='<div class=\'icon-fallback\'>L</div>'"> 
+      Lithic - Launcher
+    </h1>
 
     <div id="support-message"></div>
 
