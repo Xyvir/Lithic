@@ -35,11 +35,17 @@ Lithic is a bespoke Personal Knowledge Management System (PKMS) built on the pow
 - Lithic is packaged as a plugin
 - Standardized Manual Build steps
 
+Version 1.5 release: 
+- includes overtype editor with syntax highlighting.
+- Better mobile formatting.
+
 2. Version 2 plans:
-- Upgrade default editor to one with highlighting
-- Either uniedit or overtype
-- switch to AutoComplete plugin instead of comptext and integrate into the above.
-- include other relevant 'wilk-tweaks'
+
+- Whiteboard improvements. (External PDF Markup?)
+- Simple UI Mode toggle. (Hide a lot of Tiddlywiki-specific UI, on by default.)
+- Expanded Slashcommands
+- Upgrade default editor CodeMiorror6? (once it supports streams plugin)
+
 
 3. Version 3 plans
 - automate build pipeline
