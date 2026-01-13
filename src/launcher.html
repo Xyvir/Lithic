@@ -336,8 +336,17 @@
       }
     }
 
+    /* Mobile: Hide Github link on small screens */
+    @media (max-width: 600px) {
+      #github-link {
+        display: none;
+      }
+    }
+
+    /* Standalone (PWA): Hide BOTH Install and Github buttons */
     @media all and (display-mode: standalone) {
-      #install-pwa {
+      #install-pwa, 
+      #github-link {
         display: none !important;
       }
     }
