@@ -467,12 +467,16 @@
       window.$tw = { customSaver: { save: save } };
     }
 
-    const twFileManager = {
+        const twFileManager = {
       openFile: async function (fileHandle) {
         if (fileHandle) {
           const options = { mode: 'read' };
-          if ((await fileHandle.queryPermission(options)) !== 'granted') {
-            await fileHandle.requestPermission(options);
+          // JANE'S FIX: Skip queryPermission. It wastes the "User Activation" token.
+          // requestPermission returns 'granted' immediately if already authorized.
+          const state = await fileHandle.requestPermission(options);
+          
+          if (state !== 'granted') {
+             throw new Error('Permission denied by user');
           }
         } else {
           const openOptions = {
@@ -483,6 +487,8 @@
           };
           [fileHandle] = await window.showOpenFilePicker(openOptions);
         }
+        
+        // Validation checks pass, proceed to load
         const file = await fileHandle.getFile();
         const contents = await file.text();
         setTwCustomSaver(fileHandle);
@@ -510,7 +516,8 @@
 
       addRecent: async function (fileHandle) {
         let recentFiles = (await idbKeyval.get('recentFiles')) || [];
-        if (!fileHandle.isSameEntry) return recentFiles;
+        // Verify Handle exists before checking entry
+        if (!fileHandle || !fileHandle.isSameEntry) return recentFiles;
 
         const inList = await Promise.all(recentFiles.map((f) => fileHandle.isSameEntry(f)));
         if (inList.some((val) => val)) return recentFiles;
@@ -539,6 +546,7 @@
         await idbKeyval.del('recentFiles');
       }
     }
+
 
     if (window.location.hash.search("norecent") >= 0) {
       const noop = async () => { return [] };
