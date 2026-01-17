@@ -1,31 +1,27 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Lithic - Launcher</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <link rel="manifest" href="/manifest.json">
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link rel="stylesheet" 
-      href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap" 
-      media="print" 
-      onload="this.media='all'">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap" media="print"
+    onload="this.media='all'">
 
   <noscript>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap">
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap">
   </noscript>
 
-  <script>
-    if (!('showOpenFilePicker' in window) || !('showSaveFilePicker' in window)) {
-      // API not supported. Redirecting to the standalone file.
-      window.location.replace('/src/lithic.html');
-    }
-  </script>
-
   <style>
-    /* CSS Variables & Styles */
     :root {
       --bg-color: #1a1a1a;
       --text-color: #e0e0e0;
@@ -37,13 +33,18 @@
       --accent-text: #1a1a1a;
     }
 
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: 'Vollkorn', serif;
       background-color: var(--bg-color);
       color: var(--text-color);
       margin: 0;
-      padding: 40px;
-      line-height: 1.6;
       display: flex;
       justify-content: center;
     }
@@ -51,41 +52,80 @@
     .container {
       max-width: 600px;
       width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      position: relative;
     }
 
     h1 {
       font-weight: 600;
-      font-size: 2.5rem;
-      margin-top: 0;
-      margin-bottom: 2rem;
+      font-size: 1.8rem;
+      margin-top: 5px;
+      margin-bottom: 1rem;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 1rem;
+      padding-bottom: 0.5rem;
       display: flex;
       align-items: center;
+      flex-shrink: 0;
     }
 
     h1 img {
-      height: 1em; 
+      height: 1.5em; 
       width: auto;
-      margin-right: 15px; 
-      border-radius: 4px; 
-    }
-
-    h3 {
-      font-weight: 600;
-      font-size: 1.2rem;
-      color: #bbbbbb;
-      margin-bottom: 0.5rem;
-      margin-top: 0;
+      margin-right: 15px;
+      border-radius: 6px;
     }
 
     .section {
       background-color: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      padding: 12px;
+      margin-bottom: 0.8rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      flex-shrink: 0;
+    }
+
+    /* --- RECENT FILES AREA --- */
+    #recent-files {
+      flex-grow: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      /* Default: Leave space at bottom for Desktop GitHub Link */
+      margin-bottom: 50px; 
+      transition: margin-bottom 0.2s;
+    }
+
+    #recent-files .section {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 0;
+      flex-shrink: 1;
+      padding-top: 10px;
+    }
+
+    #recent-files ul {
+      overflow-y: auto;
+      flex-grow: 1;
+      padding-right: 5px;
+      margin-bottom: 5px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--button-hover) transparent;
+      margin-top: 5px;
+      
+      /* Safety padding so last item isn't covered by floating Install button */
+      padding-bottom: 60px; 
+    }
+
+    #recent-files ul::-webkit-scrollbar { width: 6px; }
+    #recent-files ul::-webkit-scrollbar-track { background: transparent; }
+    #recent-files ul::-webkit-scrollbar-thumb {
+      background-color: var(--button-hover);
+      border-radius: 20px;
     }
 
     button {
@@ -95,12 +135,13 @@
       font-size: 1rem;
       border: 1px solid var(--border-color);
       border-radius: 6px;
-      padding: 12px 20px;
+      padding: 12px 10px;
       cursor: pointer;
       width: 100%;
-      text-align: center; 
+      text-align: center;
       transition: background-color 0.2s, transform 0.1s;
-      margin-top: 5px;
+      margin-top: 0;
+      touch-action: manipulation;
     }
 
     button:hover {
@@ -108,96 +149,72 @@
       border-color: #666;
     }
 
-    button:active {
-      transform: scale(0.99);
-    }
+    button:active { transform: scale(0.99); }
 
-    ul {
-      list-style-type: none;
-      padding-left: 0;
-      margin: 0;
-    }
-
-    li {
-      margin-bottom: 8px;
-    }
-
-    #support-message {
-      color: #ff8a80;
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
+    ul { list-style-type: none; padding-left: 0; margin: 0; }
+    li { margin-bottom: 6px; display: flex; gap: 8px; align-items: center; }
+    
+    li > button {
+      flex-grow: 1;
+      text-align: left;
+      padding-left: 15px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 0;
     }
 
     .clear-btn {
-      margin-top: 15px;
+      margin-top: auto;
       font-size: 0.9rem;
       text-align: center;
       background: transparent;
       border: 1px dashed var(--border-color);
       opacity: 0.7;
+      flex-shrink: 0;
     }
-    .clear-btn:hover {
-      background-color: rgba(255,255,255,0.05);
-      opacity: 1;
-    }
+    .clear-btn:hover { background-color: rgba(255, 255, 255, 0.05); opacity: 1; }
 
-    /* --- GITHUB LINK STYLES --- */
+    /* --- GITHUB LINK --- */
     #github-link {
-        position: fixed;
-        bottom: 25px;
-        left: 25px;
-        background-color: var(--button-bg);
-        color: var(--text-color);
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        padding: 6px 10px;
-        font-size: 0.75rem; 
-        text-decoration: none;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        transition: background-color 0.2s, transform 0.1s;
-        z-index: 1000;
-        text-align: center; 
-        line-height: 1.2; 
-    }
-    #github-link:hover {
-        background-color: var(--button-hover);
-        border-color: #666;
-        transform: translateY(-1px);
+      position: fixed; bottom: 15px; left: 15px;
+      background-color: var(--button-bg); color: var(--text-color);
+      border: 1px solid var(--border-color); border-radius: 6px;
+      padding: 8px 12px; font-size: 0.75rem; text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.2s, transform 0.1s;
+      z-index: 1000; text-align: center; line-height: 1.2;
     }
 
-    /* --- PWA INSTALL BUTTON STYLES --- */
+    /* --- INSTALL PWA BUTTON --- */
     #install-pwa {
-        display: none; 
-        position: fixed;
-        bottom: 25px;
-        right: 25px;
-        width: auto; 
-        background-color: var(--accent-color);
-        color: var(--accent-text);
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        border: none;
-        z-index: 1000;
-        animation: fadein 1s;
+      display: none; /* Hidden by default until prompted */
+      position: fixed; bottom: 15px; right: 15px; width: auto;
+      background-color: var(--accent-color); color: var(--accent-text);
+      font-weight: 600; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      border: none; z-index: 1000; animation: fadein 1s;
+      padding: 10px 15px; border-radius: 6px; cursor: pointer; margin-top: 0;
     }
-    #install-pwa:hover {
-        background-color: #abc9ff;
-        transform: translateY(-2px);
+    @keyframes fadein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* --- MOBILE & PWA OVERRIDES --- */
+
+    /* 1. Mobile Web: Hide Github, Expand List */
+    @media (max-width: 600px) {
+      #github-link { display: none !important; }
+      #recent-files { margin-bottom: 0; } /* Reclaim space */
     }
 
-    @keyframes fadein {
-        from { opacity: 0; transform: translateY(10px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-
+    /* 2. Standalone PWA (Desktop OR Mobile): Hide Everything */
     @media all and (display-mode: standalone) {
-        #install-pwa { display: none !important; }
+      #install-pwa { display: none !important; }
+      #github-link { display: none !important; }
+      #recent-files { margin-bottom: 0; } /* Reclaim space */
     }
   </style>
 
   <script type="module">
-    /* ... (Your existing idb-keyval code remains exactly the same) ... */
-    /* From https://github.com/jakearchibald/idb-keyval */
+    /* IDB-KEYVAL & FILE MANAGER LOGIC */
     let idbKeyval = (function (exports) {
       'use strict';
       class Store {
@@ -222,47 +239,21 @@
           }
       }
       let store;
-      function getDefaultStore() {
-          if (!store) store = new Store();
-          return store;
-      }
+      function getDefaultStore() { if (!store) store = new Store(); return store; }
       function get(key, store = getDefaultStore()) {
           let req;
-          return store._withIDBStore('readonly', store => {
-              req = store.get(key);
-          }).then(() => req.result);
+          return store._withIDBStore('readonly', store => { req = store.get(key); }).then(() => req.result);
       }
       function set(key, value, store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => {
-              store.put(value, key);
-          });
+          return store._withIDBStore('readwrite', store => { store.put(value, key); });
       }
       function del(key, store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => {
-              store.delete(key);
-          });
+          return store._withIDBStore('readwrite', store => { store.delete(key); });
       }
       function clear(store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => {
-              store.clear();
-          });
+          return store._withIDBStore('readwrite', store => { store.clear(); });
       }
-      function keys(store = getDefaultStore()) {
-          const keys = [];
-          return store._withIDBStore('readonly', store => {
-              (store.openKeyCursor || store.openCursor).call(store).onsuccess = function () {
-                  if (!this.result) return;
-                  keys.push(this.result.key);
-                  this.result.continue();
-              };
-          }).then(() => keys);
-      }
-      exports.Store = Store;
-      exports.get = get;
-      exports.set = set;
-      exports.del = del;
-      exports.clear = clear;
-      exports.keys = keys;
+      exports.Store = Store; exports.get = get; exports.set = set; exports.del = del; exports.clear = clear;
       return exports;
     }({}));
 
@@ -270,15 +261,9 @@
     function createTwCustomSaver(fileHandle) {
       return function(text, method, callback) {
         fileHandle.createWritable()
-          .then(writable => {
-            writable.write(text);
-            return writable;
-          }).then(writable => {
-            writable.close();
-            callback(null);
-          }).catch(error => {
-            callback(error);
-          });
+          .then(writable => { writable.write(text); return writable; })
+          .then(writable => { writable.close(); callback(null); })
+          .catch(error => { callback(error); });
         return true;
       }
     }
@@ -295,12 +280,8 @@
         } else {
           const saveOptions = {
             suggestedName: 'lith.html',
-            types: [{
-                description: 'Lithic HTML File',
-                accept: {'text/html': ['.html', '.htm']},
-            }],
+            types: [{ description: 'Lithic HTML File', accept: {'text/html': ['.html', '.htm']} }],
           };
-            
           window.showSaveFilePicker(saveOptions)
             .then(fileHandle => {
               writeTw = createTwCustomSaver(fileHandle);
@@ -322,10 +303,7 @@
           }
         } else {
           const openOptions = {
-             types: [{
-                description: 'HTML Files',
-                accept: {'text/html': ['.html', '.htm']},
-            }]
+             types: [{ description: 'HTML Files', accept: {'text/html': ['.html', '.htm']} }]
           };
           [fileHandle] = await window.showOpenFilePicker(openOptions);
         }
@@ -349,7 +327,7 @@
         if (inList.some((val) => val)) return recentFiles;
 
         recentFiles.unshift(fileHandle);
-        if (recentFiles.length > 5) recentFiles.pop();
+        if (recentFiles.length > 20) recentFiles.pop();
         idbKeyval.set('recentFiles', recentFiles);
         return recentFiles;
       },
@@ -363,12 +341,6 @@
       }
     }
 
-    if (window.location.hash.search("norecent") >= 0) {
-      const noop = async () => {return []};
-      twFileManager.addRecent = noop;
-      twFileManager.getRecent = noop;
-    }
-      
     function replacePageContents(contents) {
       if (contents) {
         document.open();
@@ -376,6 +348,7 @@
         document.close();
       }
     }
+
     window.openFile = async function (fileHandle) {
       const file = await twFileManager.openFile(fileHandle);
       replacePageContents(file.contents);
@@ -403,34 +376,30 @@
         twFileManager.getRecent().
           then(recentFiles => {
             if (recentFiles && recentFiles.length > 0) {
+              elem.innerHTML = "";
               const sectionDiv = document.createElement('div');
               sectionDiv.className = 'section';
 
-              const title = document.createElement('h3');
-              title.innerText = 'Open Recent Lith';
-              sectionDiv.appendChild(title);
-
               const list = document.createElement('ul');
               for (const recent of recentFiles) {
-                const li = document.createElement('li'),
-                      button = Object.assign(document.createElement('button'), {
-                        type: 'button',
-                        onclick: openFile.bind(null, recent),
-                        innerText: recent.name
-                      });
+                const li = document.createElement('li');
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.innerText = recent.name;
+                button.onclick = () => window.openFile(recent);
+                
                 li.appendChild(button);
                 list.appendChild(li);
               }
               sectionDiv.appendChild(list);
 
-              const clearButton = Object.assign(document.createElement('button'), {
-                type: 'button',
-                onclick: clearRecent,
-                innerText: 'Clear Recent List',
-                className: 'clear-btn'
-              });
+              const clearButton = document.createElement('button');
+              clearButton.type = 'button';
+              clearButton.onclick = clearRecent;
+              clearButton.innerText = 'Clear Recent List';
+              clearButton.className = 'clear-btn';
+              
               sectionDiv.appendChild(clearButton);
-                
               elem.appendChild(sectionDiv);
             }
           })
@@ -442,62 +411,60 @@
   </script>
   
   <script>
-  // Ensure this filename matches your actual file
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/offline-service-worker.js').catch(function(error) {
-      console.error('Service Worker registration failed:', error);
-    });
-  }
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/offline-service-worker.js').catch(function(error) {
+        console.error('Service Worker registration failed:', error);
+        });
+    }
   </script>
 </head>
+
 <body>
-    <div class="container">
-      <h1><img src="/mstile-150x150.png" alt="Lithic Icon"> Lithic - Launcher</h1>
-        
-      <div id="support-message"></div>
-
-      <div class="section">
-        <h3>Start New</h3>
-        <button type="button" onclick="openFromUrl('lithic.html')">Use "Starter Lith"</button>
-      </div>
-
-      <div class="section">
-        <h3>Existing File</h3>
-        <button type="button" onclick="openFile()">Mount a Lith from Disk...</button>
-      </div>
-
-      <div id="recent-files"></div>
-
+  <div class="container">
+    <h1>
+      <img src="/favicon.ico" alt="" style="background:#333; padding:2px;"> 
+      Lithic
+    </h1>
+      
+    <div class="section">
+      <button type="button" onclick="openFromUrl('lithic.html')">Use "Starter Lith"</button>
     </div>
 
-    <button id="install-pwa">Install App</button>
+    <div class="section">
+      <button type="button" onclick="openFile()">Mount a Lith from Disk...</button>
+    </div>
 
-    <a id="github-link" href="https://github.com/Xyvir/Lithic" target="_blank">View<br>Github</a>
+    <div id="recent-files"></div>
 
-    <script>
-      let deferredPrompt;
-      const installBtn = document.getElementById('install-pwa');
+    <a id="github-link" href="https://github.com/Xyvir/Lithic" target="_blank">View on GitHub</a>
+  </div>
 
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        installBtn.style.display = 'block';
-      });
+  <button id="install-pwa">Install App</button>
 
-      installBtn.addEventListener('click', async () => {
-        installBtn.style.display = 'none';
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
-          console.log(`User response to the install prompt: ${outcome}`);
-          deferredPrompt = null;
-        }
-      });
+  <script>
+    let deferredPrompt;
+    const installBtn = document.getElementById('install-pwa');
 
-      window.addEventListener('appinstalled', () => {
-        installBtn.style.display = 'none';
+    // Only show button if the browser prompts for it
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      installBtn.style.display = 'none';
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
         deferredPrompt = null;
-      });
-    </script>
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBtn.style.display = 'none';
+      deferredPrompt = null;
+    });
+  </script>
 </body>
 </html>
