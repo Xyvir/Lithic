@@ -21,348 +21,185 @@
       href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap">
   </noscript>
 
-    <script type="module">
-    /* IDB-KEYVAL (Standard Library) */
-    let idbKeyval = (function (exports) {
-      'use strict';
-      class Store {
-        constructor(dbName = 'keyval-store', storeName = 'keyval') {
-          this.storeName = storeName;
-          this._dbp = new Promise((resolve, reject) => {
-            const openreq = indexedDB.open(dbName, 1);
-            openreq.onerror = () => reject(openreq.error);
-            openreq.onsuccess = () => resolve(openreq.result);
-            openreq.onupgradeneeded = () => {
-              openreq.result.createObjectStore(storeName);
-            };
-          });
-        }
-        _withIDBStore(type, callback) {
-          return this._dbp.then(db => new Promise((resolve, reject) => {
-            const transaction = db.transaction(this.storeName, type);
-            transaction.oncomplete = () => resolve();
-            transaction.onabort = transaction.onerror = () => reject(transaction.error);
-            callback(transaction.objectStore(this.storeName));
-          }));
-        }
-      }
-      let store;
-      function getDefaultStore() {
-        if (!store) store = new Store();
-        return store;
-      }
-      function get(key, store = getDefaultStore()) {
-        let req;
-        return store._withIDBStore('readonly', store => {
-          req = store.get(key);
-        }).then(() => req.result);
-      }
-      function set(key, value, store = getDefaultStore()) {
-        return store._withIDBStore('readwrite', store => {
-          store.put(value, key);
-        });
-      }
-      function del(key, store = getDefaultStore()) {
-        return store._withIDBStore('readwrite', store => {
-          store.delete(key);
-        });
-      }
-      function clear(store = getDefaultStore()) {
-        return store._withIDBStore('readwrite', store => {
-          store.clear();
-        });
-      }
-      exports.Store = Store;
-      exports.get = get;
-      exports.set = set;
-      exports.del = del;
-      exports.clear = clear;
-      return exports;
-    }({}));
+      <script type="module">
+    import { get, set, del } from 'https://cdn.jsdelivr.net/npm/idb-keyval@6/+esm';
 
+    window.idb = { get, set, del };
 
-    /* SAVER HELPERS */
-    function createTwCustomSaver(fileHandle) {
-      return function (text, method, callback) {
-        fileHandle.createWritable()
-          .then(writable => {
-            writable.write(text);
-            return writable;
-          }).then(writable => {
-            writable.close();
-            callback(null);
-          }).catch(error => {
-            callback(error);
-          });
-        return true;
+    // --- LITHIC LOGIC ---
+
+    window.openFile = async function(fileHandle) {
+      if (!fileHandle) {
+        try {
+           [fileHandle] = await window.showOpenFilePicker({
+              types: [{ description: 'HTML Files', accept: { 'text/html': ['.html', '.htm'] } }]
+           });
+        } catch (e) { return; } // User cancelled picker
       }
-    }
 
-    function setTwCustomSaver(fileHandle) {
-      window.$tw = { customSaver: { save: createTwCustomSaver(fileHandle) } };
-    }
-
-    function setTwCustomSaveAsSaver() {
-      let writeTw;
-      let save = function (text, method, callback) {
-        if (writeTw) {
-          writeTw(text, method, callback);
-        } else {
-          const saveOptions = {
-            suggestedName: 'lith.html',
-            types: [{ description: 'Lithic HTML File', accept: { 'text/html': ['.html', '.htm'] } }],
-          };
-          window.showSaveFilePicker(saveOptions)
-            .then(fileHandle => {
-              writeTw = createTwCustomSaver(fileHandle);
-              writeTw(text, method, callback);
-              twFileManager.addRecent(fileHandle);
-            });
-        }
-        return true;
+      // 1. FORCE PERMISSION (The Fix)
+      // We do NOT check queryPermission(). We simply demand it.
+      // This forces Chrome to refresh the handle's validity for this specific click.
+      try {
+         const mode = 'readwrite'; 
+         // direct request, no "if" check.
+         const status = await fileHandle.requestPermission({ mode });
+         
+         if (status !== 'granted') {
+             alert("Permission was denied. We cannot open the file.");
+             return;
+         }
+      } catch (e) {
+         console.error("Permission request crashed:", e);
+         alert("Error requesting permission: " + e.message);
+         return;
       }
-      window.$tw = { customSaver: { save: save } };
-    }
 
-    /* PERMISSION HELPER (The "V2" Logic) */
-    async function verifyPermission(fileHandle, withWrite) {
-      const options = {};
-      if (withWrite) {
-        options.mode = 'readwrite';
+      // 2. VERIFY READABILITY
+      // We try to read a byte to ensure the handle is actually alive before reloading.
+      try {
+          await fileHandle.getFile();
+      } catch (e) {
+          alert("Permission granted, but file is unreadable. The file may have moved.");
+          return;
       }
-      // V2 STRATEGY: Request directly. 
-      // If we already have permission, this resolves instantly to 'granted' without a UI prompt.
-      // If we don't, it uses the click token to show the prompt immediately.
-      // This avoids the 'queryPermission' timeout bug in Chrome.
-      if ((await fileHandle.requestPermission(options)) === 'granted') {
-        return true;
+
+      // 3. SUCCESS - SET AND RELOAD
+      try {
+          await idb.set('activeFile', fileHandle);
+          await addToRecents(fileHandle);
+          
+          // Force a hard reload to trigger the Service Worker swap
+          window.location.reload(); 
+      } catch (e) {
+          alert("Database write failed: " + e.message);
       }
-      return false;
-    }
+    };
 
-    /* MANAGER LOGIC */
-    const twFileManager = {
-      openFile: async function (fileHandle) {
-        if (fileHandle) {
-          // Verify permission immediately upon click
-          const hasPerm = await verifyPermission(fileHandle, false);
-          if (!hasPerm) throw new Error("Permission denied by user");
-        } else {
-          const openOptions = {
-            types: [{ description: 'HTML Files', accept: { 'text/html': ['.html', '.htm'] } }]
-          };
-          [fileHandle] = await window.showOpenFilePicker(openOptions);
-        }
-
-        const file = await fileHandle.getFile();
-        const contents = await file.text();
-        setTwCustomSaver(fileHandle);
-        return { fileHandle, contents };
-      },
-
-      openFromUrl: async function (url) {
-        const contents = await fetch(url).then(res => res.text());
-        setTwCustomSaveAsSaver();
-        return { contents };
-      },
-
-      mountFolder: async function () {
+    window.mountFolder = async function() {
+      try {
         const dirHandle = await window.showDirectoryPicker();
-        await idbKeyval.set('activeDirHandle', dirHandle);
+        // Permission for the directory itself is usually granted here implicitly
+        await idb.set('activeDirHandle', dirHandle);
         
-        let recentFiles = (await idbKeyval.get('recentFiles')) || [];
         let count = 0;
+        let recentFiles = (await idb.get('recentFiles')) || [];
         
-        // V2 OPTIMIZATION: Do not use isSameEntry inside the loop.
-        // It spams the browser and causes the "Double Prompt" bug.
-        // We use a Map to deduplicate by name temporarily.
-        const fileMap = new Map();
+        // Use Map for deduplication
+        const fileMap = new Map(recentFiles.map(f => [f.name, f]));
         
-        // 1. Add existing files to map
-        for (const f of recentFiles) {
-          fileMap.set(f.name, f);
-        }
-
-        // 2. Add new files from folder (overwriting old handles with fresh ones)
         for await (const entry of dirHandle.values()) {
           if (entry.kind === 'file' && (entry.name.endsWith('.html') || entry.name.endsWith('.htm'))) {
+            // IMPORTANT: We do not check permission here. We just store the handle.
+            // Permission will be requested when the user CLICKS the file in the list.
             fileMap.set(entry.name, entry);
             count++;
           }
         }
-
-        // 3. Convert back to array
-        recentFiles = Array.from(fileMap.values());
         
-        // 4. Save once
-        await idbKeyval.set('recentFiles', recentFiles);
-        return count;
-      },
-
-      addRecent: async function (fileHandle) {
-        let recentFiles = (await idbKeyval.get('recentFiles')) || [];
+        await idb.set('recentFiles', Array.from(fileMap.values()));
+        displayRecentFiles();
+        alert(`Mounted ${count} files. Click one to open.`);
         
-        // Only do the heavy isSameEntry check when adding a SINGLE file (rare operation)
-        const inList = await Promise.all(recentFiles.map(async (f) => {
-             // Safe check
-             try { return await fileHandle.isSameEntry(f); } catch(e) { return false; }
-        }));
-        
-        if (inList.some((val) => val)) return recentFiles;
-
-        recentFiles.unshift(fileHandle);
-        if (recentFiles.length > 50) recentFiles.pop();
-        await idbKeyval.set('recentFiles', recentFiles);
-        return recentFiles;
-      },
-
-      removeRecent: async function (fileHandleToRemove) {
-        let recentFiles = (await idbKeyval.get('recentFiles')) || [];
-        // For removal, we just filter by name if checking fails to avoid errors
-        const newRecentFiles = [];
-        for (const f of recentFiles) {
-            let same = false;
-            try { same = await f.isSameEntry(fileHandleToRemove); } 
-            catch(e) { same = (f.name === fileHandleToRemove.name); }
-            
-            if (!same) newRecentFiles.push(f);
-        }
-        await idbKeyval.set('recentFiles', newRecentFiles);
-        return newRecentFiles;
-      },
-
-      getRecent: async function () {
-        return (await idbKeyval.get('recentFiles')) || [];
-      },
-
-      clearRecent: async function () {
-        await idbKeyval.del('recentFiles');
-      }
-    }
-
-    /* INITIALIZATION */
-    if (window.location.hash.search("norecent") >= 0) {
-      const noop = async () => { return [] };
-      twFileManager.addRecent = noop;
-      twFileManager.getRecent = noop;
-    }
-
-    function replacePageContents(contents) {
-      if (contents) {
-        document.open();
-        document.write(contents);
-        document.close();
-      }
-    }
-
-    window.openFile = async function (fileHandle) {
-      try {
-        const file = await twFileManager.openFile(fileHandle);
-        replacePageContents(file.contents);
-        if (file.fileHandle) {
-          twFileManager.addRecent(file.fileHandle);
-        }
-        return file;
       } catch (e) {
-        console.error("Failed to open file:", e);
-        // Optional: Add visual feedback here if needed
+        console.error(e);
+        // Don't alert on cancel
+        if (e.name !== 'AbortError') alert("Mount failed: " + e.message);
       }
+    };
+
+    // --- STANDARD UTILS (Copy/Paste these exactly) ---
+
+    async function addToRecents(fileHandle) {
+       let recents = (await idb.get('recentFiles')) || [];
+       recents = recents.filter(f => f.name !== fileHandle.name);
+       recents.unshift(fileHandle);
+       if (recents.length > 50) recents.pop();
+       await idb.set('recentFiles', recents);
+    }
+
+    window.removeRecent = async function(nameToRemove) {
+       let recents = (await idb.get('recentFiles')) || [];
+       recents = recents.filter(f => f.name !== nameToRemove);
+       await idb.set('recentFiles', recents);
+       displayRecentFiles();
+    }
+
+    window.clearRecent = async function() {
+       await idb.del('recentFiles');
+       displayRecentFiles();
+    }
+
+    window.displayRecentFiles = async function() {
+      const elem = document.getElementById("recent-files");
+      if (!elem) return;
+      elem.innerHTML = "";
+      
+      const recentFiles = (await idb.get('recentFiles')) || [];
+      if (recentFiles.length === 0) return;
+
+      const sectionDiv = document.createElement('div');
+      sectionDiv.className = 'section';
+
+      // Search
+      const searchContainer = document.createElement('div');
+      searchContainer.className = 'search-container';
+      const searchInput = document.createElement('input');
+      searchInput.className = 'search-input';
+      searchInput.placeholder = 'Search local files...';
+      const searchClear = document.createElement('button');
+      searchClear.className = 'search-clear';
+      searchClear.innerHTML = '&times;';
+      
+      searchContainer.appendChild(searchInput);
+      searchContainer.appendChild(searchClear);
+      sectionDiv.appendChild(searchContainer);
+
+      // List
+      const list = document.createElement('ul');
+      recentFiles.forEach(file => {
+          const li = document.createElement('li');
+          const btn = document.createElement('button');
+          btn.innerText = file.name;
+          // Use an arrow function to preserve 'file' scope
+          btn.onclick = () => window.openFile(file);
+          
+          const rmv = document.createElement('button');
+          rmv.className = 'remove-btn';
+          rmv.innerHTML = '&times;';
+          rmv.onclick = (e) => { e.stopPropagation(); window.removeRecent(file.name); };
+          
+          li.append(btn, rmv);
+          list.append(li);
+      });
+      sectionDiv.appendChild(list);
+      
+      const clr = document.createElement('button');
+      clr.className = 'clear-btn';
+      clr.innerText = 'Clear All';
+      clr.onclick = window.clearRecent;
+      sectionDiv.appendChild(clr);
+
+      searchInput.addEventListener('input', (e) => {
+         const val = e.target.value.toLowerCase();
+         Array.from(list.children).forEach(li => {
+            const txt = li.firstChild.innerText.toLowerCase();
+            li.style.display = txt.includes(val) ? '' : 'none';
+         });
+         searchClear.style.display = val ? 'block' : 'none';
+      });
+      searchClear.onclick = () => { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); };
+
+      elem.appendChild(sectionDiv);
+    };
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/offline-service-worker.js', { scope: '/' });
     }
     
-    window.openFromUrl = async function (url) {
-      const file = await twFileManager.openFromUrl(url);
-      replacePageContents(file.contents);
-      return file;
-    }
-
-    window.mountFolder = async function () {
-      try {
-        await twFileManager.mountFolder();
-        displayRecentFiles();
-      } catch (e) {
-        console.error("Folder mount cancelled or failed", e);
-      }
-    }
-
-    window.removeRecent = async function (fileHandle) {
-      await twFileManager.removeRecent(fileHandle);
-      displayRecentFiles();
-    }
-
-    function clearRecent() {
-      twFileManager.clearRecent().then(() => {
-        const elem = document.getElementById("recent-files");
-        if (elem) elem.innerHTML = "";
-      });
-    }
-
-    function displayRecentFiles() {
-       /* Your display code remains exactly the same, but for completeness: */
-       const elem = document.getElementById("recent-files");
-       if (elem) {
-        elem.innerHTML = "";
-        twFileManager.getRecent().then(recentFiles => {
-            if (recentFiles && recentFiles.length > 0) {
-              const sectionDiv = document.createElement('div');
-              sectionDiv.className = 'section';
-              const searchContainer = document.createElement('div');
-              searchContainer.className = 'search-container';
-              const searchInput = document.createElement('input');
-              searchInput.type = 'text';
-              searchInput.className = 'search-input';
-              searchInput.placeholder = 'Search local files...';
-              const searchClear = document.createElement('button');
-              searchClear.className = 'search-clear';
-              searchClear.innerHTML = '&times;';
-              searchInput.addEventListener('input', function() {
-                 const filter = this.value.toLowerCase();
-                 const items = sectionDiv.getElementsByTagName('li');
-                 for(let item of items) {
-                    const txt = item.textContent || item.innerText;
-                    item.style.display = txt.toLowerCase().indexOf(filter) > -1 ? "" : "none";
-                 }
-                 searchClear.style.display = filter.length > 0 ? 'block' : 'none';
-              });
-              searchClear.onclick = () => { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); };
-              searchContainer.appendChild(searchInput);
-              searchContainer.appendChild(searchClear);
-              sectionDiv.appendChild(searchContainer);
-
-              const list = document.createElement('ul');
-              for (const recent of recentFiles) {
-                const li = document.createElement('li');
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.innerText = recent.name;
-                button.onclick = () => window.openFile(recent);
-                
-                const removeBtn = document.createElement('button');
-                removeBtn.className = 'remove-btn';
-                removeBtn.innerHTML = '&times;';
-                removeBtn.onclick = (e) => { e.stopPropagation(); window.removeRecent(recent); };
-                
-                li.appendChild(button);
-                li.appendChild(removeBtn);
-                list.appendChild(li);
-              }
-              sectionDiv.appendChild(list);
-              
-              const clearButton = document.createElement('button');
-              clearButton.innerText = 'Clear All';
-              clearButton.className = 'clear-btn';
-              clearButton.onclick = clearRecent;
-              sectionDiv.appendChild(clearButton);
-              
-              elem.appendChild(sectionDiv);
-            }
-        });
-       }
-    }
-
-    window.onload = () => {
-      displayRecentFiles();
-    }
+    window.onload = displayRecentFiles;
   </script>
+
 
 
   <style>
