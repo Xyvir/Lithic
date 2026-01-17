@@ -4,8 +4,6 @@
 <head>
   <title>Lithic - Launcher</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
   <link rel="manifest" href="/manifest.json">
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 
@@ -23,11 +21,13 @@
 
   <script>
     if (!('showOpenFilePicker' in window) || !('showSaveFilePicker' in window)) {
+      // API not supported. Redirecting to the standalone file.
       window.location.replace('/src/lithic.html');
     }
   </script>
 
   <style>
+    /* CSS Variables & Styles */
     :root {
       --bg-color: #1a1a1a;
       --text-color: #e0e0e0;
@@ -39,21 +39,13 @@
       --accent-text: #1a1a1a;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      height: 100%;
-      overflow: hidden;
-    }
-
     body {
       font-family: 'Vollkorn', serif;
       background-color: var(--bg-color);
       color: var(--text-color);
       margin: 0;
+      padding: 40px;
+      line-height: 1.6;
       display: flex;
       justify-content: center;
     }
@@ -61,100 +53,41 @@
     .container {
       max-width: 600px;
       width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      padding: 15px; /* Reduced padding slightly */
-      position: relative;
     }
 
     h1 {
       font-weight: 600;
-      font-size: 1.8rem; /* Slightly smaller header */
-      margin-top: 5px;
-      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      margin-top: 0;
+      margin-bottom: 2rem;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 0.5rem;
+      padding-bottom: 1rem;
       display: flex;
       align-items: center;
-      flex-shrink: 0;
     }
 
     h1 img {
-      height: 1.5em; 
+      height: 1em;
       width: auto;
       margin-right: 15px;
-      border-radius: 6px;
+      border-radius: 4px;
     }
 
-    .icon-fallback {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      height: 1.5em;
-      width: 1.5em;
-      background-color: var(--button-bg);
-      border: 2px solid var(--border-color);
-      color: var(--text-color);
-      border-radius: 6px;
-      margin-right: 15px;
-      font-weight: 700;
-      font-size: 1.2em;
-      line-height: 1;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-      flex-shrink: 0;
+    h3 {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #bbbbbb;
+      margin-bottom: 0.5rem;
+      margin-top: 0;
     }
-
-    /* REMOVED H3 styles as we aren't using them in the main flow anymore */
 
     .section {
       background-color: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 12px; /* Tighter padding */
-      margin-bottom: 0.8rem; /* Less space between cards */
+      padding: 20px;
+      margin-bottom: 1.5rem;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-      flex-shrink: 0;
-    }
-
-    #recent-files {
-      flex-grow: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 50px; /* Space for fixed bottom buttons */
-    }
-
-    #recent-files .section {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 0;
-      flex-shrink: 1;
-      padding-top: 10px;
-    }
-
-    #recent-files ul {
-      overflow-y: auto;
-      flex-grow: 1;
-      padding-right: 5px;
-      margin-bottom: 5px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--button-hover) transparent;
-      margin-top: 10px; /* Space between search and list */
-    }
-
-    #recent-files ul::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    #recent-files ul::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    #recent-files ul::-webkit-scrollbar-thumb {
-      background-color: var(--button-hover);
-      border-radius: 20px;
     }
 
     button {
@@ -164,13 +97,12 @@
       font-size: 1rem;
       border: 1px solid var(--border-color);
       border-radius: 6px;
-      padding: 12px 10px;
+      padding: 12px 20px;
       cursor: pointer;
       width: 100%;
       text-align: center;
       transition: background-color 0.2s, transform 0.1s;
-      margin-top: 0; /* Removed top margin since headers are gone */
-      touch-action: manipulation;
+      margin-top: 5px;
     }
 
     button:hover {
@@ -189,25 +121,23 @@
     }
 
     li {
-      margin-bottom: 6px; /* Tighter list items */
+      margin-bottom: 8px;
       display: flex;
       gap: 8px;
       align-items: center;
     }
 
+    /* Override general button styles for the file button in the pair */
     li>button:first-child {
       flex-grow: 1;
       text-align: left;
+      /* Better for filenames */
       padding-left: 15px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-top: 0;
     }
 
     .remove-btn {
-      width: 44px !important;
-      height: 44px;
+      width: 46px !important;
+      /* Override 100% width from generic selector */
       padding: 0 !important;
       font-size: 1.5rem;
       line-height: 1;
@@ -217,7 +147,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 0;
+      height: 44px;
+      /* Match approximate height of text buttons */
+      margin-top: 5px;
     }
 
     .remove-btn:hover {
@@ -228,27 +160,37 @@
 
     #support-message {
       color: #ff8a80;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
       font-size: 0.9rem;
     }
 
-    /* SEARCH STYLES - Updated for full width */
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-row h3 {
+      margin-bottom: 0;
+    }
+
     .search-container {
       position: relative;
       display: flex;
       align-items: center;
-      width: 100%;
     }
 
     .search-input {
       background-color: var(--button-bg);
       border: 1px solid var(--border-color);
       color: var(--text-color);
-      padding: 10px 35px 10px 10px; /* Comfortable padding */
+      padding: 5px 25px 5px 10px;
+      /* Space for clear button */
       border-radius: 4px;
       font-family: inherit;
-      font-size: 1rem;
-      width: 100%; /* Full width now */
+      font-size: 0.9rem;
+      width: 150px;
     }
 
     .search-input:focus {
@@ -263,23 +205,24 @@
       border: none;
       color: #888;
       cursor: pointer;
-      font-size: 1.4rem;
-      padding: 5px;
+      font-size: 1.2rem;
+      padding: 0;
       line-height: 1;
       display: none;
-      margin-top: 0; /* Override generic button margin */
-      width: auto; /* Override generic button width */
+      /* Hidden by default */
+    }
+
+    .search-clear:hover {
+      color: #fff;
     }
 
     .clear-btn {
-      margin-top: auto;
+      margin-top: 15px;
       font-size: 0.9rem;
       text-align: center;
       background: transparent;
       border: 1px dashed var(--border-color);
       opacity: 0.7;
-      flex-shrink: 0;
-      padding: 8px; /* Smaller padding for clear button */
     }
 
     .clear-btn:hover {
@@ -287,15 +230,16 @@
       opacity: 1;
     }
 
+    /* --- GITHUB LINK STYLES --- */
     #github-link {
       position: fixed;
-      bottom: 15px;
-      left: 15px;
+      bottom: 25px;
+      left: 25px;
       background-color: var(--button-bg);
       color: var(--text-color);
       border: 1px solid var(--border-color);
       border-radius: 6px;
-      padding: 8px 12px;
+      padding: 6px 10px;
       font-size: 0.75rem;
       text-decoration: none;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -305,11 +249,18 @@
       line-height: 1.2;
     }
 
+    #github-link:hover {
+      background-color: var(--button-hover);
+      border-color: #666;
+      transform: translateY(-1px);
+    }
+
+    /* --- PWA INSTALL BUTTON STYLES --- */
     #install-pwa {
       display: none;
       position: fixed;
-      bottom: 15px;
-      right: 15px;
+      bottom: 25px;
+      right: 25px;
       width: auto;
       background-color: var(--accent-color);
       color: var(--accent-text);
@@ -318,10 +269,11 @@
       border: none;
       z-index: 1000;
       animation: fadein 1s;
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 0;
+    }
+
+    #install-pwa:hover {
+      background-color: #abc9ff;
+      transform: translateY(-2px);
     }
 
     @keyframes fadein {
@@ -345,6 +297,7 @@
 
   <script type="module">
     /* ... (Your existing idb-keyval code remains exactly the same) ... */
+    /* From https://github.com/jakearchibald/idb-keyval */
     let idbKeyval = (function (exports) {
       'use strict';
       class Store {
@@ -412,7 +365,6 @@
       exports.keys = keys;
       return exports;
     }({}));
-
 
     /* Saver Logic */
     function createTwCustomSaver(fileHandle) {
@@ -491,7 +443,8 @@
 
       mountFolder: async function () {
         const dirHandle = await window.showDirectoryPicker();
-        await idbKeyval.set('activeDirHandle', dirHandle);
+        // Request read permission implies we can read children
+        // Loop through and find html files
         let count = 0;
         for await (const entry of dirHandle.values()) {
           if (entry.kind === 'file' && (entry.name.endsWith('.html') || entry.name.endsWith('.htm'))) {
@@ -510,16 +463,19 @@
         if (inList.some((val) => val)) return recentFiles;
 
         recentFiles.unshift(fileHandle);
-        if (recentFiles.length > 50) recentFiles.pop();
+        if (recentFiles.length > 50) recentFiles.pop(); // Increased limit
         await idbKeyval.set('recentFiles', recentFiles);
         return recentFiles;
       },
 
       removeRecent: async function (fileHandleToRemove) {
         let recentFiles = (await idbKeyval.get('recentFiles')) || [];
+
+        // We have to filter asynchronously because isSameEntry is async
         const retentionMask = await Promise.all(recentFiles.map(async (f) => {
           return !(await f.isSameEntry(fileHandleToRemove));
         }));
+
         const newRecentFiles = recentFiles.filter((_, index) => retentionMask[index]);
         await idbKeyval.set('recentFiles', newRecentFiles);
         return newRecentFiles;
@@ -564,9 +520,9 @@
     window.mountFolder = async function () {
       try {
         await twFileManager.mountFolder();
-        displayRecentFiles();
+        displayRecentFiles(); // Refresh list logic
       } catch (e) {
-        console.error("Folder mount cancelled or failed", e);
+        console.error("Folder mount cancelled or failed", e); // User probably cancelled
       }
     }
 
@@ -585,31 +541,43 @@
     function displayRecentFiles() {
       const elem = document.getElementById("recent-files");
       if (elem) {
+        // Clear existing content to prevent duplication
         elem.innerHTML = "";
+
         twFileManager.getRecent().
           then(recentFiles => {
             if (recentFiles && recentFiles.length > 0) {
               const sectionDiv = document.createElement('div');
               sectionDiv.className = 'section';
 
-              // Search Container (No more H3 header)
+              // Header Row for Title and Search
+              const headerRow = document.createElement('div');
+              headerRow.className = 'header-row';
+
+              const title = document.createElement('h3');
+              title.innerText = 'Load a Lith from Disk';
+              headerRow.appendChild(title);
+
+              // Search Container
               const searchContainer = document.createElement('div');
               searchContainer.className = 'search-container';
 
               const searchInput = document.createElement('input');
               searchInput.type = 'text';
               searchInput.className = 'search-input';
-              searchInput.placeholder = 'Search local files...';
+              searchInput.placeholder = 'Search...';
 
               const searchClear = document.createElement('button');
               searchClear.className = 'search-clear';
               searchClear.innerHTML = '&times;';
               searchClear.title = 'Clear search';
 
+              // Filter Logic
               function filterList() {
                 const filter = searchInput.value.toLowerCase();
                 const items = list.getElementsByTagName('li');
                 let hasVisible = false;
+
                 for (let i = 0; i < items.length; i++) {
                   const button = items[i].getElementsByTagName('button')[0];
                   const txtValue = button.textContent || button.innerText;
@@ -620,6 +588,8 @@
                     items[i].style.display = "none";
                   }
                 }
+
+                // Toggle clear button
                 searchClear.style.display = filter.length > 0 ? 'block' : 'none';
               }
 
@@ -632,27 +602,33 @@
 
               searchContainer.appendChild(searchInput);
               searchContainer.appendChild(searchClear);
-              
-              sectionDiv.appendChild(searchContainer);
+              headerRow.appendChild(searchContainer);
+
+              sectionDiv.appendChild(headerRow);
 
               const list = document.createElement('ul');
               for (const recent of recentFiles) {
                 const li = document.createElement('li');
+
+                // Open Button
                 const button = Object.assign(document.createElement('button'), {
                   type: 'button',
                   onclick: openFile.bind(null, recent),
-                  innerText: recent.name,
-                  title: recent.name // Add full name as tooltip
+                  innerText: recent.name
                 });
+
+                // Remove Button
                 const removeBtn = Object.assign(document.createElement('button'), {
                   type: 'button',
                   className: 'remove-btn',
                   innerHTML: '&times;',
                   title: 'Remove from list',
                   onclick: (e) => {
+                    // Prevent triggering things if nested?? (It's not)
                     window.removeRecent(recent);
                   }
                 });
+
                 li.appendChild(button);
                 li.appendChild(removeBtn);
                 list.appendChild(li);
@@ -666,6 +642,7 @@
                 className: 'clear-btn'
               });
               sectionDiv.appendChild(clearButton);
+
               elem.appendChild(sectionDiv);
             }
           })
@@ -678,6 +655,8 @@
 
   <script>
     if ('serviceWorker' in navigator) {
+      // We register the worker at the ROOT, and explicitly set the scope to ROOT
+      // so it can control everything.
       navigator.serviceWorker.register('/offline-service-worker.js', { scope: '/' })
         .then(function (registration) {
           console.log('SW Registered. Scope is:', registration.scope);
@@ -691,29 +670,18 @@
 
 <body>
   <div class="container">
-    <h1>
-      <img src="/mstile-150x150.png" 
-           alt="Lithic Icon" 
-           onerror="this.outerHTML='<div class=\'icon-fallback\'>L</div>'"> 
-      Lithic - Launcher
-    </h1>
+    <h1><img src="/mstile-150x150.png" alt="Lithic Icon"> Lithic - Launcher</h1>
 
     <div id="support-message"></div>
 
     <div class="section">
-      <button type="button" 
-              onclick="openFromUrl('lithic.html')"
-              title="Start New - Use Starter Lith">
-        Use "Starter Lith"
-      </button>
+      <h3>Start New</h3>
+      <button type="button" onclick="openFromUrl('lithic.html')">Use "Starter Lith"</button>
     </div>
 
     <div class="section">
-      <button type="button" 
-              onclick="mountFolder()"
-              title="Existing File - Mount a Folder...">
-        Mount a Folder...
-      </button>
+      <h3>Existing File</h3>
+      <button type="button" onclick="mountFolder()">Mount a Folder...</button>
     </div>
 
     <div id="recent-files"></div>
