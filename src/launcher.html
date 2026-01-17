@@ -28,53 +28,76 @@
 
     // --- LITHIC LOGIC ---
 
-    window.openFile = async function(fileHandle) {
-      if (!fileHandle) {
+        window.openFile = async function(fileHandleOrName) {
+      // 1. HANDLE RE-HYDRATION
+      // If we are passed a file object (from the list), it might be stale.
+      // We try to get a FRESH handle from the mounted folder if possible.
+      let fileHandle = fileHandleOrName;
+      let isFresh = false;
+
+      const dirHandle = await idb.get('activeDirHandle');
+      
+      // If we have a folder mounted, try to get the file from there first
+      if (dirHandle && fileHandleOrName.name) {
+          try {
+             // A. Verify Folder Permission first (Crucial step you mentioned)
+             const dirMode = 'readwrite';
+             if ((await dirHandle.queryPermission({ mode: dirMode })) !== 'granted') {
+                 if ((await dirHandle.requestPermission({ mode: dirMode })) !== 'granted') {
+                     alert("Folder permission needed to access this file.");
+                     return;
+                 }
+             }
+
+             // B. Get a FRESH handle from the folder
+             // This revives dead handles from IDB
+             fileHandle = await dirHandle.getFileHandle(fileHandleOrName.name, { create: false });
+             isFresh = true;
+             console.log("Successfully re-hydrated file handle from folder");
+          } catch (e) {
+             console.warn("Could not re-hydrate handle from folder:", e);
+             // Fallback to using the stored handle directly
+          }
+      }
+
+      // 2. FALLBACK: If no handle provided/found, run the picker
+      if (!fileHandle || !fileHandle.getFile) {
         try {
            [fileHandle] = await window.showOpenFilePicker({
               types: [{ description: 'HTML Files', accept: { 'text/html': ['.html', '.htm'] } }]
            });
-        } catch (e) { return; } // User cancelled picker
+           isFresh = true;
+        } catch (e) { return; } 
       }
 
-      // 1. FORCE PERMISSION (The Fix)
-      // We do NOT check queryPermission(). We simply demand it.
-      // This forces Chrome to refresh the handle's validity for this specific click.
+      // 3. FORCE FILE PERMISSION
+      // Even if we have folder access, we MUST explicitly request/verify file access
+      // to satisfy the "User Activation" requirement for the reload.
       try {
-         const mode = 'readwrite'; 
-         // direct request, no "if" check.
-         const status = await fileHandle.requestPermission({ mode });
-         
-         if (status !== 'granted') {
-             alert("Permission was denied. We cannot open the file.");
-             return;
+         const mode = 'readwrite';
+         // If we just got a fresh handle via picker or folder, we still check.
+         // On mobile, this often returns 'prompt' even if folder is open.
+         if ((await fileHandle.queryPermission({ mode })) !== 'granted') {
+             if ((await fileHandle.requestPermission({ mode })) !== 'granted') {
+                 alert("Permission denied for this specific file.");
+                 return;
+             }
          }
       } catch (e) {
-         console.error("Permission request crashed:", e);
-         alert("Error requesting permission: " + e.message);
+         alert("Error requesting file permission: " + e.message);
          return;
       }
 
-      // 2. VERIFY READABILITY
-      // We try to read a byte to ensure the handle is actually alive before reloading.
-      try {
-          await fileHandle.getFile();
-      } catch (e) {
-          alert("Permission granted, but file is unreadable. The file may have moved.");
-          return;
-      }
-
-      // 3. SUCCESS - SET AND RELOAD
+      // 4. SET AND RELOAD
       try {
           await idb.set('activeFile', fileHandle);
-          await addToRecents(fileHandle);
-          
-          // Force a hard reload to trigger the Service Worker swap
+          await addToRecents(fileHandle); // Save the fresh handle
           window.location.reload(); 
       } catch (e) {
           alert("Database write failed: " + e.message);
       }
     };
+
 
     window.mountFolder = async function() {
       try {
