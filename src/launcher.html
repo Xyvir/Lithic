@@ -12,11 +12,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap" media="print"
+    onload="this.media='all'">
 
   <noscript>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap">
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400;0,600;1,400&display=swap">
   </noscript>
+
+  <script>
+    if (!('showOpenFilePicker' in window) || !('showSaveFilePicker' in window)) {
+      window.location.replace('/src/lithic.html');
+    }
+  </script>
 
   <style>
     :root {
@@ -30,8 +39,16 @@
       --accent-text: #1a1a1a;
     }
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; overflow: hidden; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: 'Vollkorn', serif;
       background-color: var(--bg-color);
@@ -47,13 +64,13 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 15px;
+      padding: 15px; /* Reduced padding slightly */
       position: relative;
     }
 
     h1 {
       font-weight: 600;
-      font-size: 1.8rem;
+      font-size: 1.8rem; /* Slightly smaller header */
       margin-top: 5px;
       margin-bottom: 1rem;
       border-bottom: 1px solid var(--border-color);
@@ -88,12 +105,14 @@
       flex-shrink: 0;
     }
 
+    /* REMOVED H3 styles as we aren't using them in the main flow anymore */
+
     .section {
       background-color: var(--card-bg);
       border: 1px solid var(--border-color);
       border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 0.8rem;
+      padding: 12px; /* Tighter padding */
+      margin-bottom: 0.8rem; /* Less space between cards */
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
       flex-shrink: 0;
     }
@@ -103,7 +122,7 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
-      margin-bottom: 50px;
+      margin-bottom: 50px; /* Space for fixed bottom buttons */
     }
 
     #recent-files .section {
@@ -122,11 +141,17 @@
       margin-bottom: 5px;
       scrollbar-width: thin;
       scrollbar-color: var(--button-hover) transparent;
-      margin-top: 10px;
+      margin-top: 10px; /* Space between search and list */
     }
 
-    #recent-files ul::-webkit-scrollbar { width: 6px; }
-    #recent-files ul::-webkit-scrollbar-track { background: transparent; }
+    #recent-files ul::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #recent-files ul::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
     #recent-files ul::-webkit-scrollbar-thumb {
       background-color: var(--button-hover);
       border-radius: 20px;
@@ -144,7 +169,7 @@
       width: 100%;
       text-align: center;
       transition: background-color 0.2s, transform 0.1s;
-      margin-top: 0;
+      margin-top: 0; /* Removed top margin since headers are gone */
       touch-action: manipulation;
     }
 
@@ -153,10 +178,23 @@
       border-color: #666;
     }
 
-    button:active { transform: scale(0.99); }
+    button:active {
+      transform: scale(0.99);
+    }
 
-    ul { list-style-type: none; padding-left: 0; margin: 0; }
-    li { margin-bottom: 6px; display: flex; gap: 8px; align-items: center; }
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    li {
+      margin-bottom: 6px; /* Tighter list items */
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
     li>button:first-child {
       flex-grow: 1;
       text-align: left;
@@ -188,267 +226,529 @@
       background-color: rgba(255, 138, 128, 0.1);
     }
 
-    /* SEARCH STYLES */
-    .search-container { position: relative; display: flex; align-items: center; width: 100%; }
+    #support-message {
+      color: #ff8a80;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    /* SEARCH STYLES - Updated for full width */
+    .search-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
     .search-input {
       background-color: var(--button-bg);
       border: 1px solid var(--border-color);
       color: var(--text-color);
-      padding: 10px 35px 10px 10px;
+      padding: 10px 35px 10px 10px; /* Comfortable padding */
       border-radius: 4px;
       font-family: inherit;
       font-size: 1rem;
-      width: 100%;
+      width: 100%; /* Full width now */
     }
-    .search-input:focus { outline: none; border-color: var(--accent-color); }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
     .search-clear {
-      position: absolute; right: 5px; background: none; border: none; color: #888;
-      cursor: pointer; font-size: 1.4rem; padding: 5px; line-height: 1;
-      display: none; margin-top: 0; width: auto;
+      position: absolute;
+      right: 5px;
+      background: none;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      font-size: 1.4rem;
+      padding: 5px;
+      line-height: 1;
+      display: none;
+      margin-top: 0; /* Override generic button margin */
+      width: auto; /* Override generic button width */
     }
+
     .clear-btn {
-      margin-top: auto; font-size: 0.9rem; text-align: center;
-      background: transparent; border: 1px dashed var(--border-color);
-      opacity: 0.7; flex-shrink: 0; padding: 8px;
+      margin-top: auto;
+      font-size: 0.9rem;
+      text-align: center;
+      background: transparent;
+      border: 1px dashed var(--border-color);
+      opacity: 0.7;
+      flex-shrink: 0;
+      padding: 8px; /* Smaller padding for clear button */
     }
-    .clear-btn:hover { background-color: rgba(255, 255, 255, 0.05); opacity: 1; }
+
+    .clear-btn:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      opacity: 1;
+    }
 
     #github-link {
-      position: fixed; bottom: 15px; left: 15px;
-      background-color: var(--button-bg); color: var(--text-color);
-      border: 1px solid var(--border-color); border-radius: 6px;
-      padding: 8px 12px; font-size: 0.75rem; text-decoration: none;
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      background-color: var(--button-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      text-decoration: none;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       transition: background-color 0.2s, transform 0.1s;
-      z-index: 1000; text-align: center; line-height: 1.2;
+      z-index: 1000;
+      text-align: center;
+      line-height: 1.2;
     }
 
     #install-pwa {
-      display: none; position: fixed; bottom: 15px; right: 15px; width: auto;
-      background-color: var(--accent-color); color: var(--accent-text);
-      font-weight: 600; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      border: none; z-index: 1000; animation: fadein 1s;
-      padding: 10px 15px; border-radius: 6px; cursor: pointer; margin-top: 0;
+      display: none;
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      width: auto;
+      background-color: var(--accent-color);
+      color: var(--accent-text);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      border: none;
+      z-index: 1000;
+      animation: fadein 1s;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 0;
     }
-    @keyframes fadein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    @media (max-width: 600px) {
-      #github-link { display: none; }
-      #recent-files { margin-bottom: 0; }
+    @keyframes fadein {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     @media all and (display-mode: standalone) {
-      #install-pwa, #github-link { display: none !important; }
-      #recent-files { margin-bottom: 0; }
+      #install-pwa {
+        display: none !important;
+      }
     }
   </style>
 
   <script type="module">
-    import { get, set, del } from 'https://cdn.jsdelivr.net/npm/idb-keyval@6/+esm';
-    window.idb = { get, set, del };
-
-    // GLOBAL MEMORY CACHE
-    // We store handles here so we can access them INSTANTLY on click
-    // without waiting for IndexedDB (which kills the permission timer).
-    window.FILE_CACHE = new Map();
-
-    // --- MAIN ACTIONS ---
-
-    window.openFile = async function(fileName) {
-      let fileHandle;
-
-      // 1. FAST LOOKUP (RAM)
-      // Grab handle from RAM. Do not await IDB here.
-      if (fileName && window.FILE_CACHE.has(fileName)) {
-          fileHandle = window.FILE_CACHE.get(fileName);
-      } else {
-          // Fallback to picker
-          try {
-             [fileHandle] = await window.showOpenFilePicker({
-                types: [{ description: 'HTML Files', accept: { 'text/html': ['.html', '.htm'] } }]
-             });
-          } catch (e) { return; }
+    /* ... (Your existing idb-keyval code remains exactly the same) ... */
+    let idbKeyval = (function (exports) {
+      'use strict';
+      class Store {
+        constructor(dbName = 'keyval-store', storeName = 'keyval') {
+          this.storeName = storeName;
+          this._dbp = new Promise((resolve, reject) => {
+            const openreq = indexedDB.open(dbName, 1);
+            openreq.onerror = () => reject(openreq.error);
+            openreq.onsuccess = () => resolve(openreq.result);
+            openreq.onupgradeneeded = () => {
+              openreq.result.createObjectStore(storeName);
+            };
+          });
+        }
+        _withIDBStore(type, callback) {
+          return this._dbp.then(db => new Promise((resolve, reject) => {
+            const transaction = db.transaction(this.storeName, type);
+            transaction.oncomplete = () => resolve();
+            transaction.onabort = transaction.onerror = () => reject(transaction.error);
+            callback(transaction.objectStore(this.storeName));
+          }));
+        }
       }
-
-      // 2. CHECK ACCESS (The Chrome Fix)
-      // Try to read first. If successful, we have implicit folder access and skip the prompt.
-      let hasAccess = false;
-      try {
-          await fileHandle.getFile();
-          hasAccess = true;
-      } catch (e) {
-          hasAccess = false;
+      let store;
+      function getDefaultStore() {
+        if (!store) store = new Store();
+        return store;
       }
+      function get(key, store = getDefaultStore()) {
+        let req;
+        return store._withIDBStore('readonly', store => {
+          req = store.get(key);
+        }).then(() => req.result);
+      }
+      function set(key, value, store = getDefaultStore()) {
+        return store._withIDBStore('readwrite', store => {
+          store.put(value, key);
+        });
+      }
+      function del(key, store = getDefaultStore()) {
+        return store._withIDBStore('readwrite', store => {
+          store.delete(key);
+        });
+      }
+      function clear(store = getDefaultStore()) {
+        return store._withIDBStore('readwrite', store => {
+          store.clear();
+        });
+      }
+      function keys(store = getDefaultStore()) {
+        const keys = [];
+        return store._withIDBStore('readonly', store => {
+          (store.openKeyCursor || store.openCursor).call(store).onsuccess = function () {
+            if (!this.result) return;
+            keys.push(this.result.key);
+            this.result.continue();
+          };
+        }).then(() => keys);
+      }
+      exports.Store = Store;
+      exports.get = get;
+      exports.set = set;
+      exports.del = del;
+      exports.clear = clear;
+      exports.keys = keys;
+      return exports;
+    }({}));
 
-      // 3. ASK ONLY IF NEEDED
-      if (!hasAccess) {
-          try {
-             const mode = 'readwrite';
-             if ((await fileHandle.requestPermission({ mode })) !== 'granted') {
-                 alert("Permission denied.");
-                 return;
-             }
-          } catch (e) {
-             alert("Error requesting permission: " + e.message);
-             return;
+
+    /* Saver Logic */
+    function createTwCustomSaver(fileHandle) {
+      return function (text, method, callback) {
+        fileHandle.createWritable()
+          .then(writable => {
+            writable.write(text);
+            return writable;
+          }).then(writable => {
+            writable.close();
+            callback(null);
+          }).catch(error => {
+            callback(error);
+          });
+        return true;
+      }
+    }
+
+    function setTwCustomSaver(fileHandle) {
+      window.$tw = { customSaver: { save: createTwCustomSaver(fileHandle) } };
+    }
+
+    function setTwCustomSaveAsSaver() {
+      let writeTw;
+      let save = function (text, method, callback) {
+        if (writeTw) {
+          writeTw(text, method, callback);
+        } else {
+          const saveOptions = {
+            suggestedName: 'lith.html',
+            types: [{
+              description: 'Lithic HTML File',
+              accept: { 'text/html': ['.html', '.htm'] },
+            }],
+          };
+
+          window.showSaveFilePicker(saveOptions)
+            .then(fileHandle => {
+              writeTw = createTwCustomSaver(fileHandle);
+              writeTw(text, method, callback);
+              twFileManager.addRecent(fileHandle);
+            });
+        }
+        return true;
+      }
+      window.$tw = { customSaver: { save: save } };
+    }
+
+    const twFileManager = {
+      openFile: async function (fileHandle) {
+        if (fileHandle) {
+          const options = { mode: 'read' };
+          if ((await fileHandle.queryPermission(options)) !== 'granted') {
+            await fileHandle.requestPermission(options);
           }
-      }
+        } else {
+          const openOptions = {
+            types: [{
+              description: 'HTML Files',
+              accept: { 'text/html': ['.html', '.htm'] },
+            }]
+          };
+          [fileHandle] = await window.showOpenFilePicker(openOptions);
+        }
+        const file = await fileHandle.getFile();
+        const contents = await file.text();
+        setTwCustomSaver(fileHandle);
+        return { fileHandle, contents };
+      },
 
-      // 4. LOAD THE WIKI
-      // Save to IDB (for the Service Worker) and Reload
-      try {
-          await idb.set('activeFile', fileHandle);
-          await addToRecents(fileHandle);
-          window.location.reload(); 
-      } catch (e) {
-          alert("Save failed: " + e.message);
-      }
-    };
+      openFromUrl: async function (url) {
+        const contents = await fetch(url).then(res => res.text());
+        setTwCustomSaveAsSaver();
+        return { contents };
+      },
 
-    window.mountFolder = async function() {
-      try {
-        // REQUEST READWRITE UP FRONT
-        // This is critical for Chrome Android to prevent freeze on file access
-        const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
-        
-        await idb.set('activeDirHandle', dirHandle);
-        
+      mountFolder: async function () {
+        const dirHandle = await window.showDirectoryPicker();
+        await idbKeyval.set('activeDirHandle', dirHandle);
         let count = 0;
-        window.FILE_CACHE.clear(); // Refresh cache
-
         for await (const entry of dirHandle.values()) {
           if (entry.kind === 'file' && (entry.name.endsWith('.html') || entry.name.endsWith('.htm'))) {
-            window.FILE_CACHE.set(entry.name, entry);
+            await this.addRecent(entry);
             count++;
           }
         }
-        
-        // Persist
-        const filesArray = Array.from(window.FILE_CACHE.values());
-        await idb.set('recentFiles', filesArray);
-        
-        displayRecentFiles(); 
-        alert(`Mounted ${count} files with Write Access.`);
-        
-      } catch (e) {
-        if (e.name !== 'AbortError') alert("Mount failed: " + e.message);
+        return count;
+      },
+
+      addRecent: async function (fileHandle) {
+        let recentFiles = (await idbKeyval.get('recentFiles')) || [];
+        if (!fileHandle.isSameEntry) return recentFiles;
+
+        const inList = await Promise.all(recentFiles.map((f) => fileHandle.isSameEntry(f)));
+        if (inList.some((val) => val)) return recentFiles;
+
+        recentFiles.unshift(fileHandle);
+        if (recentFiles.length > 50) recentFiles.pop();
+        await idbKeyval.set('recentFiles', recentFiles);
+        return recentFiles;
+      },
+
+      removeRecent: async function (fileHandleToRemove) {
+        let recentFiles = (await idbKeyval.get('recentFiles')) || [];
+        const retentionMask = await Promise.all(recentFiles.map(async (f) => {
+          return !(await f.isSameEntry(fileHandleToRemove));
+        }));
+        const newRecentFiles = recentFiles.filter((_, index) => retentionMask[index]);
+        await idbKeyval.set('recentFiles', newRecentFiles);
+        return newRecentFiles;
+      },
+
+      getRecent: async function () {
+        return (await idbKeyval.get('recentFiles')) || [];
+      },
+
+      clearRecent: async function () {
+        await idbKeyval.del('recentFiles');
       }
-    };
-
-    // --- UI UTILS ---
-
-    async function hydrateCache() {
-        try {
-            const recents = (await idb.get('recentFiles')) || [];
-            recents.forEach(f => window.FILE_CACHE.set(f.name, f));
-            displayRecentFiles();
-        } catch(e) { console.error("Cache hydration failed", e); }
     }
 
-    async function addToRecents(fileHandle) {
-       window.FILE_CACHE.set(fileHandle.name, fileHandle);
-       const filesArray = Array.from(window.FILE_CACHE.values());
-       await idb.set('recentFiles', filesArray);
+    if (window.location.hash.search("norecent") >= 0) {
+      const noop = async () => { return [] };
+      twFileManager.addRecent = noop;
+      twFileManager.getRecent = noop;
     }
 
-    window.removeRecent = async function(name) {
-       window.FILE_CACHE.delete(name);
-       const filesArray = Array.from(window.FILE_CACHE.values());
-       await idb.set('recentFiles', filesArray);
-       displayRecentFiles();
+    function replacePageContents(contents) {
+      if (contents) {
+        document.open();
+        document.write(contents);
+        document.close();
+      }
+    }
+    window.openFile = async function (fileHandle) {
+      const file = await twFileManager.openFile(fileHandle);
+      replacePageContents(file.contents);
+      if (file.fileHandle) {
+        twFileManager.addRecent(file.fileHandle);
+      }
+      return file;
+    }
+    window.openFromUrl = async function (url) {
+      const file = await twFileManager.openFromUrl(url);
+      replacePageContents(file.contents);
+      return file;
     }
 
-    window.clearRecent = async function() {
-       window.FILE_CACHE.clear();
-       await idb.del('recentFiles');
-       displayRecentFiles();
+    window.mountFolder = async function () {
+      try {
+        await twFileManager.mountFolder();
+        displayRecentFiles();
+      } catch (e) {
+        console.error("Folder mount cancelled or failed", e);
+      }
     }
 
-    window.displayRecentFiles = function() {
+    window.removeRecent = async function (fileHandle) {
+      await twFileManager.removeRecent(fileHandle);
+      displayRecentFiles();
+    }
+
+    function clearRecent() {
+      twFileManager.clearRecent().then(() => {
+        const elem = document.getElementById("recent-files");
+        if (elem) elem.innerHTML = "";
+      });
+    }
+
+    function displayRecentFiles() {
       const elem = document.getElementById("recent-files");
-      if (!elem) return;
-      elem.innerHTML = "";
-      
-      const recentFiles = Array.from(window.FILE_CACHE.values());
-      if (recentFiles.length === 0) return;
+      if (elem) {
+        elem.innerHTML = "";
+        twFileManager.getRecent().
+          then(recentFiles => {
+            if (recentFiles && recentFiles.length > 0) {
+              const sectionDiv = document.createElement('div');
+              sectionDiv.className = 'section';
 
-      const sectionDiv = document.createElement('div');
-      sectionDiv.className = 'section';
-      
-      const searchContainer = document.createElement('div');
-      searchContainer.className = 'search-container';
-      const searchInput = document.createElement('input');
-      searchInput.className = 'search-input';
-      searchInput.placeholder = 'Search local files...';
-      const searchClear = document.createElement('button');
-      searchClear.className = 'search-clear';
-      searchClear.innerHTML = '&times;';
-      searchContainer.append(searchInput, searchClear);
-      sectionDiv.appendChild(searchContainer);
+              // Search Container (No more H3 header)
+              const searchContainer = document.createElement('div');
+              searchContainer.className = 'search-container';
 
-      const list = document.createElement('ul');
-      recentFiles.forEach(file => {
-          const li = document.createElement('li');
-          const btn = document.createElement('button');
-          btn.innerText = file.name;
-          btn.onclick = () => window.openFile(file.name);
-          
-          const rmv = document.createElement('button');
-          rmv.className = 'remove-btn';
-          rmv.innerHTML = '&times;';
-          rmv.onclick = (e) => { e.stopPropagation(); window.removeRecent(file.name); };
-          
-          li.append(btn, rmv);
-          list.append(li);
-      });
-      sectionDiv.appendChild(list);
-      
-      const clr = document.createElement('button');
-      clr.className = 'clear-btn';
-      clr.innerText = 'Clear All';
-      clr.onclick = window.clearRecent;
-      sectionDiv.appendChild(clr);
-      
-      searchInput.addEventListener('input', (e) => {
-         const val = e.target.value.toLowerCase();
-         Array.from(list.children).forEach(li => {
-            const txt = li.firstChild.innerText.toLowerCase();
-            li.style.display = txt.includes(val) ? '' : 'none';
-         });
-         searchClear.style.display = val ? 'block' : 'none';
-      });
-      searchClear.onclick = () => { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); };
+              const searchInput = document.createElement('input');
+              searchInput.type = 'text';
+              searchInput.className = 'search-input';
+              searchInput.placeholder = 'Search local files...';
 
-      elem.appendChild(sectionDiv);
-    };
+              const searchClear = document.createElement('button');
+              searchClear.className = 'search-clear';
+              searchClear.innerHTML = '&times;';
+              searchClear.title = 'Clear search';
 
+              function filterList() {
+                const filter = searchInput.value.toLowerCase();
+                const items = list.getElementsByTagName('li');
+                let hasVisible = false;
+                for (let i = 0; i < items.length; i++) {
+                  const button = items[i].getElementsByTagName('button')[0];
+                  const txtValue = button.textContent || button.innerText;
+                  if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    items[i].style.display = "";
+                    hasVisible = true;
+                  } else {
+                    items[i].style.display = "none";
+                  }
+                }
+                searchClear.style.display = filter.length > 0 ? 'block' : 'none';
+              }
+
+              searchInput.addEventListener('input', filterList);
+
+              searchClear.onclick = () => {
+                searchInput.value = '';
+                filterList();
+              };
+
+              searchContainer.appendChild(searchInput);
+              searchContainer.appendChild(searchClear);
+              
+              sectionDiv.appendChild(searchContainer);
+
+              const list = document.createElement('ul');
+              for (const recent of recentFiles) {
+                const li = document.createElement('li');
+                const button = Object.assign(document.createElement('button'), {
+                  type: 'button',
+                  onclick: openFile.bind(null, recent),
+                  innerText: recent.name,
+                  title: recent.name // Add full name as tooltip
+                });
+                const removeBtn = Object.assign(document.createElement('button'), {
+                  type: 'button',
+                  className: 'remove-btn',
+                  innerHTML: '&times;',
+                  title: 'Remove from list',
+                  onclick: (e) => {
+                    window.removeRecent(recent);
+                  }
+                });
+                li.appendChild(button);
+                li.appendChild(removeBtn);
+                list.appendChild(li);
+              }
+              sectionDiv.appendChild(list);
+
+              const clearButton = Object.assign(document.createElement('button'), {
+                type: 'button',
+                onclick: clearRecent,
+                innerText: 'Clear All',
+                className: 'clear-btn'
+              });
+              sectionDiv.appendChild(clearButton);
+              elem.appendChild(sectionDiv);
+            }
+          })
+      }
+    }
+    window.onload = () => {
+      displayRecentFiles();
+    }
+  </script>
+
+  <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/offline-service-worker.js', { scope: '/' })
-        .then(() => console.log('SW Registered'));
+        .then(function (registration) {
+          console.log('SW Registered. Scope is:', registration.scope);
+        })
+        .catch(function (error) {
+          console.error('Service Worker registration failed:', error);
+        });
     }
-    
-    // Start hydration immediately
-    hydrateCache();
   </script>
 </head>
 
 <body>
   <div class="container">
     <h1>
-      <div class="icon-fallback">L</div>
-      Lithic
+      <img src="/mstile-150x150.png" 
+           alt="Lithic Icon" 
+           onerror="this.outerHTML='<div class=\'icon-fallback\'>L</div>'"> 
+      Lithic - Launcher
     </h1>
 
+    <div id="support-message"></div>
+
     <div class="section">
-      <button onclick="openFile()">Use "Starter Lith"</button>
+      <button type="button" 
+              onclick="openFromUrl('lithic.html')"
+              title="Start New - Use Starter Lith">
+        Use "Starter Lith"
+      </button>
     </div>
 
     <div class="section">
-      <button onclick="mountFolder()">Mount a Folder...</button>
+      <button type="button" 
+              onclick="mountFolder()"
+              title="Existing File - Mount a Folder...">
+        Mount a Folder...
+      </button>
     </div>
 
     <div id="recent-files"></div>
 
-    <a id="github-link" href="https://github.com/xyvir/lithic" target="_blank">View on GitHub</a>
   </div>
+
+  <button id="install-pwa">Install App</button>
+
+  <a id="github-link" href="https://github.com/Xyvir/Lithic" target="_blank">View<br>Github</a>
+
+  <script>
+    let deferredPrompt;
+    const installBtn = document.getElementById('install-pwa');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      installBtn.style.display = 'none';
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        deferredPrompt = null;
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBtn.style.display = 'none';
+      deferredPrompt = null;
+    });
+  </script>
 </body>
+
 </html>
