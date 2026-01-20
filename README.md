@@ -36,12 +36,20 @@ Version 1.5 release:
 - includes overtype editor with syntax highlighting.
 - Better mobile formatting.
 
+Version 1.8 plans:
+- finalize built-in plugins
+  - Extended Markdown Plugin
+  - Calendar
+  - Views
+  - Full Screen
+- A few other cross-plugin teaks and improvments. 
+
 2. Version 2 plans:
 
-- Whiteboard improvements. (External PDF Markup?)
 - Simple UI Mode toggle. (Hide a lot of Tiddlywiki-specific UI, on by default.)
 - Expanded Slashcommands
 - Upgrade default editor CodeMiorror6? (once it supports streams plugin)
+- Include codemirror 6 for non-streams "edit mode"
 
 
 3. Version 3 plans
