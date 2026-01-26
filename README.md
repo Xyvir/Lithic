@@ -36,18 +36,26 @@ Version 1.5 release:
 - includes overtype editor with syntax highlighting.
 - Better mobile formatting.
 
-Version 1.8 plans:
-- finalize built-in plugins
-  - Extended Markdown Plugin
-  - Calendar
-  - Views
-  - Full Screen
+Version 1.95 released:
+- MAJOR Perfomance upgrade (default Tiddlystudy Backlink Pills were poorly optimized by using Regex)
+- 'Anchors' plugin for stream templates.
+- Calendar view & todo integration
+- Bulkops Sidebar w/ savable filters (and a few smart defaults).
+- "Time Spent" indicator.
 - A few other cross-plugin teaks and improvments. 
+
+Version 1.99 plans:
+ - Image Handling improvements:
+   - Paste image from clipboard into overtype
+   - Draggable image resizer (resizer plugin)
+   - resizable sidebar via resizer plugin. 
 
 2. Version 2 plans:
 
+- "Full-screen" long-from editor when clicking on bullet points.
 - Simple UI Mode toggle. (Hide a lot of Tiddlywiki-specific UI, on by default.)
 - Expanded Slashcommands
+- Expanded Syntax Highlighting for Overtype?
 - Upgrade default editor CodeMiorror6? (once it supports streams plugin)
 - Include codemirror 6 for non-streams "edit mode"
 
