@@ -10,8 +10,8 @@ const path = require('path');
 const yaml = require('js-yaml');
 
 // --- CONFIGURATION ---
-const CONFIG_FILE = 'vendor.yml';
-const LOCK_FILE = 'vendor-lock.json';
+const CONFIG_FILE = 'external.yml';
+const LOCK_FILE = 'external-lock.json'; // Updated for consistency
 
 const PLUGIN_DIR = path.join('wiki', 'plugins', 'external');
 const TIDDLERS_DIR = path.join('wiki', 'tiddlers');
@@ -58,7 +58,7 @@ function getRemoteInfo(url) {
     } catch (e) { return null; }
 }
 
-console.log(`Starting Mirror (Disposable Root Mode)...`);
+console.log(`Starting Mirror (External Mode)...`);
 let changesMade = false;
 
 sources.forEach(source => {
@@ -98,7 +98,6 @@ sources.forEach(source => {
                     execSync(`npx tiddlywiki --load ${tempFile} --savewikifolder ${targetDir}`, { stdio: 'inherit' });
                 }
                 
-                // Smart Pruning: Clean up the library folder (internal tiddlers)
                 if (source.cleanContent) {
                     const tiddlersDir = path.join(targetDir, 'tiddlers');
                     if (fs.existsSync(tiddlersDir)) {
@@ -134,7 +133,7 @@ sources.forEach(source => {
         console.log(`✅ Up to date.`);
     }
 
-    // --- AGGREGATION (Directly into the now-empty wiki/tiddlers) ---
+    // --- AGGREGATION ---
     if (source.copy && Array.isArray(source.copy) && source.copy.length > 0) {
         console.log(`📂 Aggregating ${source.copy.length} files to wiki/tiddlers...`);
         source.copy.forEach(filePath => {
