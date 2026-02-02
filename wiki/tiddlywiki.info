@@ -1,0 +1,31 @@
+{
+    "description": "Lithic PKMS",
+    "plugins": [
+        "tiddlywiki/markdown",
+        "tiddlywiki/filesystem",
+        "tiddlywiki/tiddlyweb",
+        "plugins/anchors-for-streams",
+        "plugins/lithic-core",
+        "plugins/lithic-default-configs",
+        "plugins/lithic-patch-browserstorage",
+        "plugins/lithic-patch-calendar",
+        "plugins/lithic-patch-comptext",
+        "plugins/lithic-patch-fusion",
+        "plugins/lithic-patch-markdown",
+        "plugins/lithic-patch-streams",
+        "plugins/lithic-patch-whiteboard",
+        "plugins/lithic-tweaks",
+        "plugins/overtype",
+        "plugins/aliases",
+        "plugins/tw-whiteboard"
+    ],
+    "themes": [
+        "tiddlywiki/vanilla",
+        "tiddlywiki/snowwhite"
+    ],
+    "build": {
+        "index": [
+            "--render", "$:/core/save/all", "index.html", "text/plain"
+        ]
+    }
+}
