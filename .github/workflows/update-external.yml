@@ -1,4 +1,3 @@
-# .github/workflows/update-external.yml
 name: Update External Dependencies
 
 on:
@@ -33,12 +32,10 @@ jobs:
           git config user.name "Jane-Bot"
           git config user.email "bot@lithic.uk"
           
-          # Add all potential output locations
           git add wiki/plugins/external/
           git add wiki/tiddlers/
-          git add vendor-lock.json
+          git add external-lock.json
           
-          # Only commit if there are actual changes
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "chore: automated external update [skip ci]"
             git push
