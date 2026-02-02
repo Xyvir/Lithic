@@ -1,0 +1,18 @@
+created: 20251127145454854
+description: create a new journal tiddler
+modified: 20251127145508477
+tags: $:/tags/Actions
+title: $:/core/ui/Actions/new-journal
+
+\define get-tags() $(textFieldTags)$ $(tagsFieldTags)$
+<$vars journalTitleTemplate={{$:/config/NewJournal/Title}} textFieldTags={{$:/config/NewJournal/Tags}} tagsFieldTags={{$:/config/NewJournal/Tags!!tags}} journalText={{$:/config/NewJournal/Text}} journalType={{$:/config/NewJournal/Type}}>
+<$wikify name="journalTitle" text="""<$macrocall $name="now" format=<<journalTitleTemplate>>/>""">
+
+<$list filter="[<journalTitle>!is[tiddler]]">
+<$action-createtiddler $basetitle=<<journalTitle>> tags=<<get-tags>> text=<<journalText>> type=<<journalType>> />
+</$list>
+
+<$action-navigate $to=<<journalTitle>>/>
+
+</$wikify>
+</$vars>

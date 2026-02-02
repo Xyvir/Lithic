@@ -1,0 +1,11 @@
+created: 20260109171314532
+modified: 20260109173933622
+tags: $:/tags/Macro
+title: $:/lithic/config/PublishFilterPatch
+
+\define publishFilter()
+-[prefix[$:/state/]]
+-[prefix[$:/temp/]]
+-[prefix[$:/info/]]
+-[[$:/StoryList]]
+\end

@@ -1,0 +1,29 @@
+caption: {{$:/language/SideBar/Tools/Caption}}
+created: 20251209161036864
+modified: 20260121165453700
+tags: $:/tags/SideBar
+title: $:/core/ui/SideBar/Tools
+
+\define lingo-base()$:/language/ControlPanel/
+\define config-title()$:/config/PageControlButtons/Visibility/$(currentTiddler)$
+
+\define drop-actions()
+<$action-listops $tiddler="$:/tags/PageControls" $subfilter="+[insertbefore:currentTiddler<actionTiddler>]"/>
+\end
+
+<$let tv-config-toolbar-icons=yes tv-config-toolbar-text=yes tv-config-toolbar-class="">
+
+<$list filter="[[$:/tags/PageControls]tagging[]!is[draft]] :filter[<currentTiddler>addprefix[$:/config/PageControlButtons/Visibility/]get[text]match[hide]]">
+
+<$droppable actions=<<drop-actions>> tag="div">
+<$draggable tiddler=<<currentTiddler>> tag="div">
+
+<div class={{{[<currentTiddler>encodeuricomponent[]addprefix[tc-btn-]]}}} style=position:relative; title={{{ [<currentTiddler>get[description]] }}}>
+<$transclude tiddler=<<currentTiddler>>/>
+</div>
+
+</$draggable>
+</$droppable>
+
+</$list>
+</$let>

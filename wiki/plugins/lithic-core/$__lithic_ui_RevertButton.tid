@@ -1,0 +1,21 @@
+created: 20251129192558446
+modified: 20251129193549456
+tags: $:/tags/PageControls
+title: $:/lithic/ui/RevertButton
+
+<$button 
+    tooltip="Revert all browser-stored changes" 
+    class=<<tv-config-toolbar-class>>
+>
+    <$action-sendmessage $message="tm-clear-browser-storage"/>
+    
+    <$action-sendmessage $message="tm-browser-refresh"/>
+    
+    <$list filter="[<tv-config-toolbar-icons>match[yes]]">
+    {{$:/core/images/rotate-left}}
+    </$list>
+    
+    <$list filter="[<tv-config-toolbar-text>match[yes]]">
+    <span class="tc-btn-text"><$text text="Revert"/></span>
+    </$list>
+</$button>

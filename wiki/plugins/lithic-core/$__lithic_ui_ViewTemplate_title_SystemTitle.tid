@@ -1,0 +1,9 @@
+created: 20251204152424936
+modified: 20251204154357864
+tags: $:/tags/ViewTemplateTitleFilter
+title: $:/lithic/ui/ViewTemplate/title/SystemTitle
+
+\whitespace trim
+<h2 class="tc-title">&ensp;
+<$vars caps="([A-Z]+)">{{{ [<currentTiddler>split[/]last[]search-replace:g:regexp<caps>,[ $1]trim[]] }}}
+</$vars></h2>

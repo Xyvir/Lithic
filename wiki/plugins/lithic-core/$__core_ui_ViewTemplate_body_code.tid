@@ -1,0 +1,8 @@
+created: 20251210062014570
+modified: 20251210062023774
+title: $:/core/ui/ViewTemplate/body/code
+
+<%if [{!!title}is[missing]!is[shadow]]%>
+{{||$:/language/MissingTiddler/Hint}}
+<%else%>
+<$codeblock code={{{[{!!title}get[text]]}}}language={{{[{!!title}get[type]else[text/vnd.tiddlywiki]]}}}/>

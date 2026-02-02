@@ -1,0 +1,13 @@
+caption: BulkOps
+created: 20260120205003420
+modified: 20260121170247208
+tags: $:/tags/SideBar
+title: $:/lithic/SidebarBulkOps
+
+<div class="lithic-sidebar-search">
+<$let lithic-sidebar-filters="$:/core/Filters/SystemTiddlers $:/core/Filters/ShadowTiddlers">
+
+{{$:/core/ui/AdvancedSearch/Filter}}
+
+</$let>
+</div>

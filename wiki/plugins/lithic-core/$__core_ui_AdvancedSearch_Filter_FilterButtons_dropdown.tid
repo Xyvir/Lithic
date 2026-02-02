@@ -1,0 +1,34 @@
+created: 20260121143331212
+modified: 20260121145437289
+tags: $:/tags/AdvancedSearch/FilterButton
+title: $:/core/ui/AdvancedSearch/Filter/FilterButtons/dropdown
+
+<span class="tc-popup-keep"><$button popup=<<qualify '$:/state/filterDropdown'>> class="tc-btn-invisible">{{$:/core/images/down-arrow}}</$button></span>
+
+<$reveal state=<<qualify '$:/state/filterDropdown'>> type="popup" position="belowleft" animate="yes">
+<$let tv-show-missing-links="yes">
+<$linkcatcher actions="<$action-setfield $tiddler='$:/temp/advancedsearch' text=<<navigateTo>>/><$action-setfield $tiddler='$:/temp/advancedsearch/input' text=<<navigateTo>>/><$action-setfield $tiddler='$:/temp/advancedsearch/refresh' text=yes/><$action-sendmessage $param='.tc-advanced-search input' message='tm-focus-selector'/>">
+<div class="tc-block-dropdown-wrapper">
+<div class="tc-block-dropdown tc-edit-type-dropdown">
+
+<$list filter="[<lithic-sidebar-filters>!is[blank]then[yes]else[no]]" variable="override-active">
+  <% if [<override-active>match[yes]] %>
+      <$list filter="[enlist<lithic-sidebar-filters>] [all[shadows+tiddlers]prefix[$:/config/TiddlyTools/Filters/]]">
+         <$link to={{!!filter}}>
+           <$let tv-wikilinks="no"><$transclude field="description"/></$let>
+         </$link>
+      </$list>
+  <% else %>
+      <$list filter="[[$:/tags/Filter]tagging[]!is[draft]]">
+         <$link to={{!!filter}}>
+           <$let tv-wikilinks="no"><$transclude field="description"/></$let>
+         </$link>
+      </$list>
+  <% endif %>
+</$list>
+
+</div>
+</div>
+</$linkcatcher>
+</$let>
+</$reveal>

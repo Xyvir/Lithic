@@ -1,0 +1,10 @@
+{
+    "created": "20260109181217294",
+    "title": "$:/plugins/xyvir/lithic-core",
+    "description": "The foundational logic and UI framework for the Lithic edition. Provides essential UI overrides and global session management filters.",
+    "name": "Lithic Core",
+    "plugin-type": "plugin",
+    "version": "0.0.13",
+    "modified": "20260109181242713",
+    "author": "Xyvir"
+}

@@ -1,0 +1,100 @@
+/* === Global Header Defaults (H1-H6) === 
+   Targeting div.markdown to catch Streams nodes 
+*/
+.markdown h1, 
+.markdown h2, 
+.markdown h3, 
+.markdown h4, 
+.markdown h5, 
+.markdown h6 {
+  text-align: center;
+  margin-top: .75em;
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+  border-bottom: none;
+}
+
+/* === H1: Main Title (Bold & Small Caps) === */
+.markdown h1 {
+  font-size: 3em;
+  margin-top: 1.2em;
+  font-weight: 700;
+  font-variant: small-caps;
+  text-transform: none;
+}
+
+/* === H2: Section Header (Floating Underline) === */
+.markdown h2 {
+  font-size: 2em;
+  position: relative;
+}
+
+.markdown h2::after {
+  content: '';
+  display: block;
+  width: 100px;
+  border-bottom: 1px solid; 
+  margin: 10px auto 0;
+  opacity: 0.7;
+}
+
+/* === H3: Italic Sub-section === */
+.markdown h3 {
+  font-size: 1.5em;
+  font-style: italic;
+}
+
+/* === H4: Left-aligned, Bold, Underlined === */
+.markdown h4 {
+  text-align: left;
+  font-size: 1.2em;
+  font-weight: 600;
+  text-indent: 0.75em;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+/* === H5: Indented, Light, Underlined === */
+.markdown h5 {
+  text-align: left;
+  font-size: 1.1em;
+  font-weight: 400;
+  text-indent: 1.5em;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+/* === H6: Image Caption Style === */
+.markdown h6 {
+  font-weight: 400;
+  font-size: .8em;
+  position: relative;
+  top: -2.2em; 
+  margin-bottom: 0;
+  padding: 0;
+  text-align: center;
+  opacity: 0.8; 
+}
+
+.markdown h6::after {
+  display: none;
+}
+
+/* === UI Helper: Header Underlay (Internal Method) === */
+@media screen {
+  /* We target the .markdown div directly if it contains a header.
+     This avoids touching the .stream-row container which handles the 
+     right-click context menu logic.
+  */
+  .markdown:has(:is(h1, h2, h3, h4, h5, h6)) {
+    position: relative;
+    /* Extra padding ensures the underlay doesn't look cramped against the text */
+    padding: 4px 8px;
+    /* Rounded corners on the markdown container background */
+    border-radius: 8px;
+    /* Subtle background tint */
+    background-color: color-mix(in srgb, currentColor 6%, transparent);
+  }
+}

@@ -1,0 +1,59 @@
+caption: {{$:/language/SideBar/Open/Caption}}
+created: 20251127221818295
+modified: 20260121170529450
+tags: $:/tags/SideBar
+title: $:/core/ui/SideBar/Open
+
+\whitespace trim
+\define lingo-base() $:/language/CloseAll/
+
+\define drop-actions()
+<$action-listops $tiddler=<<tv-story-list>> $subfilter="+[insertbefore:currentTiddler<actionTiddler>]"/>
+\end
+
+\define placeholder()
+<div class="tc-droppable-placeholder"/>
+\end
+
+\define droppable-item(button)
+\whitespace trim
+<$droppable actions=<<drop-actions>> enable=<<tv-allow-drag-and-drop>>>
+<<placeholder>>
+<div>
+$button$
+</div>
+</$droppable>
+\end
+
+<div class="tc-sidebar-tab-open">
+<$list filter="[list<tv-story-list>]" history=<<tv-history-list>> storyview="pop">
+<div class="tc-sidebar-tab-open-item">
+   
+   <$macrocall $name="droppable-item" button="""<$button message="tm-close-tiddler" tooltip={{$:/language/Buttons/Close/Hint}} aria-label={{$:/language/Buttons/Close/Caption}} class="tc-btn-invisible tc-btn-mini tc-small-gap-right">{{$:/core/images/close-button}}</$button><$link to={{!!title}}><$view field="title"/></$link>"""/>
+   
+   <$list filter="[<currentTiddler>has[stream-list]]">
+      <div style="margin-left: 22px; border-left: 1px solid #ddd; padding-left: 6px; font-size: 0.85em; opacity: 0.8;">
+         <$list filter="[list[!!stream-list]]">
+            <div class="tc-menu-item" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4em;">
+               <$link to={{!!title}}>
+                  <$transclude field="caption">
+                     <$view field="text" format="text" trim="30" />
+                  </$transclude>
+               </$link>
+            </div>
+         </$list>
+      </div>
+   </$list>
+   </div>
+</$list>
+
+<$tiddler tiddler="">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+   <$macrocall $name="droppable-item" button="""<$button message="tm-close-all-tiddlers" class="tc-btn-invisible tc-btn-mini tc-tiddlylink"><<lingo Button>></$button>"""/>
+
+   <$button message="tm-copy-to-clipboard" param={{{ [list<tv-story-list>format:titlelist[]join[ ]] }}} tooltip="Copy open tiddlers as filter list" class="tc-btn-invisible tc-btn-mini tc-tiddlylink">
+      copy
+   </$button>
+</div>
+</$tiddler>
+</div>

@@ -1,0 +1,31 @@
+created: 20200827003650814
+modified: 20260125091753965
+tags: $:/tags/ViewTemplate $:/tags/Macro
+title: $:/plugins/kebi/tiddlystudy-references/filters
+
+\whitespace trim
+\define generate-list(statetiddler, filter, class)
+\whitespace trim
+  <$reveal type="match" state="$statetiddler$" text="enable">
+    <$list filter="$filter$">
+      <li class="$class$">
+        <$link to={{!!title}}>
+          <$view field="title"/>
+        </$link>
+      </li>
+    </$list>
+  </$reveal>
+\end
+
+<ul class="footer">
+<$vars 
+  targetTitle=<<currentTiddler>>
+  safeAlias={{{ [enlist{!!aliases}first[]] ~[[$:/no-match-placeholder]] }}} 
+  targets={{{ [<currentTiddler>] [enlist{!!aliases}first[]] }}}
+>
+<<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/transclusions" filter:"[enlist<targets>backtranscludes[]] -[is[current]] -[is[system]] -[all[shadows]] -[is[image]]" class:"filtertransclude">>
+<<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/tags" filter:"[enlist<targets>tagging[]] -[enlist<targets>backtranscludes[]] -[is[current]] -[is[system]] -[all[shadows]]" class:"filtertag">>
+<<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/backlinks" filter:"[enlist<targets>backlinks[]] -[enlist<targets>backtranscludes[]] -[enlist<targets>tagging[]] -[is[current]] -[is[system]] -[all[shadows]] -[is[image]]" class:"filterbacklink">>
+<<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/mentions-title" filter:"[all[tiddlers]!is[system]search:title<targetTitle>] [all[tiddlers]!is[system]search:title<safeAlias>] +[unique[]] -[enlist<targets>backlinks[]] -[enlist<targets>backtranscludes[]] -[enlist<targets>tagging[]] -[has[parent]] -[is[current]] -[all[shadows]]" class:"filtertitle">>
+</$vars>
+</ul>
