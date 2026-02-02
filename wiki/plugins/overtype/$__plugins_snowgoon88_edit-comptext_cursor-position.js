@@ -1,0 +1,121 @@
+/*\
+title: $:/plugins/snowgoon88/edit-comptext/cursor-position.js
+type: application/javascript
+module-type: library
+
+Module that computes the pixel position of the cursor of a text element.
+Optimized for nested containers (Streams/OverType) and page scrolling.
+\*/
+(function(){
+
+/*jslint node: true, browser: true */
+/*global $tw: false */
+"use strict";
+
+var properties = [
+  'direction', 'boxSizing', 'width', 'height', 'overflowX', 'overflowY',
+  'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth', 'borderStyle',
+  'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+  'fontStyle', 'fontVariant', 'fontWeight', 'fontStretch', 'fontSize', 
+  'fontSizeAdjust', 'lineHeight', 'fontFamily',
+  'textAlign', 'textTransform', 'textIndent', 'textDecoration',
+  'letterSpacing', 'wordSpacing', 'tabSize', 'MozTabSize'
+];
+
+var isFirefox = false;
+if($tw.browser) {
+    isFirefox = window.mozInnerScreenX != null;
+}
+
+function getCaretCoordinates(element, position, options) {
+
+  var debug = options && options.debug || false;
+  if (debug) {
+    var el = document.querySelector('#input-textarea-caret-position-mirror-div');
+    if ( el ) { el.parentNode.removeChild(el); }
+  }
+
+  // Create mirrored div to calculate text flow
+  var div = document.createElement('div');
+  div.id = 'input-textarea-caret-position-mirror-div';
+  document.body.appendChild(div);
+
+  var style = div.style;
+  var computed;
+  if($tw.browser) {
+      computed = window.getComputedStyle ? getComputedStyle(element) : element.currentStyle;
+  } 
+  else {
+      computed = element.currentStyle;
+  }
+    
+  style.whiteSpace = 'pre-wrap';
+  if (element.nodeName !== 'INPUT')
+    style.wordWrap = 'break-word';
+
+  style.position = 'absolute';
+  if (!debug)
+    style.visibility = 'hidden';
+
+  properties.forEach(function (prop) {
+    style[prop] = computed[prop];
+  });
+
+  if (isFirefox) {
+    if (element.scrollHeight > parseInt(computed.height))
+      style.overflowY = 'scroll';
+  } else {
+    style.overflow = 'hidden';
+  }
+
+  div.textContent = element.value.substring(0, position);
+  if (element.nodeName === 'INPUT')
+    div.textContent = div.textContent.replace(/\s/g, "\u00a0");
+
+  var span = document.createElement('span');
+  span.textContent = element.value.substring(position) || '.';
+  div.appendChild(span);
+
+  // --- COORDINATE CALCULATIONS ---
+  
+  // 1. Get the physical location of the textarea relative to the viewport
+  var rect = element.getBoundingClientRect();
+  
+  // 2. Get the current scroll position of the entire page
+  var pageScrollY = window.pageYOffset || document.documentElement.scrollTop;
+  var pageScrollX = window.pageXOffset || document.documentElement.scrollLeft;
+
+  // 3. Calculate absolute position on the page
+  // span.offsetTop/Left: position of cursor relative to the textarea's top-left
+  // rect.top/left: physical position of the textarea in the browser window
+  // pageScroll: how far the page has been scrolled
+  // element.scrollTop: how far the text has been scrolled inside the textarea
+  var absoluteTop = span.offsetTop + rect.top + pageScrollY + parseInt(computed['borderTopWidth']) - element.scrollTop;
+  var absoluteLeft = span.offsetLeft + rect.left + pageScrollX + parseInt(computed['borderLeftWidth']) - element.scrollLeft;
+
+  // 4. Vertical Offset
+  // We add a small offset so the box appears exactly one line below the cursor
+  var lineHeight = parseInt(computed['lineHeight']) || parseInt(computed['fontSize']) * 1.2 || 20;
+
+  var coordinates = {
+    top: absoluteTop + lineHeight,
+    left: absoluteLeft
+  };
+  // -------------------------------
+
+  if (debug) {
+    span.style.backgroundColor = '#aaa';
+  } else {
+    document.body.removeChild(div);
+  }
+
+  return coordinates;
+}
+
+if (typeof module != "undefined" && typeof module.exports != "undefined") {
+  module.exports = getCaretCoordinates;
+} else {
+  window.getCaretCoordinates = getCaretCoordinates;
+}
+
+})();

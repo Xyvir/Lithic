@@ -1,0 +1,10 @@
+{
+    "created": "20260110200222944",
+    "title": "$:/plugins/xyvir/lithic-patch-comptext",
+    "author": "Xyvir",
+    "description": "Extensions and templates for the CompText completion engine, extended to include Slash Menu feature.",
+    "plugin-type": "plugin",
+    "version": "0.0.2",
+    "modified": "20260110230737710",
+    "parent-plugin": "$:/plugins/snowgoon88/edit-comptext"
+}

@@ -1,0 +1,8 @@
+{
+    "version": "0.0.1",
+    "title": "$:/plugins/xyvir/overtype",
+    "plugin-type": "plugin",
+    "name": "Overtype Editor ",
+    "description": "Overtype Editor adapted for Lithic PKMS",
+    "author": "Xyvir"
+}

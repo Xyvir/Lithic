@@ -1,0 +1,24 @@
+caption: Anchor Toggle
+created: 20260123192609632
+description: Toggle anchors on top-level nodes
+icon: $:/lithic/images/anchor
+modified: 20260123193723250
+tags: $:/tags/ViewToolbar
+title: $:/lithic/ui/buttons/anchor-toggle
+type: 
+
+\whitespace trim
+<$list filter="[<currentTiddler>enlist{!!stream-list}has[text]first[]]" variable="representativeNode">
+    <$vars anchor-string="{{||$:/anchor}}" lb={{{ [charcode[10]] }}}>
+    <$vars anchor-suffix={{{ [<lb>addsuffix<anchor-string>] }}}>    
+        <$list filter="[<representativeNode>search:text<anchor-string>]" variable="isAnchored" emptyMessage="""<$button tooltip="Drop Anchors" aria-label="Drop Anchors" class=<<tv-config-toolbar-class>> style="border: none; padding: 0; background: none;"><$list filter="[enlist{!!stream-list}has[text]!search:text<anchor-string>]"><$action-setfield text={{{ [<currentTiddler>get[text]addsuffix<anchor-suffix>] }}} /></$list>{{$:/lithic/images/anchor}}</$button>""">     
+            <$button tooltip="Hoist Anchors" aria-label="Hoist Anchors" class=<<tv-config-toolbar-class>>>                
+                <$list filter="[enlist{!!stream-list}search:text<anchor-string>]">
+                    <$action-setfield text={{{ [<currentTiddler>get[text]search-replace:g<anchor-suffix>,[]] }}} />
+                </$list>               
+                {{$:/lithic/images/anchor}}               
+            </$button>          
+        </$list>
+    </$vars>
+    </$vars>
+</$list>

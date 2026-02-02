@@ -1,0 +1,8 @@
+{
+    "title": "$:/plugins/xyvir/anchors-for-streams",
+    "author": "xyvir",
+    "description": "Allows for 'anchoring' top-level streams nodes; so you can clone the whole stream and use the anchors to spawn stream independent sibling nodes. ",
+    "name": "Anchors for streams",
+    "plugin-type": "plugin",
+    "version": "0.0.2"
+}

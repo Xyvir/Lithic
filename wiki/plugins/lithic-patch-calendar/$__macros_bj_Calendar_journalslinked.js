@@ -1,0 +1,96 @@
+/*\
+title: $:/macros/bj/Calendar/journalslinked.js
+type: application/javascript
+module-type: global
+\*/
+(function(){
+
+/*jslint node: true, browser: true */
+/*global $tw: false */
+"use strict";
+
+var Calendar=new Date();
+
+var createMonth= function(mnth,year,options){
+	var month=[];
+	for (var i=1;i < 1+daysInMonth(mnth,year);i++) month[i] = createDate(i,mnth,year,options);
+	return month;
+}
+
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
+}
+
+function createDate(i,mnth,year,options){
+	var strong='',tiddlerDate,format = $tw.wiki.getTiddlerText("$:/config/NewJournal/Title") || "YYYY MM DD";
+	var date=(new Date(year, mnth-1, i));
+	
+	if (options.highlightLinks=="yes") strong ='!';
+	
+	tiddlerDate = $tw.utils.formatDateString(date,format);
+	var tiddler = $tw.wiki.getTiddler(tiddlerDate);
+    var isUrgent = false;
+
+    // --- TODO DETECTION ---
+    
+    // 1. Check Journal Entry Itself (Only if tiddler exists)
+    if(tiddler) {
+        if(/^[ \t]*([-*]\s+)?\[\s?\]/m.test(tiddler.fields.text || "")) {
+            isUrgent = true;
+        }
+
+        // 2. Check Stream Children (Only if tiddler exists)
+        if(!isUrgent && tiddler.fields["stream-list"]) {
+            var childList = $tw.utils.parseStringArray(tiddler.fields["stream-list"]);
+            if(childList) {
+                for(var c=0; c<childList.length; c++) {
+                    var childTid = $tw.wiki.getTiddler(childList[c]);
+                    if(childTid && /^[ \t]*([-*]\s+)?\[\s?\]/m.test(childTid.fields.text || "")) {
+                        isUrgent = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    // 3. Check Backlinks (Works even if journal tiddler is missing)
+    if(!isUrgent) {
+        var backlinks = $tw.wiki.getTiddlerBacklinks(tiddlerDate);
+        if(backlinks && backlinks.length > 0) {
+             var safeDate = escapeRegExp(tiddlerDate);
+             // Look for [ ] ... [[YYYY MM DD]]
+             var backlinkRegex = new RegExp("^[ \\t]*([-*]\\s+)?\\[\\s?\\].*\\[\\[" + safeDate + "\\]\\]", "m");
+             
+             for(var b=0; b<backlinks.length; b++) {
+                 var blTid = $tw.wiki.getTiddler(backlinks[b]);
+                 if(blTid && backlinkRegex.test(blTid.fields.text)) {
+                     isUrgent = true;
+                     break;
+                 }
+             }
+        }
+    }
+
+    // --- RENDER ---
+    
+    var label = i;
+    if(isUrgent) {
+        label = "-" + i + "-";
+    }
+
+    // MODIFIED LOGIC:
+    // Render the link if the tiddler exists OR if we found urgent items (backlinks)
+	if (tiddler || isUrgent) {
+        return centre(strong+'[['+label+'|'+tiddlerDate+']]');
+    }
+    
+	return centre(label);
+}
+
+function daysInMonth(iMonth, iYear){
+		return 32 - new Date(iYear, iMonth-1, 32).getDate();
+	}
+function centre (x){ return ' '+x+' ';}
+exports.createMonth = createMonth;
+})();

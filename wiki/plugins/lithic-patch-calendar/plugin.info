@@ -1,0 +1,8 @@
+{
+    "title": "$:/plugins/xyvir/lithic-patch-calendar",
+    "author": "Xyvir",
+    "description": "Lithic ToDo Highlighting added to Extendable Calendar",
+    "name": "Calendar_LithicPatch",
+    "plugin-type": "plugin",
+    "version": "0.0.3"
+}

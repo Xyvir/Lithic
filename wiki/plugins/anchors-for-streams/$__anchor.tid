@@ -1,0 +1,50 @@
+created: 20260123184739990
+modified: 20260123211522766
+tags: 
+title: $:/anchor
+
+\define anchor-actions()
+<$vars p-tiddler={{{ 
+    [<storyTiddler>contains:stream-list<currentTiddler>] 
+    ~[list[$:/StoryList]contains:stream-list<currentTiddler>limit[1]] 
+}}}>
+    <$list filter="[<p-tiddler>!is[blank]]" variable="ignore">
+        
+        <$vars lb={{{ [charcode[10]] }}} reg-pattern="[^a-zA-Z0-9]">
+            
+            <$vars tag-name={{{ 
+                [<currentTiddler>get[text]search-replace[{{||$:/anchor}}],[]split<lb>first[]splitregexp<reg-pattern>join[]trim[]first[30]] 
+            }}}>
+            
+                <$wikify name="title-fmt" text={{$:/config/sq/streams/new-node-title}}>
+                <$wikify name="new-title" text={{{ [[<<unusedtitle "]] [<title-fmt>] [[">>]] +[join[]] }}}>
+                    <$action-createtiddler 
+                        $basetitle=<<new-title>> 
+                        $template={{$:/config/sq/streams/new-node-tiddler-template}}
+                        parent=<<p-tiddler>> 
+                        stream-type="default"
+                        tags=<<tag-name>>
+                        anchored=<<p-tiddler>>
+                    />
+                    <$action-listops $tiddler=<<p-tiddler>> $field="stream-list" $subfilter="+[insertafter:currentTiddler<new-title>]" />
+                    <$action-setfield $tiddler=<<row-edit-state>> text=<<new-title>>/>
+                </$wikify>
+                </$wikify>
+            </$vars>
+        </$vars>
+
+    </$list>
+</$vars>
+\end
+
+<div class="lithic-lock-overlay" style="position: absolute; top: 0; bottom: 0; right: 0; left: 24px; z-index: 10; cursor: cell; user-select: none;">
+    <$eventcatcher events="dblclick" actions-dblclick=<<anchor-actions>>>
+        <div style="width: 100%; height: 100%;" title="Anchor: Double-click text to spawn"></div>
+    </$eventcatcher>
+</div>
+
+<span style="position: relative; z-index: 20;">
+    <$button tag="span" class="tc-btn-invisible" tooltip="Drop Anchor" actions=<<anchor-actions>> style="cursor: pointer;">
+        {{$:/lithic/images/anchor}}
+    </$button>
+</span>
