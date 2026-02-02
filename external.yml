@@ -1,0 +1,14 @@
+# Lithic External Dependencies
+# ----------------------------
+
+- name: tiddlystudy
+  url: https://postkevone.github.io/tiddlystudy/index.html
+  cleanContent: true
+  copy:
+    - tiddlers/$__plugins_kookma_utility.json
+    - tiddlers/Detailed Documentation.tid
+
+- name: whiteboard-legacy
+  url: https://github.com/tiddly-gittly/tiddlywiki-whiteboard/releases/download/v0.3.5/plugins.zip
+  cleanContent: false
+  copy: []
