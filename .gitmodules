@@ -1,0 +1,20 @@
+# --- STREAMS ---
+# The primary outliner plugin
+[submodule "wiki/plugins/external/streams"]
+	path = wiki/plugins/external/streams
+	url = https://github.com/saqimtiaz/streams
+	branch = master
+
+# --- WHITEBOARD ---
+## For your engineering sketches and diagrams
+# [submodule "wiki/plugins/external/whiteboard"]
+##	path = wiki/plugins/external/whiteboard
+##	url = https://github.com/paulogic/tw-whiteboard
+##	branch = main
+
+# --- TIDDLYSTUDY MIRROR ---
+## Your custom repo for archived plugins
+# [submodule "wiki/plugins/external/tiddlystudy"]
+##	path = wiki/plugins/external/tiddlystudy
+##	url = https://github.com/Xyvir/TiddlyStudy-Mirror
+##	branch = main
