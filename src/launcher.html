@@ -152,6 +152,7 @@
     button:active { transform: scale(0.99); }
 
     ul { list-style-type: none; padding-left: 0; margin: 0; }
+    
     li { margin-bottom: 6px; display: flex; gap: 8px; align-items: center; }
     
     li > button {
@@ -162,6 +163,28 @@
       overflow: hidden;
       text-overflow: ellipsis;
       margin-top: 0;
+    }
+
+    /* MODIFIED: 2em matches the height of the neighbor button (~45px) */
+    li .remove-item-btn {
+      width: 2em;
+      height: 2em;
+      flex-grow: 0 !important;
+      flex-shrink: 0; 
+      padding: 0;
+      font-size: 1.4rem;
+      line-height: 1;
+      /* MODIFIED: Text color is now always red */
+      color: #ff5555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    li .remove-item-btn:hover {
+      /* MODIFIED: Only background and border change on hover */
+      background-color: rgba(255, 85, 85, 0.15);
+      border-color: #ff5555;
     }
 
     .clear-btn {
@@ -332,6 +355,22 @@
         return recentFiles;
       },
 
+      // NEW: Remove a single entry
+      removeRecent: async function(fileHandleToRemove) {
+        let recentFiles = (await idbKeyval.get('recentFiles')) || [];
+        
+        let newRecentFiles = [];
+        // We have to iterate and check isSameEntry asynchronously
+        for (let f of recentFiles) {
+             if (f.isSameEntry && !(await f.isSameEntry(fileHandleToRemove))) {
+                 newRecentFiles.push(f);
+             }
+        }
+        
+        await idbKeyval.set('recentFiles', newRecentFiles);
+        return newRecentFiles;
+      },
+
       getRecent: async function () {
         return (await idbKeyval.get('recentFiles')) || [];
       },
@@ -383,12 +422,29 @@
               const list = document.createElement('ul');
               for (const recent of recentFiles) {
                 const li = document.createElement('li');
+                
+                // Open File Button
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.innerText = recent.name;
                 button.onclick = () => window.openFile(recent);
                 
+                // Remove Entry Button
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.innerHTML = '&times;'; // HTML entity for 'x'
+                removeBtn.className = 'remove-item-btn';
+                removeBtn.title = "Remove from list";
+                removeBtn.onclick = async (e) => {
+                    // Prevent propagation to avoid weird UI glitches
+                    e.stopPropagation();
+                    await twFileManager.removeRecent(recent);
+                    // Refresh the list immediately
+                    displayRecentFiles();
+                };
+
                 li.appendChild(button);
+                li.appendChild(removeBtn);
                 list.appendChild(li);
               }
               sectionDiv.appendChild(list);
@@ -396,7 +452,7 @@
               const clearButton = document.createElement('button');
               clearButton.type = 'button';
               clearButton.onclick = clearRecent;
-              clearButton.innerText = 'Clear Recent List';
+              clearButton.innerText = 'Clear All Recent Files';
               clearButton.className = 'clear-btn';
               
               sectionDiv.appendChild(clearButton);
