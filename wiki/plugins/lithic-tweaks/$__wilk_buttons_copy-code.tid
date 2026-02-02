@@ -1,0 +1,19 @@
+created: 20240306203048995
+creator: wilk
+modified: 20251212135612180
+modifier: wilk
+tags: $:/tags/Global $:/wilk/tweaks/CopyCodeButton
+title: $:/wilk/buttons/copy-code
+
+\widget $codeblock(code, language)
+<div class="wilk-copy-code-button">
+	<$button
+	message="tm-copy-to-clipboard"
+	param=<<code>>
+	tooltip="Copy"
+	class="tc-btn-invisible">
+		{{$:/core/images/copy-clipboard}}
+	</$button>
+	<$genesis $type="$codeblock" $remappable="no" code=<<code>> language=<<language>>/>
+</div>
+\end

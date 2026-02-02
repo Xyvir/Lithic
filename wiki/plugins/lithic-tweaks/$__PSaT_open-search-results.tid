@@ -1,0 +1,29 @@
+created: 20200911070726778
+creator: PSaT
+discussion: https://groups.google.com/forum/?oldui=1#!topic/tiddlywiki/jef0YHGMwp8
+filename: open-search-results
+modified: 20260120204250318
+modifier: PSaT
+package-filter: [prefix[$:/PSaT/open-search-results]]
+psat-project: open-search-results
+psat-version: 0.0.1
+tags: $:/tags/AdvancedSearch/FilterButton
+title: $:/PSaT/open-search-results
+wiki-name: TW5Reference
+
+<$reveal state="$:/temp/advancedsearch" type="nomatch" text="">
+<$set name=search-input value={{$:/temp/advancedsearch}}>
+<$list filter="[subfilter{$:/temp/advancedsearch}limit[1]]" variable=nul>
+   <$button tooltip="Click to open all listed tiddlers" class="tc-btn-invisible">
+   
+   <$action-sendmessage $message="tm-close-all-tiddlers"/>
+   
+   <$list filter="[subfilter{$:/temp/advancedsearch}]">
+    <$action-navigate $to=<<currenttiddler>> $scroll=no/>
+   </$list>
+   
+   {{$:/core/images/preview-open}}
+   </$button>
+</$list>
+</$set>
+</$reveal>

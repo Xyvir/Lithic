@@ -1,0 +1,34 @@
+caption: Save Filter
+created: 20221123120249293
+modified: 20260121173513408
+tags: $:/tags/AdvancedSearch/FilterButton
+title: $:/TiddlyTools/Search/SaveFilter
+
+\define config()	$:/config/TiddlyTools/Filters/
+\define btn(t,i,a)	<$button class="tc-button tt-button" tooltip="$t$">{{$:/core/images/$i$-button}}$a$
+\define edit(f,x,p)	<$edit-text tiddler=<<popid>> field=$f$	$x$ placeholder="enter a $p$" class=tt-savefilter/>
+\define ok()		<$list filter="[<popid>get[tid]!is[blank]then<filt>!match[]]"><<confirm>>
+\define confirm()	<$action-confirm $message={{{ [<tid>] [[already exists. OK to overwrite?]] +[join[ ]] }}} $prompt={{{ [<tid>is[missing]then[no]] }}}><<save>>
+\define save()		<$action-setfield $tiddler=<<tid>> filter=<<filt>> description={{{ [<popid>get[tid]] }}} tags="$:/tags/Filter"/><<close>>
+\define close()		<$action-deletetiddler $tiddler=<<popid>>/>
+\define tip()		Save custom filter
+\define show()
+<style>.tt-savefilter { width:14em !important; }</style>
+<$let popid=<<qualify "$:/state/popup/savefilter">>>
+<$list filter="[{$:/temp/advancedsearch/input}!match[]]" variable=filt>
+<$button popup=<<popid>> class=tc-btn-invisible tooltip=<<tip>>>{{$:/core/images/save-button}}</$button>
+<$reveal state=<<popid>> type=popup position="below">
+
+<div class="tc-block-dropdown tc-popup-handle" style="margin-left:-8em; padding:0.5em;">
+
+<$let tid={{{ [<popid>get[tid]addprefix<config>] }}} filt={{{ [<popid>get[filt]else<filt>] }}}>
+@@float:right;<<btn cancel close "<<close>>">> <<btn "save filter" done "<<ok>>">>@@
+</$let>
+''<<tip>>''
+<div style="clear:both;text-align:right;">
+Name:		 <<edit tid	 "focus=yes"		"name">><br>
+Filter:		 <<edit filt "default=<<filt>>"	"filter">>
+\end
+
+<$list filter="[<storyTiddler>match<thisTiddler>!match[]]" emptyMessage=<<show>>>
+<$tiddler tiddler="TiddlyTools/Search/Info"><$transclude mode=block>For documentation, see https://TiddlyTools.com/#TiddlyTools/Search/Info
