@@ -1,0 +1,46 @@
+created: 20260120193149379
+modified: 20260120193600122
+tags: 
+title: $:/plugins/sq/streams/templates/stream-row-body
+
+<$vars 
+  todo1="[ ] " 
+  todo2="- [ ] " 
+  done1="[x] " 
+  done2="[X] " 
+  done3="- [x] " 
+  done4="- [X] "
+>
+
+<$list filter="[all[current]get[text]prefix<todo1>] [all[current]get[text]prefix<todo2>]" variable="null">
+  <div class="lithic-checkbox" style="display:flex; align-items:flex-start;">
+    <div style="margin-right:6px; margin-top:2px;">
+      <$checkbox tag="done"/>
+    </div>
+    
+    <div style={{{ [all[current]tag[done]then[flex:1; text-decoration:line-through; color:gray;]else[flex:1;]] }}}>
+       <$let itemText={{{ [{!!text}removeprefix<todo1>] ~[{!!text}removeprefix<todo2>] }}}>
+          <$transclude $variable="itemText"/>
+       </$let>
+    </div>
+  </div>
+</$list>
+
+<$list filter="[all[current]get[text]prefix<done1>] [all[current]get[text]prefix<done2>] [all[current]get[text]prefix<done3>] [all[current]get[text]prefix<done4>]" variable="null">
+  <div class="lithic-checkbox" style="display:flex; align-items:flex-start; color:gray;">
+    <div style="margin-right:6px; margin-top:2px;">
+      <input type="checkbox" checked disabled>
+    </div>
+    <div style="flex:1; text-decoration: line-through;">
+       <$let itemText={{{ [{!!text}removeprefix<done1>] ~[{!!text}removeprefix<done2>] ~[{!!text}removeprefix<done3>] ~[{!!text}removeprefix<done4>] }}}>
+          <$transclude $variable="itemText"/>
+       </$let>
+    </div>
+  </div>
+</$list>
+
+<$list filter="[all[current]get[text]!prefix<todo1>!prefix<todo2>!prefix<done1>!prefix<done2>!prefix<done3>!prefix<done4>]" variable="null">
+   <$transclude field="text" mode="block"/>
+</$list>
+
+</$vars>

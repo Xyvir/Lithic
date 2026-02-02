@@ -1,0 +1,17 @@
+caption: {{$:/plugins/phiv/streams-fusion/language##settings-listformat-caption}}
+created: 20210726104706258
+description: {{$:/plugins/phiv/streams-fusion/language##settings-listformat-description}}
+modified: 20251209163345778
+option-names: bullets numbers paragraphs
+option-values: * # p
+settings-group: z-streams-fusion
+settings-template: $:/plugins/sq/streams/ui/templates/settings/select
+short-caption-neutral: {{$:/plugins/phiv/streams-fusion/language##settings-listformat-short-caption-neutral}}
+short-caption-no: {{$:/plugins/phiv/streams-fusion/language##settings-listformat-short-caption-no}}
+short-caption-yes: {{$:/plugins/phiv/streams-fusion/language##settings-listformat-short-caption-yes}}
+title: $:/config/sq/streams-fusion/listformat
+value-neutral: #
+value-no: *
+value-yes: p
+
+p

@@ -1,0 +1,10 @@
+created: 20251209004643931
+modified: 20251209143539211
+tags: $:/tags/Stylesheet
+title: $:/lithic/streams-menu-fix
+
+/* Adapt menu text to the current theme's foreground color */
+.sq-contextmenu .tc-menu-list-item, .sq-contextmenu .tc-menu-list-item a {
+    color: <<colour foreground>> !important; 
+    fill: <<colour foreground>> !important;
+}

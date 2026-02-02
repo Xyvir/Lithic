@@ -1,0 +1,17 @@
+caption: {{$:/plugins/tiddlywiki/markdown/images/new-markdown-button}} {{$:/language/Buttons/NewMarkdown/Caption}}
+created: 20260121165648644
+description: {{$:/language/Buttons/NewMarkdown/Hint}}
+modified: 20260121165650411
+tags: $:/tags/PageControls
+title: $:/plugins/tiddlywiki/markdown/new-markdown-button
+
+\whitespace trim
+<$button tooltip={{$:/language/Buttons/NewMarkdown/Hint}} aria-label={{$:/language/Buttons/NewMarkdown/Caption}} class=<<tv-config-toolbar-class>>>
+<$action-sendmessage $message="tm-new-tiddler" type="text/markdown"/>
+<%if [<tv-config-toolbar-icons>match[yes]] %>
+{{$:/plugins/tiddlywiki/markdown/images/new-markdown-button}}
+<%endif%>
+<%if [<tv-config-toolbar-text>match[yes]] %>
+<span class="tc-btn-text"><$text text={{$:/language/Buttons/NewMarkdown/Caption}}/></span>
+<%endif%>
+</$button>

@@ -1,0 +1,60 @@
+/*\
+title: $:/Lithic/Patches/IsolateDoubleClicks
+type: application/javascript
+module-type: startup
+
+Prevents double-click events inside the Tldraw widget from bubbling up 
+and triggering the Streams "double click to edit" action.
+\*/
+(function(){
+"use strict";
+
+exports.name = "lithic-isolate-double-clicks";
+exports.platforms = ["browser"];
+exports.after = ["startup"];
+exports.synchronous = true;
+
+exports.startup = function() {
+    console.log("🛡️ Lithic Double-Click Isolation: Initializing...");
+
+    var addIsolation = function(node) {
+        // Avoid attaching twice
+        if(node.dataset.lithicDblClickIsolated) return;
+        
+        // Listen for double clicks and kill them before they bubble to Streams
+        node.addEventListener('dblclick', function(e) {
+            e.stopPropagation();
+            // console.log("🛡️ Lithic: Stopped double-click from triggering Streams.");
+        }, false); // Bubble phase
+
+        node.dataset.lithicDblClickIsolated = "active";
+    };
+
+    // Watch for new Tldraw containers appearing in the DOM
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(function(node) {
+                if (node.nodeType !== 1) return;
+
+                // 1. Check if the added node IS the container
+                if (node.classList.contains('tw-whiteboard-tldraw-container')) {
+                    addIsolation(node);
+                } 
+                // 2. Check if the container is INSIDE the added node
+                else if (node.querySelector) {
+                    var containers = node.querySelectorAll('.tw-whiteboard-tldraw-container');
+                    for(var i=0; i<containers.length; i++) {
+                        addIsolation(containers[i]);
+                    }
+                }
+            });
+        });
+    });
+
+    if (document.body) {
+        observer.observe(document.body, { childList: true, subtree: true });
+        console.log("🛡️ Lithic Isolation Field: Active.");
+    }
+};
+
+})();

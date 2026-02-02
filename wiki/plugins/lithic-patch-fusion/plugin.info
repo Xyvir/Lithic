@@ -1,0 +1,11 @@
+{
+    "created": "20260110200451739",
+    "title": "$:/plugins/xyvir/lithic-patch-fusion",
+    "author": "Xyvir",
+    "description": "Functional extensions for consolidating and merging hierarchical node content within the outliner.",
+    "name": "Streams Fusion_LithicPatch",
+    "plugin-type": "plugin",
+    "version": "0.0.1",
+    "modified": "20260110200509987",
+    "parent-plugin": "$:/plugins/phiv/streams-fusion"
+}

@@ -1,0 +1,10 @@
+{
+    "created": "20260110200549392",
+    "title": "$:/plugins/xyvir/lithic-patch-whiteboard",
+    "author": "Xyvir",
+    "description": "Integration logic and UI enhancements for whiteboard and freehand drawing tools within the Story River.",
+    "plugin-type": "plugin",
+    "version": "0.0.1",
+    "modified": "20260110230834139",
+    "parent-plugin": "$:/plugins/linonetwo/tw-whiteboard"
+}

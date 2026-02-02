@@ -1,0 +1,103 @@
+created: 20210503175857983
+modified: 20260125212619262
+tags: tiddlystudy
+title: $:/plugins/sq/streams/templates/stream-row-template
+
+\whitespace trim
+<$qualify
+	name="row-children-visibility-state"
+	title={{{ [[$:/state/sq/streams/visibility/]addsuffix<currentTiddler>] }}}
+>
+<$droppable 
+	actions=<<stream-drop-actions>>
+	tag="div"
+	class={{{ stream-droppable [list[!!stream-list]is[tiddler]then[]else[stream-row-nochildren]] +[join[ ]]}}}
+	enable={{{[<drag-title-nextsibling-state>get[text]match<currentTiddler>then[no]] ~[<enable-dnd>]}}}
+	disabledClass="stream-node-disabled"
+	data-node-title=<<currentTiddler>>
+>
+	<div class="tc-droppable-placeholder"/>
+	
+    <div class={{{ stream-row [<row-children-visibility-state>get[text]match[hide]then[stream-row-children-collapsed]] +[join[ ]]}}}
+		style="position: relative;"
+        data-node-title=<<currentTiddler>>
+		data-node-tags={{!!tags}}
+	>
+		<$draggable
+			tag="div"
+			tiddler=<<currentTiddler>>
+			startactions=<<node-drag-start-actions>>
+			endactions=<<node-drag-end-actions>>
+			class="stream-node-control sq-contextmenu-container"
+			data-node-title=<<currentTiddler>>
+		>
+			<button type="button" class="tc-btn-invisible stream-node-ctrl-btn stream-node-collapser" data-btn-role="stream-node-visibility" data-rowchildren-visibility-state=<<row-children-visibility-state>>>
+				{{$:/plugins/sq/streams/icons/node-expand-arrow}}
+			</button>
+			<div class="stream-node-handle tc-btn-invisible stream-node-ctrl-btn" title={{{ [<currentTiddler>split[/]last[]] }}} data-btn-role="stream-node-decorator" data-node-title=<<currentTiddler>>>
+					<div class="stream-node-handle-inner"/>
+			</div>
+
+            <$list filter="[<storyTiddler>tag[Journal]]" variable="ignore">
+             <$let 
+                parent={{{ [<currentTiddler>split[/]butlast[]join[/]] }}}
+                next-node={{{ [<parent>get[stream-list]enlist-input[]after<currentTiddler>] }}}
+                
+                time-str-1={{{ [<currentTiddler>split[/]last[]trim[]] }}}
+                h1={{{ [<time-str-1>split[:]nth[1]trim[]] }}}
+                m1={{{ [<time-str-1>split[:]nth[2]trim[]] }}}
+                total-1={{{ [<h1 >multiply[60]add<m1>] }}}
+                
+                time-str-2={{{ [<next-node>split[/]last[]trim[]] }}}
+                h2={{{ [<time-str-2>split[:]nth[1]trim[]] }}}
+                m2={{{ [<time-str-2>split[:]nth[2]trim[]] }}}
+                total-2={{{ [<h2 >multiply[60]add<m2>] }}}
+                
+                diff={{{ [<total-2>subtract<total-1>abs[]] }}}
+                dropped={{{ [<diff>divide[10]floor[]multiply[10]] }}}
+                chunks={{{ [<dropped>divide[30]round[]] }}}
+                
+                raw-result={{{ [<chunks>divide[2]fixed[1]] }}}
+             >
+                <$list filter="[<total-1>!match[0]] :filter[<total-2>!match[0]] :filter[<raw-result>!match[0.0]]">
+                    <div style="position: absolute; top: 18px; right: 1em; text-align: right; pointer-events: none; line-height: 1;">
+                        <code style="font-size: 0.9em; padding: 1px 4px; border-radius: 4px; opacity: 0.8;">
+                            <span style="margin-right: 1px;">⏱</span>
+                            <$text text={{{ [<raw-result>search-replace[.5],[ ½]trim:suffix[.0]trim:prefix[0]] }}} />
+                        </code>
+                    </div>
+                </$list>
+             </$let>
+            </$list>
+            <$list filter="[<row-edit-state>get[text]match<currentTiddler>]" variable="none">
+                <$button 
+                    class="tc-btn-invisible stream-node-ctrl-btn" 
+                                            style="position: absolute; bottom: 2px; left: 0; width: 2em; text-align: center; height:auto; opacity:0.7; z-index: 10; transform: translate(1em, -1.5em);" 
+                    tooltip="Done" 
+                    aria-label="Finish Editing"
+                >
+                    <<cancel-edit-node-actions>>
+                    ✔
+                </$button>
+            </$list>
+            </$draggable>
+		<div class="stream-node-block">
+			<$list filter="[<row-edit-state>get[text]!is[blank]else[]match<currentTiddler>]" variable="NULL" emptyMessage="""{{||$:/plugins/sq/streams/templates/stream-row-body}}""">
+				<$keyboard-plus shortcutTag="$:/tags/streams/keyboard-shortcuts">
+					{{||$:/plugins/sq/streams/editor-template}}
+				</$keyboard-plus>			
+			</$list>
+            {{||$:/plugins/kebi/tiddlystudy-references/filters-node}}
+		</div>
+	</div>
+</$droppable>
+<$reveal
+	tag="div"
+	type="nomatch"
+	stateTitle=<<row-children-visibility-state>>
+	text="hide"
+	class="stream-row-children"
+>
+		{{||$:/plugins/sq/streams/templates/stream-root-template}}
+</$reveal>
+</$qualify>

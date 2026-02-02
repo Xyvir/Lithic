@@ -1,0 +1,11 @@
+{
+    "created": "20260110200357387",
+    "title": "$:/plugins/xyvir/lithic-patch-streams",
+    "author": "Xyvir",
+    "description": "Structural refinements and configuration overrides (markdown as default node) for the Streams outliner ecosystem.",
+    "name": "Streams_LithicPatch",
+    "plugin-type": "plugin",
+    "version": "0.0.13",
+    "modified": "20260110200412717",
+    "parent-plugin": "$:/plugins/sq/streams"
+}

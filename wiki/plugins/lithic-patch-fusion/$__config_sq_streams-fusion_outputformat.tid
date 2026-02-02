@@ -1,0 +1,13 @@
+caption: {{$:/plugins/phiv/streams-fusion/language##settings-outputformat-caption}}
+created: 20210728010110712
+description: {{$:/plugins/phiv/streams-fusion/language##settings-outputformat-description}}
+modified: 20251209163411147
+option-names: html wikitext
+option-values: html wikitext
+settings-group: z-streams-fusion
+settings-template: $:/plugins/sq/streams/ui/templates/settings/select
+short-caption-no: {{$:/plugins/phiv/streams-fusion/language##settings-outputformat-short-caption-no}}
+short-caption-yes: {{$:/plugins/phiv/streams-fusion/language##settings-outputformat-short-caption-yes}}
+title: $:/config/sq/streams-fusion/outputformat
+value-neutral: html
+value-no: wikitext
