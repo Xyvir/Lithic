@@ -1,0 +1,1 @@
+So is `[[Links]]` and `CamelCase` style wikipage links.

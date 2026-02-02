@@ -1,0 +1,1 @@
+use discord-style ``/slashcommands`` for most formatting and insertion. like ``/draw``

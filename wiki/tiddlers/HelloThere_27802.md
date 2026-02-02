@@ -1,0 +1,1 @@
+Lithic is an 100% client-side webapp; heavily inspired by Logseq.

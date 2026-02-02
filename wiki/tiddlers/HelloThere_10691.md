@@ -1,0 +1,1 @@
+Lithic has sane printing defaults; it prints only the styled markdown content from all pages open in the main view. This makes it suited for quick homework or similar submissions when you don't need heavy typesetting like Latex.

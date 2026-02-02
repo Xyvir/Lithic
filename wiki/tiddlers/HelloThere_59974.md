@@ -1,0 +1,1 @@
+A Lith is a self-contained monolith HTML containing both the app and all your added content.

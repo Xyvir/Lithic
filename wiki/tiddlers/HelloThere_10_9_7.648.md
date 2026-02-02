@@ -1,0 +1,1 @@
+A "simple mode" / "advanced mode" toggle

@@ -1,0 +1,1 @@
+> Lithic is built on the magic of   `TiddlyWiki`;   its a mild extension of  `TiddlyStudy` with a good dose of my opinions.
