@@ -1,0 +1,47 @@
+# .github/workflows/update-external.yml
+name: Update External Dependencies
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  update-external:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Mirror Engine
+        run: node scripts/mirror.js
+
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "Jane-Bot"
+          git config user.email "bot@lithic.uk"
+          
+          # Add all potential output locations
+          git add wiki/plugins/external/
+          git add wiki/tiddlers/
+          git add vendor-lock.json
+          
+          # Only commit if there are actual changes
+          if [ -n "$(git status --porcelain)" ]; then
+            git commit -m "chore: automated external update [skip ci]"
+            git push
+          else
+            echo "No changes detected. Skipping commit."
+          fi
