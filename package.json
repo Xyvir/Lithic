@@ -1,11 +1,19 @@
 {
-  "name": "lithic-build",
-  "version": "0.0.0",
+  "name": "lithic",
+  "version": "1.0.0",
+  "description": "Lithic: A TiddlyWiki-powered PKMS built on Tauri",
   "private": true,
   "scripts": {
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "mirror": "node scripts/mirror.js",
+    "update-external": "node scripts/mirror.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "author": "Tyler Mills",
+  "license": "ISC",
   "devDependencies": {
-    "@tauri-apps/cli": "^1"
+    "@tauri-apps/cli": "^1",
+    "js-yaml": "^4.1.0",
+    "tiddlywiki": "^5.3.3"
   }
 }
