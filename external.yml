@@ -3,12 +3,37 @@
 
 - name: tiddlystudy
   url: https://postkevone.github.io/tiddlystudy/index.html
-  cleanContent: true
+  cleanContent: false
   copy:
     - tiddlers/$__plugins_kookma_utility.json
     - tiddlers/Detailed Documentation.tid
 
 - name: whiteboard-legacy
   url: https://github.com/tiddly-gittly/tiddlywiki-whiteboard/releases/download/v0.3.5/plugins.zip
+  cleanContent: false
+  copy: []
+
+- name: comptext
+  url: https://snowgoon88.github.io/TW5-extendedit/
+  cleanContent: false
+  copy: []
+
+- name: relink
+  url: https://flibbles.github.io/tw5-relink/
+  cleanContent: false
+  copy: []
+  
+- name: streams
+  url: https://saqimtiaz.github.io/streams/
+  cleanContent: false
+  copy: []
+
+- name: aliases
+  url: https://mklauber.github.io/tw5-plugins
+  cleanContent: false
+  copy: []
+
+- name: calendar
+  url: https://bjtools.tiddlyspot.com/
   cleanContent: false
   copy: []
