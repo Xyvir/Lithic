@@ -1,0 +1,29 @@
+ac: 11
+ac_description: hide armor
+alignment: chaotic evil
+attacks: //''Greatclub:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one target. //Hit:// 13 (2d8+4) bludgeoning damage.<br><br>//''Javelin:'' Melee or Ranged Weapon Attack:// +6 to hit, reach 5 ft. or range 30/120 ft., one target. //Hit:// 11 (2d6+4) piercing damage.
+cha: 7
+challenge_rating: 2
+con: 16
+condition_immunities: 
+created: 20181223151326833
+creature_type: giant
+damage_immunities: 
+damage_resistances: 
+dex: 8
+features: 
+hp: 59
+hp_generation: 7d10+21
+int: 5
+languages: Common, Giant
+modified: 20181223151326833
+saving_throws: 
+senses: Darkvision 60 ft., PP 8
+size: Large
+skills: 
+speed: 40 ft.
+str: 19
+title: Ogre
+type: Creature
+wis: 7
+xp: 450

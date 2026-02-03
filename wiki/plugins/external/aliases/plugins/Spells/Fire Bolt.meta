@@ -1,0 +1,12 @@
+at_higher_level: This spell’s damage increases by 1d10 when you reach 5th level (2d10), 11th level (3d10), and 17th level (4d10).
+casting_time: 1 Action
+classes: [[Sorcerer]] [[Wizard]]
+components: V, S
+concentration: No
+duration: Instantaneous
+level: 0
+range: 120 feet
+ritual: No
+school: Evocation
+title: Fire Bolt
+type: Spell

@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Sorcerer]] [[Wizard]]
+components: V, S, M (a pinch of talc and a small sprinkling of powdered silver)
+concentration: No
+duration: 1 hour
+level: 2
+range: Self
+ritual: No
+school: Divination
+title: See invisibility
+type: Spell

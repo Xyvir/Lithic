@@ -1,0 +1,29 @@
+ac: 12
+ac_description: natural armor
+alignment: chaotic evil
+attacks: //''Multiattack:''// The ettin makes two attacks: one with its battleaxe and one with its morningstar.<br><br>//''Battleaxe:'' Melee Weapon Attack:// +7 to hit, reach 5 ft., one target. //Hit:// 14 (2d8+5) slashing damage.<br><br>//''Morningstar:'' Melee Weapon Attack:// +7 to hit, reach 5 ft., one target. //Hit:// 14 (2d8+5) piercing damage.
+cha: 8
+challenge_rating: 4
+con: 17
+condition_immunities: 
+created: 20181223151326825
+creature_type: giant
+damage_immunities: 
+damage_resistances: 
+dex: 8
+features: //''Two Heads:''// The ettin has advantage on Wisdom (Perception) checks and on saving throws against being blinded, charmed, deafened, frightened, stunned, and knocked unconscious.<br><br>//''Wakeful:''// When one of the ettin's heads is asleep, its other head is awake.
+hp: 85
+hp_generation: 10d10+30
+int: 6
+languages: Giant, Orc
+modified: 20181223151326825
+saving_throws: 
+senses: Darkvision 60 ft., PP 14
+size: Large
+skills: Perception +4
+speed: 40 ft.
+str: 21
+title: Ettin
+type: Creature
+wis: 10
+xp: 1100

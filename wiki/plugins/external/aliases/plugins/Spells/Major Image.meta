@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 6th level or higher, the spell lasts until dispelled, without requiring your concentration.
+casting_time: 1 Action
+classes: [[Bard]] [[Sorcerer]] [[Warlock]] [[Wizard]]
+components: V, S, M (a bit of fleece)
+concentration: Yes
+duration: Concentration, up to 10 minutes
+level: 3
+range: 120 feet
+ritual: No
+school: Illusion
+title: Major Image
+type: Spell

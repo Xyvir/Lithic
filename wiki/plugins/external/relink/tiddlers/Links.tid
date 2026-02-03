@@ -1,0 +1,13 @@
+caption: Links
+tags: Documentation WikiText
+title: Links
+
+All links which Relink finds that point to the changing title will be updated, however, their captions won't be touched.
+
+```
+[[Tiddler Title]]
+
+[[Displayed Link Title|Tiddler Title]]
+```
+
+<<link-to-tab Demo Demo/Links Demo>>

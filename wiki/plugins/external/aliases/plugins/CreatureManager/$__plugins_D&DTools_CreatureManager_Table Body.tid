@@ -1,0 +1,19 @@
+created: 20201028035043820
+modified: 20201028035123214
+tags: 
+title: $:/plugins/D&DTools/CreatureManager/Table Body
+
+\define filters()
+[all[tiddlers+shadows]type[Creature]<$list filter="[[$:/temp/Creature Filter]fields[]] -title -created -modified -text -sort" variable="field"><$list filter="[[$:/temp/Creature Filter]has<field>]" variable="">in:<<field>>[$:/temp/Creature Filter!!<<field>>]</$list></$list>sortan{$:/temp/Creature Filter!!sort}]
+\end
+
+<$wikify name="filter" text=<<filters>> >
+<$list filter=<<filter>>>
+<tr>
+<td><$link>{{!!title}}</$link></td>
+<$list filter="[enlist{$:/plugins/D&DTools/CreatureManager/lookups!!column_order}] -[[title]]" variable="column">
+<td><$transclude field=<<column>> /></td>
+</$list>
+</tr>
+</$list>
+</$wikify>

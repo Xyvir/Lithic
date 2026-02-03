@@ -1,0 +1,20 @@
+created: 20140217190556968
+modified: 20140218020659661
+revision: 0
+tags: orderlistdemo Tw5Info
+title: html paragraph rendering inconsistence · Issue #82 · Jermolene/TiddlyWiki5
+type: text/vnd.tiddlywiki
+
+<html><br>pageref="<a class="externalLink" href="https://github.com/Jermolene/TiddlyWiki5/issues/82" title="External link to https://github.com/Jermolene/TiddlyWiki5/issues/82" target="_blank">https://github.com/Jermolene/TiddlyWiki5/issues/82</a>" <br><br>date="Thursday, December 19th, 2013 at 9:51:10 am"<br><h1></h1><span>If you want to switch to raw HTML, and suppress wikitext parsing, you can
+now do so by embedding it like this:
+
+```
+$$$.html
+<div>
+one two
+three four
+
+five six
+</div>
+$$$
+```

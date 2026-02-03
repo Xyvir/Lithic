@@ -1,0 +1,30 @@
+ac: 11
+ac_description: 
+alignment: neutral
+attacks: //''Spear:'' Melee or Ranged Weapon Attack:// +2 to hit, reach 5 ft. or range 20/60 ft., one target. //Hit:// 3 (1d6) piercing damage, or 4 (1d8) piercing damage if used with two hands to make a melee attack.
+cha: 12
+challenge_rating: 1/8
+con: 12
+condition_immunities: 
+created: 20181223151507326
+creature_type: humanoid
+damage_immunities: 
+damage_resistances: 
+dex: 13
+features: //''Amphibious:''// The merfolk can breathe air and water.
+hp: 11
+hp_generation: 2d8+2
+int: 11
+languages: Aquan, Common
+modified: 20181223151507326
+saving_throws: 
+senses: PP 12
+size: Medium
+skills: Perception +2
+speed: 10 ft., swim 40 ft.
+str: 10
+subtype: merfolk
+title: Merfolk
+type: Creature
+wis: 11
+xp: 25

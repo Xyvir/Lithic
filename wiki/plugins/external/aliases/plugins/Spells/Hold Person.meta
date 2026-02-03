@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 3rd level or higher, you can target one additional humanoid for each slot level above 2nd. The humanoids must be within 30 feet of each other when you target them.
+casting_time: 1 Action
+classes: [[Bard]] [[Cleric]] [[Druid]] [[Sorcerer]] [[Warlock]] [[Wizard]]
+components: V, S, M (a small, straight piece of iron)
+concentration: Yes
+duration: Concentration, up to 1 minute
+level: 2
+range: 60 feet
+ritual: No
+school: Enchantment
+title: Hold Person
+type: Spell

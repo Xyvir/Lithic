@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]] [[Paladin]]
+components: V, S
+concentration: No
+duration: Instantaneous
+level: 3
+range: 30 feet
+ritual: No
+school: Conjuration
+title: Create Food and Water
+type: Spell

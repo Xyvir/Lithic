@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Druid]] [[Ranger]]
+components: V, S, M (a sprig of mistletoe)
+concentration: No
+duration: Instantaneous
+level: 1
+range: Touch
+ritual: No
+school: Transmutation
+title: Goodberry
+type: Spell

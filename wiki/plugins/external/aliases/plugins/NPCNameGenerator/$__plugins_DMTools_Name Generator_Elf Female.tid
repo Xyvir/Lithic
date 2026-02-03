@@ -1,0 +1,28 @@
+caption: Elf Female
+created: 20190810194812016
+firstnames: Adrie Althaea Anastrianna Andraste Antinua Bethrynna Birel Caelynn Drusilia Enna Felosial Ielenia Jelenneth Keyleth Leshanna Lia Meriele Mialee Naivara Quelenna Quillathe Sariel Shanairra Shava Silaqui Theirastra Thia Vadania Valanthe Xanaphia
+lastnames: [[Amakiir (Gemflower)]] [[Amastacia (Starflower)]] [[Galanodel (Moonwhisper)]] [[Holimion (Diamonddew)]] [[Ilphelkiir (Gemblossom)]] [[Liadon (Silverfrond)]] [[Meliamne (Oakenheel)]] [[Naïlo (Nightbreeze)]] [[Siannodel (Moonbrook)]] [[Xiloscient (Goldpetal)]]
+modified: 20190813120916640
+seed: 08:09:16
+tags: [[Name Generator]]
+title: $:/plugins/DMTools/Name Generator/Elf Female
+
+<$button>
+<$action-setfield $field="seed" $value=<<now "0hh:0mm:0ss">>/>
+Refresh
+</$button>
+
+<$list filter="[enlist{!!firstnames}shuffle{!!seed}first[10]]" variable="first">
+<$list filter="[enlist{!!lastnames}shuffle<first>shuffle{!!seed}first[]addprefix[ ]addprefix<first>]">
+Hello
+
+<$button class="tc-btn-invisible tc-tiddlylink"> 
+<$action-sendmessage $message="tm-new-tiddler" title={{!!title}} tags="NPC" text={{$:/plugins/DMTools/Name Generator/NPC Template}} />
+{{!!title}}
+</$button>
+<br />
+</$list>
+</$list>
+
+
+</$list>

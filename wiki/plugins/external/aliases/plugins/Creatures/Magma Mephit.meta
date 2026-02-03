@@ -1,0 +1,29 @@
+ac: 11
+ac_description: 
+alignment: neutral evil
+attacks: //''Claws:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one creature. //Hit:// 3 (1d4+1) slashing damage plus 2 (1d4) fire damage.<br><br>//''Fire Breath (Recharge 6):''// The mephit exhales a 15-foot cone of fire. Each creature in that area must succeed on a DC 11 Dexterity saving throw, taking 7 (2d6) fire damage on a failed save, or half as much damage on a successful one.
+cha: 10
+challenge_rating: 1/2
+con: 12
+condition_immunities: poisoned
+created: 20181223151326831
+creature_type: elemental
+damage_immunities: fire, poison
+damage_resistances: 
+dex: 12
+features: //''Damage Vulnerabilities:''// cold<br><br>//''Death Burst:''// When the mephit dies, it explodes in a burst of lava. Each creature within 5 feet of it must then succeed on a DC 11 Dexterity saving throw, taking 7 (2d6) fire damage on a failed save, or half as much damage on a successful one.<br><br>//''False Appearance:''// While the mephit remains motionless, it is indistinguishable from an ordinary mound of magma.<br><br>//''Innate Spellcasting (1/Day):''// The mephit can innately cast //[[Heat Metal]]// (spell save DC 10), requiring no material components. Its innate spellcasting ability is Charisma.
+hp: 22
+hp_generation: 5d6+5
+int: 7
+languages: Ignan, Terran
+modified: 20190104143059506
+saving_throws: 
+senses: Darkvision 60 ft., PP 10
+size: Small
+skills: Stealth +3
+speed: 30 ft., fly 30 ft.
+str: 8
+title: Magma Mephit
+type: Creature
+wis: 10
+xp: 100

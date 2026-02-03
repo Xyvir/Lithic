@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Druid]] [[Sorcerer]] [[Wizard]]
+components: V, S, M (a caterpillar cocoon)
+concentration: Yes
+duration: Concentration, up to 1 hour
+level: 4
+range: 60 feet
+ritual: No
+school: Transmutation
+title: Polymorph
+type: Spell

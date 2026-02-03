@@ -1,0 +1,25 @@
+caption: Dwarf Female
+created: 20190810194704996
+firstnames: Amber Artin Audhild Bardryn Dagnal Diesa Eldeth Falkrunn Finellen Gunnloda Gurdis Helja Hlin Kathra Kristryd Ilde Liftrasa Mardred Riswynn Sannl Torbera Torgga Vistra
+lastnames: Balderk Battlehammer Brawnanvil Dankil Fireforge Frostbeard Gorunn Holderhek Ironfist Loderr Lutgehr Rumnaheim Strakeln Torunn Ungart
+modified: 20190910123337875
+seed: 15:29:29
+tags: [[Name Generator]]
+title: $:/plugins/DMTools/Name Generator/Dwarf Female
+
+<$button>
+<$action-setfield $field="seed" $value=<<now "0hh:0mm:0ss">>/>
+Refresh
+</$button>
+
+<$list filter="[enlist{!!firstnames}shuffle{!!seed}first[10]]" variable="first">
+<$list filter="[enlist{!!lastnames}shuffle<first>shuffle{!!seed}first[]addprefix[ ]addprefix<first>]">
+Hello
+
+<$button class="tc-btn-invisible tc-tiddlylink"> 
+<$action-sendmessage $message="tm-new-tiddler" title={{!!title}} tags="NPC" text={{$:/plugins/DMTools/Name Generator/NPC Template}} />
+{{!!title}}
+</$button>
+<br />
+</$list>
+</$list>

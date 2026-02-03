@@ -1,0 +1,30 @@
+ac: 12
+ac_description: hide armor
+alignment: any alignment
+attacks: //''Spear:'' Melee or Ranged Weapon Attack:// +3 to hit, reach 5 ft. or range 20/60 ft., one target. //Hit:// 4 (1d6+1) piercing damage, or 5 (1d8+1) piercing damage if used with two hands to make a melee attack.
+cha: 8
+challenge_rating: 1/8
+con: 12
+condition_immunities: 
+created: 20181223151507333
+creature_type: humanoid
+damage_immunities: 
+damage_resistances: 
+dex: 11
+features: //''Pack Tactics:''// The warrior has advantage on an attack roll against a creature if at least one of the warrior's allies is within 5 feet of the creature and the ally isn't incapacitated.
+hp: 11
+hp_generation: 2d8+2
+int: 8
+languages: any one language
+modified: 20181223151507333
+saving_throws: 
+senses: PP 10
+size: Medium
+skills: 
+speed: 30 ft.
+str: 13
+subtype: any race
+title: Tribal Warrior
+type: Creature
+wis: 11
+xp: 25

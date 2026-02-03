@@ -1,0 +1,5 @@
+Wikitext is defined in tiddlywiki using parser rules.  Flexitype allows these rules to be argmented and/or substituted with new rule. See [[Using new wikirules]]
+
+In the example below rules are substituted or changed for new rules. The type of the tiddler is "text/vnd.twbase;flexibility=MDL" where [[MDL]] is the tiddler choosing the rules.
+
+{{$:/plugins/bj/markdownlike/readme}}

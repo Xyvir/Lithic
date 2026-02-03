@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]]
+components: V
+concentration: No
+duration: Up to 1 minute
+level: 0
+range: 30 feet
+ritual: No
+school: Transmutation
+title: Thaumaturgy
+type: Spell

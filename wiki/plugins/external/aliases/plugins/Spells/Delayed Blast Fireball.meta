@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 8th level or higher, the base damage increases by 1d6 for each slot level above 7th.
+casting_time: 1 Action
+classes: [[Sorcerer]] [[Wizard]]
+components: V, S, M  (a tiny ball of bat guano and sulfur)
+concentration: Yes
+duration: Concentration, up to 1 minute
+level: 7
+range: 150 feet
+ritual: No
+school: Evocation
+title: Delayed Blast Fireball
+type: Spell

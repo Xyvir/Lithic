@@ -1,0 +1,29 @@
+ac: 10
+ac_description: 
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +2 to hit, reach 5 ft., one target. //Hit:// 1 piercing damage.
+cha: 5
+challenge_rating: 0
+con: 12
+condition_immunities: 
+created: 20181223151326818
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 11
+features: //''Keen Smell:''// The badger has advantage on Wisdom (Perception) checks that rely on smell.
+hp: 3
+hp_generation: 1d4-1
+int: 2
+languages: ---
+modified: 20181223151326818
+saving_throws: 
+senses: Darkvision 30 ft., PP 11
+size: Tiny
+skills: 
+speed: 20 ft., burrow 5 ft.
+str: 4
+title: Badger
+type: Creature
+wis: 12
+xp: 10

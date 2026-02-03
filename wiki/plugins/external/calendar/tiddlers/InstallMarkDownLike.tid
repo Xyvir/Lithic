@@ -1,0 +1,7 @@
+created: 20160218115855701
+modified: 20160219105449197
+revision: 0
+title: InstallMarkDownLike
+type: text/vnd.tiddlywiki
+
+MarkDownLike depends upon 	the flexitype plugin ($:/plugins/bj/flexitype), which therefore needs to be also copied (or dragged) to your tiddlywiki along with $:/plugins/bj/plugins/markdownlike

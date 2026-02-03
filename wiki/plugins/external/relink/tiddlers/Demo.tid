@@ -1,0 +1,22 @@
+caption: Interactive Demo
+list: Demo/Links
+tags: Relink
+title: Demo
+
+<!-- NOTICE
+
+This tiddler merely transcludes all the examples together. If you'd like to
+edit tiddlers to experiment with alterations, click the title link of any
+example to tinker with that example directly.
+
+-->
+
+Change the tiddler ''[[Frodo]]'' down below to see how these examples react.
+
+<$macrocall $name="tabs"
+	tabsList="[[Demo]tagging[]!tag[Supplemental]] [[Demo]tagging[]tag[Supplemental]]"
+	default="Demo/Links"
+	template="Templates/Demo"
+	buttonTemplate="Templates/Button"
+	explicitState='$:/state/tab/relink/Demo'
+/>

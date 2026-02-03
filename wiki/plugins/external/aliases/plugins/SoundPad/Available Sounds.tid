@@ -1,0 +1,14 @@
+created: 20180412121908386
+modified: 20180412123054801
+tags: 
+title: Available Sounds
+
+The following Sounds are available in this wiki.  Add it if you want all the sounds, or feel free to copy individual sounds from this list to your wiki.
+
+Filter: <$edit-text tiddler="$:/temp/Available Sounds/filter" tag="input" />
+
+<$scrollable class='available-sounds'>
+<$list filter="[all[tiddlers+shadows]type[audio/ogg]search{$:/temp/Available Sounds/filter!!text}]">
+<tr><th><$link>{{!!title}}</$link><br /></th><td>{{}}</td></tr>
+</$list>
+</$scrollable>

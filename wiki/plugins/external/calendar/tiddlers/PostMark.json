@@ -1,0 +1,7 @@
+{
+  "parserrules": {
+    "leftOfMacro": "\\[\\=\\[",
+    "rightOfMacro": "\\]\\=\\]"
+  },
+  "preparser": "text/x-Md>text/plain"
+}

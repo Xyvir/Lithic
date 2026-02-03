@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]] [[Druid]]
+components: V, S
+concentration: No
+duration: 7 days
+level: 5
+range: Touch
+ritual: No
+school: Necromancy
+title: Contagion
+type: Spell

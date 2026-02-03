@@ -1,0 +1,29 @@
+ac: 10
+ac_description: 
+alignment: unaligned
+attacks: //''Multiattack:''// The badger makes two attacks: one with its bite and one with its claws.<br><br>//''Bite:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 4 (1d6+1) piercing damage.<br><br>//''Claws:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 6 (2d4+1) slashing damage.
+cha: 5
+challenge_rating: 1/4
+con: 15
+condition_immunities: 
+created: 20181223151326826
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 10
+features: //''Keen Smell:''// The badger has advantage on Wisdom (Perception) checks that rely on smell.
+hp: 13
+hp_generation: 2d8+4
+int: 2
+languages: ---
+modified: 20181223151326826
+saving_throws: 
+senses: Darkvision 30 ft., PP 11
+size: Medium
+skills: 
+speed: 30 ft., burrow 10 ft.
+str: 13
+title: Giant Badger
+type: Creature
+wis: 12
+xp: 50

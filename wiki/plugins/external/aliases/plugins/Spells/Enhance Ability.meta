@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 3rd level or higher, you can target one additional creature for each slot level above 2nd.
+casting_time: 1 Action
+classes: [[Bard]] [[Cleric]] [[Druid]] [[Sorcerer]]
+components: V, S, M (fur or a feather from a beast)
+concentration: Yes
+duration: Concentration, up to 1 hour
+level: 2
+range: Touch
+ritual: No
+school: Transmutation
+title: Enhance Ability
+type: Spell

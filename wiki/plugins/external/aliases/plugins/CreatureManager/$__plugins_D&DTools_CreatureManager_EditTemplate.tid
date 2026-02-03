@@ -1,0 +1,108 @@
+created: 20170922130441850
+modified: 20190809001150962
+tags: 
+title: $:/plugins/D&DTools/CreatureManager/EditTemplate
+
+<stat-block>
+    <top-stats>
+      <property-line>
+        <h4>Size</h4>
+        <p><$edit-text field="size" /></p>
+      </property-line>
+      <property-line>
+        <h4>Type</h4>
+        <p><$edit-text field="creature_type" /></p>
+      </property-line>
+      <property-line>
+        <h4>Subtype</h4>
+        <p><$edit-text field="subtype" /></p>
+      </property-line>
+      <property-line>
+        <h4>Alignment</h4>
+        <p><$edit-text field="alignment" /></p>
+      </property-line>
+      <property-line>
+        <h4>Armor Class</h4>
+        <p><$edit-text field="ac" /></p>
+      </property-line>
+      <property-line>
+        <h4>Armor Description</h4>
+        <p><$edit-text field="ac_description" /></p>
+      </property-line>
+      <property-line>
+        <h4>Hit Points</h4>
+        <p><$edit-text field="hp" /></p>
+      </property-line>
+      <property-line>
+        <h4>HP Generation</h4>
+        <p><$edit-text field="hp_generation" /></p>
+      </property-line>
+      <property-line>
+        <h4>Speed</h4>
+        <p><$edit-text field="speed" /></p>
+      </property-line>
+
+
+<table>
+<tr><th>Str</th><th>Dex</th><th>Con</th><th>Int</th><th>Wis</th><th>Cha</th></tr>
+<tr><td><$edit-text field="str" size="2"/></td><td><$edit-text field="dex" size="2"/></td><td><$edit-text field="con" size="2"/></td><td><$edit-text field="int" size="2"/></td><td><$edit-text field="wis" size="2"/></td><td><$edit-text field="cha" size="2"/></td></tr>
+</table>
+
+      <property-line>
+        <h4>Saving Throws</h4>
+        <p><$edit-text field="saving_throws" /></p>
+      </property-line>
+      <property-line>
+        <h4>skills</h4>
+        <p><$edit-text field="skills" /></p>
+      </property-line>
+      <property-line>
+        <h4>Damage Resistances</h4>
+        <p><$edit-text field="damage_resistances" /></p>
+      </property-line>
+      <property-line>
+        <h4>Damage Vulnerabilities</h4>
+        <p><$edit-text field="damage_vulnerabilities" /></p>
+      </property-line>
+      <property-line>
+        <h4>Damage Immunities</h4>
+        <p><$edit-text field="damage_immunities" /></p>
+      </property-line>
+      <property-line>
+        <h4>Condition Immunities</h4>
+        <p><$edit-text field="condition_immunities" /></p>
+      </property-line>
+      <property-line>
+        <h4>Senses</h4>
+        <p><$edit-text field="senses" /></p>
+      </property-line>
+      <property-line>
+        <h4>Languages</h4>
+        <p><$edit-text field="languages" /></p>
+      </property-line>
+      <property-line>
+        <h4>Challenge</h4>
+        <p><$edit-text field="challenge_rating" /></p>
+      </property-line>
+      <property-line>
+        <h4>Experience</h4>
+        <p><$edit-text field="xp" /></p>
+      </property-line>
+    </top-stats>
+
+    <h3>Features</h3>
+    <property-block>
+      <p><$edit-text field="features" tag="textarea" class="wide"/></p>
+    </property-block>
+
+    <h3>Actions</h3>
+   <property-block>
+      <p><$edit-text field="attacks" tag="textarea" class="wide"/></p>
+    </property-block>
+
+
+    <h3>Legendary Actions</h3>
+   <property-block>
+      <p><$edit-text field="legendary_actions" tag="textarea" class="wide"/></p>
+    </property-block>
+  </stat-block>

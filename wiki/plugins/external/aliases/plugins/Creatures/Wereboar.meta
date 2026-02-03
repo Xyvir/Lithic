@@ -1,0 +1,30 @@
+ac: 10
+ac_description: 11 (natural in boar/hybrid)
+alignment: neutral evil
+attacks: //''Multiattack (Humanoid or Hybrid Form Only):''// The wereboar makes two attacks, only one of which can be with its tusks.<br><br>//''Maul (Humanoid or Hybrid Form Only):'' Melee Weapon Attack:// +5 to hit, reach 5 ft., one target. //Hit:// 10 (2d6+3) bludgeoning damage.<br><br>//''Tusks (Boar or Hybrid Form Only):'' Melee Weapon Attack:// +5 to hit, reach 5 ft., one target. //Hit:// 10 (2d6+3) slashing damage. If the target is a humanoid, it must succeed on a DC 12 Constitution saving throw or be cursed with wereboar lycanthropy.
+cha: 8
+challenge_rating: 4
+con: 15
+condition_immunities: 
+created: 20181223151507334
+creature_type: humanoid
+damage_immunities: bludgeoning, piercing, and slashing damage from nonmagical weapons that aren't silvered
+damage_resistances: 
+dex: 10
+features: //''Shapechanger:''// The wereboar can use its action to polymorph into a boar-humanoid hybrid or into a boar, or back into its true form, which is humanoid. Its statistics, other than its size and AC, are the same in each form. Any equipment it is wearing or carrying isn't transformed. It reverts to its true form if it dies.<br><br>//''Charge (Boar or Hybrid Form Only):''// If the wereboar moves at least 15 feet straight toward a target and then hits it with its tusks on the same turn, the target takes an extra 7 (2d6) slashing damage. If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone.<br><br>//''Relentless (Recharges after a Short or Long Rest):''// If the wereboar takes 14 damage or less that would reduce it to 0 hit points, it is reduced to 1 hit point instead.
+hp: 78
+hp_generation: 12d8+24
+int: 10
+languages: Common (can't speak in boar form)
+modified: 20181223151507334
+saving_throws: 
+senses: PP 12
+size: Medium
+skills: Perception +2
+speed: 30 ft. (40 ft. boar form)
+str: 17
+subtype: human, shapechanger
+title: Wereboar
+type: Creature
+wis: 11
+xp: 1100

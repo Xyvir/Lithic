@@ -1,0 +1,13 @@
+created: 20151031180340544
+modified: 20151101113431846
+revision: 0
+title: MarKed
+type: text/vnd.tiddlywiki
+
+This is a variation of the markdown syntax - documentation see https://github.com/chjj/marked 
+
+Example [[Marked Ex1]]
+
+use type: "text/x-marked" 
+
+For advanced options see: $:/plugins/bj/plugins/marked/readme

@@ -1,0 +1,29 @@
+ac: 19
+ac_description: natural armor
+alignment: lawful good
+attacks: //''Bite:'' Melee Weapon Attack:// +8 to hit, reach 5 ft., one creature. //Hit:// 8 (1d6+5) piercing damage, and the target must succeed on a DC 13 Constitution saving throw or be poisoned for 24 hours. Until this poison ends, the target is unconscious. Another creature can use an action to shake the target awake.<br><br>//''Constrict:'' Melee Weapon Attack:// +6 to hit, reach 10 ft., one Medium or smaller creature. //Hit:// 10 (2d6+3) bludgeoning damage, and the target is grappled (escape DC 15). Until this grapple ends, the target is restrained, and the couatl can't constrict another target.<br><br>//''Change Shape:''// The couatl magically polymorphs into a humanoid or beast that has a challenge rating equal to or less than its own, or back into its true form. It reverts to its true form if it dies. Any equipment it is wearing or carrying is absorbed or borne by the new form (the couatl's choice).<br>In a new form, the couatl retains its game statistics and ability to speak, but its AC, movement modes, Strength, Dexterity, and other actions are replaced by those of the new form, and it gains any statistics and capabilities (except class features, legendary actions, and lair actions) that the new form has but that it lacks. If the new form has a bite attack, the couatl can use its bite in that form.
+cha: 18
+challenge_rating: 4
+con: 17
+condition_immunities: 
+created: 20181223151326822
+creature_type: celestial
+damage_immunities: psychic, bludgeoning, piercing and slashing from nonmagical weapons
+damage_resistances: radiant
+dex: 20
+features: //''Innate Spellcasting:''// The couatl's spellcasting ability is Charisma (spell save DC 14). It can innately cast the following spells, requiring only verbal components:<br><br>At will: //[[Detect Evil and Good]], [[Detect Magic]], [[Detect Thoughts]]//<br>3/day each: //[[Bless]], [[Create Food and Water]], [[Cure Wounds]], [[Lesser Restoration]], [[Protection from Poison]], [[Sanctuary]], [[Shield]]//<br>1/day each: //[[Dream]], [[Greater Restoration]], [[Scrying]]//<br><br>//''Magic Weapon:''// The couatl's weapon attacks are magical.<br><br>//''Shielded Mind:''// The couatl is immune to scrying and to any effect that would sense its emotions, read its thoughts, or detects its location.
+hp: 97
+hp_generation: 13d8+39
+int: 18
+languages: all, Telepathy 120 ft.
+modified: 20190107170621007
+saving_throws: Con +5, Wis +7, Cha +6
+senses: Truesight 120 ft., PP 15
+size: Medium
+skills: 
+speed: 30 ft., fly 90 ft.
+str: 16
+title: Couatl
+type: Creature
+wis: 20
+xp: 1100

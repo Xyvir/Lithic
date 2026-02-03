@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d8 for each slot level above 3rd.
+casting_time: 1 Action
+classes: [[Cleric]]
+components: V, S, M (a holy symbol)
+concentration: Yes
+duration: Concentration, up to 10 minutes
+level: 3
+range: Self (15-foot-radius)
+ritual: No
+school: Conjuration
+title: Spirit Guardians
+type: Spell

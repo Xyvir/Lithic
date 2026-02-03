@@ -1,0 +1,9 @@
+created: 20171029160128139
+list-before: $:/core/ui/ViewTemplate/body
+modified: 20181215190616955
+tags: $:/tags/ViewTemplate
+title: $:/plugins/D&DTools/CreatureManager/ViewTemplate
+
+<$list filter="[all[tiddlers+shadows]is[current]type[Creature]]">
+{{||$:/plugins/D&DTools/CreatureManager/StatBlockTemplate}}
+</$list>

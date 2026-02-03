@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Minute
+classes: [[Bard]] [[Cleric]] [[Druid]]
+components: V, S, M (a prayer wheel and holy water)
+concentration: No
+duration: 1 hour
+level: 7
+range: Touch
+ritual: No
+school: Transmutation
+title: Regenerate
+type: Spell

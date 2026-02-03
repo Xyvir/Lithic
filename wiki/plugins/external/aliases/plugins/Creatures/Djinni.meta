@@ -1,0 +1,29 @@
+ac: 17
+ac_description: natural armor
+alignment: chaotic good
+attacks: //''Multiattack:''// The djinni makes three scimitar attacks.<br><br>//''Scimitar:'' Melee Weapon Attack:// +9 to hit, reach 5 ft., one target. //Hit:// 12 (2d6+5) slashing damage plus 3 (1d6) lightning or thunder damage (djinni's choice).<br><br>//''Create Whirlwind:''// A 5-foot-radius, 30-foot-tall cylinder of swirling air magically forms on a point the djinni can see within 120 feet of it. The whirlwind lasts as long as the djinni maintains concentration (as if concentrating on a spell). Any creature but the djinni that enters the whirlwind must succeed on a DC 18 Strength saving throw or be restrained by it. The djinni can move the whirlwind up to 60 feet as an action, and creatures restrained by the whirlwind move with it. The whirlwind ends if the djinni loses sight of it.<br>A creature can use its action to free a creature restrained by the whirlwind, including itself, by succeeding on a DC 18 Strength check. If the check succeeds, the creature is no longer restrained and moves to the nearest space outside the whirlwind.
+cha: 20
+challenge_rating: 11
+con: 22
+condition_immunities: 
+created: 20181223151326823
+creature_type: elemental
+damage_immunities: lightning, thunder
+damage_resistances: 
+dex: 15
+features: //''Elemental Demise:''// If the djinni dies, its body disintegrates into a warm breeze, leaving behind only equipment the djinni was wearing or carrying.<br><br>//''Innate Spellcasting:''// The djinni's innate spellcasting ability is Charisma (spell save DC 17, +9 to hit with spell attacks). It can innately cast the following spells, requiring no material components:<br><br>At will: //[[Detect Evil and Good]], [[Detect Magic]], [[Thunderwave]]//<br>3/day each: //[[Create Food and Water]] (can create wine instead of water), [[Tongues]], [[Wind Walk]]//<br>1/day each: //[[Conjure Elemental]] (air elemental only), [[Creation]], [[Gaseous Form]], [[Invisibility]], [[Major Image]], [[Plane Shift]]//
+hp: 161
+hp_generation: 14d10+84
+int: 15
+languages: Auran
+modified: 20190109143504173
+saving_throws: Dex +6, Wis +7, Cha +9
+senses: Darkvision 120 ft., PP 13
+size: Large
+skills: 
+speed: 30 ft., fly 60 ft.
+str: 21
+title: Djinni
+type: Creature
+wis: 16
+xp: 7200

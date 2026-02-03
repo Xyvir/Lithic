@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 10 Minutes
+classes: [[Cleric]] [[Druid]] [[Wizard]]
+components: V, S, M
+concentration: Yes
+duration: Concentration, up to 8 hours
+level: 8
+range: Self (5-mile radius)
+ritual: No
+school: Transmutation
+title: Control Weather
+type: Spell

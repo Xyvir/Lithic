@@ -1,0 +1,29 @@
+ac: 11
+ac_description: 
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 4 (1d6+1) piercing damage, and the target is grappled (escape DC 11). Until this grapple ends, the target is restrained, and the frog can't bite another target.<br><br>//''Swallow:''// The frog makes one bite attack against a Small or smaller target it is grappling. If the attack hits, the target is swallowed, and the grapple ends. The swallowed target is blinded and restrained, it has total cover against attacks and other effects outside the frog, and it takes 5 (2d4) acid damage at the start of each of the frog's turns. The frog can have only one target swallowed at a time. If the frog dies, a swallowed creature is no longer restrained by it and can escape from the corpse using 5 feet of movement, exiting prone.
+cha: 3
+challenge_rating: 1/4
+con: 11
+condition_immunities: 
+created: 20181223151326827
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 13
+features: //''Amphibious:''// The frog can breathe air and water.<br><br>//''Standing Leap:''// The frog's long jump is up to 20 feet and its high jump is up to 10 feet, with or without a running start.
+hp: 18
+hp_generation: 4d8
+int: 2
+languages: ---
+modified: 20181223151326827
+saving_throws: 
+senses: Darkvision 30 ft., PP 12
+size: Medium
+skills: Perception +2, Stealth +3
+speed: 30 ft., swim 30 ft.
+str: 12
+title: Giant Frog
+type: Creature
+wis: 10
+xp: 50

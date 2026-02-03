@@ -1,0 +1,11 @@
+created: 20140217190055117
+modified: 20140218020645420
+revision: 0
+tags: orderlistdemo Tw5Info
+title: TW5 Templating? - Google Groups
+type: text/vnd.tiddlywiki
+
+ <html>pageref="<a class="externalLink" href="https://groups.google.com/forum/#%21searchin/tiddlywiki/video$20widget/tiddlywiki/JolT1K-27bk/pywmynIO6OQJ" title="External link to https://groups.google.com/forum/#!searchin/tiddlywiki/video$20widget/tiddlywiki/JolT1K-27bk/pywmynIO6OQJ" target="_blank">https://groups.google.com/forum/#!searchin/tiddlywiki/video$20widget/tiddlywiki/JolT1K-27bk/pywmynIO6OQJ</a>" <br><br>date="Wednesday, December 18th, 2013 at 10:38:16 pm"<br>
+
+I think it would have been TWC, where there is a popular plugin from Eric that selects the template for each displayed tiddler according to tags and other critiera.<div><br></div><div>In TW5 the closes equivalent would be to define a new slice of the ViewTemplate that only displays itself when relevant to the tiddler being displayed. In this way one can augment the default template, rather than totally replacing it. If you wanted to remove any of the default viewtemplate slices you'd just overwrite the relevant shadow tiddlers with a new template that is selective.</div>
+<div><br></div><div>To selectively hide things you can use the &lt;$reveal&gt; widget or the &lt;$list&gt; widget with the [limit[1]] trick that came up a few days ago.

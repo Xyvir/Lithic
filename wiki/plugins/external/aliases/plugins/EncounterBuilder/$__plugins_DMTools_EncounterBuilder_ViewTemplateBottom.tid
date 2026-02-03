@@ -1,0 +1,16 @@
+created: 20190910133141299
+modified: 20190910133312874
+tags: $:/tags/ViewTemplate
+title: $:/plugins/DMTools/EncounterBuilder/ViewTemplateBottom
+
+<$list filter="[all[current]tag[Encounter]]">
+
+<div style="overflow:auto; white-space:nowrap;">
+<$list filter="[all[current]list[!!creatures]sort[]each[title]]">
+<div style="display:inline-flex;white-space:normal;">
+{{||$:/plugins/D&DTools/CreatureManager/ViewTemplate}}
+</div>
+</$list>
+</div>
+
+</$list>

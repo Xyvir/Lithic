@@ -1,0 +1,10 @@
+{
+  "parserrules": {
+    "pragmaRuleList": [],
+    "blockRuleList": [],
+    "inlineRuleList": [
+      "html"
+    ]
+  },
+  "baserules": "text/vnd.tiddlywiki;flexibility=tiddlywikiRules"
+}

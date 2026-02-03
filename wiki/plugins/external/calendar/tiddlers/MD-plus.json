@@ -1,0 +1,21 @@
+{
+  "parserrules": {
+    "pragmaRuleList": [
+      "macrodef"
+    ],
+    "blockRuleList": [
+      "macrocallblock",
+      "html"
+    ],
+    "inlineRuleList": [
+      "entity",
+      "macrocallinline",
+      "html",
+      "prettylink",
+      "transcludeinline",
+      "wikilink"
+    ]
+  },
+  "baserules": "",
+  "preparser": "text/x-PostMd;flexibility=PostMark>text/plain"
+}

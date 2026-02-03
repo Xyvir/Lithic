@@ -1,0 +1,29 @@
+ac: 13
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +6 to hit, reach 10 ft., one target. //Hit:// 14 (3d6+4) piercing damage.
+cha: 5
+challenge_rating: 2
+con: 16
+condition_immunities: 
+created: 20181223151326833
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 15
+features: //''Hold Breath:''// The plesiosaurus can hold its breath for 1 hour.
+hp: 68
+hp_generation: 8d10+24
+int: 2
+languages: ---
+modified: 20181223151326834
+saving_throws: 
+senses: PP 13
+size: Large
+skills: Perception +3, Stealth +4
+speed: 20 ft., 40 ft.
+str: 18
+title: Plesiosaurus
+type: Creature
+wis: 12
+xp: 450

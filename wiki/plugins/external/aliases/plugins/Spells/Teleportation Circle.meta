@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Minute
+classes: [[Bard]] [[Sorcerer]] [[Wizard]]
+components: V, M (rare chalks and inks infused with precious gems with 50 gp, which the spell consumes)
+concentration: No
+duration: 1 round
+level: 5
+range: 10 feet
+ritual: No
+school: Conjuration
+title: Teleportation Circle
+type: Spell

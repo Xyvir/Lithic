@@ -1,0 +1,7 @@
+created: 20141214194220591
+modified: 20141214200249659
+revision: 0
+title: N
+type: text/vnd.tiddlywiki
+
+<$link><span class="tw-taglist"><$view field="title"/></span></$link><$fieldmangler><$link to=<<tcc1>> class="tc-btn-invisible">{{$:/core/images/cancel-button}}</$link></$fieldmangler>

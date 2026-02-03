@@ -1,0 +1,29 @@
+ac: 13
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Slam:'' Melee Weapon Attack:// +6 to hit, reach 10 ft., one target. //Hit:// 14 (3d6+4) bludgeoning damage.
+cha: 7
+challenge_rating: 2
+con: 15
+condition_immunities: 
+created: 20181223151326818
+creature_type: plant
+damage_immunities: 
+damage_resistances: bludgeoning, piercing
+dex: 6
+features: //''Damage vulnerabilities:''// fire<br><br>//''False Appearance:''// While the tree remains motionless, it is indistinguishable from a normal tree.
+hp: 59
+hp_generation: 7d12+14
+int: 10
+languages: one language known by its creator
+modified: 20181223151326818
+saving_throws: 
+senses: PP 10
+size: Huge
+skills: 
+speed: 20 ft.
+str: 19
+title: Awakened Tree
+type: Creature
+wis: 10
+xp: 450

@@ -1,0 +1,30 @@
+ac: 15
+ac_description: natural armor
+alignment: lawful evil
+attacks: //''Multiattack:''// The devil makes three melee attacks: one with its tail and two with its claws. Alternatively, it can use Hurl Flame twice.<br><br>//''Claw:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one target. //Hit:// 6 (1d6+3) piercing damage.<br><br>//''Tail:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one target. //Hit:// 10 (2d6+3) piercing damage.<br><br>//''Hurl Flame:'' Ranged Spell Attack:// +5 to hit, range 150 ft., one target. //Hit:// 10 (3d6) fire damage. If the target is a flammable object that isn't being worn or carried, it also catches fire.
+cha: 14
+challenge_rating: 5
+con: 18
+condition_immunities: poisoned
+created: 20181223151507313
+creature_type: fiend
+damage_immunities: fire, poison
+damage_resistances: cold, bludgeoning, piercing and slashing from nonmagical weapons that aren't silvered
+dex: 17
+features: //''Barbed Hide:''// At the start of each of its turns, the barbed devil deals 5 (1d10) piercing damage to any creature grappling it.<br><br>//''Devil's Sight:''// Magical darkness doesn't impede the devil's darkvision.<br><br>//''Magic Resistance:''// The devil has advantage on saving throws against spells and other magical effects.
+hp: 110
+hp_generation: 13d8+52
+int: 12
+languages: Infernal, Telepathy 120 ft.
+modified: 20181223151507313
+saving_throws: Str +6, Con +7, Wis +5, Cha +5
+senses: Darkvision 120 ft., PP 18
+size: Medium
+skills: Deception +5, Insight +5, Perception +8
+speed: 30 ft.
+str: 16
+subtype: devil
+title: Barbed Devil
+type: Creature
+wis: 14
+xp: 1800

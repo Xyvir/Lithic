@@ -1,0 +1,18 @@
+{
+  "parserrules": {
+    "pragmaRuleList": [],
+    "blockRuleList": [
+      "html"
+    ],
+    "inlineRuleList": [
+      "html",
+      "prettylink",
+      "transcludeinline",
+      "entity",
+      "wikilink",
+      "codeinline",
+      "LfRule"
+    ]
+  },
+  "parseAsInline": true
+}

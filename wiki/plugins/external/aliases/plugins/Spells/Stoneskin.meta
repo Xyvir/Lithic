@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Druid]] [[Ranger]] [[Sorcerer]] [[Wizard]]
+components: V, S, M (diamond dust worth 100 gp, which the spell consumes)
+concentration: Yes
+duration: Concentration, up to 1 hour
+level: 4
+range: Touch
+ritual: No
+school: Abjuration
+title: Stoneskin
+type: Spell

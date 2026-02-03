@@ -1,0 +1,32 @@
+created: 20140218170942002
+modified: 20141103185904625
+revision: 0
+title: ExtendableCalendar
+type: text/vnd.tiddlywiki
+
+The Calendar macro is configurable via the file [[$:/config/bj/Calendar.json]], and is extendable by plug-in formatter modules, which enable it to be used in different applications.
+A side bar tab is created via the tiddler [[$:/plugins/bj/calendar/sidbar]] containing a calendar configured for journal tiddlers.
+
+The calander macro is extended by the diary macro and used the same options and configuration tiddler, but allows for journals to be create in the future.
+
+Example usage:
+
+`
+!!Plain Calendar Format 
+<<calendar "2014" "2" plain>>
+
+!!Default Calendar Format (for Journal tiddlers)
+<<calendar "" "" >>
+
+!!A years diary
+<<diary 2014 "" >>
+`
+
+Renders as:
+
+!!Plain Calendar Format 
+<<calendar "2014" "2" plain>>
+!!Default Calendar Format (for Journal tiddlers)
+<<calendar "" "" >>
+!!A years diary
+<<diary 2014 "" >>

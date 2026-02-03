@@ -1,0 +1,11 @@
+created: 20160217140323092
+modified: 20160217140326728
+revision: 0
+title: TiddlyClipConfig
+type: text/vnd.tiddlywiki
+
+!default
+|!Category|!Tip|!Tags|!Rule Tid|!Modes|
+|Tid|copy tids||[[defaultTip]]|tiddlers|
+|Snip|copy||[[defaultSnip]]||
+|Pin|pin it||[[defaultPin]]||

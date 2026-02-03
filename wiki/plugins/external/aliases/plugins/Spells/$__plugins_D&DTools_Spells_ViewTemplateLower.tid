@@ -1,0 +1,11 @@
+created: 20190102195406582
+list-after: $:/core/ui/ViewTemplate/body
+modified: 20190102195907793
+tags: $:/tags/ViewTemplate
+title: $:/plugins/D&DTools/Spells/ViewTemplateLower
+
+<$list filter="[all[current]type[Spell]]">
+<$list filter="[all[current]get[at_higher_level]]" variable="">
+''At Higher Levels'': {{!!at_higher_level}}
+</$list>
+</$list>

@@ -1,0 +1,15 @@
+caption: Field Types
+list: Title
+tags: Documentation
+title: Types
+
+Fields, attributes, parameters, and operators have types. Depending on the type, Relink will parse them differently.
+
+<$macrocall $name="tabs"
+	tabsList="[tag<currentTiddler>!tag[Supplemental]] [tag<currentTiddler>tag[Supplemental]]"
+	default="Title"
+	class="tc-vertical"
+	template="Templates/Type"
+	buttonTemplate="Templates/Button"
+	explicitState='$:/state/tab/relink/Types'
+/>

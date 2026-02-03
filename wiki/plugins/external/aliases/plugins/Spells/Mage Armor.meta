@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Sorcerer]] [[Wizard]]
+components: V, S, M (a piece of cured leather)
+concentration: No
+duration: 8 hours
+level: 1
+range: Touch
+ritual: No
+school: Abjuration
+title: Mage Armor
+type: Spell

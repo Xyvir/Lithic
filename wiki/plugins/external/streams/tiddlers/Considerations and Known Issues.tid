@@ -1,0 +1,8 @@
+created: 20200525150124043
+modified: 20200609180746449
+revision: 0
+tags: 
+title: Considerations and Known Issues
+type: text/vnd.tiddlywiki
+
+* copy or transclude to another tiddler via drag and drop doesn't yet copy nested nodes

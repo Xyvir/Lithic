@@ -1,0 +1,29 @@
+ac: 10
+ac_description: 
+alignment: unaligned
+attacks: //''Beak:'' Melee Weapon Attack:// +2 to hit, reach 5 ft., one target. //Hit:// 2 (1d4) piercing damage.
+cha: 4
+challenge_rating: 0
+con: 13
+condition_immunities: 
+created: 20181223151326842
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 10
+features: //''Keen Sight and Smell:''// The vulture has advantage on Wisdom (Perception) checks that rely on sight or smell.<br><br>//''Pack Tactics:''// The vulture has advantage on an attack roll against a creature if at least one of the vulture's allies is within 5 feet of the creature and the ally isn't incapacitated.
+hp: 5
+hp_generation: 1d8+1
+int: 2
+languages: ---
+modified: 20181223151326842
+saving_throws: 
+senses: PP 13
+size: Medium
+skills: Perception +3
+speed: 10 ft., fly 50 ft.
+str: 7
+title: Vulture
+type: Creature
+wis: 12
+xp: 10

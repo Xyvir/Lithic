@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]] [[Druid]] [[Paladin]] [[Ranger]]
+components: V, S, M  (a yew leaf)
+concentration: Yes
+duration: Concentration, up to 10 minutes
+level: 1
+range: Self
+ritual: Yes
+school: Divination
+title: Detect Poison and Disease
+type: Spell

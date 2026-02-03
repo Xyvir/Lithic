@@ -1,0 +1,4 @@
+title: SnapRuleMode
+type: text/vnd.tiddlywiki
+
+[{"#nosnap":"nosave"	},{"#newdata":"((*!@exists(@snap)*??*#nosnap*)) inc add"}]

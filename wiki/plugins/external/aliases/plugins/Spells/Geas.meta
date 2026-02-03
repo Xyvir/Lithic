@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell usinga spell slot of 7th or 8th level, the duration is 1 year.
+casting_time: 1 Minute
+classes: [[Bard]] [[Cleric]] [[Druid]] [[Paladin]] [[Wizard]]
+components: V
+concentration: No
+duration: 30 days
+level: 5
+range: 60 feet
+ritual: No
+school: Enchantment
+title: Geas
+type: Spell

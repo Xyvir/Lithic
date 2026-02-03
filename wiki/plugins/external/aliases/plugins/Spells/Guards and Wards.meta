@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 10 Minutes
+classes: [[Bard]] [[Wizard]]
+components: V, S, M (burning incense, a small measure of brimstone and oil, a knotted string, a small amount of umber hulk blood, and a small silver rod worth at least 10 gp)
+concentration: No
+duration: 24 hours
+level: 6
+range: Touch
+ritual: No
+school: Abjuration
+title: Guards and Wards
+type: Spell

@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +0 to hit, reach 5 ft., one creature. //Hit:// 1 piercing damage.
+cha: 4
+challenge_rating: 0
+con: 8
+condition_immunities: 
+created: 20181223151326819
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 15
+features: //''Echolocation:''// The bat can't use its blindsight while deafened.<br><br>//''Keen Hearing:''// The bat has advantage on Wisdom (Perception) checks that rely on hearing.
+hp: 1
+hp_generation: 1d4-1
+int: 2
+languages: ---
+modified: 20181223151326819
+saving_throws: 
+senses: Blindsight 60 ft., PP 11
+size: Tiny
+skills: 
+speed: 5 ft., fly 30 ft.
+str: 2
+title: Bat
+type: Creature
+wis: 12
+xp: 10

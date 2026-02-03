@@ -1,0 +1,16 @@
+caption: Names
+created: 20190119015817676
+modified: 20190119031234082
+seed: 21:10:38
+tags: $:/tags/SideBar
+title: $:/plugins/DMTools/Name Generator/sidebar
+
+<$select tiddler="$:/temp/Name Generator/type">
+<$list filter="[all[tiddlers+shadows]tag[Name Generator]]">
+<option value=<<currentTiddler>>><$transclude field="caption"><$text text=<<currentTiddler>> /></$transclude></option>
+</$list>
+</$select>
+
+<$tiddler tiddler={{$:/temp/Name Generator/type}}>
+<$transclude mode="block" />
+</$tiddler>

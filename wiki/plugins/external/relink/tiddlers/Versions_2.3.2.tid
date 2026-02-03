@@ -1,0 +1,9 @@
+created: 20230409032554731
+title: Versions/2.3.2
+
+\rules except wikilink
+
+* Improved the markdown plugin to be less aggressive about encoding markdown links.
+* Fixed footnotes and images from breaks that occurred when Tiddlywiki moved to v5.2.6.
+* Improved stability with footnotes and malformed links.
+* Moved markdown plugin files into their own relink-markdown system directory.

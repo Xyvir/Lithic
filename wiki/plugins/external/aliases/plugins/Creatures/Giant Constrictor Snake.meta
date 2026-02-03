@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +6 to hit, reach 10 ft., one creature. //Hit:// 11 (2d6+4) piercing damage.<br><br>//''Constrict:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one creature. //Hit:// 13 (2d8+4) bludgeoning damage, and the target is grappled (escape DC 16). Until this grapple ends, the creature is restrained, and the snake can't constrict another target.
+cha: 3
+challenge_rating: 2
+con: 12
+condition_immunities: 
+created: 20181223151326826
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 14
+features: 
+hp: 60
+hp_generation: 8d12+8
+int: 1
+languages: ---
+modified: 20181223151326826
+saving_throws: 
+senses: Blindsight 10 ft., PP 12
+size: Huge
+skills: Perception +2
+speed: 30 ft., swim 30 ft.
+str: 19
+title: Giant Constrictor Snake
+type: Creature
+wis: 10
+xp: 450

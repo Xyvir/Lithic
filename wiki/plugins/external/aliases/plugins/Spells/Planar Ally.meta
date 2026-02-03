@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 10 Minutes
+classes: [[Cleric]]
+components: V, S
+concentration: No
+duration: Instantaneous
+level: 6
+range: 60 feet
+ritual: No
+school: Conjuration
+title: Planar Ally
+type: Spell

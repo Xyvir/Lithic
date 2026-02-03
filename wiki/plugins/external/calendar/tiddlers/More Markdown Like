@@ -1,0 +1,57 @@
+Note: This plugin is still in an **EXPERIMENTAL** stage. To install this plugin see InstallMarkDownLike
+
+# Changes to Wikitext
+
+Here the plugin **markdownlike** is being used. It modifies the tiddlywiki syntax to be, well, more like markdown
+
+## Examples
+### headings
+```
+##### hash means heading in markdown - as in wikitext they can be **smaller!**
+```
+##### hash means heading in markdown - as in wikitext they can be **smaller!**
+
+### Emphasis
+
+```
+**Emphasis** now uses stars in place of speech marks
+```
+
+**Emphasis** now uses stars in place of speech marks
+
+### Unordered Lists
+Although the * can be used to create unordered lists in markdown,  it has been replace in tiddlytext with the + as there was an 'interference' with creating Emphasis.
+
+```
++ in tiddly text only one paragraph per bullet is supported
++ in markdown this is not the case
+```
++ in tiddly text only one paragraph per bullet is supported.
++ in markdown this is not the case.
+
+### Ordered Lists
+A one level order markdown like list is now possible.
+
+```
+1. Only a one level list is supported
+2. Lists in markdown are different
+```
+
+1. Only a one level list is supported
+2. Lists in markdown are different
+
+### Complex Lists
+
+The . replaces # in complex lists
+
+```
+. one
+.+ first sublevel
+.+ same sublevel
+. two
+```
+
+. one
+.+ first sublevel
+.+ same sublevel
+. two

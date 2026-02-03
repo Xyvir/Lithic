@@ -1,0 +1,7 @@
+created: 20140326102104827
+modified: 20140415115547082
+revision: 0
+title: OembedDemo
+type: text/vnd.tiddlywiki
+
+<$oembed url="https://www.youtube.com/watch?v=SX0jvQ0vYVk"  maxWidth=300 maxHeight=500>

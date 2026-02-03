@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Wizard]]
+components: V, S, M (a pinch of sesame seeds)
+concentration: No
+duration: 1 hour
+level: 5
+range: 30 feet
+ritual: No
+school: Transmutation
+title: Passwall
+type: Spell

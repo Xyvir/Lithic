@@ -1,0 +1,197 @@
+| ''To Format Text As...'' | ''Use This Mark-Up'' |
+| ''Bold'' | {{{''Bold''}}} Two single-quotes, not a double-quote. |
+| //Italics// | {{{//Italics//}}} |
+| ''//Bold Italics//'' | {{{''//Bold Italics//''}}} |
+| __Underline__ | {{{__Underline__}}} |
+| --Strikethrough-- | {{{--Strikethrough--}}} |
+| Super^^script^^ | {{{Super^^script^^}}} |
+| Sub~~script~~ | {{{Sub~~script~~}}} |
+| @@Highlight@@ |  {{{@@Highlight@@}}} |
+| <nowiki>PlainText No ''Formatting''</nowiki> | {{{ <nowiki>PlainText No ''Formatting''</nowiki> }}} |
+===+++!*[
+Block Elements
+
+`PlainText No ''Formatting''`
+
+!! Headings
+|]
+!<nowiki>!</nowiki>Heading Level 1
+!!<nowiki>!!</nowiki>Heading Level 2
+!!!<nowiki>!!!</nowiki>Heading Level 3
+!!!!<nowiki>!!!!</nowiki>Heading Level 4
+!!!!!<nowiki>!!!!!</nowiki>Heading Level 5
+!!!!!!<nowiki>!!!!!!</nowiki>Heading Level 6
+===+++!!*[
+!! Unordered Lists
+|]
+!!! Example
+* Unordered List, Level 1
+** Unordered List, Level 2
+*** Unordered List, Level 3
+
+!!!Mark-Up Used
+{{{
+* Unordered List, Level 1
+** Unordered List, Level 2
+*** Unordered List, Level 3
+}}}
+===+++!!*[
+!! Ordered Lists
+|]
+!!! Example
+# Ordered List, Level 1A
+# Ordered List, Level 1B
+## Ordered List, Level 2A
+### Ordered List, Level 3A
+
+!!! Mark-Up Used
+{{{
+# Ordered List, Level 1A
+# Ordered List, Level 1B
+## Ordered List, Level 2A
+### Ordered List, Level 3A
+}}}
+===+++!!*[
+!! Definition Lists
+|]
+!!! Example
+; term
+: description
+
+!!! Mark-Up Used
+{{{
+; term
+: description
+}}}
+===+++!!*[
+!! Blockquotes
+|]
+!!! Example
+> blockquote, level 1
+>> blockquote, level 2
+>>> blockquote, level 3
+
+!!! Mark-Up Used
+{{{
+> blockquote, level 1
+>> blockquote, level 2
+>>> blockquote, level 3
+}}}
+
+!!! Block Example
+<<<
+blockquote
+<<<
+
+!!! Mark-Up Used
+{{{
+<<<
+blockquote
+<<<
+}}}
+===+++!!*[
+!! Preformatted
+|]
+!!! Example
+{{{
+preformatted (e.g. code)
+}}}
+
+!!! Markup Used
+<nowiki>{{{</nowiki>
+<nowiki>preformatted (e.g. code)</nowiki>
+<nowiki>}}}</nowiki>
+===+++!!*[
+!! Tables
+|]
+{{annotation{There is also an in-depth article on [[Tables]].}}}
+
+Columns are delimited by a single pipe character ({{{|}}}); a new line creates a new row.
+
+!!!Example
+
+|CssClass|k
+|!heading column 1|!heading column 2|h
+|row 1, column 1|row 1, column 2|
+|row 2, column 1|row 2, column 2|
+|>|COLSPAN|
+|ROWSPAN| &hellip; |
+|~| &hellip; |
+|CssProperty:value;&hellip;| &hellip; |
+|caption|c
+
+!!!Markup
+{{{
+ |CssClass|k
+ |!heading column 1|!heading column 2|h
+ |row 1, column 1|row 1, column 2|
+ |row 2, column 1|row 2, column 2|
+ |>|COLSPAN|
+ |ROWSPAN| &hellip; |
+ |~| &hellip; |
+ |CssProperty:value;&hellip;| &hellip; |
+ |caption|c
+}}}
+
+Notes:
+* The {{{>}}} marker creates a "colspan", causing the current cell to merge with the one to the right.
+* The {{{~}}} marker creates a "rowspan", causing the current cell to merge with the one above.
+===+++!!*[
+!! Images
+|]
+See [[tiddlywiki.com|http://www.tiddlywiki.com/#EmbeddedImages]]
+===
+===+++!*[
+! Links
+|]
+* [[WikiWord|WikiWords]] are automatically transformed to hyperlinks to the respective tiddler
+** the automatic transformation can be suppressed by preceding the respective WikiWord with a tilde ({{{~}}}): {{{~WikiWord}}}
+* [[PrettyLinks]] are enclosed in double square brackets and contain the desired tiddler name: {{{[[tiddler name]]}}}
+** optionally, a custom title or description can be added, separated by a pipe character ({{{|}}}): {{{[[title|target]]}}} ''N.B.:'' The target can also be any website (i.e. URL), folder or file. 
+
+!! Examples
+
+* a simple website (URL) requires no markup: {{{http://domain.tld}}}
+* website (URL) : {{{[[label|http://domain.tld]]}}}
+* Unix-style folder: {{{[[label|file:///folder/file]]}}}
+* Windows drive-mapped folder {{{[[label|file:///c:/folder/file]]}}}
+* Windows network share: {{{[[label|file://///server/folder/file]]}}}
+* File in a local subfolder of the TiddlyWiki location: {{{[[label|folder/file]]}}}
+
+! Custom Styling
+
+* inline styles: {{{@@CssProperty:value;CssProperty:value;...@@}}} ''N.B.:''' CSS color definitions should use lowercase letters to prevent the inadvertent creation of WikiWords.
+* class wrapper: <nowiki>{{customClass{...}}}</nowiki>
+
+!! Example
+
+{{indent{
+lorem ''ipsum'' dolor '''sit''' amet
+}}}
+
+(The <code>indent</code> is provided by the TiddlyWiki core in [[StyleSheetLayout]].)
+===+++!*[
+! Inserting HTML
+|]
+raw HTML can be inserted by enclosing the respective code in HTML tags ({{{<html>...</html>}}}).
+
+! Avoiding Wikificitation ==
+
+To prevent wiki markup from taking effect for a particular section (e.g. special characters), that section can be enclosed in three double quotes: e.g. {{{"""WikiWord"""}}} (cf. [[Escaping]]).
+
+! Special Markers
+
+* {{{<br>}}} forces a manual line break
+* {{{----}}} and {{{<hr>}}} create a horizontal rule
+* [[HTML entities|http://www.tiddlywiki.com/#HtmlEntities]]
+* {{{>}}} calls the respective [[Macros|macro]]
+* To hide text within a tiddler so that it is not displayed, it can be wrapped in {{{/%}}} and {{{%/}}}. This can be a useful trick for hiding drafts or annotating complex markup.
+===+++!*[
+! See Also
+|]
+* [[Wiki Markup]]
+* [[Multi-Line Contents]]
+* [[Tiddler format]] (TiddlyWiki markup version / Cheat Sheet)
+* [[Macros]]
+* [[Customization]]
+===

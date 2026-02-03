@@ -1,0 +1,29 @@
+ac: 13
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +1 to hit, reach 5 ft., one target. //Hit:// 2 (1d6 - 1) slashing damage.
+cha: 3
+challenge_rating: 0
+con: 12
+condition_immunities: 
+created: 20181223151326827
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 10
+features: //''Illumination:''// The beetle sheds bright light in a 10-foot radius and dim light for an additional 10 feet.
+hp: 4
+hp_generation: 1d6+1
+int: 1
+languages: ---
+modified: 20181223151326827
+saving_throws: 
+senses: Blindsight 30 ft., PP 8
+size: Small
+skills: 
+speed: 30 ft.
+str: 8
+title: Giant Fire Beetle
+type: Creature
+wis: 7
+xp: 10

@@ -1,0 +1,29 @@
+ac: 17
+ac_description: natural armor
+alignment: lawful neutral
+attacks: //''Multiattack:''// The sphinx makes two claw attacks.<br><br>//''Claw:'' Melee Weapon Attack:// +12 to hit, reach 5 ft., one target. //Hit:// 17 (2d10+6) slashing damage.<br><br>//''Roar (3/Day):''// The sphinx emits a magical roar. Each time it roars before finishing a long rest, the roar is louder and the effect is different, as detailed below. Each creature within 500 feet of the sphinx and able to hear the roar must make a saving throw.<br><br>//''First Roar:''// Each creature that fails a DC 18 Wisdom saving throw is frightened for 1 minute. A frightened creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.<br><br>//''Second Roar:''// Each creature that fails a DC 18 Wisdom saving throw is deafened and frightened for 1 minute. A frightened creature is paralyzed and can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.<br><br>//''Third Roar:''// Each creature makes a DC 18 Constitution saving throw. On a failed save, a creature takes 44 (8d10) thunder damage and is knocked prone. On a successful save, the creature takes half as much damage and isn't knocked prone.<br><br>
+cha: 23
+challenge_rating: 17
+con: 20
+condition_immunities: charmed, frightened
+created: 20181223151326818
+creature_type: monstrosity
+damage_immunities: psychic, bludgeoning, piercing, and slashing from nonmagical weapons
+damage_resistances: 
+dex: 10
+features: //''Inscrutable:''// The sphinx is immune to any effect that would sense its emotions or read its thoughts, as well as any divination spell that it refuses. Wisdom (Insight) checks made to ascertain the sphinx's intentions or sincerity have disadvantage.<br><br>//''Magic Weapons:''// The sphinx's weapon attacks are magical.<br><br>//''Spellcasting:''// The sphinx is a 12th·level spellcaster. Its spellcasting ability is Wisdom (spell save DC 18, +10 to hit with spell attacks). It requires no material components to cast its spells. The sphinx has the following cleric spells prepared:<br>Cantrips (at will): //[[Sacred Flame]], [[Spare the Dying]], [[Thaumaturgy]]//<br>1st level (4 slots): //[[Command]], [[Detect Evil and Good]], [[Detect Magic]]//<br>2nd level (3 slots): //[[Lesser Restoration]], [[Zone of Truth]]//<br>3rd level (3 slots): //[[Dispel Magic]], [[Tongues]]//<br>4th level (3 slots): //[[Banishment]], [[Freedom of Movement]]//<br>5th level (2 slots): //[[Flame Strike]], [[Greater Restoration]]// <br>6th level (1 slot): //[[Heroes' Feast]]//
+hp: 199
+hp_generation: 19d10+95
+int: 16
+languages: Common, Sphinx
+modified: 20190109170930000
+saving_throws: Dex +6, Con +11, Int +9, Wis +10
+senses: Truesight 120 ft., PP 20
+size: Large
+skills: Arcana +9, Perception +10, Religion +15
+speed: 40 ft., fly 60 ft.
+str: 22
+title: Androsphinx
+type: Creature
+wis: 18
+xp: 18000

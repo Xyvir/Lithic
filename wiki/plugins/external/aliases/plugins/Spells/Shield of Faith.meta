@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Bonus Action
+classes: [[Cleric]] [[Paladin]]
+components: V, S, M (a small parchment with a bit of holy text written on it)
+concentration: Yes
+duration: Concentration, up to 10 minutes
+level: 1
+range: 60 feet
+ritual: No
+school: Abjuration
+title: Shield of Faith
+type: Spell

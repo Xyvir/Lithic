@@ -1,0 +1,29 @@
+ac: 16
+ac_description: natural armor
+alignment: chaotic good
+attacks: //''Bite:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one target. //Hit:// 7 (1d10+2) piercing damage.<br><br>//''Breath Weapon (Recharge 5-6):''// The dragon uses one of the following breath weapons:<br><br>//''Acid Breath:''// The dragon exhales acid in a 20-foot line that is 5 feet wide. Each creature in that line must make a DC 11 Dexterity saving throw, taking 18 (4d8) acid damage on a failed save, or half as much damage on a successful one.<br>//''Slowing Breath:''// The dragon exhales gas in a 15-foot cone. Each creature in that area must succeed on a DC 11 Constitution saving throw. On a failed save, the creature can't use reactions, its speed is halved, and it can't make more than one attack on its turn. In addition, the creature can use either an action or a bonus action on its turn, but not both. These effects last for 1 minute. The creature can repeat the saving throw at the end of each of its turns, ending the effect on itself with a successful save.
+cha: 13
+challenge_rating: 1
+con: 13
+condition_immunities: 
+created: 20181223151326822
+creature_type: dragon
+damage_immunities: acid
+damage_resistances: 
+dex: 12
+features: 
+hp: 22
+hp_generation: 4d8+4
+int: 14
+languages: Common, Draconic
+modified: 20181223151326822
+saving_throws: Dex +3, Con +3, Wis +2, Cha +3
+senses: Blindsight 10 ft., Darkvision 60 ft., PP 14
+size: Medium
+skills: Perception +4, Stealth +3
+speed: 30 ft., climb 30 ft., fly 60 ft.
+str: 15
+title: Copper Dragon Wyrmling
+type: Creature
+wis: 11
+xp: 200

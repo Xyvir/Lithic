@@ -1,0 +1,8 @@
+created: 20140216115259513
+modified: 20140502083007782
+revision: 0
+title: TagListDemo
+type: text/vnd.tiddlywiki
+
+Try addeding this tiddler to the list using drag and drop - <$link dragoverclic="yes">DragItem</$link> 
+<$taglist targeTtag="taglistdemo"></$taglist>

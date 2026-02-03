@@ -1,0 +1,14 @@
+at_higher_level: 
+casting_time: 1 Minute
+classes: [[Bard]] [[Wizard]]
+components: V, S, M (a pearl worth at least 100 gp and an owl feather)
+concentration: No
+created: 20190103192429287
+duration: Instantaneous
+level: 1
+modified: 20190103192430542
+range: Touch
+ritual: Yes
+school: Divination
+title: Identify
+type: Spell

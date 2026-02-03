@@ -1,0 +1,29 @@
+ac: 14
+ac_description: leather armor
+alignment: neutral
+attacks: //''Ram:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 6 (2d4+1) bludgeoning damage.<br><br>//''Shortsword:'' Melee Weapon Attack:// +5 to hit, reach 5 ft., one target. //Hit:// 6 (1d6+3) piercing damage.<br><br>//''Shortbow:'' Ranged Weapon Attack:// +5 to hit, range 80/320 ft., one target. //Hit:// 6 (1d6+3) piercing damage.
+cha: 14
+challenge_rating: 1/2
+con: 11
+condition_immunities: 
+created: 20181223151326838
+creature_type: fey
+damage_immunities: 
+damage_resistances: 
+dex: 16
+features: //''Magic Resistance:''// The satyr has advantage on saving throws against spells and other magical effects.
+hp: 31
+hp_generation: 7d8
+int: 12
+languages: Common, Elvish. Sylvan
+modified: 20181223151326838
+saving_throws: 
+senses: PP 12
+size: Medium
+skills: Perception +2, Performance +6, Stealth +5
+speed: 40 ft.
+str: 12
+title: Satyr
+type: Creature
+wis: 10
+xp: 100

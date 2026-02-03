@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 2nd level or higher, you can target one additional creature for each slot level above 1st.
+casting_time: 1 Action
+classes: [[Cleric]] [[Paladin]]
+components: V, S, M (a sprinkling of holy water)
+concentration: Yes
+duration: Concentration, up to 1 minute
+level: 1
+range: 30 feet
+ritual: No
+school: Enchantment
+title: Bless
+type: Spell

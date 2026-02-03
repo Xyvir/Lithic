@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +5 to hit, reach 5 ft., one target. //Hit:// 7 (1d8+3) piercing damage.<br><br>//''Claw:'' Melee Weapon Attack:// +5 to hit, reach 5 ft., one target. //Hit:// 6 (1d6+3) slashing damage.
+cha: 8
+challenge_rating: 1
+con: 13
+condition_immunities: 
+created: 20181223151326831
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 15
+features: //''Keen Smell:''// The lion has advantage on Wisdom (Perception) checks that rely on smell.<br><br>//''Pack Tactics:''// The lion has advantage on an attack roll against a creature if at least one of the lion's allies is within 5 feet of the creature and the ally isn't incapacitated.<br><br>//''Pounce:''// If the lion moves at least 20 feet straight toward a creature and then hits it with a claw attack on the same turn, that target must succeed on a DC 13 Strength saving throw or be knocked prone. If the target is prone, the lion can make one bite attack against it as a bonus action.<br><br>//''Running Leap:''// With a 10-foot running start, the lion can long jump up to 25 feet.
+hp: 26
+hp_generation: 4d10+4
+int: 3
+languages: ---
+modified: 20181223151326831
+saving_throws: 
+senses: PP 13
+size: Large
+skills: Perception +3, Stealth +6
+speed: 50 ft.
+str: 17
+title: Lion
+type: Creature
+wis: 12
+xp: 200

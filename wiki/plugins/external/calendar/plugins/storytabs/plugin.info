@@ -1,0 +1,13 @@
+{
+    "title": "$:/plugins/bj/storytabs",
+    "author": "Jeffrey Wilkinson aka BJ",
+    "bag": "default",
+    "core-version": ">=5.1.11",
+    "dependents": "",
+    "description": "story tabs",
+    "list": "license readme",
+    "plugin-type": "plugin",
+    "revision": "0",
+    "source": "https://github.com/buggyj/tw5-tools",
+    "version": "1.11.0"
+}

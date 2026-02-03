@@ -1,0 +1,29 @@
+ac: 15
+ac_description: natural armor
+alignment: chaotic evil
+attacks: //''Bite:'' Melee Weapon Attack:// +7 to hit, reach 10 ft., one target. //Hit:// 7 (1d6+4) piercing damage, and the target must make a DC 13 Constitution saving throw, taking 31 (7d8) poison damage on a failed save, or half as much damage on a successful one.
+cha: 16
+challenge_rating: 8
+con: 12
+condition_immunities: charmed, poisoned
+created: 20181223151326840
+creature_type: monstrosity
+damage_immunities: poison
+damage_resistances: 
+dex: 16
+features: //''Rejuvenation:''// If it dies, the naga returns to life in 1d6 days and regains all its hit points. Only a wish spell can prevent this trait from functioning.<br><br>//''Spellcasting:''// The naga is a 10th-level spellcaster. Its spellcasting ability is Intelligence (spell save DC 14, +6 to hit with spell attacks), and it needs only verbal components to cast its spells. It has the following wizard spells prepared:<br><br>Cantrips (at will): //[[Mage Hand]], [[Minor Illusion]], [[Ray of Frost]]//<br>1st level (4 slots): //[[Charm Person]], [[Detect Magic]], [[Sleep]]//<br>2nd level (3 slots): //[[Detect Thoughts]], [[Hold Person]]//<br>3rd level (3 slots): //[[Lightning Bolt]], [[Water Breathing]]//<br>4rd level (3 slots): //[[Blight]], [[Dimension Door]]//<br>5rd level (2 slots): //[[Dominate Person]]//
+hp: 75
+hp_generation: 10d10+20
+int: 15
+languages: Abyssal, Common
+modified: 20190108180709731
+saving_throws: Dex +6, Con +5, Wis +5, Cha +6
+senses: Darkvision 60 ft., PP 12
+size: Large
+skills: 
+speed: 40 ft.
+str: 15
+title: Spirit Naga
+type: Creature
+wis: 15
+xp: 3900

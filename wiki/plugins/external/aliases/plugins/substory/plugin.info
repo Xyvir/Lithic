@@ -1,0 +1,10 @@
+{
+    "title": "$:/plugins/mklauber/substory",
+    "description": "Sane Substory Implementation",
+    "author": "Matthew Lauber",
+    "version": "2.0.2",
+    "core-version": ">=5.0.0",
+    "plugin-type": "plugin",
+    "list": "readme",
+    "dependents": ""
+}

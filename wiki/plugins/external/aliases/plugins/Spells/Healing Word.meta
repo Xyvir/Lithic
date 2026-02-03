@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 2nd level or higher, the healing increases by 1d4 for each slot level above 1st.
+casting_time: 1 Bonus Action
+classes: [[Bard]] [[Cleric]] [[Druid]]
+components: V
+concentration: No
+duration: Instantaneous
+level: 1
+range: 60 feet
+ritual: No
+school: Evocation
+title: Healing Word
+type: Spell

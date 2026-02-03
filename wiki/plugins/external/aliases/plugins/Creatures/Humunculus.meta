@@ -1,0 +1,29 @@
+ac: 13
+ac_description: natural armor
+alignment: neutral
+attacks: //''Bite:'' Melee Weapon Attack:// +4 to hit, reach 5 ft. , one creature. //Hit:// 1 piercing damage, and the target must succeed on a DC 10 Constitution saving throw or be poisoned for 1 minute. If the saving throw fails by 5 or more, the target is instead poisoned for 5 (1d10) minutes and unconscious while poisoned in this way.
+cha: 7
+challenge_rating: 0
+con: 11
+condition_immunities: charmed, poisoned
+created: 20181223151326829
+creature_type: construct
+damage_immunities: poison
+damage_resistances: 
+dex: 15
+features: //''Telepathic Bond:''// While the homunculus is on the same plane of existence as its master, it can magically convey what it senses to its master, and the two can communicate telepathically.
+hp: 5
+hp_generation: 2d4
+int: 10
+languages: understands the language of its creatur but can't speak
+modified: 20181223151326829
+saving_throws: 
+senses: Darkvision 60 ft., PP 10
+size: Tiny
+skills: 
+speed: 20 ft., fly 40 ft.
+str: 4
+title: Humunculus
+type: Creature
+wis: 10
+xp: 10

@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 6th level or higher, the damage increases by 1d10 for each slot level above 5th.
+casting_time: 1 Action
+classes: [[Cleric]] [[Druid]] [[Sorcerer]]
+components: V, S, M (a few grains of sugar, some kernels of grain, and a smear of fat)
+concentration: Yes
+duration: Concentration, up to 10 minutes
+level: 5
+range: 300 feet
+ritual: No
+school: Conjuration
+title: Insect Plague
+type: Spell

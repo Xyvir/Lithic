@@ -1,0 +1,97 @@
+created: 20170920151434459
+modified: 20190809001251991
+tags: 
+title: $:/plugins/D&DTools/CreatureManager/StatBlockTemplate
+
+\define abilities-block(str, dex, con, int, wis, cha)
+<abilities-block data-cha="$cha$" data-con="$con$" data-dex="$dex$" data-int="$int$" data-str="$str$" data-wis="$wis$"></abilities-block>
+\end
+
+<stat-block>
+    <creature-heading>
+      <h1><$link>{{!!title}}</$link></h1>
+      <h2>{{!!size}} {{!!creature_type}}<$list filter="[all[current]has[subtype]]">
+ ({{!!subtype}})</$list>, {{!!alignment}}</h2>
+    </creature-heading>
+
+    <top-stats>
+      <property-line>
+        <h4>Armor Class</h4>
+        <p>{{!!ac}}<$list filter="[is[current]has[ac_description]]" variable=""> ({{!!ac_description}})</$list></p>
+      </property-line>
+      <property-line>
+        <h4>Hit Points</h4>
+        <p>{{!!hp}}<$list filter="[is[current]has[hp_generation]]" variable=""> ({{!!hp_generation}})</$list></p>
+      </property-line>
+      <property-line>
+        <h4>Speed</h4>
+        <p>{{!!speed}}</p>
+      </property-line>
+
+      <$macrocall $name="abilities-block" str={{!!str}} dex={{!!dex}} con={{!!con}} int={{!!int}} wis={{!!wis}} cha={{!!cha}} />
+
+      <$list filter="[is[current]has[saving_throws]]" variable="">
+      <property-line>
+        <h4>Saving Throws</h4>
+        <p>{{!!saving_throws}}</p>
+      </property-line>
+     </$list>
+      <$list filter="[is[current]has[skills]]" variable="">
+      <property-line>
+        <h4>Skills</h4>
+        <p>{{!!skills}}</p>
+      </property-line>
+     </$list>
+      <$list filter="[is[current]has[damage_resistances]]" variable="">
+      <property-line>
+        <h4>Damage Resistances</h4>
+        <p>{{!!damage_resistances}}</p>
+      </property-line>
+     </$list>
+      <$list filter="[is[current]has[damage_vulnerabilities]]" variable="">
+      <property-line>
+        <h4>Damage Vulnerabilities</h4>
+        <p>{{!!damage_vulnerabilities}}</p>
+      </property-line>
+     </$list>
+      <$list filter="[is[current]has[damage_immunities]]" variable="">
+      <property-line>
+        <h4>Damage Immunities</h4>
+        <p>{{!!damage_immunities}}</p>
+      </property-line>
+     </$list>
+     <$list filter="[is[current]has[condition_immunities]]" variable="">
+      <property-line>
+        <h4>Condition Immunities</h4>
+        <p>{{!!condition_immunities}}</p>
+      </property-line>
+     </$list>
+     <$list filter="[is[current]has[senses]]" variable="">
+      <property-line>
+        <h4>Senses</h4>
+        <p>{{!!senses}}</p>
+      </property-line>
+     </$list>
+     <$list filter="[is[current]has[languages]]" variable="">
+      <property-line>
+        <h4>Languages</h4>
+        <p>{{!!languages}}</p>
+      </property-line>
+      </$list>
+      <property-line>
+        <h4>Challenge</h4>
+        <p>{{!!challenge_rating}} ({{!!xp}})</p>
+      </property-line>
+    </top-stats>
+
+   <$transclude field="features" mode="block" />
+    <h3>Actions</h3>
+
+   <$transclude field="attacks" mode="block" />
+     <$list filter="[is[current]has[legendary_actions]]" variable="">
+    <h3>Legendary Actions</h3>
+
+   <$transclude field="legendary_actions" mode="block" />
+</$list>
+
+  </stat-block>

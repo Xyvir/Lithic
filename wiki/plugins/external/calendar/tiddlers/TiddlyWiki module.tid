@@ -1,0 +1,9 @@
+created: 20140217185316753
+modified: 20140217185441681
+revision: 0
+tags: Tw5Info
+title: TiddlyWiki module
+type: text/vnd.tiddlywiki
+
+ <html>pageref="<a class="externalLink" href="http://tiddlywiki.com/" title="External link to http://tiddlywiki.com/" target="_blank">http://tiddlywiki.com/</a>" <br><br>date="Friday, December 20th, 2013 at 2:03:32 pm"<br><h1></h1><span>In the browser, any constituent tiddlers that are <a href="http://tiddlywiki.com#JavaScript" class=" tw-tiddlylink tw-tiddlylink-resolves">JavaScript</a> modules (ie shadow tiddlers of content type <code>application/javascript</code> and possessing the field <code>module-type</code>) are executed during startup processing.
+</span></html>

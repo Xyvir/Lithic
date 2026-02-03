@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 3rd level or higher, the healing increases by 1d8 for each slot level above 2nd.
+casting_time: 10 Minutes
+classes: [[Cleric]]
+components: V
+concentration: No
+duration: Instantaneous
+level: 2
+range: 30 feet
+ritual: No
+school: Evocation
+title: Prayer of Healing
+type: Spell

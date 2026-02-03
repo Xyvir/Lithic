@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 8th level or higher, you can target up to three willing creatures (including you) for each slot level above 7th. The creatures must be within 10 feet of you when you cast the spell.
+casting_time: 1 Action
+classes: [[Bard]] [[Cleric]] [[Sorcerer]] [[Warlock]] [[Wizard]]
+components: V, S
+concentration: No
+duration: Up to 8 hours
+level: 7
+range: Self
+ritual: No
+school: Transmutation
+title: Etherealness
+type: Spell

@@ -1,0 +1,3 @@
+module-type: parser
+title: $:/core/modules/parsers/htmlparser.js
+type: application/javascript

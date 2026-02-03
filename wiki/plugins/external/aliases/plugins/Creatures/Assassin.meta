@@ -1,0 +1,30 @@
+ac: 15
+ac_description: studded leather
+alignment: any non-good alignment
+attacks: //''Multiattack:''// The assassin makes two shortsword attacks.<br><br>//''Shortsword:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one target. //Hit:// 6 (1d6+3) piercing damage, and the target must make a DC 15 Constitution saving throw, taking 24 (7d6) poison damage on a failed save, or half as much damage on a successful one.<br><br>//''Light Crossbow:'' Ranged Weapon Attack:// +6 to hit, range 80/320 ft., one target. //Hit:// 7 (1d8+3) piercing damage, and the target must make a DC 15 Constitution saving throw, taking 24 (7d6) poison damage on a failed save, or half as much damage on a successful one.
+cha: 10
+challenge_rating: 8
+con: 14
+condition_immunities: 
+created: 20181223151507312
+creature_type: humanoid
+damage_immunities: 
+damage_resistances: poison
+dex: 16
+features: //''Assassinate:''// During its first turn, the assassin has advantage on attack rolls against any creature that hasn't taken a turn. Any hit the assassin scores against a surprised creature is a critical hit.<br><br>//''Evasion:''// If the assassin is subjected to an effect that allows it to make a Dexterity saving throw to take only half damage, the assassin instead takes no damage if it succeeds on the saving throw, and only half damage if it fails.<br><br>//''Sneak Attack:''// Once per turn, the assassin deals an extra 14 (4d6) damage when it hits a target with a weapon attack and has advantage on the attack roll, or when the target is within 5 feet of an ally of the assassin that isn't incapacitated and the assassin doesn't have disadvantage on the attack roll.
+hp: 78
+hp_generation: 12d8+24
+int: 13
+languages: Thieves' cant plus any two languages
+modified: 20181223151507312
+saving_throws: Dex +6, Int +4
+senses: PP 13
+size: Medium
+skills: Acrobatics +6, Deception +3, Perception +3, Stealth +9
+speed: 30 ft.
+str: 11
+subtype: any race
+title: Assassin
+type: Creature
+wis: 11
+xp: 3900

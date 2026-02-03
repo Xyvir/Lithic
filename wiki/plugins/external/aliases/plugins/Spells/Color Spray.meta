@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 2nd level or higher, roll an additional 2d10 for each slot level above 1st.
+casting_time: 1 Action
+classes: [[Sorcerer]] [[Wizard]]
+components: V, S, M
+concentration: No
+duration: 1 round
+level: 1
+range: Self (15-foot cone)
+ritual: No
+school: Illusion
+title: Color Spray
+type: Spell

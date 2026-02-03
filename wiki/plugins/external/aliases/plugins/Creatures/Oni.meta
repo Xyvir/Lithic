@@ -1,0 +1,29 @@
+ac: 16
+ac_description: chain mail
+alignment: lawful evil
+attacks: //''Multiattack:''// The oni makes two attacks, either with its claws or its glaive.<br><br>//''Claw (Oni Form Only):'' Melee Weapon Attack:// +7 to hit, reach 5 ft., one target. //Hit:// 8 (1d8+4) slashing damage.<br><br>//''Glaive:'' Melee Weapon Attack:// +7 to hit, reach 10ft., one target. //Hit:// 15 (2d10+4) slashing damage, or 9 (1d10+4) slashing damage in Small or Medium form.<br><br>//''Change Shape:''// The oni magically polymorphs into a Small or Medium humanoid, into a Large giant, or back into its true form. Other than its size, its statistics are the same in each form. The only equipment that is transformed is its glaive, which shrinks so that it can be wielded in humanoid form. If the oni dies, it reverts to its true form, and its glaive reverts to its normal size.
+cha: 15
+challenge_rating: 7
+con: 16
+condition_immunities: 
+created: 20181223151326833
+creature_type: giant
+damage_immunities: 
+damage_resistances: 
+dex: 11
+features: //''Innate Spellcasting:''// The oni's innate spellcasting ability is Charisma (spell save DC 13). The oni can innately cast the following spells, requiring no material components:<br><br>At will: //[[Darkness]], [[Invisibility]]//<br>1/day each: //[[Charm Person]], [[Cone of Cold]], [[Gaseous Form]], [[Sleep]]//<br><br>//''Magic Weapons:''// The oni's weapon attacks are magical.<br><br>//''Regeneration:''// The oni regains 10 hit points at the start of its turn if it has at least 1 hit point.
+hp: 110
+hp_generation: 13d10+39
+int: 14
+languages: Common, Giant
+modified: 20190107181427611
+saving_throws: Dex +3, Con +6, Wis +4, Cha +5
+senses: Darkvision 60 ft., PP 14
+size: Large
+skills: Arcana +5, Deception +8, Perception +4
+speed: 30 ft., fly 30 ft.
+str: 19
+title: Oni
+type: Creature
+wis: 12
+xp: 2900

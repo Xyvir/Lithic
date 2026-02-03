@@ -1,0 +1,17 @@
+title: $:/plugins/bj/drag-and-drop/readme
+
+!!!Drag and Drop Widgets
+
+Plugin contains the following widgets
+
+# taglist - re-orderable list of tiddlers with the same tag. Api parameters:
+#* targettag - name of the lists tag
+#* template - The title of a template tiddler for transcluding each tiddler in the list. When no template is specified, the body of the widget serves as the item template. With no body, a simple link to the tiddler is returned.
+#* variable - The name for a variable in which the title of each listed tiddler is stored. Defaults to currentTiddler
+#* nodrop - drops are ignored
+#* htmltag - enclosing html element for list items
+# ondrop - and or remove tags in response to a drop event. Api parameters:
+#* targeTtag name of tag to act with. 
+#* tagAction can be set to addtag or removetag
+
+This plugin also adds ondragover click events to the link and button widgets. 

@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: chaotic evil
+attacks: //''Strength Drain:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one creature. //Hit:// 9 (2d6+2) necrotic damage, and the target's Strength score is reduced by 1d4. The target dies if this reduces its Strength to 0. Otherwise, the reduction lasts until the target finishes a short or long rest.<br>If a non-evil humanoid dies from this attack, a new shadow rises from the corpse 1d4 hours later.
+cha: 8
+challenge_rating: 1/2
+con: 13
+condition_immunities: exhaustion, frightened, grappled, paralyzed, petrified, poisoned, prone, restrained
+created: 20181223151326838
+creature_type: undead
+damage_immunities: necrotic, poison
+damage_resistances: acid, cold, fire, lightning, thunder, bludgeoning, piercing and slashing from nonmagical weapons
+dex: 14
+features: //''Damage Vulnerabilities:''// radiant<br><br>//''Amorphous:''// The shadow can move through a space as narrow as 1 inch wide without squeezing.<br><br>//''Shadow Stealth:''// While in dim light or darkness, the shadow can take the Hide action as a bonus action.<br><br>//''Sunlight Weakness:''// While in sunlight, the shadow has disadvantage on attack rolls, ability checks, and saving throws.
+hp: 16
+hp_generation: 3d8+3
+int: 6
+languages: ---
+modified: 20181223151326838
+saving_throws: 
+senses: Darkvision 60 ft., PP 10
+size: Medium
+skills: Stealth +4 (+6 in dim light or darkness)
+speed: 40 ft.
+str: 6
+title: Shadow
+type: Creature
+wis: 10
+xp: 100

@@ -1,0 +1,30 @@
+ac: 18
+ac_description: chain mail, shield
+alignment: lawful evil
+attacks: //''Longsword:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 5 (1d8+1) slashing damage, or 6 (1d10+1) slashing damage if used with two hands.<br><br>//''Longbow:'' Ranged Weapon Attack:// +3 to hit, range 150/600 ft., one target. //Hit:// 5 (1d8+1) piercing damage.
+cha: 9
+challenge_rating: 1/2
+con: 12
+condition_immunities: 
+created: 20181223151507323
+creature_type: humanoid
+damage_immunities: 
+damage_resistances: 
+dex: 12
+features: //''Martial Advantage:''// Once per turn, the hobgoblin can deal an extra 7 (2d6) damage to a creature it hits with a weapon attack if that creature is within 5 feet of an ally of the hobgoblin that isn't incapacitated.
+hp: 11
+hp_generation: 2d8+2
+int: 10
+languages: Common, Goblin
+modified: 20181223151507323
+saving_throws: 
+senses: Darkvision 60 ft., PP 10
+size: Medium
+skills: 
+speed: 30 ft.
+str: 13
+subtype: goblinoid
+title: Hobgoblin
+type: Creature
+wis: 10
+xp: 100

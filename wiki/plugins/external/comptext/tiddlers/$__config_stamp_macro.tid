@@ -1,0 +1,7 @@
+tags: $:stamp
+title: $:/config/stamp/macro
+type: text/vnd.tiddlywiki
+
+\def NewMacro
+"Something usefull"
+\end

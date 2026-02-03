@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Druid]]
+components: V, S
+concentration: Yes
+duration: Concentration, up to 1 minute
+level: 9
+range: Sight
+ritual: No
+school: Conjuration
+title: Storm of Vengeance
+type: Spell

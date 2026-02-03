@@ -1,0 +1,29 @@
+ac: 13
+ac_description: natural armor
+alignment: netural good
+attacks: //''Bite:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one target. //Hit:// 4 (1d4+2) piercing damage.<br><br>//''Sting:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one creature. //Hit:// 4 (1d4+2) piercing damage, and the target must succeed on a DC 11 Constitution saving throw or become poisoned for 1 hour. If the saving throw fails by 5 or more, the target falls unconscious for the same duration, or until it takes damage or another creature uses an action to shake it awake.
+cha: 10
+challenge_rating: 1/4
+con: 13
+condition_immunities: 
+created: 20181223151326837
+creature_type: dragon
+damage_immunities: 
+damage_resistances: 
+dex: 15
+features: //''Keen Senses:''// The pseudodragon has advantage on Wisdom (Perception) checks that rely on sight, hearing, or smell.<br><br>//''Magic Resistance:''// The pseudodragon has advantage on saving throws against spells and other magical effects.<br><br>//''Limited Telepathy:''// The pseudodragon can magically communicate simple ideas, emotions, and images telepathically with any creature within 100 feet of it that can understand a language.
+hp: 7
+hp_generation: 2d4+2
+int: 10
+languages: understands Common and Draconic but can't speak
+modified: 20181223151326837
+saving_throws: 
+senses: Blindsight 10 ft., Darkvision 60 ft., PP 13
+size: Tiny
+skills: Perception +3, Stealth +4
+speed: 15 ft., fly 60 ft.
+str: 6
+title: Pseudodragon
+type: Creature
+wis: 12
+xp: 50

@@ -1,0 +1,8 @@
+caption: Display tabs of Open Tids
+tags: $:/tags/ControlPanel/Settings
+title: $:plugins/bj/ui/ControlPanel/Settings/StoryTabs
+type: text/vnd.tiddlywiki
+
+<$checkbox tiddler="$:/plugin/bj/storytabs" tag="$:/tags/AboveStory" > Enable Story Tabs </$checkbox>
+
+

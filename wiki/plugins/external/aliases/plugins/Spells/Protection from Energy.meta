@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]] [[Druid]] [[Ranger]] [[Sorcerer]] [[Wizard]]
+components: V, S
+concentration: Yes
+duration: Concentration, up to 1 hour
+level: 3
+range: Touch
+ritual: No
+school: Abjuration
+title: Protection from Energy
+type: Spell

@@ -1,0 +1,8 @@
+created: 20141210220720781
+modified: 20141210224922634
+revision: 0
+tags: 
+title: edit test
+type: text/vnd.tiddlywiki
+
+<$edit-html tiddler="test" field="text"/>

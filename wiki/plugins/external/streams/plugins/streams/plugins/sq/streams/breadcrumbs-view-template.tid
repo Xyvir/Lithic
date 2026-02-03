@@ -1,0 +1,32 @@
+created: 20200529205858594
+list-before: $:/core/ui/ViewTemplate/body
+modified: 20200530055142652
+tags: $:/tags/ViewTemplate
+title: $:/plugins/sq/streams/breadcrumbs-view-template
+type: text/vnd.tiddlywiki
+
+\whitespace trim
+\define stream-show-breadcrumbs()
+<$list filter="[<currentTiddler>has[stream-type]]">
+	<$list filter="[<currentTiddler>has[parent]]">
+		<$set name="currentTiddler" filter="[{!!parent}]" select="0">
+			<<stream-show-breadcrumbs>>
+		</$set>
+	</$list>	
+	<$list filter="[<currentTiddler>!match<storyTiddler>]">
+		<$wikify name="display-title" text={{{ [<currentTiddler>!is[binary]get[text]!is[blank]] ~[{!!title}] }}}>
+			<span class="sq-breadcrumbs-fragment">
+			<$link to=<<currentTiddler>>>
+				<$text text={{{ [<display-title>split[]first[50]join[]] }}}/>
+			</$link>>
+			</span>
+		</$wikify>
+	</$list>
+</$list>
+\end
+<$list filter="""[<folded-state>get[text]!is[blank]else[show]!match[hide]]""" variable="_NULL">
+<$list filter="[{$:/config/sq/streams/enable-breadcrumbs}match[yes]]" variable="_NULL">
+<<stream-show-breadcrumbs>>
+</$list>
+</$list>
+

@@ -1,0 +1,12 @@
+at_higher_level: This spell’s damage increases by 1d8 when you reach 5th level (2d8), 11th level (3d8), and 17th level (4d8).
+casting_time: 1 Action
+classes: [[Sorcerer]] [[Warlock]] [[Wizard]]
+components: V, S
+concentration: No
+duration: 1 round
+level: 0
+range: 120 feet
+ritual: No
+school: Necromancy
+title: Chill Touch
+type: Spell

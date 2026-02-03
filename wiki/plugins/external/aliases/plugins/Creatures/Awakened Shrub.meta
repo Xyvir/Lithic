@@ -1,0 +1,29 @@
+ac: 9
+ac_description: 
+alignment: unaligned
+attacks: //''Rake:'' Melee Weapon Attack:// +1 to hit, reach 5 ft., one target. //Hit:// 1 (1d4-1) slashing damage.
+cha: 6
+challenge_rating: 0
+con: 11
+condition_immunities: 
+created: 20181223151326818
+creature_type: plant
+damage_immunities: 
+damage_resistances: piercing
+dex: 8
+features: //''Damage vulnerabilities:''// fire<br><br>//''False Appearance:''// While the shrub remains motionless, it is indistinguishable from a normal shrub.
+hp: 10
+hp_generation: 3d6
+int: 10
+languages: one language known by its creator
+modified: 20181223151326818
+saving_throws: 
+senses: PP 10
+size: Small
+skills: 
+speed: 20 ft.
+str: 3
+title: Awakened Shrub
+type: Creature
+wis: 10
+xp: 10

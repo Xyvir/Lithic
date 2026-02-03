@@ -1,0 +1,17 @@
+<h2>Demo</h2>
+<p>Try the demo here: VisualEditorDemo</p>
+<h2>Installation</h2>
+<p>This widget uses the ckeditor lib - the 'command' to load it is in the tiddler [[$:/plugin/bj/visualeditor/includelib]] - and it needs to point to a new location, where you will load the library from. To avoid querks with loading the library from the web include the library from your computer (the library can be obtained from http://ckeditor.com/download):</p>
+<p>For linux</p>
+<p>&lt;script src="file:///yourpath/ckeditor/ckeditor.js"&gt;&lt;/script&gt;</p>
+<p>For windows</p>
+<p>&lt;script src="file://c/yourpath/ckeditor/ckeditor.js"&gt;&lt;/script&gt;</p>
+<p>where 'yourpath' is the path to where you have put the ckeditor download.</p>
+<p>Then reload your tiddlywiki.</p>
+<p>Also be aware that the editor strips newline characters, this means it cannot&nbsp; be used with some wiki text (it is probably a bad idea to try and mix wiki text with text produced in the visualeditor).</p>
+<p>There is a new type for tiddlers using this plugin: text/x-htmlp, select it from the dropdown type menu when you create a new tiddler.</p>
+<h2>&nbsp;</h2>
+<h2>Configuration Tiddlers</h2>
+<p>The tiddler&nbsp;<a class="tc-tiddlylink tc-tiddlylink-shadow" href="http://127.0.0.1:8080/#%24%3A%2Fplugins%2Fbj%2Fvisualeditor%2Fconfig.json">$:/plugins/bj/visualeditor/config.json</a> contains user adjustable values, such as changing how the menu bar appears.</p>
+<p>The tiddler&nbsp;<a class="tc-tiddlylink tc-tiddlylink-shadow" href="http://127.0.0.1:8080/#%24%3A%2Fplugins%2Fbj%2Fvisualeditor%2Fstyles.json">$:/plugins/bj/visualeditor/styles.json</a> defines the entries in the 'Styles' drop down menu, which define styles that can be applied to selected text. The tiddler [[alternative/styles.json]] contains some alternative definition that could be cut and pasted in this config tiddler</p>
+<p><span class="verbatim">&lt;&lt;version&gt;&gt;</span></p>

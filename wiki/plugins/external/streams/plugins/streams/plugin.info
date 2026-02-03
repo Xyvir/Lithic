@@ -1,0 +1,15 @@
+{
+    "title": "$:/plugins/sq/streams",
+    "name": "Streams",
+    "description": "Rapid data entry with a keyboard driven workflow. Divide content into smaller tiddlers as you write.",
+    "plugin-type": "plugin",
+    "plugin-priority": "1",
+    "author": "Saq Imtiaz",
+    "version": "1.2.24",
+    "core-version": ">=5.1.23",
+    "list": "Settings CHANGELOG",
+    "source": "https://saqimtiaz.github.io/streams/",
+    "dependents": "$:/plugins/flibbles/relink",
+    "revision": "0",
+    "bag": "default"
+}

@@ -1,0 +1,21 @@
+caption: Kobold
+created: 20190810195310221
+firstnames: Arix Eks Ett Galax Garu Hagnar Hox lrtos Kashak Meepo  Molo Ohsoss Rotom Sagin Sik Sniv Taklak Tes Urak Varn
+modified: 20190906185123098
+seed: 14:51:23
+tags: [[Name Generator]]
+title: $:/plugins/DMTools/Name Generator/Kobold
+
+<$button>
+<$action-setfield $field="seed" $value=<<now "0hh:0mm:0ss">>/>
+Refresh
+</$button>
+
+<$list filter="[enlist{!!firstnames}shuffle{!!seed}first[10]]">
+Hello
+<$button class="tc-btn-invisible tc-tiddlylink"> 
+<$action-sendmessage $message="tm-new-tiddler" title={{!!title}} tags="NPC" text={{$:/plugins/DMTools/Name Generator/NPC Template}} />
+{{!!title}}
+</$button>
+<br />
+</$list>

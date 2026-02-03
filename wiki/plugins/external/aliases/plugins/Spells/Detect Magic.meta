@@ -1,0 +1,14 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Cleric]] [[Druid]] [[Paladin]] [[Ranger]] [[Sorcerer]] [[Wizard]]
+components: V, S
+concentration: Yes
+created: 20190103192519174
+duration: Concentration, up to 10 minutes
+level: 1
+modified: 20190103192520064
+range: Self
+ritual: Yes
+school: Divination
+title: Detect Magic
+type: Spell

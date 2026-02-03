@@ -1,0 +1,33 @@
+
+----
+
+##Example Source
+```
+# Source of content made to be even more markdown like
+In this content I have made the following changes to the rules
+
+one level of markdow number lists now supported
+
+1. using **listmod rule** - now I am using a  . for ordered lists
+2. using **headingmod rule** I am using # inplace of ! for headings
+3. using **boldmode rule** I am using two * inplace of two '
+
+I have also:
+
++ **replaced** * with + for unordered lists
+```
+----
+
+##Example Rendered
+# Source of content made to be even more markdown like
+In this content I have made the following changes to the rules
+
+one level of markdow number lists now supported
+
+1. using **listmod rule** - now I am using a  . for ordered lists
+2. using **headingmod rule** I am using # inplace of ! for headings
+3. using **boldmode rule** I am using two * inplace of two '
+##
+I have also:
+
++ **replaced** * with + for unordered lists

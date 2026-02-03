@@ -1,0 +1,4 @@
+The Flexibility Plugin extends the types supported in tiddlywiki. A standard type for example is **text/vnd.tiddlywiki**. The extension has the form **text/vnd.tiddlywiki;flexiblity=Atiddler** and**Atiddler** contains options to extend tiddlytext or allow text to be reparsed. 
+
+<<tabs "[[Flexitype Extended Type Demo]] [[Flexitype Repass Demo]]" "Flexitype Extended Type Demo">>
+

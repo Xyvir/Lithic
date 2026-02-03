@@ -1,0 +1,6 @@
+created: 20211017111639237
+description: load the external lib from web
+modified: 20211017111641708
+title: $:/plugin/bj/visualeditor/bjtools/lib
+
+https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.3.2/ckeditor.js

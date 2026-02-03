@@ -1,0 +1,22 @@
+Wikirules define wikitext. The rule for defining 'bold' is here: [[$:/core/modules/parsers/wikiparser/rules/emphasis/bold.js]] .
+
+Wikirules are give a name and a type (mode), from the example above these are
+
+```
+exports.name = "bold";
+exports.types = {inline: true};
+```
+
+Types (parser modes) can be 'inline', ''block' or 'pragma'.
+
+Flexitype uses a tiddler containing lists to say which rules will be used in a particular tiddler type. For example this tiddler is of type 
+
+'text/vnd.twbase;flexibility=MDL'. The tiddler [[MDL]] contain three lists ('inline', ''block' , 'pragma') of rules that define the wikitext; the name of the list defined a parser 'mode'.
+
+The placement of a rule within a particular list enable that rule to be used in that 'parser mode'.  Code implementing user defined rules is of the same form as the built-in rules, with the exception of the 'exports.types', eg in MDL a rule 'strong' is used and it source can be seen here [[$:/bj/mdl/modules/parsers/wikiparser/rules/strong.js]], which is almost the same as the 'bold' rule above. Here is the difference is in the name and type(mode):
+
+```
+exports.name = "strong";
+exports.types = {user: true};
+```
+Here the parser mode is 'user' which means it can only be used by being placed in a parser mode list used by the flexitype plugin.

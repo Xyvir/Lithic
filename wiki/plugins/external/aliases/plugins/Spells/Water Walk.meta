@@ -1,0 +1,14 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]] [[Druid]] [[Ranger]] [[Sorcerer]]
+components: V, S, M (a piece of cork)
+concentration: No
+created: 20190103192158946
+duration: 1 hour
+level: 3
+modified: 20190103192200368
+range: 30 feet
+ritual: Yes
+school: Transmutation
+title: Water Walk
+type: Spell

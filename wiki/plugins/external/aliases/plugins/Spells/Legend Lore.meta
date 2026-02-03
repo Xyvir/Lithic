@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 10 Minutes
+classes: [[Bard]] [[Cleric]] [[Wizard]]
+components: V, S, M (incense worth at least 250 gp, which the spell consumes, and four ivory strips worth at least 50 gp each)
+concentration: No
+duration: Instantaneous
+level: 5
+range: Self
+ritual: No
+school: Divination
+title: Legend Lore
+type: Spell

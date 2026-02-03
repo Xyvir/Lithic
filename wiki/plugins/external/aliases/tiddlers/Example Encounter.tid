@@ -1,0 +1,28 @@
+created: 20190913134352611
+creature-1-condition: 
+creature-1-hp: 5
+creature-2-condition: 
+creature-2-hp: 5
+creature-3-condition: 
+creature-3-hp: 5
+creature-4-condition: 
+creature-4-hp: 8
+creature-5-condition: Hunter's Mark
+creature-5-hp: 11
+creature-6-condition: 
+creature-6-hp: 133
+creatures: Kobold Kobold Kobold Hobgoblin Hobgoblin [[Young White Dragon]]
+last-added-monster: Young White Dragon
+modified: 20190913141759004
+tags: Encounter
+title: Example Encounter
+
+This is an example of what the [[Encounter Builder|$:/plugins/D&DTools/EncounterBuilder]] tool can do.  By tagging a tiddler as an <<tag Encounter>> it gets two things added to it.  A table above the body of the tiddler that will contain all the monsters in the encounter, including their HP, conditions, and a notes section, while below the body, a horizontally scrolling area will display the stat block for each type of creature in the encounter.  
+
+Looking at the creatures above, you can see we've got 3 [[Kobolds|Kobold]], 2 [[Hobgoblins|Hobgoblin]], and a [[Young White Dragon]] in this encounter.  The First hobgoblin has taken damage, and the second has [[Hunter's Mark]] on him.  
+
+Now, lets examine the behavior as the encounter continues.  Perhaps, anotther attack comes in against the injured hobgoblin, dealing 7 damage.  Clicking the minus button, you'll see that a button appears below the hp, showing the modification about to be made to the hobgoblin's hp.  Clicking the button will apply the change.  You'll also notice that once it's applied, a red blood droplet shows up next to the creature's hp.  This means they're below 50% hp, and is "bloodied" under the optional rules.
+
+Next let's see what happens when a creature dies.  Go ahead and click on the X next to one of the kobolds, who dies in a single hit.  Everything else shifts up.
+
+To add creatures to the encounter, select them from the drop down, and click add to encounter. To reset/restart the encounter, click "Reset HP"

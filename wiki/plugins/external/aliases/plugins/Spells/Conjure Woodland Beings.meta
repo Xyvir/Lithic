@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using certain higher-level spell slots, you choose one of the summoning options above, and more creatures appear:
+casting_time: 1 Action
+classes: [[Druid]] [[Ranger]]
+components: V, S, M  (one holly berry per creature summoned)
+concentration: Yes
+duration: Concentration, up to 1 hour
+level: 4
+range: 60 feet
+ritual: No
+school: Conjuration
+title: Conjure Woodland Beings
+type: Spell

@@ -1,0 +1,7 @@
+key: ((streams-indent))
+sq-contextmenu-name: Indent
+sq-contextmenu-subtitle: 
+tags: $:/tags/streams/keyboard-shortcuts $:/tags/streams/contextmenu
+title: $:/plugins/sq/streams/keyboard-shortcuts/indent-node
+
+<<indent-node-actions>>

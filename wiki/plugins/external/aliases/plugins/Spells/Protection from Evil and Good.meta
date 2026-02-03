@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]] [[Paladin]] [[Warlock]] [[Wizard]]
+components: V, S, M (holy water or powdered silver and iron, which the spell consumes)
+concentration: Yes
+duration: Concentration, up to 10 minutes
+level: 1
+range: Touch
+ritual: No
+school: Abjuration
+title: Protection from Evil and Good
+type: Spell

@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one target. //Hit:// 4 (1d4+2) piercing damage.
+cha: 4
+challenge_rating: 1/8
+con: 11
+condition_immunities: 
+created: 20181223151326827
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 15
+features: //''Keen Smell:''// The rat has advantage on Wisdom (Perception) checks that rely on smell.<br><br>//''Pack Tactics:''// The rat has advantage on an attack roll against a creature if at least one of the rat's allies is within 5 feet of the creature and the ally isn't incapacitated.
+hp: 7
+hp_generation: 2d6
+int: 2
+languages: ---
+modified: 20181223151326827
+saving_throws: 
+senses: Darkvision 60 ft., PP 10
+size: Small
+skills: 
+speed: 30 ft.
+str: 7
+title: Giant Rat
+type: Creature
+wis: 10
+xp: 25

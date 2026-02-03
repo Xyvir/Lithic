@@ -10,5 +10,35 @@
     "etag": "0x8DB5E8483CE6CE7",
     "lastModified": "Sat, 27 May 2023 07:32:24 GMT",
     "updatedAt": "2026-02-03T03:24:02.401Z"
+  },
+  "comptext": {
+    "url": "https://snowgoon88.github.io/TW5-extendedit/",
+    "etag": "608ea2b3-25d517",
+    "lastModified": "Sun, 02 May 2021 13:01:39 GMT",
+    "updatedAt": "2026-02-03T18:45:20.522Z"
+  },
+  "relink": {
+    "url": "https://flibbles.github.io/tw5-relink/",
+    "etag": "695c48d7-2aa466",
+    "lastModified": "Mon, 05 Jan 2026 23:27:19 GMT",
+    "updatedAt": "2026-02-03T18:45:21.414Z"
+  },
+  "streams": {
+    "url": "https://saqimtiaz.github.io/streams/",
+    "etag": "63ee3bea-32d978",
+    "lastModified": "Thu, 16 Feb 2023 14:21:30 GMT",
+    "updatedAt": "2026-02-03T18:45:22.389Z"
+  },
+  "aliases": {
+    "url": "https://mklauber.github.io/tw5-plugins",
+    "etag": "66745778-41a5e3",
+    "lastModified": "Thu, 20 Jun 2024 16:23:20 GMT",
+    "updatedAt": "2026-02-03T18:45:24.139Z"
+  },
+  "calendar": {
+    "url": "https://bjtools.tiddlyspot.com/",
+    "etag": "5yGetd9/uKeDcU4xNc66Ng==",
+    "lastModified": null,
+    "updatedAt": "2026-02-03T18:45:25.943Z"
   }
 }

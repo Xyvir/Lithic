@@ -1,0 +1,21 @@
+caption: Lizardfolk
+created: 20190810200124228
+firstnames: [[Achuak (green)]] [[Aryte (war)]] [[Bae- shra (animal)]] [[Darastrix (dragon)]] [[Garurt (axe)]] [[Irhtos (secret)]] [[Jhank (hammer)]] [[Kepesk (storm)]] [[Kethend (gem)]] [[Korth (danger)]] [[Kosj (small)]] [[Kothar (demon)]] [[Li- trix (armor)]] [[Mirik (song)]] [[Othokent (smart)]] [[Sauriv (eye) Throden (many)]] [[Thurkear (night)]] [[Usk (iron)]] [[Valignat (burn)]] [[Vargach (battle)]] [[Verthica (mountain)]] [[Vutha (black)]] [[Vyth (steel)]]
+modified: 20190810200139246
+seed: 15:29:29
+tags: [[Name Generator]]
+title: $:/plugins/DMTools/Name Generator/Lizardfolk
+
+<$button>
+<$action-setfield $field="seed" $value=<<now "0hh:0mm:0ss">>/>
+Refresh
+</$button>
+
+<$list filter="[enlist{!!firstnames}shuffle{!!seed}first[10]]">
+Hello
+<$button class="tc-btn-invisible tc-tiddlylink"> 
+<$action-sendmessage $message="tm-new-tiddler" title={{!!title}} tags="NPC" text={{$:/plugins/DMTools/Name Generator/NPC Template}} />
+{{!!title}}
+</$button>
+<br />
+</$list>

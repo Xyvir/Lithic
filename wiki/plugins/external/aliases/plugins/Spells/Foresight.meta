@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Minute
+classes: [[Bard]] [[Druid]] [[Warlock]] [[Wizard]]
+components: V, S, M (a hummingbird feather)
+concentration: No
+duration: 8 hours
+level: 9
+range: Touch
+ritual: No
+school: Divination
+title: Foresight
+type: Spell

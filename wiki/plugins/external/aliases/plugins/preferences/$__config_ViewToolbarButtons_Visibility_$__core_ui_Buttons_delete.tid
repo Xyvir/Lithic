@@ -1,0 +1,9 @@
+$: /mklauber/editing/field: text
+created: 20150812232815159
+list-before: $:/core/ui/Buttons/more-tiddler-actions
+mklauber-editing-field: text
+modified: 20160309191103092
+tags: 
+title: $:/config/ViewToolbarButtons/Visibility/$:/core/ui/Buttons/delete
+
+show

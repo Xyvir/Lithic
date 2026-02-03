@@ -1,0 +1,29 @@
+ac: 13
+ac_description: natural armor
+alignment: unalinged
+attacks: //''Multiattack:''// The owlbear makes two attacks: one with its beak and one with its claws.<br><br>//''Beak:'' Melee Weapon Attack:// +7 to hit, reach 5ft, one creature. //Hit:// 10 (1d10+5) piercing damage.<br><br>//''Claws:'' Melee Weapon Attack:// +7 to hit, reach 5ft, one target. //Hit:// 14 (2d8+5) slashing damage.
+cha: 7
+challenge_rating: 3
+con: 17
+condition_immunities: 
+created: 20181223151326833
+creature_type: monstrosity
+damage_immunities: 
+damage_resistances: 
+dex: 12
+features: //''Keen Sight and Smell:''// The owlbear has advantage on Wisdom (Perception) checks that rely on sight or smell.
+hp: 59
+hp_generation: 7d10+21
+int: 3
+languages: ---
+modified: 20181223151326833
+saving_throws: 
+senses: Darkvision 60 ft., PP 13
+size: Large
+skills: Perception +3
+speed: 40 ft.
+str: 20
+title: Owlbear
+type: Creature
+wis: 12
+xp: 700

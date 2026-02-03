@@ -1,0 +1,23 @@
+created: 20141213183527878
+modified: 20141213183542239
+revision: 0
+tags: 
+title: basictype
+type: text/vnd.tiddlywiki
+
+{
+  "parserrules": {
+    "pragmaRuleList": [],
+    "blockRuleList": [
+      "html"
+    ],
+    "inlineRuleList": [
+      "html",
+      "prettylink",
+      "transcludeinline",
+      "wikilink"
+    ]
+  },
+  "baserules": "",
+  "preparser": "text/x-preparser<B>text/plain"
+}

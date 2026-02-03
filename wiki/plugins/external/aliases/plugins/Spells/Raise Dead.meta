@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Hour
+classes: [[Bard]] [[Cleric]] [[Paladin]]
+components: V, S, M (a diamond worth at least 500 gp, which the spell consumes)
+concentration: No
+duration: Instantaneous
+level: 5
+range: Touch
+ritual: No
+school: Necromancy
+title: Raise Dead
+type: Spell

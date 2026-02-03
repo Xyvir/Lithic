@@ -1,0 +1,14 @@
+created: 20180411230953347
+modified: 20180412124416951
+tags: Plugin
+title: SoundPad
+
+Copy this link to add the plugin library:  [[Matt's Plugin Library]] or import it directly here [[$:/plugins/mklauber/SoundPad]].
+
+
+This is an example of a ~SoundPad built with my [[SoundPad|$:/plugins/mklauber/SoundPad]] plugin.  It allows you to mix and match multiple sounds in order to create different effects.  I've packaged the sounds in a separate plugin ([[SoundPad-Sounds|$:/plugins/mklauber/SoundPad-Sounds]]) in order to reduce the minimum size of this plugin.  You can import specific sounds from [[Available Sounds]] or import the plugin to get everything.  
+
+<<sound Roar>>
+<<sound [[Horse Galloping (Loop)]] loop="loop">>
+<<sound [[Birdsong]] >>
+<div style="clear:both;" />

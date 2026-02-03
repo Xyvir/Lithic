@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Hour
+classes: [[Bard]] [[Cleric]]
+components: V, S, M (a diamond worth at least 1,000 gp, which the spell consumes)
+concentration: No
+duration: Instantaneous
+level: 7
+range: Touch
+ritual: No
+school: Necromancy
+title: Resurrection
+type: Spell

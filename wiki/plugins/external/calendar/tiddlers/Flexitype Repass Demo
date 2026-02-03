@@ -1,0 +1,13 @@
+In the example below text is reparsed. The type is **text/vnd.tiddlywiki;flexiblity=svgtp** - see the tidder [[svgtp]]
+
+This example show how to concatenate data transcluded from an attribute string, something that cannot be done with **text/vnd.tiddlywiki**. In the svg drawing (see AtrStrSource) the path data is transcluded from a field and concatenated with extra data:
+
+`{{AtrStr!!path}} C 800 100 900 100 900 100`
+
+With regular wiki text the concatenation fails and we have
+
+{{AtrStr vnd.tiddlywiki}}
+
+whereas with the reparsed wikitext we have
+
+{{AtrStr}}

@@ -1,0 +1,5 @@
+caption: <$link>Example Option</$link>
+description: This example module. It's a 3rd party option which didn't come with //Relink-titles// that shows how other plugins can add rename rules of their own. See <<link-to-tab Plugins Plugins/Titles "the //Relink-titles// documentation page">> for more information.
+module-type: relinktitlesrule
+title: Plugins/Titles/example.js
+type: application/javascript

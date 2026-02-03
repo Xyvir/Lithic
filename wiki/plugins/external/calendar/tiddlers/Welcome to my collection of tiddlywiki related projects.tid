@@ -1,0 +1,22 @@
+created: 20140216101316280
+modified: 20160226122110257
+revision: 0
+title: Welcome to my collection of tiddlywiki related projects
+type: text/vnd.tiddlywiki
+
+|!Project|!Location|!Objective|
+|[[Flexitype Demos]]|[[$:/plugins/bj/flexitype]] |Exended types - numerous uses|
+|[[typestemplate]]|[[$:/plugins/bj/typestemplate]] |enables user templates for types|
+|ExtendableCalendar|[[$:/plugins/bj/Calendar]] |A configuarable calendar|
+|! <hr> |! <hr> |! <hr> |
+|[[drag-and-drop]]|[[$:/plugins/bj/drag-and-drop]] |list by tag that is re-orderable by drag/drop |
+|VisualEditor|[[$:/plugins/bj/visualeditor]] |Enable html based content to be created or edited|
+|MarKed|[[$:/plugins/bj/plugins/marked]]|alternative markdown (Marked variation) plugin |
+|! <hr> |! <hr> |! <hr> |
+|JsonEditor|[[$:/plugins/bj/jsoneditor]]|display and edit jsons as trees|
+|ClickAction|[[$:/plugins/bj/clickaction]]|allows multiple actions on a lists to be activated at the same time|
+|StoryTopTabs|[[$:/plugins/bj/storytabs]]|Display links to open tiddlers across top of story|
+|! <hr> |! <hr> |! <hr> |
+|[[More Markdown Like]]|$:/plugins/bj/markdownlike|Modified wikitext markup|
+|''tiddlyclip''|http://tiddlyclip.tiddlyspot.com|Clip webcontent into tiddlers|
+|! <hr> |! <hr> |! <hr> |

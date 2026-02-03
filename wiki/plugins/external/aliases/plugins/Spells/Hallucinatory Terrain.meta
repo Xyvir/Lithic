@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 10 Minutes
+classes: [[Bard]] [[Druid]] [[Warlock]] [[Wizard]]
+components: V, S, M (a stone, a twig, and a bit of green plant)
+concentration: No
+duration: 24 hours
+level: 4
+range: 300 feet
+ritual: No
+school: Illusion
+title: Hallucinatory Terrain
+type: Spell

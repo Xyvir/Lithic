@@ -1,0 +1,3 @@
+<p>VisualTW5 is the application visual editoring to tw5 wkitext. The Idea is to use the visual editor to provide the text markup as html tags, and use only the macro and link functionality from the tw5 wikitext. As tw5 wikitext includes html tags this means that only a subset of tw5 wiki text will be used (in tiddlers created this way). To make a distinction , a new type, text/x-perimental, is used.</p>
+<h2>Activation</h2>
+<p>After installing the visual editor plugin, drag this tiddler on to your tiddlywiki -[[$:/language/Docs/Types/text/x-perimental]]</p>

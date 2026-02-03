@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]]
+components: V, S
+concentration: Yes
+duration: Concentration, up to 10 minutes
+level: 6
+range: 90 feet
+ritual: No
+school: Evocation
+title: Blade Barrier
+type: Spell

@@ -1,0 +1,14 @@
+at_higher_level: 
+casting_time: 1 Minute
+classes: [[Wizard]]
+components: V, S
+concentration: No
+created: 20190103192342264
+duration: 1 hour
+level: 3
+modified: 20190103192343329
+range: 30 feet
+ritual: Yes
+school: Illusion
+title: Phantom Steed
+type: Spell

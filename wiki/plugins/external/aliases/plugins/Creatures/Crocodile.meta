@@ -1,0 +1,29 @@
+ac: 12
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one creature. //Hit:// 7 (1d10+2) piercing damage, and the target is grappled (escape DC 12). Until this grapple ends, the target is restrained, and the crocodile can't bite another target.
+cha: 5
+challenge_rating: 1/2
+con: 13
+condition_immunities: 
+created: 20181223151326822
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 10
+features: //''Hold Breath:''// The crocodile can hold its breath for 15 minutes.
+hp: 19
+hp_generation: 3d10+3
+int: 2
+languages: ---
+modified: 20181223151326822
+saving_throws: 
+senses: PP 10
+size: Large
+skills: Stealth +2
+speed: 20 ft., swim 30 ft.
+str: 15
+title: Crocodile
+type: Creature
+wis: 10
+xp: 100

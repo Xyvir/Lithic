@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Wizard]]
+components: V, S
+concentration: Yes
+duration: Concentration, up to 10 minutes
+level: 8
+range: 60 feet
+ritual: No
+school: Conjuration
+title: Maze
+type: Spell

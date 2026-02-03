@@ -1,0 +1,11 @@
+created: 20141214191541644
+list: MarkdownExample2 MarkdownExample ParagraphsMD
+modified: 20141214201044594
+revision: 0
+tags: 
+title: MdExtendDemoDocs
+type: text/vnd.tiddlywiki
+
+<$set name="tcc1" value=<<currentTiddler>>> 
+<$taglist class="btn btn-primary" template="$:/.bj/templates/TagControlTemplate" emptyMessage="drop here to add tag"></$taglist>
+</$set>

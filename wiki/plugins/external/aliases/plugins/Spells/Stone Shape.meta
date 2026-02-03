@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]] [[Druid]] [[Wizard]]
+components: V, S, M (soft clay, which must be worked into roughly the desired shape of the stone object)
+concentration: No
+duration: Instantaneous
+level: 4
+range: Touch
+ritual: No
+school: Transmutation
+title: Stone Shape
+type: Spell

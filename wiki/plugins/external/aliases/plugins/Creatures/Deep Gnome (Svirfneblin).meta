@@ -1,0 +1,30 @@
+ac: 15
+ac_description: chain shirt
+alignment: neutral good
+attacks: //''War Pick:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one target. //Hit:// 6 (1d8+2) piercing damage.<br><br>//''Poisoned Dart:'' Ranged Weapon Attack:// +4 to hit, range 30/120 ft., one creature. //Hit:// 4 (1d4+2) piercing damage, and the target must succeed on a DC 12 Constitution saving throw or be poisoned for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.
+cha: 9
+challenge_rating: 1/2
+con: 14
+condition_immunities: 
+created: 20181223151507315
+creature_type: humanoid
+damage_immunities: 
+damage_resistances: 
+dex: 14
+features: //''Stone Camouflage:''// The gnome has advantage on Dexterity (Stealth) checks made to hide in rocky terrain.<br><br>//''Gnome Cunning:''// The gnome has advantage on Intelligence, Wisdom, and Charisma saving throws against magic.<br><br>//''Innate Spellcasting:''// The gnome's innate spellcasting ability is Intelligence (spell save DC 11). It can innately cast the following spells, requiring no material components:<br><br>At will: //[[Nondetection]] (self only)//<br>1/day each: //[[Blindness/Deafness]], [[Blur]], [[Disguise Self]]//
+hp: 16
+hp_generation: 3d6+6
+int: 12
+languages: Gnomish, Terran, Undercommon
+modified: 20190104143341308
+saving_throws: 
+senses: Darkvision 120 ft., PP 12
+size: Small
+skills: Investigation +3, Perception +2, Stealth +4
+speed: 20 ft.
+str: 15
+subtype: gnome
+title: Deep Gnome (Svirfneblin)
+type: Creature
+wis: 10
+xp: 100

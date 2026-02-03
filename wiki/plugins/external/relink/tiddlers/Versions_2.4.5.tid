@@ -1,0 +1,6 @@
+created: 20250131061226804
+title: Versions/2.4.5
+
+\rules except wikilink
+
+Fixed issue #55 where Relink-markdown didn't support some new link syntax in markdown tiddlers. Better handling in detecting parenthesis too.

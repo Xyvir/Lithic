@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Sorcerer]] [[Wizard]]
+components: V, S, M (either a small leather loop or a piece of golden wire bent into a cup shape with a long shank on one end)
+concentration: Yes
+duration: Concentration, up to 10 minutes
+level: 2
+range: 60 feet
+ritual: No
+school: Transmutation
+title: Levitate
+type: Spell

@@ -1,0 +1,29 @@
+ac: 9
+ac_description: 
+alignment: neutral
+attacks: //''Multiattack:''// The golem makes two slam attacks.<br><br>//''Slam:'' Melee Weapon Attack:// +7 to hit, reach 5 ft., one target. //Hit:// 13 (2d8+1) bludgeoning damage.
+cha: 5
+challenge_rating: 5
+con: 18
+condition_immunities: charmed, exhaustion, frightened, paralyzed, petrified, poisoned
+created: 20181223151326825
+creature_type: construct
+damage_immunities: lightning, poison, bludgeoning, piercing, and slashing damage from nonmagical weapons that aren't adamantine
+damage_resistances: 
+dex: 9
+features: //''Aversion of Fire:''// If the golem takes fire damage, it has disadvantage on attack rolls and ability checks until the end of its next turn.<br><br>//''Immutable Form:''// The golem is immune to any spell or effect that would alter its form.<br><br>//''Lightning Absorption:''// Whenever the golem is subjected to lightning damage, it takes no damage and instead regains a number of hit points equal to the lightning damage dealt.<br><br>//''Magic Resistance:''// The golem has advantage on saving throws against spells and other magical effects.<br><br>//''Magic Weapons:''// The golem's weapon attacks are magical.<p>//''Berserk:''// Whenever the golem starts its turn with 40 hit points or fewer, roll a d6. On a 6, the golem goes berserk. On each of its turns while berserk, the golem attacks the nearest creature it can see. If no creature is near enough to move to and attack, the golem attacks an object, with preference for an object smaller than itself. Once the golem goes berserk, it continues to do so until it is destroyed or regains all its hit points.<br>The golem's creator, if within 60 feet of the berserk golem, can try to calm it by speaking firmly and persuasively. The golem must be able to hear its creator, who must take an action to make a DC 15 Charisma (Persuasion) check. If the check succeeds, the golem ceases being berserk. If it takes damage while still at 40 hit points or fewer, the golem might go berserk again.</p>
+hp: 93
+hp_generation: 11d8+44
+int: 6
+languages: understands the language of its creator but can't speak
+modified: 20190109194050706
+saving_throws: 
+senses: Darkvision 60., PP 10
+size: Medium
+skills: 
+speed: 30 ft.
+str: 19
+title: Flesh Golem
+type: Creature
+wis: 10
+xp: 1800

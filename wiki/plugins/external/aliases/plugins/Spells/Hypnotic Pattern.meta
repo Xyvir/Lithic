@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Sorcerer]] [[Warlock]] [[Wizard]]
+components: S, M (a glowing stick of incense or a crystal vial filled with phosphorescent material)
+concentration: Yes
+duration: Concentration, up to 1 minute
+level: 3
+range: 120 feet
+ritual: No
+school: Illusion
+title: Hypnotic Pattern
+type: Spell

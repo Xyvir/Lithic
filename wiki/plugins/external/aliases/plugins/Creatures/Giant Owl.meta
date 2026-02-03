@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: neutral
+attacks: //''Talons:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 8 (2d6+1) slashing damage.
+cha: 10
+challenge_rating: 1/4
+con: 12
+condition_immunities: 
+created: 20181223151326827
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 15
+features: //''Flyby:''// The owl doesn't provoke opportunity attacks when it flies out of an enemy's reach.<br><br>//''Keen Hearing and Sight:''// The owl has advantage on Wisdom (Perception) checks that rely on hearing or sight.
+hp: 19
+hp_generation: 3d10+3
+int: 8
+languages: Giant Owl understands Common, Elvish, and Sylvan but can't speak them
+modified: 20181223151326827
+saving_throws: 
+senses: Darkvision 120 ft., PP 15
+size: Large
+skills: Perception +5, Stealth +4
+speed: 5 ft., fly 60 ft.
+str: 13
+title: Giant Owl
+type: Creature
+wis: 13
+xp: 50

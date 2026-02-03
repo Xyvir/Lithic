@@ -1,0 +1,20 @@
+title: $:/plugin/bj/storytabs
+type: text/vnd.tiddlywiki
+
+<div  class="tc-tab-buttons" >
+<$list filter="[list[$:/StoryList]]" history="$:/HistoryList" variable="currentTab">
+<$reveal type="match" state="$:/HistoryList!!current-tiddler" text=<<currentTab>>>
+<div style="display:inline-block;">
+<$button to=<<currentTab>>  class="tc-tab-selected" style="margin-right: 0.0em; border-right: 0.0em">
+<$macrocall $name="currentTab" $type="text/plain" $output="text/plain"/>
+</$button>
+<$button message="tm-close-tiddler" param=<<currentTab>> class="tc-tab-selected"  style="border-left: 0.0em;">&times;</$button></div></$reveal>
+<$reveal type="nomatch" state="$:/HistoryList!!current-tiddler" text=<<currentTab>>>
+<div style="display:inline-block;">
+<$button to=<<currentTab>> style="margin-right: 0.0em;" >
+<$macrocall $name="currentTab" $type="text/plain" $output="text/plain"/>
+</$button><$button message="tm-close-tiddler" param=<<currentTab>>>
+&times;</$button></div></$reveal>
+</$list>
+</div>
+

@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using aspell slot of 3rd level or higher, the damage increases by 1d1O for each slot level above 2nd.
+casting_time: 1 Action
+classes: [[Druid]]
+components: V, S, M (several seeds of any moonseed plant and a piece of opalescent feldspar)
+concentration: Yes
+duration: Concentration, up to 1 minute
+level: 2
+range: 120 feet
+ritual: No
+school: Evocation
+title: Moonbeam
+type: Spell

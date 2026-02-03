@@ -1,0 +1,3 @@
+title: $:/config/ViewTemplateBodyFilters/system
+
+[prefix[$:/boot/]] [prefix[$:/config/]] [prefix[$:/core/]!field:title[$:/core/readme]!field:title[$:/core/icon]] [prefix[$:/info/]] [prefix[$:/language/]] [prefix[$:/languages/]] [prefix[$:/snippets/]] [prefix[$:/state/]] [prefix[$:/status/]] [prefix[$:/info/]] [prefix[$:/temp/]] +[limit[1]then[$:/core/ui/ViewTemplate/body/code]] -[prefix[$:/config/Hypothetical]]

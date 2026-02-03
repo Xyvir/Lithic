@@ -1,0 +1,8 @@
+title: TiddlyClipConfig
+type: text/vnd.tiddlywiki
+
+!default
+|!Category|!Tip|!Tags|!Rule Tid|!Modes|
+|Tid|copy tids||[[defaultTid]]|tiddlers|
+|Snip|copy||[[defaultSnip]]||
+|Pin|pin it||[[defaultPin]]||

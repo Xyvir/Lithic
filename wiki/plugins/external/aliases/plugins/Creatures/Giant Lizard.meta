@@ -1,0 +1,29 @@
+ac: 12
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one target. //Hit:// 6 (1d8+2) piercing damage.
+cha: 5
+challenge_rating: 1/4
+con: 13
+condition_immunities: 
+created: 20181223151326827
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 12
+features: 
+hp: 19
+hp_generation: 3d10+3
+int: 2
+languages: ---
+modified: 20181223151326827
+saving_throws: 
+senses: Darkvision 30 ft., PP 10
+size: Large
+skills: 
+speed: 30 ft., climb 30 ft.
+str: 15
+title: Giant Lizard
+type: Creature
+wis: 10
+xp: 50

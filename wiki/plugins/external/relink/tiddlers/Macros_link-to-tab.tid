@@ -1,0 +1,43 @@
+tags: $:/tags/Macro
+title: Macros/link-to-tab
+
+\relink link-to-tab tiddler tab caption:wikitext
+\procedure link-to-tab(tiddler, tab, caption)
+\whitespace trim
+<$button class="tc-btn-invisible tc-tiddlylink">
+<$action-setfield $tiddler=`$:/state/tab/relink/$(tiddler)$` text=<<tab>>/>
+<$action-navigate $to=<<tiddler>>/>
+<<caption>>
+</$button>
+\end
+
+\relink link-to-config-tab caption:wikitext
+\procedure link-to-config-tab(configTab, caption)
+\whitespace trim
+<$vars
+	state-plugin-info='$:/state/plugin-info-706095000-$:/plugins/flibbles/relink---560620024'
+	state-whitelist-config='$:/state/tab--774707317'>
+<$button class="tc-btn-invisible tc-tiddlylink">
+<$action-setfield
+	$tiddler=<<state-plugin-info>>
+	text="configuration" />
+<$list filter="[<configTab>!match[]]">
+<$action-setfield
+	$tiddler=<<state-whitelist-config>>
+	text={{{[<configTab>addprefix[$:/plugins/flibbles/relink/ui/configuration/]is[shadow]else<configTab>]}}} />
+</$list>
+<$action-navigate $to="$:/plugins/flibbles/relink" />
+<<caption>>
+</$button>
+</$vars>
+\end
+
+''Hey!'' Edit this tiddler to see a real-use example of the `\relink` declaration pragma.
+
+`link-to-tab` creates a button which opens a specific tiddler and a tab within that tiddler. It's used on several documentation pages to link to examples within a tab menu.
+
+`link-to-config-tab` is used exclusively to go to //Relink// configuration tabs.
+
+<!--
+Unfortunately, due to the way the `qualify` mechanic works in Tiddlywiki, this macro must maintain a hardcoded list of qualifier hashes, and if you rename the target tiddler, the qualifier doesn't update automatically.
+-->

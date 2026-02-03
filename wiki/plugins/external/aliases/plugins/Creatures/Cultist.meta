@@ -1,0 +1,30 @@
+ac: 12
+ac_description: leather armor
+alignment: any non-good alignment
+attacks: //''Scimitar:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one creature. //Hit:// 4 (1d6+1) slashing damage.
+cha: 10
+challenge_rating: 1/8
+con: 10
+condition_immunities: 
+created: 20181223151507315
+creature_type: humanoid
+damage_immunities: 
+damage_resistances: 
+dex: 12
+features: //''Dark Devotion:''// The cultist has advantage on saving throws against being charmed or frightened.Commoner
+hp: 9
+hp_generation: 2d8
+int: 10
+languages: any one language (usually Common)
+modified: 20181223151507315
+saving_throws: 
+senses: PP 10
+size: Medium
+skills: Deception +2, Religion +2
+speed: 30 ft.
+str: 11
+subtype: any race
+title: Cultist
+type: Creature
+wis: 11
+xp: 25

@@ -1,0 +1,25 @@
+actions: 
+alignment: 
+armor: 
+cha: 
+challenge: 
+con: 
+conditionimmunities: 
+created: 20170920154432800
+creaturetype: 
+dex: 
+hitpoints: 
+immunities: 
+int: 
+modified: 20181217185809821
+properties: 
+senses: 
+size: 
+speed: 
+str: 
+tags: 
+title: $:/plugins/D&DTools/CreatureManager/CreatureTemplate
+type: text/vnd.tiddlywiki
+wis: 
+
+{{||$:/plugins/D&DTools/CreatureManager/StatBlockTemplate}}

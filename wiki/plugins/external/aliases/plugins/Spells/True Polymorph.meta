@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Warlock]] [[Wizard]]
+components: V, S, M (a drop of mercury, a dollop of gum arabic, and a wisp of smoke)
+concentration: Yes
+duration: Concentration, up to 1 hour
+level: 9
+range: 30 feet
+ritual: No
+school: Transmutation
+title: True Polymorph
+type: Spell

@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Warlock]]
+components: V
+concentration: No
+duration: 1 hour
+level: 8
+range: Self
+ritual: No
+school: Transmutation
+title: Glibness
+type: Spell

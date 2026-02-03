@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Druid]] [[Ranger]]
+components: V, S, M (seven sharp thorns or seven small twigs, each sharpened to a point)
+concentration: Yes
+duration: Concentration, up to 10 minutes
+level: 2
+range: 150 feet
+ritual: No
+school: Transmutation
+title: Spike Growth
+type: Spell

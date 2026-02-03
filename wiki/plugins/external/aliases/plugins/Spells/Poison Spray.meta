@@ -1,0 +1,12 @@
+at_higher_level: This spell’s damage increases by 1d12 when you reach 5th level (2d12), 11th level (3d12), 17th level (4d12).
+casting_time: 1 Action
+classes: [[Druid]] [[Sorcerer]] [[Warlock]] [[Wizard]]
+components: V, S
+concentration: No
+duration: Instantaneous
+level: 0
+range: 10 feet
+ritual: No
+school: Conjuration
+title: Poison Spray
+type: Spell

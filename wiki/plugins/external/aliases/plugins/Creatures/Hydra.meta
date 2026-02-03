@@ -1,0 +1,29 @@
+ac: 15
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Multiattack:''// The hydra makes as many bite attacks as it has heads.<br><br>//''Bite:'' Melee Weapon Attack:// +8 to hit, reach 10 ft., one target. //Hit:// 10 (1d10+5) piercing damage.
+cha: 7
+challenge_rating: 8
+con: 20
+condition_immunities: 
+created: 20181223151326829
+creature_type: monstrosity
+damage_immunities: 
+damage_resistances: 
+dex: 12
+features: //''Hold Breath:''// The hydra can hold its breath for 1 hour.<br><br>//''Multiple Heads:''// The hydra has five heads. While it has more than one head, the hydra has advantage on saving throws against being blinded, charmed, deafened, frightened, stunned, and knocked unconscious.<br>Whenever the hydra takes 25 or more damage in a single turn, one of its heads dies. If all its heads die, the hydra dies.<br>At the end of its turn, it grows two heads for each of its heads that died since its last turn, unless it has taken fire damage since its last turn. The hydra regains 10 hit points for each head regrown in this way.<br><br>//''Reactive Heads:''// For each head the hydra has beyond one, it gets an extra reaction that can be used only for opportunity attacks.<br><br>//''Wakeful:''// While the hydra sleeps, at least one of its heads is awake.
+hp: 172
+hp_generation: 15d12+75
+int: 2
+languages: ---
+modified: 20181223151326829
+saving_throws: 
+senses: Darkvision 60 ft., PP 16
+size: Huge
+skills: Perception +6
+speed: 30 ft., swim 30 ft.
+str: 20
+title: Hydra
+type: Creature
+wis: 10
+xp: 3900

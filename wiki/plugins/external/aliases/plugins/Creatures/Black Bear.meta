@@ -1,0 +1,29 @@
+ac: 11
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Multiattack:''// The bear makes two attacks: one with its bite and one with its claws.<br><br>//''Bite:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 5 (1d6+2) piercing damage.<br><br>//''Claws:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 7 (2d4+2) slashing damage.
+cha: 7
+challenge_rating: 1/2
+con: 14
+condition_immunities: 
+created: 20181223151326819
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 10
+features: //''Keen Smell:''// The bear has advantage on Wisdom (Perception) checks that rely on smell.
+hp: 19
+hp_generation: 3d8+6
+int: 2
+languages: ---
+modified: 20181223151326819
+saving_throws: 
+senses: PP 13
+size: Medium
+skills: Perception +3
+speed: 40 ft., climb 30 ft.
+str: 15
+title: Black Bear
+type: Creature
+wis: 12
+xp: 100

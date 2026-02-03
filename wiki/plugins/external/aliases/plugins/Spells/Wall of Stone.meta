@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Druid]] [[Sorcerer]] [[Wizard]]
+components: V, S, M (a small block of granite)
+concentration: Yes
+duration: Concentration, up to 10 minutes
+level: 5
+range: 120 feet
+ritual: No
+school: Evocation
+title: Wall of Stone
+type: Spell

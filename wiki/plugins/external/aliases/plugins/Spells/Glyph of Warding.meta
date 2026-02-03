@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 4th level or higher, the damage of an explosive runes glyph increases by 1d8 for each slot level above 3rd. If you create a spell glyph, you can store any spell of up to the same level as the slot you use for the glyph of warding.
+casting_time: 1 Hour
+classes: [[Bard]] [[Cleric]] [[Wizard]]
+components: V, S, M (incense and powdered diamond worth at least 200 gp, which the spell consumes)
+concentration: No
+duration: Until dispelled or triggered
+level: 3
+range: Touch
+ritual: No
+school: Abjuration
+title: Glyph of Warding
+type: Spell

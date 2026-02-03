@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]] [[Wizard]]
+components: V, S M (a pinch of powdered iron or iron filings)
+concentration: Yes
+duration: Concentration, up to 1 hour
+level: 8
+range: Self (10-foot-radius sphere)
+ritual: No
+school: Abjuration
+title: Antimagic Field
+type: Spell

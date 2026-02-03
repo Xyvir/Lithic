@@ -1,0 +1,14 @@
+at_higher_level: When you cast this spell using a 7th-level spell slot, you can animate or reassert control over four [[Ghouls|Ghoul]]. When you cast this spell using an 8th-level spell slot, you can animate or reassert control over five [[ghouls|Ghoul]] or two [[ghasts|Ghast]] or [[wights|Wight]]. When you cast this spell using a 9th-level spell slot, you can animate or reassert control over six [[ghouls|Ghoul]], three [[ghasts|Ghast]] or [[wights|Wight]], or two [[mummies|Mummy]].
+casting_time: 1 Minute
+classes: [[Cleric]] [[Warlock]] [[Wizard]]
+components: V, S, M  (one clay pot filled with grave dirt, one clay pot filled with brackish water, and one 150 gp black onyx stone for each corpse)
+concentration: No
+created: 20190109164431365
+duration: Instantaneous
+level: 6
+modified: 20190109164626339
+range: 10 feet
+ritual: No
+school: Necromancy
+title: Create Undead
+type: Spell
