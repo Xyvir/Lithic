@@ -42,3 +42,8 @@
   url: https://bjtools.tiddlyspot.com/
   cleanContent: false
   copy: []
+
+- name: notebook
+  url: https://saqimtiaz.github.io/sq-tw/notebook.html
+  cleanContent: false
+  copy: []
