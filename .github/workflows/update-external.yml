@@ -22,7 +22,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm
+        run: npm install
 
       - name: Run Mirror Engine
         run: node scripts/mirror.js
