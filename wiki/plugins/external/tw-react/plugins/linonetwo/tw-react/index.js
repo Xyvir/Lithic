@@ -1,0 +1,93 @@
+"use strict";
+
+// src/hooks/context.ts
+var import_react = require("react");
+var ParentWidgetContext = (0, import_react.createContext)(void 0);
+
+// src/hooks/useFilter.ts
+var import_react2 = require("react");
+function useFilter(twFilter, widget = $tw.rootWidget, dependencies = []) {
+  const [filterResult, setFilterResult] = (0, import_react2.useState)([]);
+  const compiledFilter = (0, import_react2.useMemo)(() => $tw.wiki.compileFilter(twFilter), [twFilter]);
+  (0, import_react2.useEffect)(() => {
+    setFilterResult(compiledFilter(void 0, widget));
+  }, [compiledFilter, widget, ...dependencies]);
+  return filterResult;
+}
+
+// src/hooks/useRenderTiddler.ts
+var import_react3 = require("react");
+function useRenderTiddler(tiddlerTitle, containerReference, options) {
+  const parentWidget = (0, import_react3.useContext)(ParentWidgetContext);
+  (0, import_react3.useEffect)(() => {
+    const domNode = containerReference.current;
+    if (domNode === null) {
+      return;
+    }
+    if (parentWidget === void 0) {
+      throw new Error(
+        "Your plugin have a bug: `parentWidget` is undefined, you should use `<ParentWidgetContext value={props.parentWidget}>`, see tw-react for document."
+      );
+    }
+    if (options?.skip === true) {
+      return;
+    }
+    const id = String(Math.random());
+    const transcludeWidgetNode = $tw.wiki.makeTranscludeWidget(tiddlerTitle, {
+      document,
+      parentWidget,
+      recursionMarker: "yes",
+      mode: "block",
+      importPageMacros: true,
+      variables: { "use-widget-id": id }
+    });
+    const tiddlerContainer = document.createElement("div");
+    domNode.append(tiddlerContainer);
+    transcludeWidgetNode.render(tiddlerContainer, null);
+    parentWidget.children.push(transcludeWidgetNode);
+    return () => {
+      parentWidget.children = parentWidget.children.filter((child) => child.getVariable("use-widget-id") !== id);
+      if (domNode === null) {
+        return;
+      }
+      domNode.textContent = "";
+    };
+  }, [tiddlerTitle, containerReference, parentWidget, options?.skip]);
+}
+
+// src/hooks/useWidget.ts
+var import_react4 = require("react");
+function useWidget(parseTreeNode, containerReference, options) {
+  const parentWidget = (0, import_react4.useContext)(ParentWidgetContext);
+  (0, import_react4.useEffect)(() => {
+    const domNode = containerReference.current;
+    if (domNode === null) {
+      return;
+    }
+    if (parentWidget === void 0) {
+      throw new Error(
+        "Your plugin have a bug: `parentWidget` is undefined, you should use `<ParentWidgetContext value={props.parentWidget}>`, see tw-react for document."
+      );
+    }
+    if (options?.skip === true) {
+      return;
+    }
+    const id = String(Math.random());
+    const newWidgetNode = parentWidget.makeChildWidget(parseTreeNode, { variables: { "use-widget-id": id } });
+    newWidgetNode.render(domNode, null);
+    parentWidget.children.push(newWidgetNode);
+    return () => {
+      parentWidget.children = parentWidget.children.filter((child) => child.getVariable("use-widget-id") !== id);
+      if (domNode === null) {
+        return;
+      }
+      domNode.textContent = "";
+    };
+  }, [parseTreeNode, containerReference, parentWidget, options?.skip]);
+}
+
+// src/index.ts
+exports.ParentWidgetContext = ParentWidgetContext;
+exports.useFilter = useFilter;
+exports.useRenderTiddler = useRenderTiddler;
+exports.useWidget = useWidget;

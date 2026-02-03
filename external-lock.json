@@ -40,5 +40,11 @@
     "etag": "5yGetd9/uKeDcU4xNc66Ng==",
     "lastModified": null,
     "updatedAt": "2026-02-03T18:45:25.943Z"
+  },
+  "tw-react": {
+    "url": "https://github.com/tiddly-gittly/tw-react/releases/download/v1.0.0/plugins.zip",
+    "etag": "0x8DD1F808739A90B",
+    "lastModified": "Wed, 18 Dec 2024 16:25:04 GMT",
+    "updatedAt": "2026-02-03T19:07:49.623Z"
   }
 }
