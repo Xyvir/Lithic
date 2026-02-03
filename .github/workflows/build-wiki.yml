@@ -47,3 +47,4 @@ jobs:
           files: |
             wiki/output/lith.html
             wiki.zip
+            wiki/flatten-manifest.log

@@ -46,6 +46,9 @@ function copyRecursiveSync(src, dest) {
     }
 }
 
+const manifestPath = path.join(__dirname, '../wiki/flatten-manifest.log');
+let manifestContent = "--- Flattened Plugin Manifest ---\nGenerated at: " + new Date().toISOString() + "\n\n";
+
 console.log('Scanning for external plugins...');
 const pluginInfos = findPluginInfoFiles(EXTERNAL_PLUGINS_DIR);
 
@@ -58,11 +61,13 @@ pluginInfos.forEach(infoPath => {
 
         if (!pluginInfo.title) {
             console.warn(`Skipping ${infoPath}: Missing 'title' in plugin.info`);
+            manifestContent += `[SKIP] ${infoPath} (Missing title)\n`;
             return;
         }
 
         let targetBaseDir;
         let relativePathStart;
+        let typeLabel = "PLUGIN";
 
         if (pluginInfo.title.startsWith('$:/plugins/')) {
             targetBaseDir = TARGET_PLUGINS_DIR;
@@ -72,8 +77,10 @@ pluginInfos.forEach(infoPath => {
             targetBaseDir = path.join(__dirname, '../wiki/themes');
             // $:/themes/publisher/name -> publisher/name
             relativePathStart = 2;
+            typeLabel = "THEME";
         } else {
             console.warn(`Skipping ${infoPath}: Unknown plugin type (title: ${pluginInfo.title})`);
+            manifestContent += `[SKIP] ${infoPath} (Unknown type: ${pluginInfo.title})\n`;
             return;
         }
 
@@ -81,6 +88,7 @@ pluginInfos.forEach(infoPath => {
         const parts = pluginInfo.title.split('/');
         if (parts.length < 4) {
             console.warn(`Skipping ${infoPath}: Title structure too short (${pluginInfo.title})`);
+            manifestContent += `[SKIP] ${infoPath} (Title too short: ${pluginInfo.title})\n`;
             return;
         }
 
@@ -89,12 +97,18 @@ pluginInfos.forEach(infoPath => {
         const sourceDir = path.dirname(infoPath);
 
         console.log(`Copying ${pluginInfo.title} -> ${targetPath}`);
+        manifestContent += `[${typeLabel}] ${pluginInfo.title}\n`;
+        manifestContent += `  Source: ${sourceDir}\n`;
+        manifestContent += `  Target: ${targetPath}\n`;
 
         copyRecursiveSync(sourceDir, targetPath);
+        manifestContent += `  Status: Copied\n\n`;
 
     } catch (e) {
         console.error(`Error processing ${infoPath}:`, e.message);
+        manifestContent += `[ERROR] ${infoPath}: ${e.message}\n\n`;
     }
 });
 
-console.log('Plugin flattening complete.');
+fs.writeFileSync(manifestPath, manifestContent);
+console.log(`Plugin flattening complete. Manifest written to ${manifestPath}`);
