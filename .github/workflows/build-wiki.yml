@@ -1,0 +1,49 @@
+name: Build and Release TiddlyWiki
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Flatten Plugins
+        run: node scripts/flatten-plugins.js
+
+      - name: Build TiddlyWiki
+        run: npx tiddlywiki wiki --build index
+
+      - name: Rename Output
+        run: mv wiki/output/index.html wiki/output/lith.html
+
+      - name: Archive Wiki Folder
+        run: zip -r wiki.zip wiki
+
+      - name: Generate Release Tag
+        id: tag
+        run: echo "date=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: build-${{ steps.tag.outputs.date }}
+          name: Build ${{ steps.tag.outputs.date }}
+          draft: false
+          prerelease: false
+          files: |
+            wiki/output/lith.html
+            wiki.zip
