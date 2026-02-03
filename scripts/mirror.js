@@ -66,11 +66,11 @@ sources.forEach(source => {
 
     console.log(`\n--- Processing: ${source.name} ---`);
     const targetDir = path.join(PLUGIN_DIR, source.name);
-    
+
     // --- CHECK UPDATE ---
     const remoteInfo = getRemoteInfo(source.url);
     const lockEntry = lockData[source.name];
-    
+
     let isFresh = false;
     if (lockEntry && remoteInfo) {
         if (remoteInfo.etag && remoteInfo.etag === lockEntry.etag) isFresh = true;
@@ -85,26 +85,52 @@ sources.forEach(source => {
 
         try {
             execSync(`curl -f -L -S "${source.url}" -o ${tempFile}`, { stdio: 'inherit' });
-            
+
             if (fs.existsSync(tempFile) && fs.statSync(tempFile).size > 0) {
                 if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true, force: true });
-                
+
                 if (isZip) {
                     console.log(`📦 Unzipping...`);
-                    fs.mkdirSync(targetDir, { recursive: true });
-                    execSync(`unzip -q -o ${tempFile} -d ${targetDir}`, { stdio: 'inherit' });
+                    // If source.extract is set, we unzip to a temp dir first, then move the specific folder
+                    if (source.extract && source.target) {
+                        const tempUnzipDir = path.join(PLUGIN_DIR, `${source.name}_temp_unzip`);
+                        if (fs.existsSync(tempUnzipDir)) fs.rmSync(tempUnzipDir, { recursive: true, force: true });
+                        fs.mkdirSync(tempUnzipDir, { recursive: true });
+
+                        execSync(`unzip -q -o ${tempFile} -d ${tempUnzipDir}`, { stdio: 'inherit' });
+
+                        const extractSourcePath = path.join(tempUnzipDir, source.extract);
+                        const finalTargetPath = path.join(__dirname, '..', source.target); // Resolve relative to script root
+
+                        if (fs.existsSync(extractSourcePath)) {
+                            console.log(`🚚 Moving extracted folder ${source.extract} -> ${source.target}`);
+                            if (fs.existsSync(finalTargetPath)) fs.rmSync(finalTargetPath, { recursive: true, force: true });
+                            fs.mkdirSync(path.dirname(finalTargetPath), { recursive: true });
+                            fs.renameSync(extractSourcePath, finalTargetPath);
+                        } else {
+                            console.error(`❌ ERROR: Extraction path not found in zip: ${source.extract}`);
+                        }
+
+                        // Cleanup temp unzip
+                        fs.rmSync(tempUnzipDir, { recursive: true, force: true });
+
+                    } else {
+                        // Standard unzip to targetDir
+                        fs.mkdirSync(targetDir, { recursive: true });
+                        execSync(`unzip -q -o ${tempFile} -d ${targetDir}`, { stdio: 'inherit' });
+                    }
                 } else {
                     console.log(`💥 Exploding TiddlyWiki...`);
                     execSync(`npx tiddlywiki --load ${tempFile} --savewikifolder ${targetDir}`, { stdio: 'inherit' });
                 }
-                
+
                 if (source.cleanContent) {
                     const tiddlersDir = path.join(targetDir, 'tiddlers');
                     if (fs.existsSync(tiddlersDir)) {
                         console.log('✂️  Pruning library folder...');
                         const keepList = new Set();
                         (source.copy || []).forEach(p => {
-                            if (p.startsWith('tiddlers/')) keepList.add(path.normalize(p)); 
+                            if (p.startsWith('tiddlers/')) keepList.add(path.normalize(p));
                         });
 
                         const files = fs.readdirSync(tiddlersDir);

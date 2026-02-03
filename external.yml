@@ -44,6 +44,8 @@
   copy: []
 
 - name: notebook
-  url: https://saqimtiaz.github.io/sq-tw/notebook.html
+  url: https://github.com/NicolasPetton/Notebook/archive/refs/heads/master.zip
+  extract: Notebook-master/themes/nico/notebook
+  target: wiki/themes/nico/notebook
   cleanContent: false
   copy: []
