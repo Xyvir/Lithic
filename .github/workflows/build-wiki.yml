@@ -1,7 +1,14 @@
 name: Build and Release TiddlyWiki
+run-name: Build ${{ inputs.create_release == true && '(Release)' || '(Dry Run)' }}
 
 on:
   workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a Release'
+        required: true
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -34,10 +41,12 @@ jobs:
         run: zip -r wiki.zip wiki
 
       - name: Generate Release Tag
+        if: ${{ inputs.create_release == true }}
         id: tag
         run: echo "date=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
 
       - name: Create Release
+        if: ${{ inputs.create_release == true }}
         uses: softprops/action-gh-release@v1
         with:
           tag_name: build-${{ steps.tag.outputs.date }}
@@ -45,6 +54,16 @@ jobs:
           draft: false
           prerelease: false
           files: |
+            wiki/output/lith.html
+            wiki.zip
+            wiki/flatten-manifest.log
+
+      - name: Upload Build Artifacts (Dry Run)
+        if: ${{ inputs.create_release == false }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-dry-run
+          path: |
             wiki/output/lith.html
             wiki.zip
             wiki/flatten-manifest.log
