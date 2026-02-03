@@ -2,8 +2,8 @@
     "description": "Lithic PKMS",
     "plugins": [
         "tiddlywiki/markdown",
-        "tiddlywiki/filesystem",
-        "tiddlywiki/tiddlyweb",
+        "tiddlywiki/browser-storage",
+        "tiddlywiki/freelinks",
         "plugins/anchors-for-streams",
         "plugins/lithic-core",
         "plugins/lithic-default-configs",
@@ -16,12 +16,24 @@
         "plugins/lithic-patch-whiteboard",
         "plugins/lithic-tweaks",
         "plugins/overtype",
-        "plugins/aliases",
-        "plugins/tw-whiteboard"
+        "linonetwo/tw-react",
+        "linonetwo/tw-whiteboard",
+        "snowgoon88/edit-comptext",
+        "tiddlywiki/katex",
+        "flibbles/relink",
+        "flibbles/relink-titles",
+        "sq/streams",
+        "phiv/streams-fusion",
+        "kebi/tiddlystudy",
+        "kebi/tiddlystudy-references",
+        "kebi/relink-tweaks",
+        "kebi/streams-tweaks",
+        "mklauber/aliases"
     ],
     "themes": [
         "tiddlywiki/vanilla",
-        "tiddlywiki/snowwhite"
+        "tiddlywiki/snowwhite",
+        "nico/notebook"
     ],
     "build": {
         "index": [
