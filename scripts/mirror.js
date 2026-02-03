@@ -102,6 +102,8 @@ sources.forEach(source => {
             if (fs.existsSync(tempFile) && fs.statSync(tempFile).size > 0) {
                 if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true, force: true });
 
+                let updateSuccess = true;
+
                 if (isZip) {
                     log(`📦 Unzipping...`);
                     // If source.extract is set, we unzip to a temp dir first, then move the specific folder
@@ -122,6 +124,7 @@ sources.forEach(source => {
                             fs.renameSync(extractSourcePath, finalTargetPath);
                         } else {
                             errorFromLog(`❌ ERROR: Extraction path not found in zip: ${source.extract}`);
+                            updateSuccess = false;
                         }
 
                         // Cleanup temp unzip
@@ -137,7 +140,7 @@ sources.forEach(source => {
                     execSync(`npx tiddlywiki --load ${tempFile} --savewikifolder ${targetDir}`, { stdio: 'inherit' });
                 }
 
-                if (source.cleanContent) {
+                if (updateSuccess && source.cleanContent) {
                     const tiddlersDir = path.join(targetDir, 'tiddlers');
                     if (fs.existsSync(tiddlersDir)) {
                         log('✂️  Pruning library folder...');
@@ -156,13 +159,15 @@ sources.forEach(source => {
                     }
                 }
 
-                lockData[source.name] = {
-                    url: source.url,
-                    etag: remoteInfo ? remoteInfo.etag : null,
-                    lastModified: remoteInfo ? remoteInfo.lastModified : null,
-                    updatedAt: new Date().toISOString()
-                };
-                changesMade = true;
+                if (updateSuccess) {
+                    lockData[source.name] = {
+                        url: source.url,
+                        etag: remoteInfo ? remoteInfo.etag : null,
+                        lastModified: remoteInfo ? remoteInfo.lastModified : null,
+                        updatedAt: new Date().toISOString()
+                    };
+                    changesMade = true;
+                }
             }
             if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
         } catch (error) {
