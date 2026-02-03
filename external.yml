@@ -45,7 +45,7 @@
 
 - name: notebook
   url: https://github.com/NicolasPetton/Notebook/archive/refs/heads/master.zip
-  extract: Notebook-master/themes/nico/notebook
+  extract: Notebook-master/themes/notebook
   target: wiki/themes/nico/notebook
   cleanContent: false
   copy: []
