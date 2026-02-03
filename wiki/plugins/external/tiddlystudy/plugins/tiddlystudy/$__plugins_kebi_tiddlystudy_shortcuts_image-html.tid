@@ -1,0 +1,15 @@
+caption: Image Shortcut (HTML)
+condition: [<targetTiddler>!has[type]] [<targetTiddler>type[text/vnd.tiddlywiki]]
+created: 20200815091154411
+description: Quickly add an image (HTML)
+icon: $:/core/images/picture
+modified: 20210315162742078
+shortcuts: ((image-html))
+tags: $:/tags/EditorToolbar
+title: $:/plugins/kebi/tiddlystudy/shortcuts/image-html
+
+<$action-sendmessage
+	$message="tm-edit-text-operation"
+	$param="replace-selection"
+	text="<img src='' width='250px'>"
+/>

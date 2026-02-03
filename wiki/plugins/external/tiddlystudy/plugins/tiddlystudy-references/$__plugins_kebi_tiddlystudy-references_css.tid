@@ -1,0 +1,116 @@
+created: 20200827004041319
+modified: 20210317111258935
+tags: $:/tags/Stylesheet
+title: $:/plugins/kebi/tiddlystudy-references/css
+
+.footer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+}
+
+.stream-node-block p {
+    margin: 0.25em 0;
+}
+
+.footer-node {
+  margin: 0.7em 0 0 0;
+}
+
+.filtertransclude,
+.filtertag,
+.filterbacklink,
+.filtertitle,
+.filtertext {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
+  border: none;
+  border-radius: 3px;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  min-width: 20px;
+  max-width: 100%;
+  min-height: 20px;
+  line-height: 16px;
+  font-size: 12px;
+  margin: 2px;
+  padding: 2px 6px;
+}
+
+.filtertransclude {
+  background-color: {{$:/plugins/kebi/tiddlystudy-references/config/colors/transclusions!!back-color}};
+}
+
+.filtertag {
+  background-color: {{$:/plugins/kebi/tiddlystudy-references/config/colors/tags!!back-color}};
+}
+
+.filterbacklink {
+  background-color: {{$:/plugins/kebi/tiddlystudy-references/config/colors/backlinks!!back-color}};
+}
+
+.filtertitle{
+  background-color: {{$:/plugins/kebi/tiddlystudy-references/config/colors/mentions-title!!back-color}};
+}
+
+.filtertext {
+  background-color: {{$:/plugins/kebi/tiddlystudy-references/config/colors/mentions-text!!back-color}};
+}
+
+.filtertransclude:hover,
+.filtertag:hover,
+.filterbacklink:hover,
+.filtertitle:hover,
+.filtertext:hover {
+  opacity: 0.8;
+}
+
+.filtertransclude a, .filtertransclude a:hover,
+.filtertag a, .filtertag a:hover,
+.filterbacklink a, .filterbacklink a:hover,
+.filtertitle a, .filtertitle a:hover,
+.filtertext a, .filtertext a:hover {
+  opacity: 1 !important;
+  text-decoration: none !important;
+  line-height: unset;
+  background-color: unset;
+  border: none;
+  padding: 0;
+}
+
+.filtertransclude a, .filtertransclude a:hover {
+  color: {{$:/plugins/kebi/tiddlystudy-references/config/colors/transclusions!!text-color}} !important;
+}
+
+.filtertag a, .filtertag a:hover {
+  color: {{$:/plugins/kebi/tiddlystudy-references/config/colors/tags!!text-color}} !important;
+}
+
+.filterbacklink a, .filterbacklink a:hover {
+  color: {{$:/plugins/kebi/tiddlystudy-references/config/colors/backlinks!!text-color}} !important;
+}
+
+.filtertitle a, .filtertitle a:hover {
+  color: {{$:/plugins/kebi/tiddlystudy-references/config/colors/mentions-title!!text-color}} !important;
+}
+
+.filtertext a, .filtertext a:hover {
+  color: {{$:/plugins/kebi/tiddlystudy-references/config/colors/mentions-text!!text-color}} !important;
+}

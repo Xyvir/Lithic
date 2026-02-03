@@ -1,0 +1,5 @@
+Based on https: //github.com/john-doherty/swiped-events
+https: //github.com/scriptex/touchsweep/blob/master/src/touchsweep.js
+module-type: library
+title: $:/plugins/sq/lib/swipeevents.js
+type: application/javascript

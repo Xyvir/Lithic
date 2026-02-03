@@ -1,1 +1,0 @@
-Markdown syntax **is** supported.

@@ -1,0 +1,24 @@
+created: 20200429191943257
+modified: 20210326164003769
+tags: tiddlystudy
+title: $:/themes/nico/notebook/ui/Sidebar/SearchResults
+type: text/vnd.tiddlywiki
+
+\define search-text()
+$(pattern)$(?i)
+\end
+
+<$set name="pattern" value={{$:/temp/advancedsearch}}>
+  <div class="tc-search-results search-results">
+    <$list filter="[regexp:title<search-text>!sort[created]limit[250]] -[is[system]] -[all[shadows]] -[has[parent]]">
+      <$transclude tiddler="$:/core/ui/ListItemTemplate"/>
+    </$list>
+    <hr>
+  </div>
+  <div class="tc-search-results">
+    <$list filter="[regexp:text<search-text>!sort[created]limit[250]] -[is[system]] -[all[shadows]] -[is[image]]">
+      <$transclude tiddler="$:/core/ui/ListItemTemplate"/>
+      <$context term=<<pattern>>/>
+    </$list>
+  </div>
+</$set>

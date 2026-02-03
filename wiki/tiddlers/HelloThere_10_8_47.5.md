@@ -1,1 +1,0 @@
-A way to close nodes more easily on mobile

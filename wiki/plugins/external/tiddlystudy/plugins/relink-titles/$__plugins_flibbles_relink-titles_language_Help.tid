@@ -1,0 +1,3 @@
+title: $:/plugins/flibbles/relink-titles/language/Help
+
+See the <a href={{{ [{$:/plugins/flibbles/relink-titles!!demo}addsuffix[#Plugins/Titles]] }}}>//Relink-titles// documentation page</a> for details.

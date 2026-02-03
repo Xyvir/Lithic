@@ -1,0 +1,23 @@
+created: 20200527200401408
+modified: 20200527234136578
+tags: $:/tags/deleteTiddlerAction
+title: $:/plugins/sq/streams/delete-hook/actions
+type: text/vnd.tiddlywiki
+
+\define delete-children()
+	<$list filter="[enlist{!!stream-list}]">
+		<<delete-children>>
+	</$list>
+	<<$action-deletetiddler $filter="[enlist{!!stream-list}]"/>
+\end
+
+<$list filter="[<currentTiddler>has[stream-type]]">
+	<$list filter="[<currentTiddler>has[parent]]">
+		<$action-listops $tiddler={{!!parent}} $field="stream-list" $subfilter="-[<currentTiddler>]" />
+	</$list>
+	<$list variable="count" filter="[enlist{!!stream-list}count[]!match[0]]">
+		<$action-confirm $message="Do you wish to delete all tiddlers descended from this tiddler?">
+			<<delete-children>>
+		</$action-confirm>
+	</$list>
+</$list>

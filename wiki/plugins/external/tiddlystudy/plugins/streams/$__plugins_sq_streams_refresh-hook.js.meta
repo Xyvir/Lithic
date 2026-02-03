@@ -1,0 +1,3 @@
+module-type: startup
+title: $:/plugins/sq/streams/refresh-hook.js
+type: application/javascript

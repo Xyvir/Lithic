@@ -1,0 +1,25 @@
+caption: RememberCz
+condition: [<targetTiddler>!has[type]] [<targetTiddler>type[text/vnd.tiddlywiki]]
+created: 20200517155905263
+description: Remember Cloze Deletion
+icon: $:/plugins/sobjornstad/TiddlyRemember/icons/lightbulb-black.svg
+list-after: $:/plugins/sobjornstad/TiddlyRemember/toolbar/rememberq
+modified: 20210315104609669
+shortcuts: ((remembercz))
+tags: $:/tags/EditorToolbar tiddlystudy
+title: $:/plugins/sobjornstad/TiddlyRemember/toolbar/remembercz
+type: text/vnd.tiddlywiki
+
+\define getMacro()
+<$macrocall $name="remembercz" id=<<currentTiddler>> text="
+
+" reference="&nbsp;"/>
+\end
+
+<$set name="stream-title" value=<<stream-root-title>>>
+	<$action-sendmessage
+		$message="tm-edit-text-operation"
+		$param="replace-selection"
+		text=<<getMacro>>
+	/>
+</$set>

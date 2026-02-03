@@ -1,0 +1,3 @@
+module-type: startup
+title: $:/plugins/sq/streams/simple-engine-tweak
+type: application/javascript

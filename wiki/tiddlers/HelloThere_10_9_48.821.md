@@ -1,1 +1,0 @@
-AKA "bring your own sync"

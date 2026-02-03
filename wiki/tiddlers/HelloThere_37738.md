@@ -1,1 +1,0 @@
-So is $\text{ Katex} \quad | \quad I = VR$

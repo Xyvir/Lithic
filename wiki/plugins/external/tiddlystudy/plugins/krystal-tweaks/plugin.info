@@ -1,0 +1,10 @@
+{
+    "title": "$:/plugins/kebi/krystal-tweaks",
+    "created": "20210503184210659",
+    "modified": "20210503202933404",
+    "name": "Tweaks for Krystal (tiddlystudy)",
+    "plugin-priority": "2",
+    "plugin-type": "plugin",
+    "tags": "",
+    "version": "1.0.0"
+}

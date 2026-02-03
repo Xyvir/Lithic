@@ -1,0 +1,82 @@
+created: 20200827003650814
+modified: 20211005172926661
+tags: $:/tags/ViewTemplate $:/tags/Macro
+title: $:/plugins/kebi/tiddlystudy-references/filters
+
+\whitespace trim
+\define generate-list(statetiddler, filter, class)
+\whitespace trim
+  <$reveal type="match" state="$statetiddler$" text="enable">
+    <$list filter="$filter$">
+      <li class="$class$">
+        <$link to={{!!title}}>
+          <$transclude field="caption">
+            <$reveal type="nomatch" state="$:/plugins/kebi/tiddlystudy-references/config/no-id" text="enable">
+              <$view field="title"/>
+            </$reveal>
+            <$reveal type="match" state="$:/plugins/kebi/tiddlystudy-references/config/no-id" text="enable">
+              <$list filter="[<currentTiddler>is[image]]">
+                <$view field="title"/>
+              </$list>
+              <$list filter="[<currentTiddler>!is[image]]">
+                <$wikify name="display-title" text={{{ [<currentTiddler>get[text]!is[blank]] ~[{!!title}] }}}>
+                  <$link to=<<currentTiddler>>>
+                    <$text text={{{ [<display-title>split[]first[50]join[]] }}}/>
+                  </$link>
+                </$wikify>
+              </$list>
+            </$reveal>
+          </$transclude>
+        </$link>
+      </li>
+    </$list>
+  </$reveal>
+\end
+
+\define text-pattern()
+$(currentTiddler)$(?i)
+\end
+
+\define text-pattern-transclude()
+\u007B\u007B$(currentTiddler)$\u007D\u007D
+\end
+
+\define text-pattern-transclude-streams()
+\u007B\u007B$(currentTiddler)$\u007C\u007Ctransclude-streams\u007D\u007D
+\end
+
+\define text-pattern-backlink()
+\u005B\u005B$(currentTiddler)$\u005D\u005D(?i)
+\end
+
+\define text-pattern-reference()
+reference\u003D\u0022$(currentTiddler)$(?i)
+\end
+
+<ul class="footer">
+  <<generate-list
+    statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/transclusions"
+    filter:"[regexp:text<text-pattern-transclude>] [regexp:text<text-pattern-transclude-streams>] -[is[current]] -[is[system]] -[all[shadows]] -[is[image]]"
+    class:"filtertransclude"
+  >>
+  <<generate-list
+    statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/tags"
+    filter:"[all[current]tagging[]] -[is[current]] -[is[system]] -[all[shadows]]"
+    class:"filtertag"
+  >>
+  <<generate-list
+    statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/backlinks"
+    filter:"[all[current]backlinks[]] [regexp:text<text-pattern-backlink>] -[is[current]] -[is[system]] -[all[shadows]] -[is[image]]"
+    class:"filterbacklink"
+  >>
+  <<generate-list
+    statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/mentions-title"
+    filter:"[regexp:title<text-pattern>] -[has[parent]] -[is[current]] -[is[system]] -[all[shadows]]"
+    class:"filtertitle"
+  >>
+  <<generate-list
+    statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/mentions-text"
+    filter:"[regexp:text<text-pattern>] -[is[current]] -[is[system]] -[all[shadows]] -[is[image]] -[regexp:text<text-pattern-transclude>] -[regexp:text<text-pattern-transclude-streams>] -[all[current]backlinks[]] -[regexp:text<text-pattern-backlink>] -[regexp:text<text-pattern-reference>]"
+    class:"filtertext"
+  >>
+</ul>

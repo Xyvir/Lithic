@@ -1,0 +1,11 @@
+{
+    "title": "$:/plugins/kebi/tiddlystudy-references",
+    "created": "20210315163350904",
+    "description": "bidirectional linking",
+    "list": "config",
+    "modified": "20210317111431113",
+    "name": "tiddlystudy-references",
+    "plugin-type": "plugin",
+    "tags": "",
+    "version": "1.0.1"
+}

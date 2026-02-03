@@ -1,0 +1,25 @@
+caption: RememberQ-reference
+condition: [<targetTiddler>!has[type]] [<targetTiddler>type[text/vnd.tiddlywiki]]
+created: 20200930121726020
+description: Remember Question/Answer
+icon: $:/plugins/sobjornstad/TiddlyRemember/icons/lightbulb-white.svg
+list-after: $:/plugins/sobjornstad/TiddlyRemember/toolbar/rememberq
+modified: 20210503193236840
+shortcuts: ((rememberq-reference))
+tags: $:/tags/EditorToolbar
+title: $:/plugins/sobjornstad/TiddlyRemember/toolbar/rememberq-reference
+type: text/vnd.tiddlywiki
+
+\define getMacro()
+<$macrocall $name="rememberq" id=<<currentTiddler>> question="
+
+" answer="
+
+" reference={{{ [{!!parent}get[text]] }}}/>
+\end
+
+<$action-sendmessage
+	$message="tm-edit-text-operation"
+	$param="replace-selection"
+	text=<<getMacro>>
+/>

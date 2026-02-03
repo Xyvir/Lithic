@@ -1,0 +1,6 @@
+caption: Show toolbar in editor
+description: Enable toolbar in editor
+settings-template: $:/plugins/sq/streams/ui/templates/settings/input-switch
+title: $:/config/sq/streams/enable-edit-toolbar
+
+no
