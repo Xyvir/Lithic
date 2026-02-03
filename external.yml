@@ -13,6 +13,11 @@
   cleanContent: false
   copy: []
 
+- name: tw-react
+  url: https://github.com/tiddly-gittly/tw-react/releases/download/v1.0.0/plugins.zip
+  cleanContent: false
+  copy: []
+
 - name: comptext
   url: https://snowgoon88.github.io/TW5-extendedit/
   cleanContent: false
