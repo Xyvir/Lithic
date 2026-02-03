@@ -32,6 +32,7 @@ jobs:
           git config user.email "bot@lithic.uk"
           
           git add wiki/plugins/external/
+          git add wiki/themes/
           git add wiki/tiddlers/
           git add external-lock.json
           
@@ -41,3 +42,10 @@ jobs:
           else
             echo "No changes detected. Skipping commit."
           fi
+
+      - name: Upload Mirror Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mirror-log
+          path: wiki/mirror.log

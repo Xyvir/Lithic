@@ -58,13 +58,26 @@ function getRemoteInfo(url) {
     } catch (e) { return null; }
 }
 
-console.log(`Starting Mirror (External Mode)...`);
+const logPath = path.join(__dirname, '../wiki/mirror.log');
+let logContent = `--- Mirror Log ${new Date().toISOString()} ---\n\n`;
+
+function log(msg) {
+    console.log(msg);
+    logContent += `${msg}\n`;
+}
+
+function errorFromLog(msg) {
+    console.error(msg);
+    logContent += `[ERROR] ${msg}\n`;
+}
+
+log(`Starting Mirror (External Mode)...`);
 let changesMade = false;
 
 sources.forEach(source => {
     if (source.disabled) return;
 
-    console.log(`\n--- Processing: ${source.name} ---`);
+    log(`\n--- Processing: ${source.name} ---`);
     const targetDir = path.join(PLUGIN_DIR, source.name);
 
     // --- CHECK UPDATE ---
@@ -78,7 +91,7 @@ sources.forEach(source => {
     }
 
     if (!isFresh || source.force) {
-        console.log(`🔄 Updating source...`);
+        log(`🔄 Updating source...`);
         const isZip = source.url.toLowerCase().endsWith('.zip');
         const ext = isZip ? '.zip' : '.html';
         const tempFile = `temp_${source.name}${ext}`;
@@ -90,7 +103,7 @@ sources.forEach(source => {
                 if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true, force: true });
 
                 if (isZip) {
-                    console.log(`📦 Unzipping...`);
+                    log(`📦 Unzipping...`);
                     // If source.extract is set, we unzip to a temp dir first, then move the specific folder
                     if (source.extract && source.target) {
                         const tempUnzipDir = path.join(PLUGIN_DIR, `${source.name}_temp_unzip`);
@@ -103,12 +116,12 @@ sources.forEach(source => {
                         const finalTargetPath = path.join(__dirname, '..', source.target); // Resolve relative to script root
 
                         if (fs.existsSync(extractSourcePath)) {
-                            console.log(`🚚 Moving extracted folder ${source.extract} -> ${source.target}`);
+                            log(`🚚 Moving extracted folder ${source.extract} -> ${source.target}`);
                             if (fs.existsSync(finalTargetPath)) fs.rmSync(finalTargetPath, { recursive: true, force: true });
                             fs.mkdirSync(path.dirname(finalTargetPath), { recursive: true });
                             fs.renameSync(extractSourcePath, finalTargetPath);
                         } else {
-                            console.error(`❌ ERROR: Extraction path not found in zip: ${source.extract}`);
+                            errorFromLog(`❌ ERROR: Extraction path not found in zip: ${source.extract}`);
                         }
 
                         // Cleanup temp unzip
@@ -120,14 +133,14 @@ sources.forEach(source => {
                         execSync(`unzip -q -o ${tempFile} -d ${targetDir}`, { stdio: 'inherit' });
                     }
                 } else {
-                    console.log(`💥 Exploding TiddlyWiki...`);
+                    log(`💥 Exploding TiddlyWiki...`);
                     execSync(`npx tiddlywiki --load ${tempFile} --savewikifolder ${targetDir}`, { stdio: 'inherit' });
                 }
 
                 if (source.cleanContent) {
                     const tiddlersDir = path.join(targetDir, 'tiddlers');
                     if (fs.existsSync(tiddlersDir)) {
-                        console.log('✂️  Pruning library folder...');
+                        log('✂️  Pruning library folder...');
                         const keepList = new Set();
                         (source.copy || []).forEach(p => {
                             if (p.startsWith('tiddlers/')) keepList.add(path.normalize(p));
@@ -153,15 +166,15 @@ sources.forEach(source => {
             }
             if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
         } catch (error) {
-            console.error(`❌ FAILED: ${error.message}`);
+            errorFromLog(`❌ FAILED: ${error.message}`);
         }
     } else {
-        console.log(`✅ Up to date.`);
+        log(`✅ Up to date.`);
     }
 
     // --- AGGREGATION ---
     if (source.copy && Array.isArray(source.copy) && source.copy.length > 0) {
-        console.log(`📂 Aggregating ${source.copy.length} files to wiki/tiddlers...`);
+        log(`📂 Aggregating ${source.copy.length} files to wiki/tiddlers...`);
         source.copy.forEach(filePath => {
             const srcPath = path.join(targetDir, filePath);
             const safeName = `${source.name}_${path.basename(filePath)}`;
@@ -171,12 +184,16 @@ sources.forEach(source => {
                 fs.copyFileSync(srcPath, destPath);
             } else {
                 console.warn(`   ⚠️ File not found: ${filePath}`);
+                logContent += `   ⚠️ File not found: ${filePath}\n`;
             }
         });
     }
 });
 
 if (changesMade) {
-    console.log(`\n📝 Saving lockfile...`);
+    log(`\n📝 Saving lockfile...`);
     fs.writeFileSync(LOCK_FILE, JSON.stringify(lockData, null, 2));
 }
+
+fs.writeFileSync(logPath, logContent);
+console.log(`Mirror complete. Log written to ${logPath}`);
