@@ -1,6 +1,6 @@
 /**
  * scripts/mirror.js (Lithic - Disposable Root)
- * * Plugins -> wiki/plugins/external
+ * * Plugins -> wiki/external
  * * Tiddlers -> wiki/tiddlers (Wiped and rebuilt every run)
  */
 
@@ -13,7 +13,7 @@ const yaml = require('js-yaml');
 const CONFIG_FILE = 'external.yml';
 const LOCK_FILE = 'external-lock.json'; // Updated for consistency
 
-const PLUGIN_DIR = path.join('wiki', 'plugins', 'external');
+const EXTERNAL_DIR = path.join('wiki', 'external');
 const TIDDLERS_DIR = path.join('wiki', 'tiddlers');
 
 // 1. Load Config
@@ -31,7 +31,7 @@ try {
 }
 
 // 2. Prepare Directories
-if (!fs.existsSync(PLUGIN_DIR)) fs.mkdirSync(PLUGIN_DIR, { recursive: true });
+if (!fs.existsSync(EXTERNAL_DIR)) fs.mkdirSync(EXTERNAL_DIR, { recursive: true });
 
 // WIPE TIDDLERS COMPLETELY (Since Lithic code is in /plugins)
 if (fs.existsSync(TIDDLERS_DIR)) {
@@ -78,7 +78,7 @@ sources.forEach(source => {
     if (source.type === 'disable') return;
 
     log(`\n--- Processing: ${source.name} ---`);
-    const targetDir = path.join(PLUGIN_DIR, source.name);
+    const targetDir = path.join(EXTERNAL_DIR, source.name);
 
     // --- CHECK UPDATE ---
     const remoteInfo = getRemoteInfo(source.url);
@@ -108,7 +108,7 @@ sources.forEach(source => {
                     log(`📦 Unzipping...`);
                     // If source.extract is set, we unzip to a temp dir first, then move the specific folder
                     if (source.extract && source.target) {
-                        const tempUnzipDir = path.join(PLUGIN_DIR, `${source.name}_temp_unzip`);
+                        const tempUnzipDir = path.join(EXTERNAL_DIR, `${source.name}_temp_unzip`);
                         if (fs.existsSync(tempUnzipDir)) fs.rmSync(tempUnzipDir, { recursive: true, force: true });
                         fs.mkdirSync(tempUnzipDir, { recursive: true });
 

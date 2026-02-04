@@ -1,5 +1,0 @@
-description: load the external lib
-title: $:/plugin/bj/visualeditor/includelib
-
-<script src='http://127.0.0.1/libs/ckeditor/ckeditor.js'></script>
-

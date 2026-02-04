@@ -1,6 +1,0 @@
-key: ((streams-merge-with-previous))
-prevent-default: no
-tags: $:/tags/streams/keyboard-shortcuts
-title: $:/plugins/sq/streams/keyboard-shortcuts/merge-with-previous
-
-<<merge-with-previous-node-actions>>

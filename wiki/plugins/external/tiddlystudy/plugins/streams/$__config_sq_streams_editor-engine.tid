@@ -1,9 +1,0 @@
-caption: Editor to use for Streams
-condition: [[widget]modules[]prefix[$:/plugins/tiddlywiki/codemirror/edit-codemirror.js]]
-description: Editor to use for Streams
-option-names: [[Default]] [[CodeMirror]]
-option-values: text codemirror
-settings-template: $:/plugins/sq/streams/ui/templates/settings/select
-title: $:/config/sq/streams/editor-engine
-
-text

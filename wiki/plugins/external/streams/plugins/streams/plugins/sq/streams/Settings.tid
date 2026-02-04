@@ -1,5 +1,0 @@
-caption: Streams settings
-tags: $:/tags/ControlPanel
-title: $:/plugins/sq/streams/Settings
-
-<<tabs "$:/plugins/sq/streams/Settings/config $:/plugins/sq/streams/Settings/shortcuts" "$:/plugins/sq/streams/Settings/config" "$:/state/streams/settings/tabs">>

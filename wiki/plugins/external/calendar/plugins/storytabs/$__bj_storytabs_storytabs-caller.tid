@@ -1,7 +1,0 @@
-tags: $:/tags/AboveStory
-title: $:/bj/storytabs/storytabs-caller
-type: text/vnd.tiddlywiki
-
-<$transclude tiddler="$:/plugin/bj/storytabs"  mode="inline"/>
-
-

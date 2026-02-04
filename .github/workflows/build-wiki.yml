@@ -28,6 +28,9 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Mirror External Plugins
+        run: npm run mirror
+
       - name: Flatten Plugins
         run: node scripts/flatten-plugins.js
 

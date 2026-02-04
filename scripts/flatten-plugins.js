@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
-const EXTERNAL_PLUGINS_DIR = path.join(__dirname, '../wiki/plugins/external');
+const EXTERNAL_DIR = path.join(__dirname, '../wiki/external');
 const TARGET_PLUGINS_DIR = path.join(__dirname, '../wiki/plugins');
 
-if (!fs.existsSync(EXTERNAL_PLUGINS_DIR)) {
-    console.error(`External plugins directory not found: ${EXTERNAL_PLUGINS_DIR}`);
+if (!fs.existsSync(EXTERNAL_DIR)) {
+    console.error(`External plugins directory not found: ${EXTERNAL_DIR}`);
     process.exit(1);
 }
 
@@ -50,7 +50,7 @@ const manifestPath = path.join(__dirname, '../wiki/flatten-manifest.log');
 let manifestContent = "--- Flattened Plugin Manifest ---\nGenerated at: " + new Date().toISOString() + "\n\n";
 
 console.log('Scanning for external plugins...');
-const pluginInfos = findPluginInfoFiles(EXTERNAL_PLUGINS_DIR);
+const pluginInfos = findPluginInfoFiles(EXTERNAL_DIR);
 
 console.log(`Found ${pluginInfos.length} plugin.info files.`);
 

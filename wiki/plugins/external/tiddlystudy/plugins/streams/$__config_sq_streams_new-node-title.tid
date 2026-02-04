@@ -1,6 +1,0 @@
-caption: Template wikified for node title
-description: Wikitext that is wikified to generate the title for new nodes
-settings-template: $:/plugins/sq/streams/ui/templates/settings/input
-title: $:/config/sq/streams/new-node-title
-
-<<stream-root-title>>/<<now "[UTC]YYYY0MM0DD0hh0mm0ssXXX">>

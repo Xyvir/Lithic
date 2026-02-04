@@ -1,9 +1,0 @@
-tags: $:/tags/ViewTemplate
-title: $:/plugins/mklauber/aliases/footer
-
-<$list filter="[all[shadows+tiddlers]contains:aliases{!!title}first[]]" variable="">
-You may have meant one of the following pages
-<$list filter="[all[shadows+tiddlers]contains:aliases{!!title}]">
-<li><$link>{{!!title}}</$link></li>
-</$list>
-</$list>

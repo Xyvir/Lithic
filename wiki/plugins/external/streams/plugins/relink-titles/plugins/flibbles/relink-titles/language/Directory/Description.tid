@@ -1,3 +1,0 @@
-title: $:/plugins/flibbles/relink-titles/language/Directory/Description
-
-For wikis set up hierarchically using `/`, like a filesystem. This option will update all tiddlers nested inside the target tiddler. i.e. `fromTiddler/path/file` becomes `toTiddler/path/file`.

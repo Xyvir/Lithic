@@ -1,5 +1,0 @@
-tags: $:/tags/SideBarSegment $:/plugins/rmnvsl/krystal/header
-title: $:/core/ui/SideBarSegments/page-controls
-type: text/vnd.tiddlywiki
-
-{{||$:/core/ui/PageTemplate/pagecontrols}}
