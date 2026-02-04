@@ -34,12 +34,7 @@
         "tiddlywiki/vanilla",
         "tiddlywiki/snowwhite",
         "nico/notebook",
-        "themes/nico/notebook",
-        "themes/notebook",
-        "notebook",
-        "themes/nico/",
-        "cdruan/captivate",
-        "captivate"
+        "cdruan/captivate"
     ],
     "build": {
         "index": [
