@@ -1,7 +1,0 @@
-tags: $:/tags/Macro
-title: PNJ macro for the example
-type: text/vnd.tiddlywiki
-
-\define pnjin(name:"people")
-$name$ (PNJ)
-\end

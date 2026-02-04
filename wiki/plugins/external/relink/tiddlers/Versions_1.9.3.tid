@@ -1,4 +1,0 @@
-created: 20200515155144823
-title: Versions/1.9.3
-
-* The ''caption'' field is wikitext, even if it usually isn't used for anything fancy. Added to the core list of fields.

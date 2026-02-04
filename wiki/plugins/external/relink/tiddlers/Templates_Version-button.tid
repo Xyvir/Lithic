@@ -1,3 +1,0 @@
-title: Templates/Version-button
-
-{{{[<currentTab>removeprefix[Versions/]addprefix[v]removesuffix[.0]]}}}

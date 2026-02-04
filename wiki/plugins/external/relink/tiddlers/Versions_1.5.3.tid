@@ -1,4 +1,0 @@
-created: 20190921194558085
-title: Versions/1.5.3
-
-* Removed startsWith and endsWith from the project. Also for IE11 support (#9)

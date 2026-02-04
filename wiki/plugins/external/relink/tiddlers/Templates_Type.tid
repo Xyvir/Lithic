@@ -1,8 +1,0 @@
-title: Templates/Type
-
-<$tiddler tiddler=<<currentTab>> >
-
-! <$link><$transclude field="caption">{{!!title}}</$transclude></$link>
-
-{{}}
-</$tiddler>

@@ -1,8 +1,0 @@
-created: 20140513223900482
-modified: 20140515174600384
-revision: 0
-title: JsonEditor
-type: text/vnd.tiddlywiki
-
-Try editing these examples: [[A menu system]] [[Employee data]].
-Note that on keypress updating is disabled as a default, there is a 'set value' button that is used to enter values. The default can be changed by editing the option file:[[$:/plugins/bj/jsoneditor/options.json]]. On keypress updating may be slow due to the editor compiling the json.

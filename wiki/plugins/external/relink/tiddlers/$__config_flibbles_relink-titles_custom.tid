@@ -1,3 +1,0 @@
-title: $:/config/flibbles/relink-titles/custom
-
-[removesuffix<fromTiddler>match[Example/setting/]addsuffix<toTiddler>]

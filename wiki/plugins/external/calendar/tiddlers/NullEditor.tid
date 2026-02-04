@@ -1,7 +1,0 @@
-created: 20140507135244390
-modified: 20140507143600021
-revision: 0
-title: NullEditor
-type: text/vnd.tiddlywiki
-
-When editor a pdf tiddler to add tags, the contents of pdfs appear as gibberish in the edit window. This can be switch off with this plugin. Once the plugin is installed create a tiddler titled "[[$:/config/EditorTypeMappings/application/pdf]]" with content 'none'  (or drag the one from here) .

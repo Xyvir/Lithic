@@ -1,0 +1,56 @@
+{
+  "tiddlystudy": {
+    "url": "https://postkevone.github.io/tiddlystudy/index.html",
+    "etag": "6173fca5-2e8160",
+    "lastModified": "Sat, 23 Oct 2021 12:14:29 GMT",
+    "updatedAt": "2026-02-04T14:47:55.807Z"
+  },
+  "whiteboard-legacy": {
+    "url": "https://github.com/tiddly-gittly/tiddlywiki-whiteboard/releases/download/v0.3.5/plugins.zip",
+    "etag": "0x8DB5E8483CE6CE7",
+    "lastModified": "Sat, 27 May 2023 07:32:24 GMT",
+    "updatedAt": "2026-02-04T14:47:56.465Z"
+  },
+  "tw-react": {
+    "url": "https://github.com/tiddly-gittly/tw-react/releases/download/v1.0.0/plugins.zip",
+    "etag": "0x8DD1F808739A90B",
+    "lastModified": "Wed, 18 Dec 2024 16:25:04 GMT",
+    "updatedAt": "2026-02-04T14:47:57.061Z"
+  },
+  "comptext": {
+    "url": "https://snowgoon88.github.io/TW5-extendedit/",
+    "etag": "608ea2b3-25d517",
+    "lastModified": "Sun, 02 May 2021 13:01:39 GMT",
+    "updatedAt": "2026-02-04T14:47:58.095Z"
+  },
+  "relink": {
+    "url": "https://flibbles.github.io/tw5-relink/",
+    "etag": "695c48d7-2aa466",
+    "lastModified": "Mon, 05 Jan 2026 23:27:19 GMT",
+    "updatedAt": "2026-02-04T14:47:59.097Z"
+  },
+  "streams": {
+    "url": "https://saqimtiaz.github.io/streams/",
+    "etag": "63ee3bea-32d978",
+    "lastModified": "Thu, 16 Feb 2023 14:21:30 GMT",
+    "updatedAt": "2026-02-04T14:48:00.104Z"
+  },
+  "aliases": {
+    "url": "https://mklauber.github.io/tw5-plugins",
+    "etag": "66745778-41a5e3",
+    "lastModified": "Thu, 20 Jun 2024 16:23:20 GMT",
+    "updatedAt": "2026-02-04T14:48:01.211Z"
+  },
+  "calendar": {
+    "url": "https://bjtools.tiddlyspot.com/",
+    "etag": "5yGetd9/uKeDcU4xNc66Ng==",
+    "lastModified": null,
+    "updatedAt": "2026-02-04T14:48:02.724Z"
+  },
+  "notebook": {
+    "url": "https://saqimtiaz.github.io/sq-tw/notebook.html",
+    "etag": "69834e40-2a7762",
+    "lastModified": "Wed, 04 Feb 2026 13:48:48 GMT",
+    "updatedAt": "2026-02-04T14:48:03.651Z"
+  }
+}

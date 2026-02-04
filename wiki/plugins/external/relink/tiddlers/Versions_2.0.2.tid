@@ -1,6 +1,0 @@
-created: 20210831152902863
-title: Versions/2.0.2
-
-It seems //Relink// had a blindspot for tables. Any relinkable content inside a table was completely ignored. Fixed.
-
-* Added wikitext rule to support for tables.

@@ -1,8 +1,0 @@
-tags: $:stamp
-title: $:/config/stamp/list1
-type: text/vnd.tiddlywiki
-
-<$list filter="[tag[$:stamp]!is[system]sort[]]">
-<$link to={{!!title}}><$view field="title"/></$link>
-{{!!text}}
-</$list>

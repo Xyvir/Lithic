@@ -1,5 +1,0 @@
-\define bulletList(tag)
-
-
-<ul><$list filter="[tag[$tag$]]"><li><$link to={{!!title}}><$view field="title"/></$link></li></$list></ul>
-\end

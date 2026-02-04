@@ -1,3 +1,0 @@
-title: Templates/Hello
-
-Hello, I'm {{!!title}}.

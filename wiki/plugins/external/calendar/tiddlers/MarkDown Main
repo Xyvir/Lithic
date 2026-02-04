@@ -1,9 +1,0 @@
-~MarkDown: Extended
-=================
-What you are seeing here is the tabs macro working in extended markdown, using the tiddlers [[Code]]  and [[Phrase Emphasis]]
-
-
-[=[tabs 'Code[[Phrase Emphasis]]' 'Phrase Emphasis' '$:/state/tab1']]=]
-
-
-

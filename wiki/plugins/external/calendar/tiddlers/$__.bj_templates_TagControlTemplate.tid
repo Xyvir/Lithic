@@ -1,8 +1,0 @@
-created: 20141214191155432
-modified: 20141214195744843
-revision: 0
-tags: 
-title: $:/.bj/templates/TagControlTemplate
-type: text/vnd.tiddlywiki
-
-<$link><span class="tw-taglist"><$view field="title"/></span></$link><$fieldmangler><$button param=<<tcc1>> message="tm-remove-tag" class="tc-btn-invisible">{{$:/core/images/cancel-button}}</$button></$fieldmangler>
