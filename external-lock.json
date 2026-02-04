@@ -46,11 +46,5 @@
     "etag": "0x8DD1F808739A90B",
     "lastModified": "Wed, 18 Dec 2024 16:25:04 GMT",
     "updatedAt": "2026-02-03T19:07:49.623Z"
-  },
-  "notebook": {
-    "url": "https://github.com/NicolasPetton/Notebook/archive/refs/heads/master.zip",
-    "etag": "c5610d0fe5cab4a0e066da5dc4d633d361335eec16582fe28a6589dca4d39b76",
-    "lastModified": null,
-    "updatedAt": "2026-02-03T21:10:29.276Z"
   }
 }
