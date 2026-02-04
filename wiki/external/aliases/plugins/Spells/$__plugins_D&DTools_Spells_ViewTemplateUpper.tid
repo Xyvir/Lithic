@@ -1,0 +1,17 @@
+created: 20190102194243675
+list-before: $:/core/ui/ViewTemplate/body
+modified: 20190102195927004
+tags: $:/tags/ViewTemplate
+title: $:/plugins/D&DTools/Spells/ViewTemplateUpper
+
+<$list filter="[all[current]type[Spell]]">
+
+"""
+//Level {{!!level}} {{!!school}}//
+
+''Casting Time'': {{!!casting_time}}
+''Range'': {{!!range}}
+''Components'': {{!!components}}
+''Duration'': <$list filter="[all[current]get[concentration]] -No">Concentration, </$list> {{!!duration}}
+"""
+</$list>

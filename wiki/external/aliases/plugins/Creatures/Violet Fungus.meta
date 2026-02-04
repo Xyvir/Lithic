@@ -1,0 +1,29 @@
+ac: 5
+ac_description: 
+alignment: unaligned
+attacks: //''Multiattack:''// The fungus makes 1d4 Rotting Touch attacks.<br><br>//''Rotting Touch:'' Melee Weapon Attack:// +2 to hit, reach 10 ft., one creature. //Hit:// 4 (1d8) necrotic damage.
+cha: 1
+challenge_rating: 1/4
+con: 10
+condition_immunities: blinded, deafened, frightened
+created: 20181223151326842
+creature_type: plant
+damage_immunities: 
+damage_resistances: 
+dex: 1
+features: //''False Appearance:''// While the violet fungus remains motionless, it is indistinguishable from an ordinary fungus.
+hp: 18
+hp_generation: 4d8
+int: 1
+languages: ---
+modified: 20181223151326842
+saving_throws: 
+senses: Blindsight 30 ft. (blind beyond this radius), PP 6
+size: Medium
+skills: 
+speed: 5 ft.
+str: 3
+title: Violet Fungus
+type: Creature
+wis: 3
+xp: 50

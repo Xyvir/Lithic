@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Warlock]] [[Wizard]]
+components: V, S
+concentration: Yes
+duration: Concentration, up to 1 minute
+level: 2
+range: 60 feet
+ritual: No
+school: Necromancy
+title: Ray of Enfeeblement
+type: Spell

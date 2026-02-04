@@ -1,0 +1,26 @@
+caption: RememberQ
+condition: [<targetTiddler>!has[type]] [<targetTiddler>type[text/vnd.tiddlywiki]]
+created: 20161118171456554
+description: Remember Question/Answer
+icon: $:/plugins/sobjornstad/TiddlyRemember/icons/lightbulb-white.svg
+modified: 20210315104601927
+shortcuts: ((rememberq))
+tags: $:/tags/EditorToolbar tiddlystudy
+title: $:/plugins/sobjornstad/TiddlyRemember/toolbar/rememberq
+type: text/vnd.tiddlywiki
+
+\define getMacro()
+<$macrocall $name="rememberq" id=<<currentTiddler>> question="
+
+" answer="
+
+" reference="&nbsp;"/>
+\end
+
+<$set name="stream-title" value=<<stream-root-title>>>
+	<$action-sendmessage
+		$message="tm-edit-text-operation"
+		$param="replace-selection"
+		text=<<getMacro>>
+	/>
+</$set>

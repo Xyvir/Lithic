@@ -1,0 +1,11 @@
+created: 20200731121622411
+key: alt-Up alt-Left
+modified: 20210315161956147
+tags: $:/tags/KeyboardShortcut
+title: $:/core/ui/KeyboardShortcuts/navigate-left
+
+<$navigator story="$:/StoryList" history="$:/HistoryList">
+<$set name="nextTiddler" value={{{ [list[$:/StoryList]before{$:/HistoryList!!current-tiddler}] ~[list[$:/StoryList]last[]] }}}>
+<$action-navigate $to=<<nextTiddler>>/>
+</$set>
+</$navigator>

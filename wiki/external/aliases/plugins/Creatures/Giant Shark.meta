@@ -1,0 +1,29 @@
+ac: 13
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +9 to hit, reach 5 ft., one target. //Hit:// 22 (3d10+6) piercing damage.
+cha: 5
+challenge_rating: 5
+con: 21
+condition_immunities: 
+created: 20181223151326828
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 11
+features: //''Blood Frenzy:''// The shark has advantage on melee attack rolls against any creature that doesn't have all its hit points.<br><br>//''Water Breathing:''// The shark can breathe only underwater.
+hp: 126
+hp_generation: 11d12+55
+int: 1
+languages: ---
+modified: 20181223151326828
+saving_throws: 
+senses: Blindsight 60 ft., PP 13
+size: Huge
+skills: Perception +3
+speed: 0 ft., swim 50 ft.
+str: 23
+title: Giant Shark
+type: Creature
+wis: 10
+xp: 1800

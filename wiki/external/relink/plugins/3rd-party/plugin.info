@@ -1,0 +1,8 @@
+{
+    "title": "$:/plugins/flibbles/3rd-party",
+    "description": "Example plugin which integrates with Relink.",
+    "list": "readme",
+    "name": "Relink Example",
+    "plugin-type": "plugin",
+    "stability": "STABILITY_2_STABLE"
+}

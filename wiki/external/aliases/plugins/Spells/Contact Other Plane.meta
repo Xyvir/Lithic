@@ -1,0 +1,14 @@
+at_higher_level: 
+casting_time: 1 Minute
+classes: [[Warlock]] [[Wizard]]
+components: V
+concentration: No
+created: 20190103192525723
+duration: 1 minute
+level: 5
+modified: 20190103192526674
+range: Self
+ritual: Yes
+school: Divination
+title: Contact Other Plane
+type: Spell

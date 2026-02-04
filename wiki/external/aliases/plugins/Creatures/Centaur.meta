@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: neutral good
+attacks: //''Multiattack:''// The centaur makes two attacks: one with its pike and one with its hooves or two with its longbow.<br><br>//''Pike:'' Melee Weapon Attack:// +6 to hit, reach 10 ft., one target. //Hit:// 9 (1d10+4) piercing damage.<br><br>//''Hooves:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one target. //Hit:// 11 (2d6+4) bludgeoning damage.<br><br>//''Longbow:'' Ranged Weapon Attack:// +4 to hit, range 150/600 ft., one target. //Hit:// 6 (1d8+2) piercing damage.
+cha: 11
+challenge_rating: 2
+con: 14
+condition_immunities: 
+created: 20181223151326821
+creature_type: monstrosity
+damage_immunities: 
+damage_resistances: 
+dex: 14
+features: //''Charge:''// If the centaur moves at least 30 feet straight toward a target and then hits it with a pike attack on the same turn, the target takes an extra 10 (3d6) piercing damage.
+hp: 45
+hp_generation: 6d10+12
+int: 9
+languages: Elvish, Sylvan
+modified: 20181223151326821
+saving_throws: 
+senses: PP 13
+size: Large
+skills: Athletics +6, Perception +3, Survival +3
+speed: 50 ft.
+str: 18
+title: Centaur
+type: Creature
+wis: 13
+xp: 450

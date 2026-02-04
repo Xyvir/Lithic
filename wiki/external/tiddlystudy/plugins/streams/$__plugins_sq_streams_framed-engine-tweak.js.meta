@@ -1,0 +1,3 @@
+module-type: startup
+title: $:/plugins/sq/streams/framed-engine-tweak
+type: application/javascript

@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Cleric]] [[Sorcerer]] [[Warlock]] [[Wizard]]
+components: V, S, M (an ointment for the eyes that costs 25 gp; is made from mushroom powder, saffron, and fat; and is consumed by the spell)
+concentration: No
+duration: 1 hour
+level: 6
+range: Touch
+ritual: No
+school: Divination
+title: True Seeing
+type: Spell

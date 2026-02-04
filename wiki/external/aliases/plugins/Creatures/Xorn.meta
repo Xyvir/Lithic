@@ -1,0 +1,29 @@
+ac: 19
+ac_description: natural armor
+alignment: neutral
+attacks: //''Multiattack:''// The xorn makes three claw attacks and one bite attack.<br><br>//''Claw:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one target. //Hit:// 6 (1d6+3) slashing damage.<br><br>//''Bite:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one target. //Hit:// 13 (3d6+3) piercing damage.
+cha: 11
+challenge_rating: 5
+con: 22
+condition_immunities: 
+created: 20181223151326844
+creature_type: elemental
+damage_immunities: 
+damage_resistances: piercing and slashing from nonmagical attacks that aren't adamantine
+dex: 10
+features: //''Earth Glide:''// The xorn can burrow through nonmagical, unworked earth and stone. While doing so, the xorn doesn't disturb the material it moves through.<br><br>//''Stone Camouflage:''// The xorn has advantage on Dexterity (Stealth) checks made to hide in rocky terrain.<br><br>//''Treasure Sense:''// The xorn can pinpoint, by scent, the location of precious metals and stones, such as coins and gems, within 60 feet of it.
+hp: 73
+hp_generation: 7d8+42
+int: 11
+languages: Terran
+modified: 20181223151326844
+saving_throws: 
+senses: Darkvision 60 ft., Tremorsense 60 ft., PP 16
+size: Medium
+skills: Perception +6, Stealth +3
+speed: 20 ft., burrow 20 ft.
+str: 17
+title: Xorn
+type: Creature
+wis: 10
+xp: 1800

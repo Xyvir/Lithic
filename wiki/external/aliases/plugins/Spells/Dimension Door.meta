@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Sorcerer]] [[Warlock]] [[Wizard]]
+components: V
+concentration: No
+duration: Instantaneous
+level: 4
+range: 500 feet
+ritual: No
+school: Conjuration
+title: Dimension Door
+type: Spell

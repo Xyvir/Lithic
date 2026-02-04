@@ -1,0 +1,16 @@
+{
+    "title": "$:/plugins/D&DTools/D&DEdition",
+    "author": "Matt Lauber",
+    "created": "20180101000000000",
+    "core-version": ">=5.1.22",
+    "description": "D&D Edition",
+    "list": "",
+    "modified": "20180101000000000",
+    "plugin-priority": "1",
+    "plugin-type": "plugin",
+    "version": "1.0.5",
+    "tags": "D&D",
+    "source": "https://github.com/mklauber/tw-D-and-D-Edition.git",
+    "summary": "D&D Edition",
+    "dependents": "$:/plugins/D&DTools/CreatureManager $:/plugins/D&DTools/EncounterBuilder $:/plugins/mklauber/in.js $:/plugins/D&DTools/d20.js $:/plugins/mklauber/shuffle $:/plugins/D&DTools/Creatures $:/plugins/D&DTools/Spells $:/plugins/D&DTools/NPCNameGenerator"
+}

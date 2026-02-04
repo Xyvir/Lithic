@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: Special
+classes: [[Bard]] [[Druid]] [[Ranger]]
+components: V, S
+concentration: No
+duration: Instantaneous
+level: 3
+range: 150 feet
+ritual: No
+school: Transmutation
+title: Plant Growth
+type: Spell

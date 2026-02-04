@@ -1,0 +1,25 @@
+created: 20181217185930783
+modified: 20181217190804231
+tags: 
+title: $:/plugins/D&DTools/CreatureManager/readme
+
+The [[Creature Manager|$:/plugins/D&DTools/CreatureManager]] plugin is a tool for displaying Stat Blocks for D&D 5e creatures.
+
+<div style="clear:both" />
+
+<div style="float:left;">
+Select a Monster: <$select tiddler="$:/temp/CreatureManager/Monster">
+<$list filter="[all[tiddlers+shadows]type[Creature]]">
+<option value=<<currentTiddler>>><$view field='title'/></option>
+</$list>
+</$select>
+</div>
+
+<div style="float:right;">
+<$tiddler tiddler={{$:/temp/CreatureManager/Monster}}>
+<$transclude tiddler="$:/plugins/D&DTools/CreatureManager/ViewTemplate">
+{{Kobold||$:/plugins/D&DTools/CreatureManager/ViewTemplate}}
+</$transclude>
+</$tiddler> 
+</div>
+<div style="clear:both;" />

@@ -1,0 +1,5 @@
+key: ((streams-focus-higher))
+tags: $:/tags/streams/keyboard-shortcuts
+title: $:/plugins/sq/streams/keyboard-shortcuts/focus-higher-node
+
+<<focus-higher-node-actions>>

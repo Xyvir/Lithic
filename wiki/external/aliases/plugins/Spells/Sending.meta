@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Cleric]] [[Wizard]]
+components: V, S, M (a short piece of fine copper wire)
+concentration: No
+duration: 1 round
+level: 3
+range: Unlimited
+ritual: No
+school: Evocation
+title: Sending
+type: Spell

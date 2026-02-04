@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Druid]] [[Warlock]] [[Wizard]]
+components: V, S, M (a handful of clay, crystal, glass, or mineral spheres)
+concentration: No
+duration: Instantaneous
+level: 8
+range: 150 feet
+ritual: No
+school: Enchantment
+title: Feeblemind
+type: Spell

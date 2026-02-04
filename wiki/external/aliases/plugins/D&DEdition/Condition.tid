@@ -1,0 +1,10 @@
+created: 20201106004355145
+modified: 20201106014510609
+tags: 
+title: Condition
+
+<$list filter="[all[tiddlers+shadows]tag[Condition]sort[]]">
+
+!!<$link>{{!!title}}</$link>
+{{!!text}}
+</$list>

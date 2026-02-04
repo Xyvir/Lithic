@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Minute
+classes: [[Druid]]
+components: V, S, M (fire and holy water)
+concentration: No
+duration: 8 hours
+level: 6
+range: 30 feet
+ritual: No
+school: Transmutation
+title: Wind Walk
+type: Spell

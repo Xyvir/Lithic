@@ -1,0 +1,3 @@
+module-type: parser
+title: $:/core/modules/parsers/wikiparser/basewikiparser.js
+type: application/javascript

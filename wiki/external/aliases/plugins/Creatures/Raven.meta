@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: unaligned
+attacks: //''Beak:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one target. //Hit:// 1 piercing damage.
+cha: 6
+challenge_rating: 0
+con: 8
+condition_immunities: 
+created: 20181223151326837
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 14
+features: //''Mimicry:''// The raven can mimic simple sounds it has heard, such as a person whispering, a baby crying, or an animal chittering. A creature that hears the sounds can tell they are imitations with a successful DC 10 Wisdom (Insight) check.
+hp: 1
+hp_generation: 1d4-1
+int: 2
+languages: ---
+modified: 20181223151326837
+saving_throws: 
+senses: PP 13
+size: Tiny
+skills: Perception +3
+speed: 10 ft., fly 50 ft.
+str: 2
+title: Raven
+type: Creature
+wis: 12
+xp: 10

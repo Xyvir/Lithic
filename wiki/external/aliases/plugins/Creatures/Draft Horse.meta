@@ -1,0 +1,29 @@
+ac: 10
+ac_description: 
+alignment: unaligned
+attacks: //''Hooves:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one target. //Hit:// 9 (2d4+4) bludgeoning damage.
+cha: 7
+challenge_rating: 1/4
+con: 12
+condition_immunities: 
+created: 20181223151326823
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 10
+features: 
+hp: 19
+hp_generation: 3d10+3
+int: 2
+languages: ---
+modified: 20181223151326823
+saving_throws: 
+senses: PP 10
+size: Large
+skills: 
+speed: 40 ft.
+str: 18
+title: Draft Horse
+type: Creature
+wis: 11
+xp: 50

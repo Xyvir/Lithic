@@ -1,0 +1,29 @@
+ac: 16
+ac_description: natural armor
+alignment: chaotic good
+attacks: //''Multiattack:''// The treant makes two slam attacks.<br><br>//''Slam:'' Melee Weapon Attack:// +10 to hit, reach 5 ft., one target. //Hit:// 16 (3d6+6) bludgeoning damage.<br><br>//''Rock:'' Ranged Weapon Attack:// +10 to hit, range 60/180 ft., one target. Hit: 28 (4d10+6) bludgeoning damage.<br><br>//''Animate Trees (1/Day):''// The treant magically animates one or two trees it can see within 60 feet of it. These trees have the same statistics as a treant, except they have Intelligence and Charisma scores of 1, they can't speak, and they have only the Slam action option. An animated tree acts as an ally of the treant. The tree remains animate for 1 day or until it dies, until the treant dies or is more than 120 feet from the tree, or until the treant takes a bonus action to turn it back into an inanimate tree. The tree then takes root if possible.
+cha: 12
+challenge_rating: 9
+con: 21
+condition_immunities: 
+created: 20181223151326842
+creature_type: plant
+damage_immunities: 
+damage_resistances: bludgeoning, piercing
+dex: 8
+features: //''Damage vulnerabilities:''// fire<br><br>//''False Appearance:''// While the treant remains motionless, it is indistinguishable from a normal tree.<br><br>//''Siege Monster:''// The treant deals double damage to objects and structures.
+hp: 138
+hp_generation: 12d12+60
+int: 12
+languages: Common, Druidic, Elvish, Sylvan
+modified: 20181223151326842
+saving_throws: 
+senses: PP 13
+size: Huge
+skills: 
+speed: 30 ft.
+str: 23
+title: Treant
+type: Creature
+wis: 16
+xp: 5000

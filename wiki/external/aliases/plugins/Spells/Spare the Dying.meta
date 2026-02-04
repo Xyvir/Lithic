@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]]
+components: V, S
+concentration: No
+duration: Instantaneous
+level: 0
+range: Touch
+ritual: No
+school: Necromancy
+title: Spare the Dying
+type: Spell

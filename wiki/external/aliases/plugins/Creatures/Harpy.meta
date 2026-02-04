@@ -1,0 +1,29 @@
+ac: 11
+ac_description: 
+alignment: chaotic evil
+attacks: //''Multiattack:''// The harpy makes two attacks: one with its claws and one with its club.<br><br>//''Claws:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 6 (2d4+1) slashing damage.<br><br>//''Club:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 3 (1d4+1) bludgeoning damage.<br><br>//''Luring Song:''// The harpy sings a magical melody. Every humanoid and giant within 300 feet of the harpy that can hear the song must succeed on a DC 11 Wisdom saving throw or be charmed until the song ends. The harpy must take a bonus action on its subsequent turns to continue singing. It can stop singing at any time. The song ends if the harpy is incapacitated.<br>While charmed by the harpy, a target is incapacitated and ignores the songs of other harpies. If the charmed target is more than 5 feet away from the harpy, the target can take the Dash action on its turn to move toward the harpy by the most direct route. It doesn't avoid opportunity attacks, but before moving into damaging terrain, such as lava or a pit, and whenever it takes damage from a source other than the harpy, a target can repeat the saving throw. A creature can also repeat the saving throw at the end of each of its turns. If a creature's saving throw is successful, the effect ends on it.<br>A target that successfully saves is immune to this harpy's song for the next 24 hours.
+cha: 13
+challenge_rating: 1
+con: 12
+condition_immunities: 
+created: 20181223151326829
+creature_type: monstrosity
+damage_immunities: 
+damage_resistances: 
+dex: 13
+features: 
+hp: 38
+hp_generation: 7d8+7
+int: 7
+languages: Common
+modified: 20181223151326829
+saving_throws: 
+senses: PP 10
+size: Medium
+skills: 
+speed: 20 ft., fly 40 ft.
+str: 12
+title: Harpy
+type: Creature
+wis: 10
+xp: 200

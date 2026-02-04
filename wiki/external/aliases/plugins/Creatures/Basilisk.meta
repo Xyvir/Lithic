@@ -1,0 +1,29 @@
+ac: 15
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +5 to hit, reach 5 ft., one target. //Hit:// 10 (2d6+3) piercing damage plus 7 (2d6) poison damage.
+cha: 7
+challenge_rating: 3
+con: 15
+condition_immunities: 
+created: 20181223151326819
+creature_type: monstrosity
+damage_immunities: 
+damage_resistances: 
+dex: 8
+features: //''Petrifying Gaze:''// If a creature starts its turn within 30 feet of the basilisk and the two of them can see each other, the basilisk can force the creature to make a DC 12 Constitution saving throw if the basilisk isn't incapacitated. On a failed save, the creature magically begins to turn to stone and is restrained. It must repeat the saving throw at the end of its next turn. On a success, the effect ends. On a failure, the creature is petrified until freed by the greater restoration spell or other magic.<br>A creature that isn't surprised can avert its eyes to avoid the saving throw at the start of its turn. If it does so, it can't see the basilisk until the start of its next turn, when it can avert its eyes again. If it looks at the basilisk in the meantime, it must immediately make the save.<br>If the basilisk sees its reflection within 30 feet of it in bright light, it mistakes itself for a rival and targets itself with its gaze.
+hp: 52
+hp_generation: 6d6+16
+int: 2
+languages: ---
+modified: 20181223151326819
+saving_throws: 
+senses: Darkvision 60 ft., PP 9
+size: Medium
+skills: 
+speed: 20 ft.
+str: 26
+title: Basilisk
+type: Creature
+wis: 8
+xp: 700

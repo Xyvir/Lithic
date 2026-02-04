@@ -1,0 +1,8 @@
+      stat-block {
+        /* A bit of margin for presentation purposes, to show off the drop
+        shadow. */
+        margin-left: 20px;
+        margin-top: 20px;
+      }
+
+.wide { width:100%;}

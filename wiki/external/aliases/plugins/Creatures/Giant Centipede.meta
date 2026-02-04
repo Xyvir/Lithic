@@ -1,0 +1,29 @@
+ac: 13
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one creature. //Hit:// 4 (1d4+2) piercing damage, and the target must succeed on a DC 11 Constitution saving throw or take 10 (3d6) poison damage. If the poison damage reduces the target to 0 hit points, the target is stable but poisoned for 1 hour, even after regaining hit points, and is paralyzed while poisoned in this way.
+cha: 3
+challenge_rating: 1/4
+con: 12
+condition_immunities: 
+created: 20181223151326826
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 14
+features: 
+hp: 4
+hp_generation: 1d6+1
+int: 1
+languages: ---
+modified: 20181223151326826
+saving_throws: 
+senses: Blindsight 30 ft., PP 8
+size: Small
+skills: 
+speed: 30 ft., climb 30 ft.
+str: 5
+title: Giant Centipede
+type: Creature
+wis: 7
+xp: 50

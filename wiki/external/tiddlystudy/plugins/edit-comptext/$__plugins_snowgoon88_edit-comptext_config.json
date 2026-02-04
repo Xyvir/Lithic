@@ -1,0 +1,22 @@
+{
+  "configuration": {
+      "caseSensitive" : false,
+      "maxMatch" : 8,
+      "minPatLength" : 2,
+      "triggerKeyCombination" : "^ "
+  },
+  "template": [{
+      "pattern": "[[",
+      "filter": "[all[tiddlers]!is[system]]",
+      "start": "[[",
+      "end": "]]"
+      },
+      {
+      "pattern": "||",
+      "filter": "[all[tiddlers]!is[system]]",
+      "start": "[[|",
+      "end": "]]",
+      "startOffset" : 2
+      }
+  ]
+}

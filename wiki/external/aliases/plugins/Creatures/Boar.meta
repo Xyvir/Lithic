@@ -1,0 +1,29 @@
+ac: 11
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Tusk:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 4 (1d6+1) slashing damage.
+cha: 5
+challenge_rating: 1/4
+con: 12
+condition_immunities: 
+created: 20181223151326820
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 11
+features: //''Charge:''// If the boar moves at least 20 feet straight toward a target and then hits it with a tusk attack on the same turn, the target takes an extra 3 (1d6) slashing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone.<br><br>//''Relentless (Recharges after a Short or Long Rest):''// If the boar takes 7 damage or less that would reduce it to 0 hit points, it is reduced to 1 hit point instead.
+hp: 11
+hp_generation: 2d8+2
+int: 2
+languages: ---
+modified: 20181223151326820
+saving_throws: 
+senses: PP 9
+size: Medium
+skills: 
+speed: 40 ft.
+str: 13
+title: Boar
+type: Creature
+wis: 9
+xp: 50

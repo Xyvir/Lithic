@@ -1,0 +1,11 @@
+{
+    "title": "$:/plugins/mklauber/SoundPad",
+    "description": "SoundPad",
+    "author": "Matthew Lauber",
+    "version": "1.0.0",
+    "core-version": ">=5.0.1",
+    "plugin-type": "plugin",
+    "list": "",
+    "source": "https://github.com/mklauber/tw5-SoundPad",
+    "dependents": ""
+}

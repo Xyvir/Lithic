@@ -1,0 +1,29 @@
+ac: 14
+ac_description: natural armor
+alignment: chaotic evil
+attacks: //''Greataxe:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one target. //Hit:// 17 (2d12+4) slashing damage.<br><br>//''Gore:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one target. //Hit:// 13 (2d8+4) piercing damage.
+cha: 9
+challenge_rating: 3
+con: 16
+condition_immunities: 
+created: 20181223151326831
+creature_type: monstrosity
+damage_immunities: 
+damage_resistances: 
+dex: 11
+features: //''Charge:''// If the skeleton moves at least 10 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 9 (2d8) piercing damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be pushed up to 10 feet away and knocked prone.<br><br>//''Labyrinthine Recall:''// The minotaur can perfectly recall any path it has traveled.<br><br>//''Reckless:''// At the start of its turn, the minotaur can gain advantage on all melee weapon attack rolls it makes during that turn, but attack rolls against it have advantage until the start of its next turn.
+hp: 76
+hp_generation: 9d10+27
+int: 6
+languages: Abyssal
+modified: 20181223151326831
+saving_throws: 
+senses: Darkvision 60 ft., PP 17
+size: Large
+skills: Perception +7
+speed: 40 ft.
+str: 18
+title: Minotaur
+type: Creature
+wis: 16
+xp: 700

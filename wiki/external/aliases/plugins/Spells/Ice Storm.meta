@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 5th level or higher, the bludgeoning damage increases by 1d8 for each slot level above 4th.
+casting_time: 1 Action
+classes: [[Druid]] [[Sorcerer]] [[Wizard]]
+components: V, S, M (a pinch of dust and a few drops of water)
+concentration: No
+duration: Instantaneous
+level: 4
+range: 300 feet
+ritual: No
+school: Evocation
+title: Ice Storm
+type: Spell

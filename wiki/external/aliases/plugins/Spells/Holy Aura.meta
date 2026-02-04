@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]]
+components: V, S, M (a tiny reliquary worth at least 1,000 gp containing a sacred relic, such as a scrap of cloth from a saint’s robe or a piece of parchment from a religious text)
+concentration: Yes
+duration: Concentration, up to 1 minute
+level: 8
+range: Self
+ritual: No
+school: Abjuration
+title: Holy Aura
+type: Spell

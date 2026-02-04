@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Sorcerer]] [[Wizard]]
+components: V, S, M (a pinch of powdered iron)
+concentration: Yes
+duration: Concentration, up to 1 minute
+level: 2
+range: 30 feet
+ritual: No
+school: Transmutation
+title: Enlarge/Reduce
+type: Spell

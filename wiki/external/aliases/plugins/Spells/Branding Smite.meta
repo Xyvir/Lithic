@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 3rd level or higher, the extra damage increases by 1d6 for each slot level above 2nd.
+casting_time: 1 Bonus Action
+classes: [[Paladin]]
+components: V
+concentration: Yes
+duration: Concentration, up to 1 minute
+level: 2
+range: Self
+ritual: No
+school: Evocation
+title: Branding Smite
+type: Spell

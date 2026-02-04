@@ -1,0 +1,29 @@
+ac: 14
+ac_description: natural armor
+alignment: lawful evil
+attacks: //''Multiattack:''// The manticore makes three attacks: one with its bite and two with its claws or three with its tail spikes.<br><br>//''Bite:'' Melee Weapon Attack:// +5 to hit, reach 5 ft., one target. //Hit:// 7 (1d8+3) piercing damage.<br><br>//''Claw:'' Melee Weapon Attack:// +5 to hit, reach 5 ft., one target. //Hit:// 6 (1d6+3) slashing damage.<br><br>//''Tail Spike:'' Ranged Weapon Attack:// +5 to hit, range 100/200 ft., one target. //Hit:// 7 (1d8+3) piercing damage.
+cha: 8
+challenge_rating: 3
+con: 17
+condition_immunities: 
+created: 20181223151326831
+creature_type: monstrosity
+damage_immunities: 
+damage_resistances: 
+dex: 16
+features: //''Tail Spike Regrowth:''// The manticore has twenty-four tail spikes. Used spikes regrow when the manticore finishes a long rest.
+hp: 68
+hp_generation: 8d10+24
+int: 7
+languages: Common
+modified: 20181223151326831
+saving_throws: 
+senses: Darkvision 60 ft., PP 11
+size: Large
+skills: 
+speed: 30 ft., fly 50 ft.
+str: 17
+title: Manticore
+type: Creature
+wis: 12
+xp: 700

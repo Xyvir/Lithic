@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 10 Minutes
+classes: [[Wizard]]
+components: V, S
+concentration: No
+duration: Instantaneous
+level: 4
+range: 120 feet
+ritual: No
+school: Transmutation
+title: Fabricate
+type: Spell

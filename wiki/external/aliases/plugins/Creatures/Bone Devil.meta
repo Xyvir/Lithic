@@ -1,0 +1,30 @@
+ac: 19
+ac_description: natural armor
+alignment: lawful evil
+attacks: //''Multiattack:''// The devil makes three attacks: two with its claws and one with its sting.<br><br>//''Claw:'' Melee Weapon Attack:// +8 to hit, reach 10 ft., one target. //Hit:// 8 (1d8+4) slashing damage.<br><br>//''Sting:'' Melee Weapon Attack:// +8 to hit, reach 10 ft., one target. //Hit:// 13 (2d8+4) piercing damage plus 17 (5d6) poison damage, and the target must succeed on a DC 14 Constitution saving throw or become poisoned for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.
+cha: 16
+challenge_rating: 9
+con: 18
+condition_immunities: poisoned
+created: 20181223151507314
+creature_type: fiend
+damage_immunities: fire, poison
+damage_resistances: cold, bludgeoning, piercing, and slashing from nonmagical weapons that aren't silvered
+dex: 16
+features: //''Devil's Sight:''// Magical darkness doesn't impede the devil's darkvision.<br><br>//''Magic Resistance:''// The devil has advantage on saving throws against spells and other magical effects.
+hp: 142
+hp_generation: 15d10+60
+int: 13
+languages: Infernal, Telepathy 120 ft.
+modified: 20181223151507314
+saving_throws: Int +5, Wis +6, Cha +7
+senses: Darkvision 120 ft., PP 12
+size: Large
+skills: Deception +7, Insight +6
+speed: 40 ft., fly 40 ft.
+str: 18
+subtype: devil
+title: Bone Devil
+type: Creature
+wis: 14
+xp: 5000

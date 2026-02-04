@@ -1,0 +1,13 @@
+caption: Clip Content
+description: configure tiddlyclip
+tags: $:/tags/PageControls
+title: $:/plugins/bj/tiddlyclip/ui/Buttons/tiddlyclip
+
+<$button to="TiddlyClipConfig" title="top  clip table" aria-label="top  clip table" class=<<tv-config-toolbar-class>>>
+<$list filter="[<tv-config-toolbar-icons>prefix[yes]]">
+{{$:/plugins/bj/tiddlyclip/icon}}
+</$list>
+<$list filter="[<tv-config-toolbar-text>prefix[yes]]">
+<$text text="top  clip table"/>
+</$list>
+</$button>

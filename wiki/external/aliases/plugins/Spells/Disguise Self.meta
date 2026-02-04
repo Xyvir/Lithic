@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Sorcerer]] [[Wizard]]
+components: V, S
+concentration: No
+duration: 1 hour
+level: 1
+range: Self
+ritual: No
+school: Illusion
+title: Disguise Self
+type: Spell

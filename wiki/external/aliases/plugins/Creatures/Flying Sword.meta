@@ -1,0 +1,29 @@
+ac: 17
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Longsword:'' Melee Weapon Attack:// +3 to hit, reach 5 ft., one target. //Hit:// 5 (1d8+1) slashing damage.
+cha: 1
+challenge_rating: 1
+con: 11
+condition_immunities: blinded, charmed, deafened, frightened, paralyzed, petrified, poisoned
+created: 20181223151326826
+creature_type: construct
+damage_immunities: poison, psychic
+damage_resistances: 
+dex: 15
+features: //''Antimagic Susceptibility:''// The sword is incapacitated while in the area of an //antimagic field//. If targeted by //dispel magic//, the sword must succeed on a Constitution saving throw against the caster's spell save DC or fall unconscious for 1 minute.<br><br>//''False Appearance:''// While the sword remains motionless and isn't flying, it is indistinguishable from a normal sword.
+hp: 17
+hp_generation: 5d6
+int: 1
+languages: ---
+modified: 20181223151326826
+saving_throws: Dex +4
+senses: blindsight 60 ft. (blind beyond radius), PP 7
+size: Small
+skills: 
+speed: 0 ft., fly 50 ft.
+str: 12
+title: Flying Sword
+type: Creature
+wis: 5
+xp: 50

@@ -1,0 +1,15 @@
+{
+    "name": "Relink Field Names",
+    "title": "$:/plugins/flibbles/relink-fieldnames",
+    "description": "Renames field names with titles matching Relinked tiddlers",
+    "author": "Flibbles",
+    "version": "2.5.2",
+    "core-version": ">=5.1.22",
+    "stability": "STABILITY_2_STABLE",
+    "parent-plugin": "$:/plugins/flibbles/relink",
+    "source": "https://github.com/flibbles/tw5-relink",
+    "demo": "http://flibbles.github.io/tw5-relink/",
+    "list": "readme reference",
+    "dependents": "",
+    "plugin-type": "plugin"
+}

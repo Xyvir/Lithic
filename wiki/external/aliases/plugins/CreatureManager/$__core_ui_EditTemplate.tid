@@ -1,0 +1,32 @@
+created: 20190107162350576
+modified: 20210708122739647
+title: $:/core/ui/EditTemplate
+
+\define delete-edittemplate-state-tiddlers() <$action-deletetiddler $filter="[<newFieldNameTiddler>] [<newFieldValueTiddler>] [<newFieldNameInputTiddler>] [<newFieldNameSelectionTiddler>] [<newTagNameTiddler>] [<newTagNameInputTiddler>] [<newTagNameSelectionTiddler>] [<typeInputTiddler>] [<typeSelectionTiddler>]"/>
+\define save-tiddler-actions()
+<$action-sendmessage $message="tm-add-tag" $param={{{ [<newTagNameTiddler>get[text]] }}}/>
+<$action-sendmessage $message="tm-add-field" $name={{{ [<newFieldNameTiddler>get[text]] }}} $value={{{ [<newFieldValueTiddler>get[text]] }}}/>
+<<delete-edittemplate-state-tiddlers>>
+<$action-sendmessage $message="tm-save-tiddler"/>
+\end
+\define cancel-delete-tiddler-actions(message)
+<<delete-edittemplate-state-tiddlers>>
+<$action-sendmessage $message="tm-$message$-tiddler"/>
+\end
+\define save-tiddler-actions()
+<$action-sendmessage $message="tm-add-tag" $param={{{ [<newTagNameTiddler>get[text]] }}}/>
+<$action-deletetiddler $tiddler=<<newTagNameTiddler>>/>
+<$action-sendmessage $message="tm-add-field" $name={{{ [<newFieldNameTiddler>get[text]] }}} $value={{{ [<newFieldValueTiddler>get[text]] }}}/>
+<$action-deletetiddler $tiddler=<<newFieldNameTiddler>>/>
+<$action-deletetiddler $tiddler=<<newFieldValueTiddler>>/>
+<$action-sendmessage $message="tm-save-tiddler"/>
+\end
+\define frame-classes()
+{{{ tc-tiddler-frame tc-tiddler-edit-frame [<currentTiddler>is[tiddler]then[tc-tiddler-exists]] [<currentTiddler>is[missing]!is[shadow]then[tc-tiddler-missing]] [<currentTiddler>is[shadow]then[tc-tiddler-exists tc-tiddler-shadow]] [<currentTiddler>is[system]then[tc-tiddler-system]] [{!!class}] [<currentTiddler>tags[]encodeuricomponent[]addprefix[tc-tagged-]] +[join[ ]] }}}
+\end
+
+<$list filter="[all[current]get[type]addprefix[$:/core/ui/EditTemplate/]] [[$:/core/ui/EditTemplate/default]] +[first[]]" variable="type">
+
+<$transclude tiddler=<<type>>><$transclude tiddler="$:/core/ui/EditTemplate/default"></$transclude>
+
+</$list>

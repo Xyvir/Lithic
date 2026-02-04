@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Sorcerer]] [[Wizard]]
+components: V, S
+concentration: No
+duration: 8 hours
+level: 5
+range: 30 feet
+ritual: No
+school: Illusion
+title: Seeming
+type: Spell

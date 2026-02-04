@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell with a 9th-level spell slot, the duration is concentration, up to 8 hours.
+casting_time: 1 Action
+classes: [[Bard]] [[Sorcerer]] [[Warlock]] [[Wizard]]
+components: V, S
+concentration: Yes
+duration: Concentration, up to 1 hour
+level: 8
+range: 60 feet
+ritual: No
+school: Enchantment
+title: Dominate Monster
+type: Spell

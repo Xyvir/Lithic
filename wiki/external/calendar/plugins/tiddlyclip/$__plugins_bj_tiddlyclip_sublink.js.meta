@@ -1,0 +1,4 @@
+module-type: library
+tags: $:/tags/tiddlyclip
+title: $:/plugins/bj/tiddlyclip/sublink.js
+type: application/javascript

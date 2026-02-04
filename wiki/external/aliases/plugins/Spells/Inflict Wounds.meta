@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d10 for each slot level above 1st.
+casting_time: 1 Action
+classes: [[Cleric]]
+components: V, S
+concentration: No
+duration: Instantaneous
+level: 1
+range: Touch
+ritual: No
+school: Necromancy
+title: Inflict Wounds
+type: Spell

@@ -1,0 +1,4 @@
+filter: [all[shadows+tiddlers]removeprefix[$:/language/Docs/Fields/]]
+title: $:/config/flibbles/relink/fieldnames/blacklist
+
+This tiddler specifies what fields //Relink-fieldname// should refuse to change. Edit its `filter` field if you'd like to change that list.

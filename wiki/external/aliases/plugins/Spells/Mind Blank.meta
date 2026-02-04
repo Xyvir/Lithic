@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Wizard]]
+components: V, S
+concentration: No
+duration: 24 hours
+level: 8
+range: Touch
+ritual: No
+school: Abjuration
+title: Mind Blank
+type: Spell

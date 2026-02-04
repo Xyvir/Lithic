@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 7th level or higher, the damage increases by 3d6 for each slot level above 6th.
+casting_time: 1 Action
+classes: [[Sorcerer]] [[Wizard]]
+components: V, S, M  (a lodestone and a pinch of dust)
+concentration: No
+duration: Instantaneous
+level: 6
+range: 60 feet
+ritual: No
+school: Transmutation
+title: Disintegrate
+type: Spell

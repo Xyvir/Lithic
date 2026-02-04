@@ -1,0 +1,11 @@
+created: 20211005170226628
+modified: 20211005172902504
+tags: 
+title: transclude-streams
+
+<div class="transcludify">
+<$link>{{!!title}}</$link>
+{{||$:/core/ui/ViewTemplate/tags}}
+{{!!text}}
+{{||$:/plugins/sq/streams/stream-view-template}}
+</div>

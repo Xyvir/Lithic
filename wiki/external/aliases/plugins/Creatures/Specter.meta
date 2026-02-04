@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: chaotic evil
+attacks: //''Life Drain:'' Melee Spell Attack:// +4 to hit, reach 5 ft., one creature. //Hit:// 10 (3d6) necrotic damage. The target must succeed on a DC 10 Constitution saving throw or its hit point maximum is reduced by an amount equal to the damage taken. This reduction lasts until the creature finishes a long rest. The target dies if this effect reduces its hit point maximum to 0.
+cha: 11
+challenge_rating: 1
+con: 11
+condition_immunities: charmed, exhaustion, grappled, paralyzed, petrified, poisoned, prone, restrained, unconscious
+created: 20181223151326840
+creature_type: undead
+damage_immunities: necrotic, poison
+damage_resistances: acid, cold, fire, lightning, thunder, bludgeoning, piercing, and slashing from nonmagical weapons
+dex: 14
+features: //''Incorporeal Movement:''// The specter can move through other creatures and objects as if they were difficult terrain. It takes 5 (1d10) force damage if it ends its turn inside an object.<br><br>//''Sunlight Sensitivity:''// While in sunlight, the specter has disadvantage on attack rolls, as well as on Wisdom (Perception) checks that rely on sight.
+hp: 22
+hp_generation: 5d8
+int: 10
+languages: understands all languages it knew in life but can't speak
+modified: 20181223151326840
+saving_throws: 
+senses: Darkvision 60 ft., PP 10
+size: Medium
+skills: 
+speed: 0 ft., fly 50 ft. (hover)
+str: 1
+title: Specter
+type: Creature
+wis: 10
+xp: 200

@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Minute
+classes: [[Bard]] [[Cleric]] [[Wizard]]
+components: V, S, M (mercury, phosphorus, and powdered diamond and opal with a total value of at least 1,000 gp, which the spell consumes)
+concentration: No
+duration: Until dispelled or triggered
+level: 7
+range: Touch
+ritual: No
+school: Abjuration
+title: Symbol
+type: Spell

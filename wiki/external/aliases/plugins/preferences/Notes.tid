@@ -1,0 +1,60 @@
+$: /mklauber/editing/field: text
+caption: This notes trick stores the results in the notes filed of the cirrent tiddler.  Which makes it easier to rename things and keep the notes.
+created: 20150809130752354
+list-before: $:/core/ui/ViewTemplate/body
+mklauber-editing-field: text
+modified: 20160309191748514
+notes: 
+tags: $:/tags/ViewTemplate Trick Notes
+title: Notes
+
+\define lingo-base() $:/language/EditTemplate/Body/
+<$list filter="[is[current]tag[Notes]]">
+
+    <$reveal state=<<qualify "$:/mklauber/notes/visible">> type="nomatch" text="yes">
+        <$button type="set" set=<<qualify "$:/mklauber/notes/visible">>  setTo="yes">Show Notes</$button>
+    </$reveal>
+
+    <$reveal state=<<qualify "$:/mklauber/notes/visible">> type="match" text="yes">
+        <$button type="set" set=<<qualify "$:/mklauber/notes/visible">>  setTo="no">Hide Notes</$button>
+
+        <$reveal state=<<qualify "$:/mklauber/notes/editing">> type="nomatch" text="yes">
+            <$button type="set" set=<<qualify "$:/mklauber/notes/editing">>  setTo="yes">Edit Notes</$button>
+            <$transclude field="notes" mode="block" />
+        </$reveal>
+  
+        <$reveal state=<<qualify "$:/mklauber/notes/editing" >> type="match" text="yes">
+            <$button type="set" set=<<qualify "$:/mklauber/notes/editing">> setTo="no">Finished Editing</$button>
+
+            <$list filter="[is[current]has[_canonical_uri]]">
+                <div class="tc-message-box">
+                    <<lingo External/Hint>>
+                    <a href={{!!_canonical_uri}}><$text text={{!!_canonical_uri}}/></a>
+                    <$edit-text field="_canonical_uri" class="tc-edit-fields"></$edit-text>
+                </div>
+            </$list>
+            <$list filter="[is[current]!has[_canonical_uri]]">
+                <$reveal state="$:/state/showeditpreview" type="match" text="yes">
+                    <em class="tc-edit"><<lingo Hint>></em> 
+                    <$button type="set" set="$:/state/showeditpreview" setTo="no"><<lingo Preview/Button/Hide>></$button>
+                    <div class="tc-tiddler-preview">
+                        <div class="tc-tiddler-preview-preview">
+                            <$set name="tv-tiddler-preview" value="yes">
+                                <$transclude field="notes" mode="block"/>
+                            </$set>
+                        </div>
+                        <div class="tc-tiddler-preview-edit">
+                            <$edit-text field="notes" tag="textarea" class="tc-edit-texteditor help" placeholder={{$:/language/EditTemplate/Body/Placeholder}}/>
+                        </div>
+                    </div>
+                </$reveal>
+                <$reveal state="$:/state/showeditpreview" type="nomatch" text="yes">
+                    <em class="tc-edit"><<lingo Hint>></em>
+                    <$button type="set" set="$:/state/showeditpreview" setTo="yes"><<lingo Preview/Button/Show>></$button>
+                    <$edit-text field="notes" tag="textarea" class="tc-edit-texteditor" placeholder={{$:/language/EditTemplate/Body/Placeholder}} />
+                </$reveal>
+            </$list>
+        </$reveal>        
+    </$reveal>
+    <hr />
+</$list>

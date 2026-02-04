@@ -1,0 +1,5 @@
+key: ((streams-save-multiple))
+tags: $:/tags/streams/keyboard-shortcuts
+title: $:/plugins/sq/streams/keyboard-shortcuts/save-multiple
+
+<<save-multiple-actions>>

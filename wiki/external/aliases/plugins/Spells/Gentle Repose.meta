@@ -1,0 +1,14 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Cleric]] [[Wizard]]
+components: V, S, M (a pinch of salt and one copper piece placed on each of the corpse’s eyes, which must remain there for the duration)
+concentration: No
+created: 20190103192437150
+duration: 10 days
+level: 2
+modified: 20190103192438479
+range: Touch
+ritual: Yes
+school: Necromancy
+title: Gentle Repose
+type: Spell

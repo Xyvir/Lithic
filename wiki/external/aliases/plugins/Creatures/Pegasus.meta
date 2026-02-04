@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: chaotic good
+attacks: //''Hooves:'' Melee Weapon Attack:// +6 to hit, reach 5 ft., one target. //Hit:// 11 (2d6+4) bludgeoning damage.
+cha: 13
+challenge_rating: 2
+con: 16
+condition_immunities: 
+created: 20181223151326833
+creature_type: celestial
+damage_immunities: 
+damage_resistances: 
+dex: 15
+features: 
+hp: 59
+hp_generation: 7d10+21
+int: 10
+languages: understands Celestial, Common, Elvish, and Slyvan but can't speak
+modified: 20181223151326833
+saving_throws: Dex +4, Wis +4, Cha +3
+senses: PP 16
+size: Large
+skills: Perception +6
+speed: 60 ft., fly 90 ft.
+str: 18
+title: Pegasus
+type: Creature
+wis: 15
+xp: 450

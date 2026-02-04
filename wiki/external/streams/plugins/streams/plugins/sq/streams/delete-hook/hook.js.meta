@@ -1,0 +1,3 @@
+module-type: startup
+title: $:/plugins/sq/streams/delete-hook/hook
+type: application/javascript

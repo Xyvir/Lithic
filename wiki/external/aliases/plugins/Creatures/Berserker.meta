@@ -1,0 +1,30 @@
+ac: 13
+ac_description: hide armor
+alignment: any chaotic alignment
+attacks: //''Greataxe:'' Melee Weapon Attack:// +5 to hit, reach 5 ft., one target. //Hit:// 9 (1d12+3) slashing damage.
+cha: 9
+challenge_rating: 2
+con: 17
+condition_immunities: 
+created: 20181223151507313
+creature_type: humanoid
+damage_immunities: 
+damage_resistances: 
+dex: 12
+features: //''Reckless:''// At the start of its turn, the berserker can gain advantage on all melee weapon attack rolls during that turn, but attack rolls against it have advantage until the start of its next turn.
+hp: 67
+hp_generation: 9d8+27
+int: 9
+languages: any one language (usually Common)
+modified: 20181223151507313
+saving_throws: 
+senses: PP 10
+size: Medium
+skills: 
+speed: 30 ft.
+str: 16
+subtype: any race
+title: Berserker
+type: Creature
+wis: 11
+xp: 450

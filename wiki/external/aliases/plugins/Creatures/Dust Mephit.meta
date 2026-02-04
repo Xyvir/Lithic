@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: neutral evil
+attacks: //''Claws:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one creature. //Hit:// 4 (1d4+2) slashing damage.<br><br>//''Blinding Breath (Recharge 6):''// The mephit exhales a 15-foot cone of blinding dust. Each creature in that area must succeed on a DC 10 Dexterity saving throw or be blinded for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success.
+cha: 10
+challenge_rating: 1/2
+con: 10
+condition_immunities: poisoned
+created: 20181223151326824
+creature_type: elemental
+damage_immunities: poison
+damage_resistances: 
+dex: 14
+features: //''Damage Vulnerabilities:''// fire<br><br>//''Death Burst:''// When the mephit dies, it explodes in a burst of dust. Each creature within 5 feet of it must then succeed on a DC 10 Constitution saving throw or be blinded for 1 minute. A blinded creature can repeat the saving throw on each of its turns, ending the effect on itself on a success.<br><br>//''Innate Spellcasting (1/Day):''// The mephit can innately cast //[[Sleep]]//, requiring no material components. Its innate spellcasting ability is Charisma.
+hp: 17
+hp_generation: 5d6
+int: 9
+languages: Auran, Terran
+modified: 20190104143012324
+saving_throws: 
+senses: Darkvision 60 ft., PP 12
+size: Small
+skills: Perception +2, Stealth +4
+speed: 30 ft., fly 30 ft.
+str: 5
+title: Dust Mephit
+type: Creature
+wis: 11
+xp: 100

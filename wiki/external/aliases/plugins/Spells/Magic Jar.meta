@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Minute
+classes: [[Wizard]]
+components: V, S, M (a gem, crystal, reliquary, or some other ornamental container worth at least 500 gp)
+concentration: No
+duration: Until dispelled
+level: 6
+range: Self
+ritual: No
+school: Necromancy
+title: Magic Jar
+type: Spell

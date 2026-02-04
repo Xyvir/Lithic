@@ -1,0 +1,14 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Druid]] [[Ranger]]
+components: V, S, M (a bit of fur from a bloodhound)
+concentration: No
+created: 20190103192405633
+duration: Instantaneous
+level: 2
+modified: 20190103192407524
+range: Self
+ritual: Yes
+school: Divination
+title: Locate Animals or Plants
+type: Spell

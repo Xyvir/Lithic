@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Hour
+classes: [[Cleric]] [[Warlock]] [[Wizard]]
+components: V, S, M (for each creature you affect with this spell, you must provide one jacinth worth at least 1,000 gp and one ornately carved bar of silver worth at least 100 gp, all of which the spell consumes)
+concentration: No
+duration: Special
+level: 9
+range: 10 feet
+ritual: No
+school: Necromancy
+title: Astral Projection
+type: Spell

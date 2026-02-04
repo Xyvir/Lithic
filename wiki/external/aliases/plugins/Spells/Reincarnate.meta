@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Hour
+classes: [[Druid]]
+components: V, S, M (rare oils and unguents worth at least 1,000 gp, which the spell consumes)
+concentration: No
+duration: Instantaneous
+level: 5
+range: Touch
+ritual: No
+school: Transmutation
+title: Reincarnate
+type: Spell

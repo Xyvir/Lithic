@@ -1,0 +1,15 @@
+title: $:/plugins/linonetwo/tw-react/readme
+creator: LinOnetwo
+type: text/vnd.tiddlywiki
+
+!! What is this
+
+This is a dependency of slate-write WYSIWYG editor and flowtiwi-sidebar and many other dynamic widgets. This plugin enable powerful data operation and UI operation of those plugins, thus become a prerequisite of those plugins.
+
+!! Example
+
+{{$:/plugins/linonetwo/tw-react/docs/example}}
+
+!! Usage
+
+<<tree prefix:"$:/plugins/linonetwo/tw-react/docs/">>

@@ -1,0 +1,6 @@
+column_order: title size creature_type subtype alignment challenge_rating
+created: 20201025172145284
+modified: 20201025172513326
+tags: 
+title: $:/plugins/D&DTools/CreatureManager/lookups
+type: application/x-tiddler-dictionary

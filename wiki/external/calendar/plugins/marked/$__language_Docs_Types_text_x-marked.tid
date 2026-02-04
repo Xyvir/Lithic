@@ -1,0 +1,5 @@
+description: marked version of markdown
+name: text/x-marked
+tags: 
+title: $:/language/Docs/Types/text/x-marked
+type: text/vnd.tiddlywiki

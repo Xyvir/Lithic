@@ -1,0 +1,3 @@
+title: $:/plugins/bj/storytabs/readme
+
+Facilitates easier navigating between open tiddlers. Links to open tiddlers appear above top of the story river . If 'story mode' is set to zooming (see in appearance tab in the $:/ControlPanel tiddler) then the open tiddlers appear in tabs. The top links are controlled from the 'setting' tab in the $:/ControlPanel tiddler.

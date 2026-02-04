@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Sorcerer]] [[Wizard]]
+components: V, S, M  (a bit of phosphorus or wychwood, or a glowworm)
+concentration: Yes
+duration: Concentration, up to 1 minute
+level: 0
+range: 120 feet
+ritual: No
+school: Evocation
+title: Dancing Lights
+type: Spell

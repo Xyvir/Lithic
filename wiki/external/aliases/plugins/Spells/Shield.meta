@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: Special
+classes: [[Sorcerer]] [[Wizard]]
+components: V, S
+concentration: No
+duration: 1 round
+level: 1
+range: Self
+ritual: No
+school: Abjuration
+title: Shield
+type: Spell

@@ -1,0 +1,6 @@
+caption: Show breadcrumbs
+description: Enable breadcrumbs in nodes
+settings-template: $:/plugins/sq/streams/ui/templates/settings/input-switch
+title: $:/config/sq/streams/enable-breadcrumbs
+
+yes

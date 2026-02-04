@@ -1,0 +1,14 @@
+at_higher_level: 
+casting_time: 1 Minute
+classes: [[Bard]] [[Wizard]]
+components: V, S, M (a small bit of honeycomb and jade dust worth at least 10 gp, which the spell consumes)
+concentration: No
+created: 20190103192357986
+duration: Until dispelled
+level: 2
+modified: 20190103192358948
+range: 30 feet
+ritual: Yes
+school: Illusion
+title: Magic Mouth
+type: Spell

@@ -1,0 +1,29 @@
+ac: 15
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Multiattack:''// The roc makes two attacks: one with its beak and one with its talons.<br><br>//''Beak:'' Melee Weapon Attack:// +13 to hit, reach 10ft., one target. //Hit:// 27 (4d8+9) piercing damage.<br><br>//''Talons:'' Melee Weapon Attack:// +13 to hit, reach 5 ft., one target. //Hit:// 23 (4d6+9) slashing damage, and the target is grappled (escape DC 19). Until this grapple ends, the target is restrained, and the roc can't use its talons on another target.
+cha: 9
+challenge_rating: 11
+con: 20
+condition_immunities: 
+created: 20181223151326838
+creature_type: monstrosity
+damage_immunities: 
+damage_resistances: 
+dex: 10
+features: //''Keen Sight:''// The roc has advantage on Wisdom (Perception) checks that rely on sight.
+hp: 248
+hp_generation: 16d20+80
+int: 3
+languages: ---
+modified: 20181223151326838
+saving_throws: Dex +4, Con +9, Wis +4, Cha +3
+senses: PP 14
+size: Gargantuan
+skills: Perception +4
+speed: 20 ft., fly 120 ft.
+str: 28
+title: Roc
+type: Creature
+wis: 10
+xp: 7200

@@ -1,0 +1,30 @@
+ac: 16
+ac_description: hide armor, shield
+alignment: chaotic evil
+attacks: //''Morningstar:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one target. //Hit:// 11 (2d8+2) piercing damage.<br><br>//''Javelin:'' Melee or Ranged Weapon Attack:// +4 to hit, reach 5 ft. or range 30/120 ft., one target. //Hit:// 9 (2d6+2) piercing damage in melee or 5 (1d6+2) piercing damage at range.
+cha: 9
+challenge_rating: 1
+con: 13
+condition_immunities: 
+created: 20181223151507314
+creature_type: humanoid
+damage_immunities: 
+damage_resistances: 
+dex: 14
+features: //''Brute:''// A melee weapon attack deals one extra die of its damage when the bugbear hits with it (included in the attack).<br><br>//''Surprise Attack:''// If the bugbear surprises a creature and hits it with an attack during the first round of combat, the target takes an extra 7 (2d6) damage from the attack.
+hp: 27
+hp_generation: 5d8+5
+int: 8
+languages: Common, Goblin
+modified: 20181223151507314
+saving_throws: 
+senses: Darkvision 60 ft., PP 10
+size: Medium
+skills: Stealth +6, Survival +2
+speed: 30 ft.
+str: 15
+subtype: goblinoid
+title: Bugbear
+type: Creature
+wis: 11
+xp: 200

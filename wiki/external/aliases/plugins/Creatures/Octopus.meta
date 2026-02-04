@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: unaligned
+attacks: //''Tentacles:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one target. //Hit:// 1 bludgeoning damage, and the target is grappled (escape DC 10). Until this grapple ends, the octopus can't use its tentacles on another target.<br><br>//''Ink Cloud (Recharges after a Short or Long Rest):''// A 5-foot-radius cloud of ink extends all around the octopus if it is underwater. The area is heavily obscured for 1 minute, although a significant current can disperse the ink. After releasing the ink, the octopus can use the Dash action as a bonus action.
+cha: 4
+challenge_rating: 0
+con: 11
+condition_immunities: 
+created: 20181223151326833
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 15
+features: //''Hold Breath:''// While out of water, the octopus can hold its breath for 30 minutes.<br><br>//''Underwater Camouflage:''// The octopus has advantage on Dexterity (Stealth) checks made while underwater.<br><br>//''Water Breathing:''// The octopus can breathe only underwater.
+hp: 3
+hp_generation: 1d6
+int: 3
+languages: ---
+modified: 20181223151326833
+saving_throws: 
+senses: Darkvision 30 ft., PP 12
+size: Small
+skills: Perception +2, Stealth +4
+speed: 5 ft., swim 30 ft.
+str: 4
+title: Octopus
+type: Creature
+wis: 10
+xp: 10

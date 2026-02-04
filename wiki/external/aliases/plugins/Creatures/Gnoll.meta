@@ -1,0 +1,30 @@
+ac: 15
+ac_description: hide armor, shield
+alignment: chaotic evil
+attacks: //''Bite:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one creature. //Hit:// 4 (1d4+2) piercing damage.<br><br>//''Spear:'' Melee or Ranged Weapon Attack:// +4 to hit, reach 5 ft. or range 20/60 ft., one target. //Hit:// 5 (1d6+2) piercing damage, or 6 (1d8+2) piercing damage if used with two hands to make a melee attack.<br><br>//''Longbow:'' Ranged Weapon Attack:// +3 to hit, range 150/600 ft., one target. //Hit:// 5 (1d8+1) piercing damage.
+cha: 7
+challenge_rating: 1/2
+con: 11
+condition_immunities: 
+created: 20181223151507320
+creature_type: humanoid
+damage_immunities: 
+damage_resistances: 
+dex: 12
+features: //''Rampage:''// When the gnoll reduces a creature to 0 hit points with a melee attack on its turn, the gnoll can take a bonus action to move up to half its speed and make a bite attack.
+hp: 22
+hp_generation: 5d8
+int: 6
+languages: Gnoll
+modified: 20181223151507321
+saving_throws: 
+senses: Darkvision 60 ft., PP 10
+size: Medium
+skills: 
+speed: 30 ft.
+str: 14
+subtype: gnoll
+title: Gnoll
+type: Creature
+wis: 10
+xp: 100

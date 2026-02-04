@@ -1,0 +1,29 @@
+ac: 11
+ac_description: natural armor
+alignment: unaligned
+attacks: //''Gore:'' Melee Weapon Attack:// +7 to hit, reach 5 ft., one target. //Hit:// 14 (2d8+5) bludgeoning damage.
+cha: 6
+challenge_rating: 2
+con: 15
+condition_immunities: 
+created: 20181223151326838
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 8
+features: //''Charge:''// If the rhinoceros moves at least 20 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 9 (2d8) bludgeoning damage. If the target is a creature, it must succeed on a DC 15 Strength saving throw or be knocked prone.
+hp: 45
+hp_generation: 6d10+12
+int: 2
+languages: ---
+modified: 20181223151326838
+saving_throws: 
+senses: PP 11
+size: Large
+skills: 
+speed: 40 ft.
+str: 21
+title: Rhinoceros
+type: Creature
+wis: 12
+xp: 450

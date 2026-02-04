@@ -1,0 +1,14 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Druid]] [[Ranger]]
+components: V, S
+concentration: No
+created: 20190103192237893
+duration: 10 minutes
+level: 1
+modified: 20190103192239217
+range: Self
+ritual: Yes
+school: Divination
+title: Speak with Animals
+type: Spell

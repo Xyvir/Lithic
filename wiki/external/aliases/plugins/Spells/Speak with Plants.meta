@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Druid]] [[Ranger]]
+components: V, S
+concentration: No
+duration: 10 minutes
+level: 3
+range: Self (30-foot radius)
+ritual: No
+school: Transmutation
+title: Speak with Plants
+type: Spell

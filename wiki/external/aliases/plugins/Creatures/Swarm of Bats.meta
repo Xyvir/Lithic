@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: unaligned
+attacks: //''Bites:'' Melee Weapon Attack:// +4 to hit, reach 0 ft., one creature in the swarm's space. //Hit:// 5 (2d4) piercing damage, or 2 (1d4) piercing damage if the swarm has half of its hit points or fewer.
+cha: 4
+challenge_rating: 1/4
+con: 10
+condition_immunities: charmed, frightened, grappled, paralyzed, petrified, prone, restrained, stunned
+created: 20181223151326841
+creature_type: swarm of Tiny beasts
+damage_immunities: 
+damage_resistances: bludgeoning, piercing, slashing
+dex: 15
+features: //''Echolocation:''// The swarm can't use its blindsight while deafened.<br><br>//''Keen Hearing:''// The swarm has advantage on Wisdom (Perception) checks that rely on hearing.<br><br>//''Swarm:''// The swarm can occupy another creature's space and vice versa, and the swarm can move through any opening large enough for a Tiny bat. The swarm can't regain hit points or gain temporary hit points.
+hp: 22
+hp_generation: 5d8
+int: 2
+languages: ---
+modified: 20181223151326841
+saving_throws: 
+senses: Blindsight 60 ft., PP 11
+size: Medium
+skills: 
+speed: 0 ft., fly 30 ft.
+str: 5
+title: Swarm of Bats
+type: Creature
+wis: 12
+xp: 50

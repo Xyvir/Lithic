@@ -1,0 +1,29 @@
+ac: 17
+ac_description: natural armor
+alignment: lawful neutral
+attacks: //''Multiattack:''// The sphinx makes two claw attacks.<br><br>//''Claw:'' Melee Weapon Attack:// +9 to hit, reach 5 ft., one target. //Hit:// 13 (2d8+4) slashing damage.<br><br>
+cha: 18
+challenge_rating: 11
+con: 16
+condition_immunities: charmed, frightened
+created: 20181223151326829
+creature_type: monstrosity
+damage_immunities: psychic
+damage_resistances: bludgeoning, piercing, and slashing from nonmagical weapons
+dex: 15
+features: //''Inscrutable:''// The sphinx is immune to any effect that would sense its emotions or read its thoughts, as well as any divination spell that it refuses. Wisdom (Insight) checks made to ascertain the sphinx's intentions or sincerity have disadvantage.<br>//''Magic Weapons:''// The sphinx's weapon attacks are magical.<br>//''Spellcasting:''// The sphinx is a 9th·level spellcaster. Its spellcasting ability is Intelligence (spell save DC 17, +9 to hit with spell attacks). It requires no material components to cast its spells. The sphinx has the following cleric spells prepared:<br>Cantrips (at will): //[[Mage Hand]], [[Minor Illusion]], [[Prestidigitation]]//<br>1st level (4 slots): //[[Detect Magic]], [[Identify]], [[Shield]]//<br>2nd level (3 slots): //[[Darkness]], [[Locate Object]], [[Suggestion]]//<br>3rd level (3 slots): //[[Dispel Magic]], [[Remove Curse]], [[Tongues]]//<br>4th level (3 slots): //[[Banishment]], [[Greater Invisibility]]//<br>5th level (1 slots): //[[Legend Lore]]//
+hp: 136
+hp_generation: 16d10+48
+int: 18
+languages: Common, Sphinx
+modified: 20190109155512787
+saving_throws: 
+senses: Truesight 120 ft., PP 19
+size: Large
+skills: Arcana +14, History +14, Perception +9, Religion +9
+speed: 40 ft., fly 60 ft.
+str: 18
+title: Gynosphinx
+type: Creature
+wis: 18
+xp: 7200

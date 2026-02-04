@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: unaligned
+attacks: //''Multiattack:''// The ape makes two fist attacks.<br><br>//''Fist:'' Melee Weapon Attack:// +5 to hit, reach 5 ft., one target. //Hit:// 6 (1d6+3) bludgeoning damage.<br><br>//''Rock:'' Ranged Weapon Attack:// +5 to hit, range 25/50 ft., one target. //Hit:// 6 (1d6+3) bludgeoning damage.
+cha: 7
+challenge_rating: 1/2
+con: 14
+condition_immunities: 
+created: 20181223151326818
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 14
+features: 
+hp: 19
+hp_generation: 3d8+6
+int: 6
+languages: ---
+modified: 20181223151326818
+saving_throws: 
+senses: PP 13
+size: Medium
+skills: Athletics +5, Perception +3
+speed: 30 ft., climb 30 ft.
+str: 16
+title: Ape
+type: Creature
+wis: 12
+xp: 100

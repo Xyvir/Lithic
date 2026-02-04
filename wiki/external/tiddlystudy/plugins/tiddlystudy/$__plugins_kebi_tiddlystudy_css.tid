@@ -1,0 +1,20 @@
+created: 20140529162823729
+modified: 20210331140938957
+tags: $:/tags/Stylesheet
+title: $:/plugins/kebi/tiddlystudy/css
+type: text/vnd.tiddlywiki
+
+.matched{
+	color: orange;
+}
+
+.tw-context {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.transcludify {
+	border-radius: 7.5px;
+	padding: 1em 1.5em;
+	background-color: <<colour message-background>>;
+}

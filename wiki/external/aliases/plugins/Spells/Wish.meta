@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Sorcerer]] [[Wizard]]
+components: V
+concentration: No
+duration: Instantaneous
+level: 9
+range: Self
+ritual: No
+school: Conjuration
+title: Wish
+type: Spell

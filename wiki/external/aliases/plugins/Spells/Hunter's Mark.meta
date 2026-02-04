@@ -1,0 +1,14 @@
+at_higher_level: When you cast this spell using a spell slot of 3rd or 4th level, you can maintain your concentration on the spell for up to 8 hours.
+casting_time: 1 Bonus Action
+classes: [[Ranger]]
+components: V
+concentration: Yes
+created: 20190103203603040
+duration: Concentration, up to 1 hour
+level: 1
+modified: 20190103203607824
+range: 90 feet
+ritual: No
+school: Divination
+title: Hunter's Mark
+type: Spell

@@ -1,0 +1,60 @@
+created: 20170613200157145
+modified: 20170613233129935
+tags: 
+title: $:/plugins/mklauber/SubStory/ViewTemplate
+
+\define frame-classes()
+ tc-tiddler-view-frame $(missingTiddlerClass)$ $(shadowTiddlerClass)$ $(systemTiddlerClass)$ $(tiddlerTagClasses)$
+\end
+\define folded-state()
+$:/state/folded/$(currentTiddler)$
+\end
+\define title-styles()
+fill:$(foregroundColor)$;
+\end
+\define config-title()
+$:/config/ViewToolbarButtons/Visibility/$(listItem)$
+\end
+
+<$set name="storyTiddler" value=<<currentTiddler>>><$set name="tiddlerInfoState" value=<<qualify "$:/state/popup/tiddler-info">>><$tiddler tiddler=<<currentTiddler>>><div class=<<frame-classes>>>
+<$reveal type="nomatch" text="" default="" state=<<tiddlerInfoState>> class="tc-tiddler-info tc-popup-handle" animate="yes" retain="yes">
+<$transclude tiddler="$:/core/ui/TiddlerInfo"/>
+</$reveal>
+
+<div class="tc-tiddler-title">
+<div class="tc-titlebar">
+<span class="tc-tiddler-controls">
+<$list filter="[all[shadows+tiddlers]tag[$:/tags/ViewToolbar]!has[draft.of]]" variable="listItem"><$reveal type="nomatch" state=<<config-title>> text="hide"><$transclude tiddler=<<listItem>>/></$reveal></$list>
+</span>
+<$set name="tv-wikilinks" value={{$:/config/Tiddlers/TitleLinks}}>
+<$link>
+<$set name="foregroundColor" value={{!!color}}>
+<span class="tc-tiddler-title-icon" style=<<title-styles>>>
+<$transclude tiddler={{!!icon}}/>
+</span>
+</$set>
+<$list filter="[all[current]removeprefix<currentPrefix>]">
+<h2 class="tc-title" title={{$:/language/SystemTiddler/Tooltip}}>
+<$text text=<<currentTiddler>>/>
+</h2>
+</$list>
+<$list filter="[all[current]!prefix[$:/]]">
+<h2 class="tc-title">
+<$view field="title"/>
+</h2>
+</$list>
+</$link>
+</$set>
+</div>
+
+<$reveal type="nomatch" text="" default="" state=<<tiddlerInfoState>> class="tc-tiddler-info tc-popup-handle" animate="yes" retain="yes">
+
+<$transclude tiddler="$:/core/ui/TiddlerInfo"/>
+
+</$reveal>
+</div>
+<$list filter="[all[shadows+tiddlers]tag[$:/tags/ViewTemplate]!has[draft.of]] -[[$:/core/ui/ViewTemplate/title]]" variable="listItem">
+<$transclude tiddler=<<listItem>>/>
+</$list>
+</div>
+</$tiddler></$set></$set>

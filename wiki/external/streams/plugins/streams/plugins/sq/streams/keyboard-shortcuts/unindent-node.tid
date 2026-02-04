@@ -1,0 +1,7 @@
+key: ((streams-unindent))
+sq-contextmenu-name: Un-indent
+sq-contextmenu-subtitle: 
+tags: $:/tags/streams/keyboard-shortcuts $:/tags/streams/contextmenu
+title: $:/plugins/sq/streams/keyboard-shortcuts/unindent-node
+
+<<unindent-node-actions>>

@@ -1,0 +1,14 @@
+at_higher_level: 
+casting_time: 10 Minutes
+classes: [[Cleric]] [[Druid]]
+components: V, S, M (a gem-encrusted bowl worth at least 1,000 gp, which the spell consumes)
+concentration: No
+created: 20190103203613893
+duration: Instantaneous
+level: 6
+modified: 20190103203616875
+range: 30 feet
+ritual: No
+school: Conjuration
+title: Heroes' Feast
+type: Spell

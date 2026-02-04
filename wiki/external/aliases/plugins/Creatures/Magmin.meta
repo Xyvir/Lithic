@@ -1,0 +1,29 @@
+ac: 14
+ac_description: neutral armor
+alignment: chaotic neutral
+attacks: //''Touch:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one target. //Hit:// 7 (2d6) fire damage. If the target is a creature or a flammable object, it ignites. Until a creature takes an action to douse the fire, the creature takes 3 (1d6) fire damage at the end of each of its turns.
+cha: 10
+challenge_rating: 1/2
+con: 12
+condition_immunities: 
+created: 20181223151326831
+creature_type: elemental
+damage_immunities: fire
+damage_resistances: bludgeoning, piercing, and slashing from nonmagical weapons
+dex: 15
+features: //''Death Burst:''// When the magmin dies, it explodes in a burst of fire and magma. Each creature within 10 feet of it must make a DC 11 Dexterity saving throw, taking 7 (2d6) fire damage on a failed save, or half as much damage on a successful one. Flammable objects that aren't being worn or carried in that area are ignited.<br><br>//''Ignited Illumination:''// As a bonus action, the magmin can set itself ablaze or extinguish its flames. While ablaze, the magmin sheds bright light in a 10-foot radius and dim light for an additional10 feet.
+hp: 9
+hp_generation: 2d6+2
+int: 8
+languages: Ignan
+modified: 20181223151326831
+saving_throws: 
+senses: Darkvision 60 ft., PP 10
+size: Small
+skills: 
+speed: 30 ft.
+str: 7
+title: Magmin
+type: Creature
+wis: 11
+xp: 100

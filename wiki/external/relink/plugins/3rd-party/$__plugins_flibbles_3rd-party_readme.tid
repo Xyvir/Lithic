@@ -1,0 +1,5 @@
+title: $:/plugins/flibbles/3rd-party/readme
+
+This plugin doesn't do anything. It only shows how other plugins can integrate with //Relink//. Thereby allowing any macros, widgets, fields, or filter operators they introduce to automatically be configured for //Relink// to handle.
+
+Look at the <<link-to-config-tab caption:'//Relink// configuration page'>> to see how this plugin's configurations are grouped.

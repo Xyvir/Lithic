@@ -1,0 +1,29 @@
+ac: 11
+ac_description: 
+alignment: unaligned
+attacks: 
+cha: 3
+challenge_rating: 0
+con: 8
+condition_immunities: 
+created: 20181223151326826
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 13
+features: //''Amphibious:''// The frog can breathe air and water.<br><br>//''Standing Leap:''// The frog's long jump is up to 10 feet and its high jump is up to 5 feet, with or without a running start.
+hp: 1
+hp_generation: 1d4-1
+int: 1
+languages: ---
+modified: 20181223151326826
+saving_throws: 
+senses: Darkvision 30 ft., PP 11
+size: Tiny
+skills: Perception +1, Stealth +3
+speed: 20 ft., swim 20 ft.
+str: 1
+title: Frog
+type: Creature
+wis: 8
+xp: 0

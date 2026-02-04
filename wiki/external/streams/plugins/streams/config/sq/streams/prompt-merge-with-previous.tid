@@ -1,0 +1,6 @@
+caption: Prompt before merging with previous
+description: Enable to be prompted before merging a node with the previous node
+settings-template: $:/plugins/sq/streams/ui/templates/settings/input-switch
+title: $:/config/sq/streams/prompt-merge-with-previous
+
+yes

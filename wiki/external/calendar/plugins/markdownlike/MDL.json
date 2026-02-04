@@ -1,0 +1,47 @@
+{
+  "parserrules": {
+    "pragmaRuleList": [
+      "macrodef",
+      "rules"
+    ],
+    "blockRuleList": [
+      "codeblock",
+      "commentblock",
+      "filteredtranscludeblock",
+      "headingmod",
+      "horizrule",
+      "html",
+      "listdigit",
+      "listmod",
+      "macrocallblock",
+      "quoteblock",
+      "styleblock",
+      "table",
+      "transcludeblock",
+      "typedblock"
+    ],
+    "inlineRuleList": [
+      "strong",
+      "codeinline",
+      "commentinline",
+      "dash",
+      "emphasis",
+      "entity",
+      "extlink",
+      "filteredtranscludeinline",
+      "hardlinebreaks",
+      "html",
+      "italic",
+      "macrocallinline",
+      "prettylink",
+      "strikethrough",
+      "styleinline",
+      "subscript",
+      "superscript",
+      "transcludeinline",
+      "underscore",
+      "wikilink"
+    ]
+  },
+  "baserules": ""
+}

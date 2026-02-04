@@ -1,0 +1,365 @@
+"use strict";
+
+// node_modules/.pnpm/@wessberg+connection-observer@1.0.5_patch_hash=fr7zjraqbqi6pqg33c2znbtaw4/node_modules/@wessberg/connection-observer/dist/index.js
+var ORIGINAL_ATTACH_SHADOW = typeof Element !== "undefined" ? Element.prototype.attachShadow : void 0;
+function isShady() {
+  return typeof window.ShadyDOM !== "undefined" && typeof ShadowRoot !== "undefined";
+}
+function supportsShadowRoots() {
+  return typeof ShadowRoot !== "undefined";
+}
+function patchElementPrototypeAttachShadow(callback) {
+  if (ORIGINAL_ATTACH_SHADOW == null || isShady() || typeof Element === "undefined")
+    return;
+  Element.prototype.attachShadow = function(shadowRootInitDict) {
+    const shadowRoot = ORIGINAL_ATTACH_SHADOW.call(this, shadowRootInitDict);
+    callback(shadowRoot);
+    return shadowRoot;
+  };
+}
+function createPausableQueue(job, ...queueItems) {
+  const queue = new Set(queueItems);
+  let running = false;
+  const flush = () => {
+    for (const queuedNode of queue) {
+      job(queuedNode);
+    }
+    queue.clear();
+  };
+  return {
+    isRunning() {
+      return running;
+    },
+    schedule(node) {
+      queue.add(node);
+      if (running) {
+        flush();
+      }
+    },
+    stop() {
+      running = false;
+    },
+    run() {
+      if (running)
+        return;
+      running = true;
+      flush();
+    }
+  };
+}
+var MUTATION_OBSERVER_INIT = {
+  childList: true,
+  subtree: true
+};
+var nextMicrotask = (func) => {
+  if (typeof queueMicrotask !== "undefined")
+    queueMicrotask(func);
+  else if (typeof Promise !== "undefined")
+    Promise.resolve().then(() => func());
+  else
+    setTimeout(() => func(), 0);
+};
+function nodeListToArray(nodeList) {
+  if (typeof Symbol !== "undefined" && nodeList[Symbol.iterator] != null) {
+    return [...nodeList];
+  } else {
+    const arr = [];
+    for (let i = 0; i < nodeList.length; i++) {
+      arr[i] = nodeList[i];
+    }
+    return arr;
+  }
+}
+function queryRoot(root, query) {
+  if (isShady()) {
+    return new Set(nodeListToArray(window.ShadyDOM.nativeMethods.querySelectorAll.call(document.documentElement, query)));
+  }
+  return new Set(!("querySelectorAll" in root) ? [] : nodeListToArray(root.querySelectorAll(query)));
+}
+function mergeNodes(a, b) {
+  return /* @__PURE__ */ new Set([...a == null ? [] : a, ...b == null ? [] : b]);
+}
+function isDocumentOrShadowRoot(root) {
+  return "activeElement" in root;
+}
+function observeMissingRoots(root = document.documentElement) {
+  if (isDocumentOrShadowRoot(root)) {
+    observeRoot(root);
+  }
+  if (isShady() && root instanceof ShadowRoot)
+    return;
+  if (!supportsShadowRoots())
+    return;
+  const childNodes = root.childNodes;
+  const shadowRoot = "shadowRoot" in root && root.shadowRoot != null ? [root.shadowRoot] : [];
+  for (const node of [...childNodes, ...shadowRoot]) {
+    observeMissingRoots(node);
+  }
+}
+function isConnected(node) {
+  if ("isConnected" in Node.prototype)
+    return node.isConnected;
+  return node.ownerDocument == null || !(node.ownerDocument.compareDocumentPosition(node) & node.DOCUMENT_POSITION_DISCONNECTED);
+}
+var CONNECTION_OBSERVER_INTERNALS_MAP = /* @__PURE__ */ new Map();
+function initializeConnectionObserver(observer, callback) {
+  const queue = /* @__PURE__ */ new Set();
+  const observedTargets = /* @__PURE__ */ new Set();
+  const rootToQuerySelectorToMatchedNodesMap = /* @__PURE__ */ new Map();
+  const nodeToLastConnectionValueMap = /* @__PURE__ */ new WeakMap();
+  let scheduled = false;
+  let flushing = false;
+  let hasFoundMissingRoots = false;
+  const flush = () => {
+    flushing = true;
+    const arr = [...queue];
+    if (arr.length > 0) {
+      callback(arr, observer);
+    }
+    queue.clear();
+    scheduled = false;
+    flushing = false;
+  };
+  const scheduleFlush = () => {
+    if (!scheduled) {
+      scheduled = true;
+      nextMicrotask(flush);
+    }
+  };
+  const addToQueue = (entry) => {
+    queue.add(entry);
+    if (!flushing) {
+      scheduleFlush();
+    }
+  };
+  const clearQueue = () => {
+    const items = [...queue];
+    queue.clear();
+    return items;
+  };
+  const clearObservedTargets = () => {
+    observedTargets.clear();
+  };
+  const queryRootAndHandleMutationChanges = (root, query) => {
+    let oldQuerySelectorMap = rootToQuerySelectorToMatchedNodesMap.get(root);
+    const currentNodes = queryRoot(root, query);
+    const oldNodes = oldQuerySelectorMap == null ? void 0 : oldQuerySelectorMap.get(query);
+    const mergedNodes = mergeNodes(currentNodes, oldNodes);
+    handleMutationChange(mergedNodes);
+    if (oldQuerySelectorMap == null) {
+      oldQuerySelectorMap = /* @__PURE__ */ new Map();
+      rootToQuerySelectorToMatchedNodesMap.set(root, oldQuerySelectorMap);
+    }
+    oldQuerySelectorMap.set(query, currentNodes);
+  };
+  const handleMutationChange = (targetNodes) => {
+    for (const targetNode of targetNodes) {
+      const lastValue = nodeToLastConnectionValueMap.get(targetNode);
+      const isTargetNodeConnected = isConnected(targetNode);
+      if (lastValue !== isTargetNodeConnected) {
+        nodeToLastConnectionValueMap.set(targetNode, isTargetNodeConnected);
+        addToQueue({
+          connected: isTargetNodeConnected,
+          target: targetNode
+        });
+      }
+    }
+  };
+  const addObservedTarget = (target) => {
+    rootObserverQueue.run();
+    if (!hasFoundMissingRoots) {
+      hasFoundMissingRoots = true;
+      observeMissingRoots();
+    }
+    observedTargets.add(target);
+    if (typeof target !== "string") {
+      handleMutationChange([target]);
+    } else {
+      for (const root of OBSERVED_ROOTS) {
+        queryRootAndHandleMutationChanges(root, target);
+      }
+    }
+  };
+  const internals = {
+    observedTargets,
+    queryRootAndHandleMutationChanges,
+    handleMutationChange,
+    addObservedTarget,
+    clearObservedTargets,
+    clearQueue
+  };
+  CONNECTION_OBSERVER_INTERNALS_MAP.set(observer, internals);
+}
+var mutationCallback = (mutations) => {
+  for (const mutation of mutations) {
+    if (mutation.type !== "childList")
+      continue;
+    for (const observer of CONNECTION_OBSERVER_INTERNALS_MAP.values()) {
+      for (const target of observer.observedTargets) {
+        if (typeof target === "string") {
+          observer.queryRootAndHandleMutationChanges(mutation.target, target);
+        } else {
+          observer.handleMutationChange([target]);
+        }
+      }
+    }
+  }
+};
+var OBSERVED_ROOTS = /* @__PURE__ */ new Set();
+var observeRoot = /* @__PURE__ */ (() => {
+  let instance;
+  return function(root) {
+    if (OBSERVED_ROOTS.has(root))
+      return;
+    OBSERVED_ROOTS.add(root);
+    if (instance == null) {
+      instance = new MutationObserver(mutationCallback);
+    }
+    instance.observe(root, MUTATION_OBSERVER_INIT);
+  };
+})();
+var rootObserverQueue = createPausableQueue(observeRoot, typeof document !== "undefined" ? document.documentElement : void 0);
+var ConnectionObserver = class _ConnectionObserver {
+  constructor(callback) {
+    if (new.target === void 0) {
+      throw new TypeError(`Constructor ${_ConnectionObserver.name} requires 'new'`);
+    }
+    if (callback === void 0) {
+      throw new ReferenceError(`Failed to construct '${_ConnectionObserver.name}': 1 argument required, but only 0 present.`);
+    } else if (typeof callback !== "function") {
+      throw new TypeError(`Failed to construct '${_ConnectionObserver.name}': The callback provided as parameter 1 is not a function.`);
+    }
+    if (typeof document === "undefined") {
+      return;
+    }
+    initializeConnectionObserver(this, callback);
+  }
+  /**
+   * The Symbol.@@toStringTag value
+   */
+  get [Symbol.toStringTag]() {
+    return `ConnectionObserver`;
+  }
+  /**
+   * Observe the given node or query selector for connections/disconnections.
+   * If given a Node, that specific Node will be observed. If given a query selector, such
+   * as for example "img[data-some-attr]", for each new MutationRecord, the query selector
+   * will be executed and the matched nodes will be observed for connections/disconnections
+   */
+  observe(target) {
+    if (target === void 0) {
+      throw new ReferenceError(`Failed to execute '${this.observe.name}' on '${_ConnectionObserver.name}': 1 argument required, but only 0 present.`);
+    } else if (typeof target !== "string" && !(target instanceof Node)) {
+      throw new TypeError(`Failed to execute '${this.observe.name}' on '${_ConnectionObserver.name}': parameter 1 is not of type 'Node' or a DOMString.`);
+    }
+    const internals = CONNECTION_OBSERVER_INTERNALS_MAP.get(this);
+    if (internals == null)
+      return;
+    internals.addObservedTarget(target);
+  }
+  /**
+   * Takes the records immediately (instead of waiting for the next flush)
+   */
+  takeRecords() {
+    const internals = CONNECTION_OBSERVER_INTERNALS_MAP.get(this);
+    if (internals == null)
+      return [];
+    return internals.clearQueue();
+  }
+  /**
+   * Disconnects the ConnectionObserver such that none of its callbacks will be invoked any longer
+   */
+  disconnect() {
+    const internals = CONNECTION_OBSERVER_INTERNALS_MAP.get(this);
+    if (internals == null)
+      return;
+    internals.clearObservedTargets();
+  }
+};
+patchElementPrototypeAttachShadow(rootObserverQueue.schedule.bind(rootObserverQueue));
+
+// src/widget.ts
+var import_widget = require("$:/core/modules/widgets/widget.js");
+var ReactDom = require("react-dom");
+var ReactDomClient = require("react-dom/client");
+var React = require("react");
+if (typeof window !== "undefined") {
+  window.React = React;
+} else if (typeof global !== "undefined") {
+  global.React = React;
+}
+var ReactWidgetImpl = class extends import_widget.widget {
+  constructor(parseTreeNode, options) {
+    super(parseTreeNode, options);
+    /**
+     * User of tw-react need to assign his react component to this property.
+     */
+    this.reactComponent = null;
+    this.getProps = () => ({ parentWidget: this });
+    if (!$tw.browser) {
+      return;
+    }
+    this.connectionObserver = new ConnectionObserver((entries) => {
+      for (const { connected } of entries) {
+        if (!connected) {
+          this.destroy();
+          this.connectionObserver?.disconnect?.();
+        }
+      }
+    });
+  }
+  refresh(changedTiddlers) {
+    return false;
+  }
+  render(parent, nextSibling) {
+    this.parentDomNode = parent;
+    this.computeAttributes();
+    this.execute();
+    if (this.reactComponent === void 0 || this.reactComponent === null) {
+      return;
+    }
+    const currentProps = this.getProps() ?? {};
+    if (currentProps.parentWidget === void 0 || currentProps.parentWidget === null) {
+      currentProps.parentWidget = this;
+    }
+    if (this.root === void 0 || this.containerElement === void 0) {
+      this.containerElement = document.createElement("div");
+      this.root = ReactDomClient.createRoot(this.containerElement);
+      let domToObserve = this.containerElement;
+      if (this.parentDomNode instanceof Node) {
+        domToObserve = this.parentDomNode;
+      }
+      this.connectionObserver?.observe?.(domToObserve);
+    }
+    this.domNodes.push(this.containerElement);
+    try {
+      parent.insertBefore(this.containerElement, nextSibling);
+    } catch (error) {
+      console.warn(`Error while inserting dom node in react widget, this might be cause by use transclude widget for the wikitext contains widget.`, error);
+    }
+    const reactElement = React.createElement(this.reactComponent, currentProps);
+    this.root.render(reactElement);
+  }
+  refreshSelf() {
+    if (this.reactComponent === void 0 || this.reactComponent === null) {
+      return;
+    }
+    if (this.root === void 0 && this.parentDomNode !== void 0) {
+      const nextSibling = this.findNextSiblingDomNode();
+      this.render(this.parentDomNode, nextSibling);
+      return;
+    }
+    this.computeAttributes();
+    this.execute();
+    const currentProps = this.getProps() ?? {};
+    if (currentProps.parentWidget === void 0 || currentProps.parentWidget === null) {
+      currentProps.parentWidget = this;
+    }
+    const reactElement = React.createElement(this.reactComponent, currentProps);
+    this.root?.render?.(reactElement);
+  }
+  destroy() {
+    this.root?.unmount?.();
+  }
+};
+exports.widget = ReactWidgetImpl;

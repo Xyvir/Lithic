@@ -1,0 +1,29 @@
+ac: 13
+ac_description: natural armor
+alignment: neutral evil
+attacks: //''Bite:'' Melee Weapon Attack:// +5 to hit, reach 5 ft., one target. //Hit:// 10 (2d6+3) piercing damage. If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone.
+cha: 8
+challenge_rating: 1/2
+con: 13
+condition_immunities: 
+created: 20181223151326844
+creature_type: monstrosity
+damage_immunities: 
+damage_resistances: 
+dex: 13
+features: //''Keen Hearing and Smell:''// The worg has advantage on Wisdom (Perception) checks that rely on hearing or smell.
+hp: 26
+hp_generation: 4d10+4
+int: 7
+languages: Goblin, Worg
+modified: 20181223151326844
+saving_throws: 
+senses: Darkvision 60 ft., PP 14
+size: Large
+skills: Perception +4
+speed: 50 ft.
+str: 16
+title: Worg
+type: Creature
+wis: 11
+xp: 100

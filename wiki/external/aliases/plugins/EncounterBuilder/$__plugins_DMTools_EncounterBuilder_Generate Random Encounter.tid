@@ -1,0 +1,16 @@
+caption: Random Encounter
+created: 20190811020914730
+modified: 20190910124854280
+title: $:/plugins/DMTools/EncounterBuilder/Generate Random Encounter
+
+<$button>
+<$set name="creatures" filter="[all[tiddlers+shadows]type[Creature]shuffle[]first[3]]">
+<$action-sendmessage 
+     $message="tm-new-tiddler" 
+     summary=""
+     creatures=<<creatures>>
+     text="<<Encounter>>"
+/>
+Create Encounter
+</$set>
+</$button>

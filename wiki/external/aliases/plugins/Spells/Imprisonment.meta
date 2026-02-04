@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Minute
+classes: [[Warlock]] [[Wizard]]
+components: V, S, M (a vellum depiction or a carved statuette in the likeness of the target, and a special component that varies according to the version of the spell you choose, worth at least 500 gp per Hit Die of the target)
+concentration: No
+duration: Until dispelled
+level: 9
+range: 30 feet
+ritual: No
+school: Abjuration
+title: Imprisonment
+type: Spell

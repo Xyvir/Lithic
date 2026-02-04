@@ -1,0 +1,29 @@
+ac: 13
+ac_description: 
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +4 to hit, reach 5 ft., one creature. //Hit:// 5 (1d6+2) piercing damage.
+cha: 6
+challenge_rating: 1/4
+con: 11
+condition_immunities: 
+created: 20181223151326826
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 16
+features: //''Echolocation:''// The bat can't use its blindsight while deafened.<br><br>//''Keen Hearing:''// The bat has advantage on Wisdom (Perception) checks that rely on hearing.
+hp: 22
+hp_generation: 4d10
+int: 2
+languages: ---
+modified: 20181223151326826
+saving_throws: 
+senses: Blindsight 60 ft., PP 11
+size: Large
+skills: 
+speed: 10 ft., fly 60 ft.
+str: 15
+title: Giant Bat
+type: Creature
+wis: 12
+xp: 50

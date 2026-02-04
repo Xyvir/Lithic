@@ -1,0 +1,29 @@
+ac: 12
+ac_description: 
+alignment: unaligned
+attacks: //''Bite:'' Melee Weapon Attack:// +1 to hit, reach 5 ft., one target. //Hit:// 1 (1d4-1) piercing damage.
+cha: 6
+challenge_rating: 0
+con: 11
+condition_immunities: 
+created: 20181223151326818
+creature_type: beast
+damage_immunities: 
+damage_resistances: 
+dex: 14
+features: //''Pack Tactics:''// The baboon has advantage on an attack roll against a creature if at least one of the baboon's allies is within 5 feet of the creature and the ally isn't incapacitated.
+hp: 3
+hp_generation: 1d6
+int: 4
+languages: ---
+modified: 20181223151326818
+saving_throws: 
+senses: PP 11
+size: Small
+skills: 
+speed: 30 ft., climb 30 ft.
+str: 8
+title: Baboon
+type: Creature
+wis: 12
+xp: 10

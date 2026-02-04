@@ -1,0 +1,29 @@
+ac: 16
+ac_description: scale mail
+alignment: chaotic good
+attacks: //''Multiattack:''// The giant makes two greatsword attacks.<br><br>//''Greatsword:'' Melee Weapon Attack:// +14 to hit, reach 10 ft., one target. //Hit:// 30 (6d6+9) slashing damage.<br><br>//''Rock:'' Ranged Weapon Attack:// +14 to hit, range 60/240 ft., one target. //Hit:// 35 (4d12+9) bludgeoning damage.<br><br>//''Lightning Strike (Recharge 5-6):''// The giant hurls a magical lightning bolt at a point it can see within 500 feet of it. Each creature within 10 feet of that point must make a DC 17 Dexterity saving throw, taking 54 (12d8) lightning damage on a failed save, or half as much damage on a successful one.
+cha: 18
+challenge_rating: 13
+con: 20
+condition_immunities: 
+created: 20181223151326841
+creature_type: giant
+damage_immunities: lightning, thunder
+damage_resistances: cold
+dex: 14
+features: //''Amphibious:''// The giant can breathe air and water.<br><br>//''Innate Spellcasting:''// The giant's spellcasting ability is Charisma (spell save DC 17). It can innately cast the following spells, requiring no material components:<br><br>At will: //[[Detect Magic]], [[Feather Fall]], [[Levitate]]. [[Light]]//<br>3/day each: //[[Control Weather]], [[Water Breathing]]//
+hp: 230
+hp_generation: 20d12+100
+int: 16
+languages: Common, Giant
+modified: 20190109163235782
+saving_throws: Str +14, Con +10, Wis +9, Cha +9
+senses: PP 19
+size: Huge
+skills: Arcana +8, Athletics +14, History +8, Perception +9
+speed: 50 ft., swim 50 ft.
+str: 29
+title: Storm Giant
+type: Creature
+wis: 18
+xp: 10000

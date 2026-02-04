@@ -1,0 +1,12 @@
+at_higher_level: When you cast this spell using a spell slot of 6th level or higher, the challenge rating increases by 1 for each slot level above 5th.
+casting_time: 1 Minute
+classes: [[Druid]] [[Wizard]]
+components: V, S, M  (burning incense for air, soft clay for earth, sulfur and phosphorus for fire, or water and sand for water)
+concentration: Yes
+duration: Concentration, up to 1 hour
+level: 5
+range: 90 feet
+ritual: No
+school: Conjuration
+title: Conjure Elemental
+type: Spell

@@ -1,0 +1,12 @@
+at_higher_level: 
+casting_time: 1 Action
+classes: [[Bard]] [[Sorcerer]] [[Wizard]]
+components: V, S, M (a short piece of copper wire)
+concentration: No
+duration: 1 round
+level: 0
+range: 120 feet
+ritual: No
+school: Transmutation
+title: Message
+type: Spell
