@@ -33,7 +33,9 @@
     "themes": [
         "tiddlywiki/vanilla",
         "tiddlywiki/snowwhite",
-        "nico/notebook"
+        "nico/notebook",
+        "themes/nico/notebook",
+        "notebook"
     ],
     "build": {
         "index": [

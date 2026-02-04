@@ -36,7 +36,7 @@ jobs:
 
       - name: Build TiddlyWiki
         env:
-          TIDDLYWIKI_PLUGIN_PATH: '${{ github.workspace }}/wiki:${{ github.workspace }}/wiki/plugins'
+          TIDDLYWIKI_PLUGIN_PATH: '${{ github.workspace }}/wiki:${{ github.workspace }}/wiki/plugins:${{ github.workspace }}/wiki/themes'
         run: npx tiddlywiki wiki --build index 2>&1 | tee wiki/tiddlywiki.log
 
       - name: Rename Output
