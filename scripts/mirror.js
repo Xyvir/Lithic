@@ -75,7 +75,7 @@ log(`Starting Mirror (External Mode)...`);
 let changesMade = false;
 
 sources.forEach(source => {
-    if (source.disabled) return;
+    if (source.type === 'disable') return;
 
     log(`\n--- Processing: ${source.name} ---`);
     const targetDir = path.join(PLUGIN_DIR, source.name);
@@ -140,22 +140,29 @@ sources.forEach(source => {
                     execSync(`npx tiddlywiki --load ${tempFile} --savewikifolder ${targetDir}`, { stdio: 'inherit' });
                 }
 
-                if (updateSuccess && source.cleanContent) {
+                // Pruning Logic based on 'type'
+                if (updateSuccess) {
                     const tiddlersDir = path.join(targetDir, 'tiddlers');
-                    if (fs.existsSync(tiddlersDir)) {
-                        log('✂️  Pruning library folder...');
-                        const keepList = new Set();
-                        (source.copy || []).forEach(p => {
-                            if (p.startsWith('tiddlers/')) keepList.add(path.normalize(p));
-                        });
+                    const pluginsDir = path.join(targetDir, 'plugins');
+                    const themesDir = path.join(targetDir, 'themes');
 
-                        const files = fs.readdirSync(tiddlersDir);
-                        files.forEach(file => {
-                            const relPath = path.join('tiddlers', file);
-                            if (!keepList.has(path.normalize(relPath))) {
-                                fs.rmSync(path.join(tiddlersDir, file));
-                            }
-                        });
+                    if (source.type === 'plugins') {
+                        // Keep plugins, delete tiddlers and themes
+                        log('✂️  Type: plugins -> Removing tiddlers and themes...');
+                        if (fs.existsSync(tiddlersDir)) fs.rmSync(tiddlersDir, { recursive: true, force: true });
+                        if (fs.existsSync(themesDir)) fs.rmSync(themesDir, { recursive: true, force: true });
+                    } else if (source.type === 'themes') {
+                        // Keep themes, delete tiddlers and plugins
+                        log('✂️  Type: themes -> Removing tiddlers and plugins...');
+                        if (fs.existsSync(tiddlersDir)) fs.rmSync(tiddlersDir, { recursive: true, force: true });
+                        if (fs.existsSync(pluginsDir)) fs.rmSync(pluginsDir, { recursive: true, force: true });
+                    } else if (source.type === 'tiddlers') {
+                        // Keep tiddlers, delete plugins and themes
+                        log('✂️  Type: tiddlers -> Removing plugins and themes...');
+                        if (fs.existsSync(pluginsDir)) fs.rmSync(pluginsDir, { recursive: true, force: true });
+                        if (fs.existsSync(themesDir)) fs.rmSync(themesDir, { recursive: true, force: true });
+                    } else {
+                        log(`✨ Type: ${source.type || 'all'} -> No pruning.`);
                     }
                 }
 
@@ -177,22 +184,7 @@ sources.forEach(source => {
         log(`✅ Up to date.`);
     }
 
-    // --- AGGREGATION ---
-    if (source.copy && Array.isArray(source.copy) && source.copy.length > 0) {
-        log(`📂 Aggregating ${source.copy.length} files to wiki/tiddlers...`);
-        source.copy.forEach(filePath => {
-            const srcPath = path.join(targetDir, filePath);
-            const safeName = `${source.name}_${path.basename(filePath)}`;
-            const destPath = path.join(TIDDLERS_DIR, safeName);
-
-            if (fs.existsSync(srcPath)) {
-                fs.copyFileSync(srcPath, destPath);
-            } else {
-                console.warn(`   ⚠️ File not found: ${filePath}`);
-                logContent += `   ⚠️ File not found: ${filePath}\n`;
-            }
-        });
-    }
+    // --- AGGREGATION REMOVED (Replaced by direct usage in plugins dir) ---
 });
 
 if (changesMade) {
