@@ -35,7 +35,7 @@ jobs:
         run: node scripts/flatten-plugins.js
 
       - name: Build TiddlyWiki
-        run: npx tiddlywiki wiki --build index
+        run: npx tiddlywiki wiki --build index 2>&1 | tee wiki/tiddlywiki.log
 
       - name: Rename Output
         run: mv wiki/output/index.html wiki/output/lith.html
@@ -67,3 +67,13 @@ jobs:
         with:
           name: build-artifacts-dry-run
           path: wiki/output/lith.html
+
+      - name: Upload Debug Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-logs hiding
+          path: |
+            wiki/mirror.log
+            wiki/flatten-manifest.log
+            wiki/tiddlywiki.log
