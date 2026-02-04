@@ -66,7 +66,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-dry-run
-          path: |
-            wiki/output/lith.html
-            wiki.zip
-            wiki/flatten-manifest.log
+          path: wiki/output/lith.html
