@@ -28,7 +28,8 @@
         "kebi/relink-tweaks",
         "kebi/streams-tweaks",
         "mklauber/aliases",
-        "nico/notebook-mobile"
+        "nico/notebook-mobile",
+        "oeyoews/notebook-theme-sidebar-resizer"
     ],
     "themes": [
         "tiddlywiki/vanilla",
