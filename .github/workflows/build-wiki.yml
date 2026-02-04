@@ -35,10 +35,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Generate Build Config
-        run: |
-          node scripts/generate-config.js ${{ inputs.build_config }}
-
       - name: Install Dependencies
         run: npm install
 
@@ -47,6 +43,13 @@ jobs:
 
       - name: Flatten Plugins
         run: node scripts/flatten-plugins.js
+
+      - name: Generate All Plugin Info
+        if: inputs.build_config == 'all'
+        run: node scripts/generate-all-info.js
+
+      - name: Generate Build Config
+        run: node scripts/generate-config.js ${{ inputs.build_config }}
 
       - name: Build TiddlyWiki
         env:
