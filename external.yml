@@ -26,7 +26,11 @@
   type: plugins
 
 - name: aliases
-  url: https://mklauber.github.io/tw5-plugins
+  url: https://mklauber.github.io/tw5-plugins/
+  type: plugins
+
+- name: notebook-mobile
+  url: https://saqimtiaz.github.io/sq-tw/
   type: plugins
 
 - name: captivate

@@ -10,7 +10,6 @@
         "plugins/lithic-patch-browserstorage",
         "plugins/lithic-patch-calendar",
         "plugins/lithic-patch-comptext",
-        "plugins/lithic-patch-fusion",
         "plugins/lithic-patch-markdown",
         "plugins/lithic-patch-streams",
         "plugins/lithic-patch-whiteboard",
@@ -22,13 +21,14 @@
         "tiddlywiki/katex",
         "flibbles/relink",
         "flibbles/relink-titles",
+        "flibbles/relink-markdown",
         "sq/streams",
-        "phiv/streams-fusion",
         "kebi/tiddlystudy",
         "kebi/tiddlystudy-references",
         "kebi/relink-tweaks",
         "kebi/streams-tweaks",
-        "mklauber/aliases"
+        "mklauber/aliases",
+        "nico/notebook-mobile"
     ],
     "themes": [
         "tiddlywiki/vanilla",
