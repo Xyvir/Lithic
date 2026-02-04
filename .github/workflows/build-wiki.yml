@@ -9,6 +9,16 @@ on:
         required: true
         type: boolean
         default: true
+      build_config:
+        description: 'Build Configuration'
+        required: true
+        default: 'prod'
+        type: choice
+        options:
+        - prod
+        - pre
+        - dev
+        - all
 
 permissions:
   contents: write
@@ -24,6 +34,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Generate Build Config
+        run: |
+          node scripts/generate-config.js ${{ inputs.build_config }}
 
       - name: Install Dependencies
         run: npm install
