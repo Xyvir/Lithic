@@ -4,6 +4,6 @@
     "description": "Lithically-opinionated global system configurations and preference management for standard TiddlyWiki behaviors and UI element visibility.",
     "name": "Lithic Default Configs",
     "plugin-type": "plugin",
-    "version": "0.0.2"
+    "version": "0.0.2",
     "dependents": "$:/themes/nico/notebook"
 }
