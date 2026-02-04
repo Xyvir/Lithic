@@ -34,6 +34,13 @@ jobs:
       - name: Flatten Plugins
         run: node scripts/flatten-plugins.js
 
+      - name: Debug Filesystem
+        run: |
+          echo "Listing wiki/themes:"
+          ls -R wiki/themes || echo "wiki/themes not found"
+          echo "Checking notebook plugin.info:"
+          cat wiki/themes/nico/notebook/plugin.info || echo "plugin.info not found"
+
       - name: Build TiddlyWiki
         env:
           TIDDLYWIKI_PLUGIN_PATH: '${{ github.workspace }}/wiki:${{ github.workspace }}/wiki/plugins:${{ github.workspace }}/wiki/themes'
