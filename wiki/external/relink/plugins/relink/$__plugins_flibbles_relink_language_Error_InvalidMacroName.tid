@@ -1,3 +1,0 @@
-title: $:/plugins/flibbles/relink/language/Error/InvalidMacroName
-
-Illegal characters in macro name "<$text text=<<macroName>>/>". Macros cannot contain whitespace

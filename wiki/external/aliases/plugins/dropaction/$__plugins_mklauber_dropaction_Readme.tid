@@ -1,6 +1,0 @@
-created: 20160309192429006
-modified: 20160309192622162
-tags: 
-title: $:/plugins/mklauber/dropaction/Readme
-
-The purpose of this plugin is to add a new widget <$dropaction> that allows users to drag a link onto text and have actions be run with the link's tiddler as the currentTiddler.

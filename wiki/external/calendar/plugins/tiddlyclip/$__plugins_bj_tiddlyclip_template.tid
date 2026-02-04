@@ -1,8 +1,0 @@
-tags: $:/tags/PageTemplate
-title: $:/plugins/bj/tiddlyclip/template
-
-<$createclip>
-<$tcadapter>
-</$createclip>
-</$tcadapter>
-

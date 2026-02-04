@@ -1,6 +1,0 @@
-caption: {{$:/language/Search/Filter/Caption}}
-first-search-filter: [subfilter{$:/temp/advancedsearch}]
-tags: $:/tags/AdvancedSearch
-title: $:/core/ui/AdvancedSearch/Filter
-
-<$transclude tiddler="$:/core" subtiddler="$:/core/ui/AdvancedSearch/Filter"/>

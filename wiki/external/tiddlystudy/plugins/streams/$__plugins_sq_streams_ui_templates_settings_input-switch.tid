@@ -1,3 +1,0 @@
-title: $:/plugins/sq/streams/ui/templates/settings/input-switch
-
-<label class="squi-form-label"><$link tooltip={{!!description}}>{{!!caption}}</$link></label><$checkbox field="text" checked="yes" unchecked="no" class="squi-form-switch"/>

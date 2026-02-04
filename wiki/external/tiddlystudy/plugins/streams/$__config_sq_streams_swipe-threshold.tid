@@ -1,8 +1,0 @@
-caption: Swipe threshold in pixels
-condition: [[$:/config/sq/streams/swipe-enabled]get[text]match[yes]]
-description: Distance in pixels that triggers a swipe, defaults to 100
-settings-group: swipe
-settings-template: $:/plugins/sq/streams/ui/templates/settings/input
-title: $:/config/sq/streams/swipe-threshold
-
-70

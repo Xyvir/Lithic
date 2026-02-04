@@ -1,9 +1,0 @@
-caption: NPC Name Generator
-created: 20190119025025750
-modified: 20190119030129024
-tags: $:/tags/ControlPanel
-title: $:/plugins/DMTools/Name Generator/Control Panel
-
-''NPC Tags'': <$edit-text tag="input" tiddler="$:/plugins/DMTools/Name Generator/NPC Tags" />
-
-''NPC Template'': <$edit-text class="tc-edit-texteditor" tiddler="$:/plugins/DMTools/Name Generator/NPC Template">

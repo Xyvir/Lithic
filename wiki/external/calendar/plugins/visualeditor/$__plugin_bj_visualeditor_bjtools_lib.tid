@@ -1,4 +1,0 @@
-description: load the external lib from web
-title: $:/plugin/bj/visualeditor/bjtools/lib
-
-http://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.3.2/ckeditor.js
