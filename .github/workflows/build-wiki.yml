@@ -35,6 +35,8 @@ jobs:
         run: node scripts/flatten-plugins.js
 
       - name: Build TiddlyWiki
+        env:
+          TIDDLYWIKI_PLUGIN_PATH: '${{ github.workspace }}/wiki:${{ github.workspace }}/wiki/plugins'
         run: npx tiddlywiki wiki --build index 2>&1 | tee wiki/tiddlywiki.log
 
       - name: Rename Output
