@@ -34,7 +34,7 @@
         "tiddlywiki/vanilla",
         "tiddlywiki/snowwhite",
         "nico/notebook",
-        "cdruan/captivate"
+        "cdr/captivate"
     ],
     "build": {
         "index": [
