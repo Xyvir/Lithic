@@ -3,7 +3,7 @@
 
 - name: tiddlystudy
   url: https://postkevone.github.io/tiddlystudy/index.html
-  type: plugins
+  type: all
 
 - name: whiteboard-legacy
   url: https://github.com/tiddly-gittly/tiddlywiki-whiteboard/releases/download/v0.3.5/plugins.zip
@@ -32,11 +32,3 @@
 - name: calendar
   url: https://bjtools.tiddlyspot.com/
   type: plugins
-
-- name: notebook
-  url: https://saqimtiaz.github.io/sq-tw/notebook.html
-  type: themes
-
-- name: captivate
-  url: https://cdruan.github.io/tw5-captivate/index.html
-  type: themes
