@@ -36,3 +36,7 @@
 - name: notebook
   url: https://saqimtiaz.github.io/sq-tw/notebook.html
   type: themes
+
+- name: captivate
+  url: https://cdruan.github.io/tw5-captivate/index.html
+  type: themes

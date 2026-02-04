@@ -37,7 +37,9 @@
         "themes/nico/notebook",
         "themes/notebook",
         "notebook",
-        "themes/nico/"
+        "themes/nico/",
+        "cdruan/captivate",
+        "captivate"
     ],
     "build": {
         "index": [
