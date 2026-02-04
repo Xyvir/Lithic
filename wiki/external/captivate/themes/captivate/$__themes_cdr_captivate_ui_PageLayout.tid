@@ -1,0 +1,41 @@
+description: left sidebar layout
+name: Captivate
+tags: $:/tags/Layout
+title: $:/themes/cdr/captivate/ui/PageLayout
+
+\whitespace trim
+\define containerClasses()
+tc-page-container tc-page-view-$(storyviewTitle)$ tc-language-$(languageTitle)$
+\end
+\import [[$:/core/ui/PageMacros]] [all[shadows+tiddlers]tag[$:/tags/Macro]!has[draft.of]]
+
+<$vars
+	tv-config-toolbar-icons={{$:/config/Toolbar/Icons}}
+	tv-config-toolbar-text={{$:/config/Toolbar/Text}}
+	tv-config-toolbar-class={{$:/config/Toolbar/ButtonClass}}
+	tv-enable-drag-and-drop={{$:/config/DragAndDrop/Enable}}
+	tv-show-missing-links={{$:/config/MissingLinks}}
+	storyviewTitle={{$:/view}}
+	languageTitle={{{ [{$:/language}get[name]] }}}>
+
+<div class=<<containerClasses>>>
+
+<$navigator story="$:/StoryList" history="$:/HistoryList" openLinkFromInsideRiver={{$:/config/Navigation/openLinkFromInsideRiver}} openLinkFromOutsideRiver={{$:/config/Navigation/openLinkFromOutsideRiver}} relinkOnRename={{$:/config/RelinkOnRename}}>
+
+<$dropzone enable=<<tv-enable-drag-and-drop>>>
+
+<$list filter="[all[shadows+tiddlers]tag[$:/tags/PageTemplate]!has[draft.of]] -[[$:/core/ui/PageTemplate/sidebar]] -[[$:/core/ui/PageTemplate/topleftbar]] -[[$:/core/ui/PageTemplate/toprightbar]]" variable="listItem">
+
+<!-- <$list filter="[all[shadows+tiddlers]tag[$:/tags/PageTemplate]!has[draft.of]] [all[shadows+tiddlers]tag[$:/tags/CaptivatePageTemplate]!has[draft.of]] -[[$:/core/ui/PageTemplate/sidebar]] -[[$:/core/ui/PageTemplate/topleftbar]] -[[$:/core/ui/PageTemplate/toprightbar]]" variable="listItem"> -->
+
+<$transclude tiddler=<<listItem>>/>
+
+</$list>
+
+</$dropzone>
+
+</$navigator>
+
+</div>
+
+</$vars>

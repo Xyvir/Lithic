@@ -1,0 +1,42 @@
+list-before: $:/core/ui/PageTemplate/story
+tags: $:/tags/PageTemplate
+title: $:/themes/cdr/captivate/ui/FabButtons
+
+\whitespace trim
+\define config-title()
+$:/config/PageControlButtons/Visibility/$(listItem)$
+\end
+
+<$list filter="[{$:/layout}match[$:/themes/cdr/captivate/ui/PageLayout]]" variable="ignore">
+
+<div class="tc-page-controls" style="margin:0">
+
+<div class="cv-fab-wrapper">
+
+<$list filter="[all[shadows+tiddlers]tag[$:/tags/PageControls]!has[draft.of]]" variable="listItem">
+
+<$set name="hidden" value=<<config-title>>>
+
+<$list filter="[<hidden>!text[hide]]" storyview="pop" variable="ignore">
+
+<$set name="tv-config-toolbar-class" value="cv-fab-item">
+
+<div class="cv-fab-list-item">
+
+<$transclude tiddler=<<listItem>> mode="inline"/>
+
+</div>
+
+</$set>
+
+</$list>
+
+</$set>
+
+</$list>
+
+</div>
+
+</div>
+
+</$list>

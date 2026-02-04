@@ -1,0 +1,113 @@
+alert-background: #ffe476
+alert-border: #c0c0c0
+alert-highlight: #881122
+alert-muted-foreground: #7d7d7d
+background: #fbfbf2
+blockquote-bar: #d0d0d0
+button-background: #617bbc
+button-background-hover: #4d65a5
+button-foreground: #ffffff
+button-border: #617bbc
+code-background: #eceef0
+code-border: #eceef0
+code-foreground: #303030
+dirty-indicator: #ca0000
+download-background: #617bbc
+download-foreground: #ffffff
+dragger-background: #303030
+dragger-foreground: #fbfbf2
+dropdown-background: #FFFFFF
+dropdown-border: #FFFFFF
+dropdown-tab-background-selected: #ebebc9
+dropdown-tab-background: transparent
+dropzone-background: #ffdf80
+external-link-background-hover: inherit
+external-link-background-visited: inherit
+external-link-background: inherit
+external-link-foreground-hover: #4e6ecd
+external-link-foreground-visited: #4e6ecd
+external-link-foreground: #4e6ecd
+fab-background: #ece8d2
+fab-background-hover: #e8e1bc
+fab-foreground: #5875c0
+foreground: #303030
+message-background: #ecf2ff
+message-border: #c0c0c0
+message-foreground: #7d7d7d
+modal-backdrop: #303030
+modal-background: #fbfbf2
+modal-border: #c0c0c0
+modal-footer-background: #f5f5f5
+modal-footer-border: #ddd
+modal-header-border: #eee
+muted-foreground: #7d7d7d
+notification-background: #d6e3ff
+notification-border: #7590d2
+page-background: #f5f2e4
+pre-background: #eceef0
+pre-border: #eceef0
+primary: #617bbc
+secondary-button-background: #dce5ff
+secondary-button-foreground: #3a508e
+secondary-button-border: #7590d2
+selection-background: #dce5ff
+selection-foreground: #303030
+sidebar-button-foreground: #ffffff
+sidebar-controls-foreground-hover: #000000
+sidebar-controls-foreground: #aaaaaa
+sidebar-background: #fbfbf2
+sidebar-foreground-shadow: transparent
+sidebar-foreground: #303030
+sidebar-muted-foreground-hover: #303030
+sidebar-muted-foreground: #7d7d7d
+sidebar-tab-background-selected: #ebebc9
+sidebar-tab-background: transparent
+sidebar-tab-border-selected: #617bbc
+sidebar-tab-border: transparent
+sidebar-tab-divider: #c0c0c0
+sidebar-tab-foreground-selected: #5373d3
+sidebar-tab-foreground: #7d7d7d
+sidebar-tiddler-link-foreground-hover: #283f9b
+sidebar-tiddler-link-foreground: #4766c5
+site-title-foreground: #202020
+static-alert-foreground: #aaaaaa
+tab-background-selected: #ebebc9
+tab-background: transparent
+tab-border-selected: #617bbc
+tab-border: transparent
+tab-divider: #c0c0c0
+tab-foreground-selected: #303030
+tab-foreground: #7d7d7d
+table-border: #e0e0e0
+table-footer-background: rgba(0, 0, 0, 0.04)
+table-header-background: rgba(0, 0, 0, 0.1)
+tag-background: #e3ca7d
+tag-foreground: #3d2e00
+tiddler-background: #fbfbf2
+tiddler-border: #fbfbf2
+tiddler-controls-foreground-hover: #202020
+tiddler-controls-foreground-selected: #202020
+tiddler-controls-foreground: #c0c0c0
+tiddler-editor-background: #f6f6f6
+tiddler-editor-border-image:
+tiddler-editor-border: #d4d4d4
+tiddler-editor-fields-even: rgba(0, 0, 0, 0.1)
+tiddler-editor-fields-odd: rgba(0, 0, 0, 0.04)
+tiddler-info-background: #f1f1e9
+tiddler-info-border: #F5F5F5
+tiddler-info-tab-background: #ebebc9
+tiddler-link-background: #fbfbf2
+tiddler-link-foreground: #4e6ecd
+tiddler-subtitle-foreground: #7d7d7d
+tiddler-title-foreground: #303030
+toolbar-new-button:
+toolbar-options-button:
+toolbar-save-button:
+toolbar-info-button:
+toolbar-edit-button:
+toolbar-close-button:
+toolbar-delete-button:
+toolbar-cancel-button:
+toolbar-done-button:
+untagged-background: #7d7d7d
+very-muted-foreground: #c0c0c0

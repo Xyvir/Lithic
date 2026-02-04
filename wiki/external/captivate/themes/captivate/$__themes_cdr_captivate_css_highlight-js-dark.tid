@@ -1,0 +1,91 @@
+list-after: $:/plugins/tiddlywiki/highlight/styles
+tags: $:/tags/Stylesheet
+title: $:/themes/cdr/captivate/css/highlight-js-dark
+
+<$reveal stateTitle={{$:/palette}} stateField="color-scheme" type="match" text="dark" default="light">
+.hljs {
+	display: block;
+	overflow-x: auto;
+	padding: 0.5em;
+	background: <<colour tiddler-editor-background>>;
+	color: <<colour foreground>>;
+	-webkit-text-size-adjust:none
+}
+
+.hljs-code {
+	color: <$macrocall $name="color-lightness" color="#8cb941" value={{$:/themes/cdr/captivate/settings/text-on-dark}} />;
+}
+
+.hljs-comment,
+.hljs-quote {
+	color: #8da5be;
+}
+
+/* Solarized Green */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-addition {
+	color: <$macrocall $name="color-lightness" color="#859900" value={{$:/themes/cdr/captivate/settings/text-on-dark}} />;
+}
+
+/* Solarized Cyan */
+.hljs-number,
+.hljs-string,
+.hljs-meta .hljs-meta-string,
+.hljs-literal,
+.hljs-doctag,
+.hljs-regexp {
+	color: <$macrocall $name="color-lightness" color="#2aa198" value={{$:/themes/cdr/captivate/settings/text-on-dark}} />;
+}
+
+/* Solarized Blue */
+.hljs-title,
+.hljs-section,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: <$macrocall $name="color-lightness" color="#268bd2" value={{$:/themes/cdr/captivate/settings/text-on-dark}} />;
+}
+
+/* Solarized Yellow */
+.hljs-attribute,
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-class .hljs-title,
+.hljs-type {
+	color: <$macrocall $name="color-lightness" color="#b58900" value={{$:/themes/cdr/captivate/settings/text-on-dark}} />;
+}
+
+/* Solarized Orange */
+.hljs-symbol,
+.hljs-bullet,
+.hljs-subst,
+.hljs-meta,
+.hljs-meta .hljs-keyword,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-operator,
+.hljs-link {
+	color: <$macrocall $name="color-lightness" color="#cb4b16" value={{$:/themes/cdr/captivate/settings/text-on-dark}} />;
+}
+
+/* Solarized Red */
+.hljs-template-tag,
+.hljs-built_in,
+.hljs-deletion {
+	color: <$macrocall $name="color-lightness" color="#dc322f" value={{$:/themes/cdr/captivate/settings/text-on-dark}} />;
+}
+
+.hljs-formula {
+	background: <$macrocall $name="color-lightness" color="#002a5a" value={{$:/themes/cdr/captivate/settings/text-on-dark}} />;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</$reveal>

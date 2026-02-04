@@ -1,0 +1,7 @@
+tags: $:/tags/Image
+title: $:/core/images/down-arrow
+
+<svg xmlns="http://www.w3.org/2000/svg" class="tc-image-down-arrow tc-image-button" height="24" viewBox="0 0 24 24" width="24">
+<path d="M0 0h24v24H0z" fill="none"/>
+<path d="M20.59 6L12 14.59 3.41 6 2 7.41l10 10 10-10z"/>
+</svg>
