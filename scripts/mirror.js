@@ -187,6 +187,30 @@ sources.forEach(source => {
     // --- AGGREGATION REMOVED (Replaced by direct usage in plugins dir) ---
 });
 
+// --- PROCESS LOCAL PLUGINS ---
+const LOCAL_PLUGINS_DIR = path.join('wiki', 'local-plugins');
+if (fs.existsSync(LOCAL_PLUGINS_DIR)) {
+    log(`\n--- Processing Local Plugins from ${LOCAL_PLUGINS_DIR} ---`);
+    const localPlugins = fs.readdirSync(LOCAL_PLUGINS_DIR, { withFileTypes: true });
+
+    localPlugins.forEach(dirent => {
+        if (dirent.isDirectory()) {
+            const pluginName = dirent.name;
+            const sourcePath = path.join(LOCAL_PLUGINS_DIR, pluginName);
+            const targetPath = path.join(EXTERNAL_DIR, pluginName);
+
+            log(`📂 Copying local plugin: ${pluginName}`);
+
+            try {
+                if (fs.existsSync(targetPath)) fs.rmSync(targetPath, { recursive: true, force: true });
+                fs.cpSync(sourcePath, targetPath, { recursive: true });
+            } catch (e) {
+                errorFromLog(`❌ Failed to copy local plugin ${pluginName}: ${e.message}`);
+            }
+        }
+    });
+}
+
 if (changesMade) {
     log(`\n📝 Saving lockfile...`);
     fs.writeFileSync(LOCK_FILE, JSON.stringify(lockData, null, 2));
