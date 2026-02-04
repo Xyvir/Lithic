@@ -29,7 +29,8 @@
         "kebi/streams-tweaks",
         "mklauber/aliases",
         "nico/notebook-mobile",
-        "oeyoews/notebook-theme-sidebar-resizer"
+        "oeyoews/notebook-theme-sidebar-resizer",
+        "bj/Calendar"
     ],
     "themes": [
         "tiddlywiki/vanilla",

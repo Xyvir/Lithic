@@ -37,6 +37,10 @@
   url: https://tiddlywiki-starter-kit.vercel.app/
   type: plugins
 
+- name: calendar
+  url: https://bjtools.tiddlyspot.com/
+  type: plugins
+
 - name: captivate
   url: https://cdruan.github.io/tw5-captivate/
   type: disable
