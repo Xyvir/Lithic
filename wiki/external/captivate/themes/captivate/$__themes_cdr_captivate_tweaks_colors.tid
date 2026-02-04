@@ -1,0 +1,173 @@
+tags: 
+title: $:/themes/cdr/captivate/tweaks/colors
+type: text/vnd.tiddlywiki
+
+\define paletteName(theme:CaptivateLight) $:/themes/cdr/captivate/palettes/$theme$
+
+\define circleCSS()
+    background: $(evaled)$;
+    width: 26px;
+    height: 26px;
+    border: 1px solid #a0a0a0;
+    border-radius: 13px;
+    display: inline-block;
+    margin-right: 10px;
+\end
+
+\define colorSwatch(color)
+<$set name="evaled" value=<<color-eval """$color$""">> >
+<div style=<<circleCSS>>/>
+</$set>
+\end
+
+\define showCurrentColorScheme()
+  <$macrocall $name="colorSwatch" color={{$:/themes/cdr/captivate/settings/color-primary}}/>
+  <$macrocall $name="colorSwatch" color={{$:/themes/cdr/captivate/settings/color-secondary}}/>
+  <$macrocall $name="colorSwatch" color={{$:/themes/cdr/captivate/settings/color-link}}/>
+\end
+
+\define test-default(arg:{{{[[$:/palette]get[origin]else{$:/palette}]}}})
+arg = $arg$<br/>
+\end
+
+\define colour(name)
+<$transclude tiddler="$:/themes/cdr/captivate" subtiddler="$(palette)$" index="$name$"><$transclude tiddler="$:/palettes/Vanilla" index="$name$"><$transclude tiddler="$:/config/DefaultColourMappings/$name$"/></$transclude></$transclude>
+\end
+
+\define action-parse-palette(src:"" dest:"""$:/state/current-palette""")
+<$action-setfield $tiddler="""$:/temp/source-palette""" $value="$src$" />
+<$action-setfield $tiddler="""$:/temp/source-palette""" $field=primary $value={{$:/themes/cdr/captivate/settings/color-primary}} />
+<$list filter="[[$(palette)$]indexes[]sort[title]]" variable="colorName">
+<$wikify name="colorValue" text={{{ [[$(palette)$]getindex<colorName>] }}} mode="inline" output="text" >
+<$action-setfield $tiddler="""$dest$""" $index=<<colorName>> $value=<<colorValue>> />
+<!--<<colorName>>: <<colorValue>><br/>-->
+</$wikify>
+</$list>
+\end
+
+\define setColorScheme(name c1 c2 c3)
+<$button class="tc-btn-invisible" style="text-align: left;"> <$text text="""$name$""" />
+  <$action-setfield $tiddler="$:/themes/cdr/captivate/settings/color-primary" $value="$c1$"/>
+  <$action-setfield $tiddler="$:/themes/cdr/captivate/settings/color-secondary" $value="$c2$"/>
+  <$action-setfield $tiddler="$:/themes/cdr/captivate/settings/color-link" $value="$c3$"/>
+
+  <$action-wikifypalette
+      palette="$:/themes/cdr/captivate/palettes/CaptivateLight"
+      save="$:/palettes/CaptivateLight" />
+  <$action-wikifypalette
+      palette="$:/themes/cdr/captivate/palettes/CaptivateDark"
+      save="$:/palettes/CaptivateDark" />
+  <$action-wikifypalette
+      palette="$:/themes/cdr/captivate/palettes/CaptivateTan"
+      save="$:/palettes/CaptivateTan" />
+  <$action-setfield $tiddler="$:/palette" text={{{ [{$:/themes/cdr/captivate/settings/palette-theme}sentencecase[]addprefix[$:/palettes/Captivate]] }}} />
+
+  <div>
+  <$macrocall $name="colorSwatch" color="$c1$"/>
+  <$macrocall $name="colorSwatch" color="$c2$"/>
+  <$macrocall $name="colorSwatch" color="$c3$"/>
+  </div>
+</$button>
+\end
+
+\define listColorSchemes()
+<<setColorScheme "Blue Sky" #0088f0 #ffd700 #0077e0>>
+<<setColorScheme "Purple" #702eca #ffd02d #0085ec>>
+<<setColorScheme "Display-P3 Colors" "color(display-p3 1 0 0.331)" "color(display-p3 0.991 0.056 1)" "color(display-p3 0 0 1)" >>
+<<setColorScheme "Chalk" #644a7d #f16f97 #009ebb>>
+<<setColorScheme "Tomatoes" #b71c1c #e0563b #5a9217>>
+<<setColorScheme "Somber Blues" #01579B #0288D1 #007dc0>>
+<<setColorScheme "Forest" #034510 #3e633f #684423>>
+<<setColorScheme "Grass" #859900 #b58900 #5a8100>>
+<<setColorScheme "Gruvbox" #ce9116 #e0563b #5a9217>>
+<<setColorScheme "Red Wine" #880e4f #bc477b #ff616f>>
+<<setColorScheme "Summer" #ffc966 #f79ba6 #00bce7>>
+<<setColorScheme "Wedding" #fdc3be #f7d4d4 #859a58>>
+<$list filter="[all[shadows+tiddlers]tag[$:/tags/ColorScheme]sort[name]]">
+<$macrocall $name="setColorScheme" name={{!!name}} c1={{##color1}} c2={{##color2}} c3={{##color3}}/>
+</$list>
+\end
+
+\define editColor(index label description)
+<label>$label$:</label>
+<$edit-text tiddler="$(tempTid)$" field=$index$ tag="input" type="color" default="#00aa00"/>
+<i class="tc-muted">$description$</i>
+\end
+
+\define initTempScheme()
+<$action-createtiddler $basetitle="$:/temp/new-color-scheme" $overwrite="yes"
+  color1={{$:/themes/cdr/captivate/settings/color-primary}}
+  color2={{$:/themes/cdr/captivate/settings/color-secondary}}
+  color3={{$:/themes/cdr/captivate/settings/color-link}}
+  name="">
+\end
+
+\define newColorScheme()
+<$set name=schemeTiddler value="$:/snippets/colorschemes/$(schemeName)$">
+<$action-createtiddler $basetitle=<<schemeTiddler>> $overwrite="yes"
+  type="application/x-tiddler-dictionary" tags="$:/tags/ColorScheme" name=<<schemeName>>/>
+<$action-setfield $tiddler=<<schemeTiddler>> name=<<schemeName>> tags="$:/tags/ColorScheme"/>
+<$action-setfield $tiddler=<<schemeTiddler>> $index="color1" $value={{{ [<tempTid>get[color1]]}}}/>
+<$action-setfield $tiddler=<<schemeTiddler>> $index="color2" $value={{{ [<tempTid>get[color2]]}}}/>
+<$action-setfield $tiddler=<<schemeTiddler>> $index="color3" $value={{{ [<tempTid>get[color3]]}}}/>
+<$action-setfield $tiddler="$:/state/edit/CaptivatePalette" $value="no">
+<$action-deletetiddler $tiddler="$(tempTid)$" />
+</$set>
+\end
+
+\define setCaptivatePalette(theme)
+<$action-setfield $tiddler="$:/palette" text=<<paletteName "$theme$">> />
+\end
+
+<div>
+<$radio tiddler="$:/themes/cdr/captivate/settings/palette-theme" field="text" value="light"
+        actions="""<$action-setfield $tiddler="$:/palette" text="$:/palettes/CaptivateLight"/>""">
+        Light Theme</$radio><br/>
+<$radio tiddler="$:/themes/cdr/captivate/settings/palette-theme" field="text" value="dark"
+        actions="""<$action-setfield $tiddler="$:/palette" text="$:/palettes/CaptivateDark"/>""">
+        Dark Theme</$radio>&emsp;<br/>
+<$radio tiddler="$:/themes/cdr/captivate/settings/palette-theme" field="text" value="tan"
+        actions="""<$action-setfield $tiddler="$:/palette" text="$:/palettes/CaptivateTan"/>""">
+        Tan</$radio>&emsp;
+</div>
+<div style="margin: 0.6em 0px">
+<$checkbox tiddler="$:/themes/cdr/captivate/settings/accent-topbar" field="text" checked="yes" unchecked="no"
+        default="yes" >
+        Accent Top Bar
+</$checkbox>
+</div>
+<div style="display:flex;align-items:center;">
+<<showCurrentColorScheme>>
+<$button popup=<<qualify "$:/state/popup/colorschemes">>>
+Color Schemes<span style="font-size:0.8em;padding-left:10px">{{$:/core/images/down-arrow}}</span>
+</$button>&ensp;
+<$reveal state="$:/state/edit/CaptivatePalette" type="nomatch" text="yes">
+<$button set="$:/state/edit/CaptivatePalette" setTo="yes" actions=<<initTempScheme>>>{{$:/core/images/edit-button}}</$button>
+</$reveal>
+</div>
+
+<$reveal state=<<qualify "$:/state/popup/colorschemes">> type="popup" position="below" animate="yes">
+<div class="tc-drop-down" style="min-width:max-content;max-height:45vh;overflow-y:scroll;">
+<<listColorSchemes>>
+</div>
+</$reveal>
+
+<$reveal state="$:/state/edit/CaptivatePalette" type="match" text="yes">
+<div style="display:grid;grid-template-columns:max-content 60px max-content;justify-items:start;align-items:center;gap:8px 1em;">
+<$set name=tempTid value="$:/temp/new-color-scheme">
+<<editColor "color1" "Primary Color" "for buttons, accents">>
+<<editColor "color2" "Secondary Color" "for tags">>
+<<editColor "color3" "Link Color" "for links">>
+<label>Scheme Name:</label>
+<$edit-text tiddler=<<tempTid>> field="name" tag="input" size="25" placeholder="name for your color scheme" default=""/>
+<<tiddler>> <br/>
+<div style="grid-column-start:1;grid-column-end:span 2;justify-self:center">
+<$button class="cv-secondary-btn" set="$:/state/edit/CaptivatePalette" setTo="no">Cancel</$button>
+&emsp;&emsp;
+<$set name=schemeName value={{{ [<tempTid>get[name]] }}} >
+<$button actions=<<newColorScheme>> disabled={{{ [<tempTid>get[name]then[no]else[yes]] }}}>Create</$button>
+</$set>
+</div>
+</$set>
+</div>
+</$reveal>

@@ -1,0 +1,113 @@
+alert-background: #ffe476
+alert-border: <<colour very-muted-foreground>>
+alert-highlight: #881122
+alert-muted-foreground: <<colour muted-foreground>>
+background: {{{ [colour[primary]lightness[99.8]] }}}
+blockquote-bar: #d0d0d0
+button-background: {{{ [colour[primary]lightness[max(93)]alpha[0.95]over[#fff]] }}}
+button-background-hover: {{{ [colour[button-background]deviate[]] }}}
+button-foreground: {{{ [colour[button-background]autocontrast[]] }}}
+button-border: <<colour button-background>>
+code-background: #edeff1
+code-border: <<colour code-background>>
+code-foreground: <<colour foreground>>
+dirty-indicator: #ca0000
+download-background: <<colour button-background>>
+download-foreground: <<colour button-foreground>>
+dragger-background: <<colour foreground>>
+dragger-foreground: <<colour background>>
+dropdown-background: #FFFFFF
+dropdown-border: <<colour dropdown-background>>
+dropdown-tab-background-selected: <<colour tab-background-selected>>
+dropdown-tab-background: transparent
+dropzone-background: {{{ [{$:/themes/cdr/captivate/settings/color-secondary}lightness[90]] }}}
+external-link-background-hover: inherit
+external-link-background-visited: inherit
+external-link-background: inherit
+external-link-foreground-hover: <<colour tiddler-link-foreground>>
+external-link-foreground-visited: <<colour tiddler-link-foreground>>
+external-link-foreground: <<colour tiddler-link-foreground>>
+fab-background: {{{ [colour[primary]lightness[70]alpha[0.2]over<colour page-background>] }}}
+fab-background-hover: {{{ [colour[fab-background]deviate[]] }}}
+fab-foreground: {{{ [colour[primary]lightness[45]] }}}
+foreground: #202020
+message-background: #ecf2ff
+message-border: <<colour very-muted-foreground>>
+message-foreground: <<colour muted-foreground>>
+modal-backdrop: <<colour foreground>>
+modal-background: <<colour background>>
+modal-border: <<colour very-muted-foreground>>
+modal-footer-background: #f5f5f5
+modal-footer-border: #ddd
+modal-header-border: #eee
+muted-foreground: #707070
+notification-background: <$macrocall $name="color-lightness" color=<<colour primary>> value="90" />
+notification-border: <<colour secondary-button-border>>
+page-background: {{{ [colour[primary]alpha[.19]over[#f8f8f8]lightness[93.5]] }}}
+pre-background: <<colour code-background>>
+pre-border: <<colour code-border>>
+primary: {{{ [{$:/themes/cdr/captivate/settings/color-primary}] }}}
+secondary-button-background: {{{ [colour[primary]alpha[0.4]over[#ffffff]lightness[91]] }}}
+secondary-button-foreground: <$macrocall $name="color-lightness" color=<<colour primary>> value="35" />
+secondary-button-border: <$macrocall $name="color-lightness" color=<<colour primary>> value="60" />
+selection-background: {{{ [colour[primary]alpha[0.4]over[#ffffff]lightness[91]] }}}
+selection-foreground: <<colour foreground>>
+sidebar-button-foreground: <<colour button-foreground>>
+sidebar-controls-foreground-hover: #000000
+sidebar-controls-foreground: #aaaaaa
+sidebar-background: <<colour background>>
+sidebar-foreground-shadow: transparent
+sidebar-foreground: <<colour foreground>>
+sidebar-muted-foreground-hover: <<colour foreground>>
+sidebar-muted-foreground: <<colour muted-foreground>>
+sidebar-tab-background-selected: <<colour tab-background-selected>>
+sidebar-tab-background: transparent
+sidebar-tab-border-selected: <<colour tab-border-selected>>
+sidebar-tab-border: transparent
+sidebar-tab-divider: <<colour tab-divider>>
+sidebar-tab-foreground-selected:  {{{ [colour[primary]lightness[30]] }}}
+sidebar-tab-foreground: <<colour muted-foreground>>
+sidebar-tiddler-link-foreground-hover: <$macrocall $name="color-lightness" color={{$:/themes/cdr/captivate/settings/color-primary}} value="30" />
+sidebar-tiddler-link-foreground: <$macrocall $name="color-lightness" color={{$:/themes/cdr/captivate/settings/color-primary}} value="45" />
+site-title-foreground: #202020
+static-alert-foreground: #aaaaaa
+tab-background-selected: {{{ [colour[primary]lightness[75]alpha[0.3]] }}}
+tab-background: transparent
+tab-border-selected: {{{ [colour[primary]lightness[max(70)]] }}}
+tab-border: transparent
+tab-divider: #c0c0c0
+tab-foreground-selected: <<colour foreground>>
+tab-foreground: <<colour muted-foreground>>
+table-border: #e0e0e0
+table-footer-background: <<colour tiddler-editor-fields-odd>>
+table-header-background: <<colour tiddler-editor-fields-even>>
+tag-background: <$macrocall $name="color-lightness" color={{$:/themes/cdr/captivate/settings/color-secondary}} value="max(92)" />
+tag-foreground: <$macrocall $name="color-autocontrast" color={{$:/themes/cdr/captivate/settings/color-secondary}} />
+tiddler-background: <<colour background>>
+tiddler-border: <<colour background>>
+tiddler-controls-foreground-hover: #202020
+tiddler-controls-foreground-selected: #202020
+tiddler-controls-foreground: <<colour very-muted-foreground>>
+tiddler-editor-background: #f6f8fa
+tiddler-editor-border-image:
+tiddler-editor-border: <$macrocall $name="color-lightness" color=<<colour foreground>> value="85" />
+tiddler-editor-fields-even: rgba(0, 0, 0, 0.1)
+tiddler-editor-fields-odd: rgba(0, 0, 0, 0.04)
+tiddler-info-background: #F5F5F5
+tiddler-info-border: #F5F5F5
+tiddler-info-tab-background: <<colour tab-background-selected>>
+tiddler-link-background: <<colour background>>
+tiddler-link-foreground: <$macrocall $name="color-lightness" color={{$:/themes/cdr/captivate/settings/color-link}} value={{$:/themes/cdr/captivate/settings/text-on-light}} />
+tiddler-subtitle-foreground: <<colour muted-foreground>>
+tiddler-title-foreground: <<colour foreground>>
+toolbar-new-button:
+toolbar-options-button:
+toolbar-save-button:
+toolbar-info-button:
+toolbar-edit-button:
+toolbar-close-button:
+toolbar-delete-button:
+toolbar-cancel-button:
+toolbar-done-button:
+untagged-background: <<colour muted-foreground>>
+very-muted-foreground: #c0c0c0

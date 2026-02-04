@@ -1,0 +1,51 @@
+list-before: $:/themes/cdr/captivate/ui/SideBar
+tags: $:/tags/PageTemplate
+title: $:/themes/cdr/captivate/ui/TopBar
+
+\whitespace trim
+
+<$list filter="[{$:/layout}match[$:/themes/cdr/captivate/ui/PageLayout]]" variable="ignore">
+
+<div class="cv-topbar-wrapper">
+
+  <div class="tc-adjust-top-of-scroll" style="visibility:hidden">
+  
+  </div>
+
+  {{$:/themes/cdr/captivate/ui/TopBar/Menu}}
+  
+  <div class="cv-topbar-main">
+    
+    <div class="cv-topbar-title">
+
+      <$view tiddler="$:/SiteTitle" format="plainwikified"/>
+
+    </div>
+    
+    <!-- show search and control buttons on desktop or when sidebar is hidden on narrow-screen device -->
+    
+    <!--
+    <$list filter="[{$:/info/browser/screen/width}compare:number:gt{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}] ~[{$:/state/sidebar}!match[yes]]" 
+           variable="ignore">
+    -->
+
+    <$transclude tiddler="$:/themes/cdr/captivate/ui/TopBar/Search" mode="inline" />
+    
+    <!-- Remove comment tags to hide page-controls on desktop
+    </$list>
+
+    <$list filter="[{$:/info/browser/screen/width}compare:number:lt{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}then{$:/state/sidebar}match[no]]"
+           variable="ignore">
+    -->
+
+    <!-- <$transclude tiddler="$:/core/ui/SideBarSegments/page-controls" mode="inline" /> -->
+
+    <!--
+    </$list>
+    -->
+    
+  </div> <!-- end of cv-topbar-main -->
+
+</div>
+
+</$list>

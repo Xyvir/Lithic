@@ -1,0 +1,7 @@
+tags: $:/tags/Image
+title: $:/core/images/close-button
+
+<svg xmlns="http://www.w3.org/2000/svg" class="tc-image-close-button tc-image-button" height="24" viewBox="0 0 24 24" width="24">
+<path d="M0 0h24v24H0z" fill="none"/>
+<path d="M21 4.41L19.59 3 12 10.59 4.41 3 3 4.41 10.59 12 3 19.59 4.41 21 12 13.41 19.59 21 21 19.59 13.41 12z"/>
+</svg>

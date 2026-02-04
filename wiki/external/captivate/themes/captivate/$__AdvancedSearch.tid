@@ -1,0 +1,9 @@
+color: #bbb
+icon: $:/core/images/advanced-search-button
+title: $:/AdvancedSearch
+
+\whitespace trim
+
+<$eventcatcher  selector="div.tc-advanced-search" $click="""<$action-deletetiddler $tiddler="$:/temp/advancedsearch/input/topbar"/>""" stopPropagation="never" tag="div">
+<$transclude tiddler="$:/core" subtiddler="$:/AdvancedSearch"/>
+</$eventcatcher>
