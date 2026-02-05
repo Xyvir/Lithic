@@ -2,7 +2,6 @@
     "description": "Lithic PKMS",
     "plugins": [
         "tiddlywiki/markdown",
-        "tiddlywiki/browser-storage",
         "tiddlywiki/freelinks",
         "xyvir/anchors-for-streams",
         "xyvir/lithic-core",
