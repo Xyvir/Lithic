@@ -1,5 +1,7 @@
 {
     "description": "Lithic (Pre)",
-    "plugins": [],
+    "plugins": [
+        "tiddlywiki/codemirror-6"
+    ],
     "themes": []
 }

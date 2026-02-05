@@ -41,6 +41,10 @@
   url: https://bjtools.tiddlyspot.com/
   type: plugins
 
+- name: cm6
+  url: https://deploy-preview-9556--tiddlywiki-previews.netlify.app/
+  type: plugins
+
 - name: captivate
   url: https://cdruan.github.io/tw5-captivate/
   type: disable
