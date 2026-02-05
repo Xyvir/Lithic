@@ -1,0 +1,10 @@
+created: 20260205195726659
+modified: 20260205195834265
+title: $:/config/HighlightPlugin/LanguageMappings
+type: application/json
+
+{
+    "text/x-python": "python",
+    "application/javascript": "javascript",
+    "text/css": "css"
+}

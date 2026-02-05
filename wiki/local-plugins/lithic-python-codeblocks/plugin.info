@@ -1,0 +1,10 @@
+{
+    "title": "$:/plugins/xyvir/lithic-python-codeblocks",
+    "description": "Lithic Python Codeblocks",
+    "author": "Lithic",
+    "version": "0.0.1",
+    "core-version": ">=5.0.0",
+    "source": "local",
+    "plugin-type": "plugin",
+    "list": ""
+}

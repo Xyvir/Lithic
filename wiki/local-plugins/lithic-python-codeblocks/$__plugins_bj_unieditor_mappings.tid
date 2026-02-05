@@ -1,0 +1,13 @@
+created: 20260205200855605
+modified: 20260205200857065
+title: $:/plugins/bj/unieditor/mappings.json
+type: application/json
+
+{
+    "application/javascript": "javascript",
+    "text/css": "css",
+    "text/markdown": "md",
+    "text/vnd.tiddlywiki": "tw",
+    "text/x-python": "py",
+    "": "tw"
+}

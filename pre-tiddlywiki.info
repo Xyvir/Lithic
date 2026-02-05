@@ -2,7 +2,8 @@
     "description": "Lithic (Pre)",
     "plugins": [
         "tiddlywiki/highlight",
-        "bj/unieditor"
+        "bj/unieditor",
+        "xyvir/lithic-python-codeblocks
     ],
     "themes": []
 }
