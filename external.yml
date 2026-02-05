@@ -10,7 +10,7 @@
   type: plugins
 
 - name: tw-react
-  url: https://github.com/tiddly-gittly/tw-react/releases/download/v1.0.0/plugins.zip
+  url: https://tiddly-gittly.github.io/tw-react/
   type: plugins
 
 - name: comptext
@@ -44,7 +44,7 @@
 - name: unieditor
   url: https://unieditor.tiddlyhost.com/
   type: plugins
-  
+
 - name: captivate
   url: https://cdruan.github.io/tw5-captivate/
   type: disable
