@@ -9,10 +9,6 @@
   url: https://github.com/tiddly-gittly/tiddlywiki-whiteboard/releases/download/v0.3.5/plugins.zip
   type: plugins
 
-- name: tw-react
-  url: https://tiddly-gittly.github.io/tw-react/
-  type: plugins
-
 - name: comptext
   url: https://snowgoon88.github.io/TW5-extendedit/
   type: plugins

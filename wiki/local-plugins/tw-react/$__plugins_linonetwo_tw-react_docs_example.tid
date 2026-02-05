@@ -1,0 +1,29 @@
+creator: LinOnetwo
+title: $:/plugins/linonetwo/tw-react/docs/example
+type: text/vnd.tiddlywiki
+
+!! Example
+
+```tid
+<$likeButtonExampleWidget stateTiddler="$:/state/tw-react/readme/like-button" />
+```
+
+Button1:
+
+<$likeButtonExampleWidget stateTiddler="$:/state/tw-react/readme/like-button" />
+
+Button2:
+
+<$likeButtonExampleWidget stateTiddler="$:/state/tw-react/readme/like-button" />
+
+State:
+
+{{$:/state/tw-react/readme/like-button}}
+
+It keeps its state via a state tiddler, and title of state tiddler is pass-in using `getProps = () => ({ stateTiddler: this.getAttribute('stateTiddler') });`, so `stateTiddler` attribute is passed from widget parameter to the React props.
+
+Two buttons have shared state [[$:/state/tw-react/readme/like-button]], but not updated when state changed (although you can implement this in the `refresh` method by yourself in your own component), so when you click one, and close this tiddler then reopen it, you will see two buttons have same ''clicked'' state.
+
+`likeButtonExampleWidget` is a class component, it calls a functional component `ExampleFunction` that will use react hook to update self +1 every second.
+
+See [[example.ts|https://github.com/tiddly-gittly/tw-react/blob/master/src/example.tsx]] and [[exampleFunction.tsx|https://github.com/tiddly-gittly/tw-react/blob/master/src/exampleFunction.tsx]] for example.

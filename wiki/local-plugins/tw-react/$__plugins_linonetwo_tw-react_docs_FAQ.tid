@@ -1,0 +1,22 @@
+creator: LinOnetwo
+title: $:/plugins/linonetwo/tw-react/docs/FAQ
+
+!! FAQ
+
+!!! _jsxRuntime
+
+`slate-write/node_modules/react-dnd/dist/cjs/core/DndProvider.js` has `var _jsxRuntime = require("react/jsx-runtime");`
+
+But `slate-write/node_modules/react-dnd/dist/esm/core/DndProvider.mjs` has `import { jsx as _jsx } from "react/jsx-runtime.js";`
+
+Note the difference between `react/jsx-runtime` and `react/jsx-runtime.js`!
+
+Currently tw-react ship with `react/jsx-runtime.js`, so if your plugin uses cjs version of react-dnd, you will have error:
+
+```
+Error executing boot module $:/plugins/linonetwo/slate-write/components/index.js: "Cannot find module named 'react/jsx-runtime' required by module '$:/plugins/linonetwo/slate-write/components/index.js', resolved to react/jsx-runtime"
+
+undefined
+```
+
+The solution is to ask me provide a version of tw-react that has `react/jsx-runtime`, or you can use esm version of `react-dnd`.
