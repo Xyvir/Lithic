@@ -2,4 +2,11 @@ created: 20260109173004204
 modified: 20260109173039735
 title: $:/config/SaverFilter
 
-[all[]] -[prefix[$:/state/]] -[prefix[$:/temp/]] -[prefix[$:/info/]] -[prefix[$:/HistoryList]] -[prefix[$:/StoryList]] -[status[pending]plugin-type[import]] -[[$:/isEncrypted]] -[[$:/UploadName]] -[[$:/config/BrowserStorage/SaveFilter]] -[[$:/lithic/config/SaveFilterPatch]]
+[all[]] 
+-[prefix[$:/state/]] -[prefix[$:/temp/]] -[prefix[$:/info/]] 
+-[[$:/HistoryList]] -[[$:/StoryList]] -[[$:/isEncrypted]] -[[$:/UploadName]]
+-[[$:/config/BrowserStorage/SaveFilter]] -[[$:/lithic/config/SaveFilterPatch]]
+-[[$:/config/BrowserStorage/Enabled]] -[[$:/status/RequireReloadDueToPluginChange]]
+-[status[pending]plugin-type[import]] 
+-[prefix[$:/boot/]] -[[$:/core]] -[[$:/library/sjcl.js]]
+-[prefix[$:/plugins/]] -[prefix[$:/themes/]]
