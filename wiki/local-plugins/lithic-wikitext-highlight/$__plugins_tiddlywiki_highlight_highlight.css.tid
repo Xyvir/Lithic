@@ -1,10 +1,13 @@
-title: $: /plugins/tiddlywiki/highlight/highlight.css tags: $: /tags/Stylesheet type: text/vnd.tiddlywiki
-        /*
+title: $: /plugins/tiddlywiki/highlight/highlight.css 
+tags: $: /tags/Stylesheet 
+type: text/vnd.tiddlywiki
+
+/*
   Theme: Base Reactive Fallback
   Description: Handles base element reset and "catch-all" classes missed by the specific /styles sheet.
 */
 
-        /* 1. RESET & BASE STRUCTURE */
+/* 1. RESET & BASE STRUCTURE */
         pre code.hljs {
         display: block;
         /* Allow horizontal scrolling for long lines, but hide vertical scrollbars */
