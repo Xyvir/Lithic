@@ -4,5 +4,6 @@
     "description": "Lithic ToDo Highlighting added to Extendable Calendar",
     "name": "Calendar_LithicPatch",
     "plugin-type": "plugin",
-    "version": "0.0.3"
+    "version": "0.0.3",
+    "plugin-priority": "2"
 }

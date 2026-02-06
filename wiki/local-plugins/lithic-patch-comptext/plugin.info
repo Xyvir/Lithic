@@ -6,5 +6,6 @@
     "plugin-type": "plugin",
     "version": "0.0.2",
     "modified": "20260110230737710",
-    "parent-plugin": "$:/plugins/snowgoon88/edit-comptext"
+    "parent-plugin": "$:/plugins/snowgoon88/edit-comptext",
+    "plugin-priority": "2"
 }

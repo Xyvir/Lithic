@@ -3,5 +3,6 @@
     "description": "A curated collection of standalone utilities and community-sourced enhancements for specialized wiki functionality.",
     "name": "Lithic Tweaks",
     "plugin-type": "plugin",
-    "version": "0.0.6"
+    "version": "0.0.6",
+    "plugin-priority": "2"
 }

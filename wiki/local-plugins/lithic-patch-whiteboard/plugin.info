@@ -6,5 +6,6 @@
     "plugin-type": "plugin",
     "version": "0.0.1",
     "modified": "20260110230834139",
-    "parent-plugin": "$:/plugins/linonetwo/tw-whiteboard"
+    "parent-plugin": "$:/plugins/linonetwo/tw-whiteboard",
+    "plugin-priority": "2"
 }

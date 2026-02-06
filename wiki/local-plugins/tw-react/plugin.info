@@ -7,5 +7,6 @@
     "stability": "STABILITY_2_STABLE",
     "version": "1.0.0",
     "list": "readme tree",
-    "dependents": ""
+    "dependents": "",
+    "plugin-priority": "2"
 }

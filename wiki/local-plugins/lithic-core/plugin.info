@@ -6,5 +6,6 @@
     "plugin-type": "plugin",
     "version": "0.0.13",
     "modified": "20260109181242713",
-    "author": "Xyvir"
+    "author": "Xyvir",
+    "plugin-priority": "2"
 }

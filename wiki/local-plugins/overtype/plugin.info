@@ -4,5 +4,6 @@
     "plugin-type": "plugin",
     "name": "Overtype Editor ",
     "description": "Overtype Editor adapted for Lithic PKMS",
-    "author": "Xyvir"
+    "author": "Xyvir",
+    "plugin-priority": "2"
 }

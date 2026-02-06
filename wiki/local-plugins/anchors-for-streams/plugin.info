@@ -4,5 +4,6 @@
     "description": "Allows for 'anchoring' top-level streams nodes; so you can clone the whole stream and use the anchors to spawn stream independent sibling nodes. ",
     "name": "Anchors for streams",
     "plugin-type": "plugin",
-    "version": "0.0.2"
+    "version": "0.0.2",
+    "plugin-priority": "2"
 }

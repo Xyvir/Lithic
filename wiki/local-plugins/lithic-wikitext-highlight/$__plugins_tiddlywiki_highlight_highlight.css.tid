@@ -1,0 +1,61 @@
+title: $: /plugins/tiddlywiki/highlight/highlight.css tags: $: /tags/Stylesheet type: text/vnd.tiddlywiki
+        /*
+  Theme: Base Reactive Fallback
+  Description: Handles base element reset and "catch-all" classes missed by the specific /styles sheet.
+*/
+
+        /* 1. RESET & BASE STRUCTURE */
+        pre code.hljs {
+        display: block;
+        /* Allow horizontal scrolling for long lines, but hide vertical scrollbars */
+        overflow-x: auto;
+        overflow-y: hidden;
+        /* Remove any default constraints so it grows with content */
+        max-height: none;
+        padding: 1em;
+    }
+
+    code.hljs {
+        padding: 3px 5px;
+    }
+
+    /* 2. MAIN CONTAINER DEFAULT */
+    /* Matches your /styles preference, ensuring safety if /styles is disabled */
+    .hljs {
+        background: <<colour code-background>>;
+        color: <<colour foreground>>;
+    }
+
+    /* 3. CRITICAL MISSING ELEMENTS (Not in your /styles) */
+
+    /* Punctuation & Tags: 
+   These are missing from your /styles. 
+   We map them to 'foreground' so they are visible but neutral. 
+*/
+    .hljs-punctuation,
+    .hljs-tag {
+        color: <<colour foreground>>;
+    }
+
+    /* Operators: 
+   Missing from your /styles. 
+   Original highlight.js groups these with 'links/symbols'. 
+   We map them to 'tag-background' to match your 'Symbols' logic.
+*/
+    .hljs-operator {
+        color: <<colour tag-background>>;
+    }
+
+    /* Tag Names & Attributes:
+   Usually handled by 'keyword' or 'title', but explicit 'tag' children need care.
+   Map to Primary to match Keywords.
+*/
+    .hljs-tag .hljs-name,
+    .hljs-tag .hljs-attr {
+        color: <<colour primary>>;
+    }
+
+    /* 4. FALLBACKS FOR INLINE CODE */
+    .hljs-code {
+        color: <<colour foreground>>;
+    }

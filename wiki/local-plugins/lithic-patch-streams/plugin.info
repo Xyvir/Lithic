@@ -7,5 +7,6 @@
     "plugin-type": "plugin",
     "version": "0.0.13",
     "modified": "20260110200412717",
-    "parent-plugin": "$:/plugins/sq/streams"
+    "parent-plugin": "$:/plugins/sq/streams",
+    "plugin-priority": "2"
 }

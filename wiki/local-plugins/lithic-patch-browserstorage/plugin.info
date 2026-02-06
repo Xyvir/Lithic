@@ -4,5 +4,6 @@
     "name": "Browser Storage_LithicPatch",
     "plugin-type": "plugin",
     "parent-plugin": "$:/plugins/tiddlywiki/browser-storage",
-    "version": "0.0.1"
+    "version": "0.0.1",
+    "plugin-priority": "2"
 }

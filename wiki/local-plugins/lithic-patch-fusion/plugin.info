@@ -7,5 +7,6 @@
     "plugin-type": "plugin",
     "version": "0.0.1",
     "modified": "20260110200509987",
-    "parent-plugin": "$:/plugins/phiv/streams-fusion"
+    "parent-plugin": "$:/plugins/phiv/streams-fusion",
+    "plugin-priority": "2"
 }
