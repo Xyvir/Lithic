@@ -5,6 +5,5 @@
     "version": "0.0.1",
     "core-version": ">=5.0.0",
     "source": "local",
-    "plugin-type": "plugin",
-    "list": ""
+    "plugin-type": "plugin"
 }
