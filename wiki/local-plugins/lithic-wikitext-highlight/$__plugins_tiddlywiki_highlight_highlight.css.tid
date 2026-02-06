@@ -37,7 +37,7 @@ type: text/vnd.tiddlywiki
 */
     .hljs-punctuation,
     .hljs-tag {
-        color: <<colour foreground>>;
+        color: <<colour alert-muted-foreground>>;
     }
 
     /* Operators: 
@@ -46,7 +46,7 @@ type: text/vnd.tiddlywiki
    We map them to 'tag-background' to match your 'Symbols' logic.
 */
     .hljs-operator {
-        color: <<colour tag-background>>;
+        color: <<colour notification-background>>;
     }
 
     /* Tag Names & Attributes:
@@ -60,5 +60,5 @@ type: text/vnd.tiddlywiki
 
     /* 4. FALLBACKS FOR INLINE CODE */
     .hljs-code {
-        color: <<colour foreground>>;
+        color: <<colour download-background>>;
     }
