@@ -20,14 +20,10 @@ Starts up the wikitext highlighter
         if ($tw.browser && !window.hljs) {
             try {
                 window.hljs = require("$:/plugins/tiddlywiki/highlight/highlight.js");
-            } catch (e) {
-                // highlight.js not found
-                return;
-            }
+            } catch (e) { return; }
         }
 
         var hljs = window.hljs || require("$:/plugins/tiddlywiki/highlight/highlight.js");
-
         if (!hljs) return;
 
         hljs.registerLanguage('tw', function (hljs) {
@@ -35,35 +31,58 @@ Starts up the wikitext highlighter
                 name: 'Wikitext',
                 aliases: ['wikitext'],
                 contains: [
-                    // 1. BLOCK MACROS <<<...>>>
+                    // --- NEW: PRAGMAS (\procedure, \define, etc) ---
                     {
-                        className: 'function',
-                        begin: /<<<+/, end: />>>+/
+                        className: 'keyword',
+                        begin: /^\\([a-zA-Z0-9\-\.]+)/,
+                        end: /$/
                     },
 
-                    // 2. WIDGETS <$...> 
-                    // We treat these as tags, and crucially, we allow strings inside them
+                    // --- NEW: HEADERS (! Header) ---
+                    {
+                        className: 'section',
+                        begin: /^!/,
+                        end: /$/
+                    },
+
+                    // --- NEW: CLOSING WIDGETS (</$button>) ---
                     {
                         className: 'tag',
-                        begin: /<\$/, end: />/,
+                        begin: /<\/\$[a-zA-Z0-9\-\.]+>/
+                    },
+
+                    // 1. BLOCK MACROS <<<...>>> (Moved to top priority)
+                    {
+                        className: 'quote',
+                        begin: /^<<<+/, end: />>>+$/
+                    },
+
+                    // 2. WIDGETS <$button ...> 
+                    {
+                        className: 'tag',
+                        begin: /<\$[a-zA-Z0-9\-\.]+/,
+                        end: />/,
                         contains: [
-                            hljs.QUOTE_STRING_MODE
+                            hljs.QUOTE_STRING_MODE,
+                            // Allow macros inside widget attributes
+                            {
+                                className: 'symbol',
+                                begin: /<<+/, end: />>+/
+                            }
                         ]
                     },
 
                     // 3. INLINE MACROS <<...>>
                     {
-                        className: 'function',
+                        className: 'symbol',
                         begin: /<<+/, end: />>+/
                     },
 
                     // 4. FORMATTING
-                    // Bold ''...''
                     {
                         className: 'strong',
                         begin: /''/, end: /''/
                     },
-                    // Italic //...// (Added this as it was missing)
                     {
                         className: 'emphasis',
                         begin: /\/\//, end: /\/\//
@@ -77,23 +96,17 @@ Starts up the wikitext highlighter
 
                     // 6. TEMPLATES {{...}}
                     {
-                        className: 'symbol',
+                        className: 'template-variable',
                         begin: /\{\{/, end: /\}\}/
                     },
 
-                    // 7. HEADERS =
-                    {
-                        className: 'section',
-                        begin: /^=+/, end: /=+$/
-                    },
-
-                    // 8. GENERIC BRACKETS
+                    // 7. GENERIC BRACKETS
                     {
                         className: 'meta',
                         begin: /[\[\]]/
                     },
 
-                    // 9. STANDARD STRINGS
+                    // 8. STANDARD STRINGS
                     hljs.QUOTE_STRING_MODE
                 ]
             };

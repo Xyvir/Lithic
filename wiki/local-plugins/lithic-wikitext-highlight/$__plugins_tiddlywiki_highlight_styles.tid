@@ -1,0 +1,34 @@
+title: $:/plugins/tiddlywiki/highlight/styles
+tags: $:/tags/Stylesheet $:/tags/Stylesheet/Highlight
+type: text/vnd.tiddlywiki
+
+.hljs {
+    background: <<colour code-background>>;
+    color: <<colour foreground>>;
+    border: 1px solid <<colour code-border>>;
+    padding: 0.5em;
+    border-radius: 2px;
+    display: block;
+    overflow-x: auto;
+}/* COMMENTS: Muted text */.hljs-comment,.hljs-quote {
+    color: <<colour muted-foreground>>;
+    font-style: italic;
+}/* KEYWORDS: Primary Color (Usually the Wiki's main brand color) */.hljs-keyword,.hljs-selector-tag,.hljs-addition {
+    color: <<colour primary>>;
+    font-weight: bold;
+}/* STRINGS & LITERALS: External Link Color (Usually distinct from body text) */.hljs-string,.hljs-meta .hljs-string,.hljs-literal,.hljs-doctag,.hljs-regexp {
+    color: <<colour external-link-foreground>>;
+}/* TITLES & SECTIONS: Tiddler Title Color */.hljs-title,.hljs-section,.hljs-name,.hljs-selector-id,.hljs-selector-class {
+    color: <<colour tiddler-title-foreground>>;
+    font-weight: bold;
+}/* VARIABLES & ATTRIBUTES: Internal Link Color */.hljs-attribute,.hljs-attr,.hljs-variable,.hljs-template-variable,.hljs-class .hljs-title,.hljs-type {
+    color: <<colour tiddler-link-foreground>>;
+}/* META & SYMBOLS: Tag Background (Often colorful) */.hljs-symbol,.hljs-bullet,.hljs-subst,.hljs-meta,.hljs-meta .hljs-keyword,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-link {
+    color: <<colour tag-background>>; 
+}/* ERRORS & DELETIONS: Dirty/Unsaved Color (Usually Red) */.hljs-built_in,.hljs-deletion {
+    color: <<colour dirty-indicator>>;
+}/* EMPHASIS & STRONG */.hljs-emphasis {
+    font-style: italic;
+}.hljs-strong {
+    font-weight: bold;
+}
