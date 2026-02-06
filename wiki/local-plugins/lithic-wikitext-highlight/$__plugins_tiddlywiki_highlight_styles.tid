@@ -19,12 +19,12 @@ type: text/vnd.tiddlywiki
 }/* STRINGS & LITERALS: External Link Color (Usually distinct from body text) */.hljs-string,.hljs-meta .hljs-string,.hljs-literal,.hljs-doctag,.hljs-regexp {
     color: <<colour external-link-foreground-visited>>;
 }/* TITLES & SECTIONS: Tiddler Title Color */.hljs-title,.hljs-section,.hljs-name,.hljs-selector-id,.hljs-selector-class {
-    color: <<colour dropdown-tab-background>>;
+    color: <<colour code-foreground>>;
     font-weight: bold;
 }/* VARIABLES & ATTRIBUTES: Internal Link Color */.hljs-attribute,.hljs-attr,.hljs-variable,.hljs-template-variable,.hljs-class .hljs-title,.hljs-type {
     color: <<colour sidebar-controls-foreground-hover>>;
 }/* META & SYMBOLS: Tag Background (Often colorful) */.hljs-symbol,.hljs-bullet,.hljs-subst,.hljs-meta,.hljs-meta .hljs-keyword,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-link {
-    color: <<colour tag-background>>; 
+    color: <<colour dirty-indicator>>; 
 }/* ERRORS & DELETIONS: Dirty/Unsaved Color (Usually Red) */.hljs-built_in,.hljs-deletion {
     color: <<colour alert-background>>;
 }/* EMPHASIS & STRONG */.hljs-emphasis {
