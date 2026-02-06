@@ -35,58 +35,69 @@ Starts up the wikitext highlighter
                 name: 'Wikitext',
                 aliases: ['wikitext'],
                 contains: [
-                    // 1. MACROS
-                    // Includes <<<...>>>, <<...>>, and the new <$...>
+                    // 1. BLOCK MACROS <<<...>>>
                     {
                         className: 'function',
-                        variants: [
-                            { begin: /<<<+/, end: />>>+/ },
-                            { begin: /<<+/, end: />>+/ },
-                            // Updated: Only matches if it starts with <$
-                            { begin: /<\$/, end: />/ }
+                        begin: /<<<+/, end: />>>+/
+                    },
+
+                    // 2. WIDGETS <$...> 
+                    // We treat these as tags, and crucially, we allow strings inside them
+                    {
+                        className: 'tag',
+                        begin: /<\$/, end: />/,
+                        contains: [
+                            hljs.QUOTE_STRING_MODE
                         ]
                     },
 
-                    // 2. Formatting: Bold/Italic '' and '''
+                    // 3. INLINE MACROS <<...>>
                     {
-                        className: 'strong',
-                        begin: /'{2,3}/, end: /'{2,3}/
+                        className: 'function',
+                        begin: /<<+/, end: />>+/
                     },
 
-                    // 3. Wiki Links [[ ... ]]
+                    // 4. FORMATTING
+                    // Bold ''...''
+                    {
+                        className: 'strong',
+                        begin: /''/, end: /''/
+                    },
+                    // Italic //...// (Added this as it was missing)
+                    {
+                        className: 'emphasis',
+                        begin: /\/\//, end: /\/\//
+                    },
+
+                    // 5. WIKI LINKS [[...]]
                     {
                         className: 'link',
                         begin: /\[\[/, end: /\]\]/
                     },
 
-                    // 4. Templates {{ ... }}
+                    // 6. TEMPLATES {{...}}
                     {
                         className: 'symbol',
                         begin: /\{\{/, end: /\}\}/
                     },
 
-                    // 5. Headers =
+                    // 7. HEADERS =
                     {
                         className: 'section',
                         begin: /^=+/, end: /=+$/
                     },
 
-                    // 6. Generic single brackets [ ... ]
+                    // 8. GENERIC BRACKETS
                     {
                         className: 'meta',
                         begin: /[\[\]]/
                     },
 
-                    // 7. Standard Strings
+                    // 9. STANDARD STRINGS
                     hljs.QUOTE_STRING_MODE
                 ]
             };
         });
-
-        // In recent highlight.js versions, initHighlighting is deprecated/removed in favor of highlightAll
-        // But TiddlyWiki's highlight plugin might handle the triggering. 
-        // We just need to register the language.
-        // hljs.initHighlighting(); 
     };
 
 })();
