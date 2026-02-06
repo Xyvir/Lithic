@@ -6,7 +6,6 @@
         "xyvir/anchors-for-streams",
         "xyvir/lithic-core",
         "xyvir/lithic-default-configs",
-        "xyvir/lithic-patch-browserstorage",
         "xyvir/lithic-patch-calendar",
         "xyvir/lithic-patch-comptext",
         "xyvir/lithic-patch-markdown",
