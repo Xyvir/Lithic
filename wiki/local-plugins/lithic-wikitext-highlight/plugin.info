@@ -1,0 +1,9 @@
+{
+    "title": "$:/plugins/xyvir/lithic-wikitext-highlight",
+    "description": "Lithic Wikitext Highlight",
+    "author": "Xyvir",
+    "version": "0.0.1",
+    "core-version": ">=5.0.0",
+    "source": "local",
+    "plugin-type": "plugin",
+}

@@ -3,7 +3,8 @@
     "plugins": [
         "tiddlywiki/highlight",
         "bj/unieditor",
-        "xyvir/lithic-python-codeblocks"
+        "xyvir/lithic-python-codeblocks",
+        "xyvir/lithic-wikitext-highlight"
     ],
     "themes": []
 }
