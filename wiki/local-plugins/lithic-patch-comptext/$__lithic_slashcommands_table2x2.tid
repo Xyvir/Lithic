@@ -3,6 +3,4 @@ modified: 20251203150706099
 tags: 
 title: $:/lithic/slashcommands/table2x2
 
-| A | B |
-|---|---|
-|   |   |
+<<AutoTable 2 "H2 H1">>

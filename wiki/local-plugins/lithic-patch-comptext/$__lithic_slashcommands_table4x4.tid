@@ -3,8 +3,4 @@ modified: 20251203150801214
 tags: 
 title: $:/lithic/slashcommands/table4x4
 
-| A | B | C | D |
-|---|---|---|---|
-|   |   |   |   |
-|   |   |   |   |
-|   |   |   |   |
+<<AutoTable 4 "H1 H2 H3 H4">>

@@ -3,7 +3,4 @@ modified: 20251203150714642
 tags: 
 title: $:/lithic/slashcommands/table3x3
 
-| A | B | C |
-|---|---|---|
-|   |   |   |
-|   |   |   |
+<<AutoTable 3 "H1 H2 H3">>
