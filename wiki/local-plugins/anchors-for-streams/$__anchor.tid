@@ -10,7 +10,7 @@ title: $:/anchor
 }}}>
     <$list filter="[<p-tiddler>!is[blank]]" variable="ignore">
         
-        <$vars lb={{{ [charcode[10]] }}} reg-pattern="[^a-zA-Z0-9]">
+        <$vars lb={{{ [charcode[10]] }}} reg-pattern="[^a-zA-Z0-9]" payload={{{ [<currentTiddler>get[text]split[---]rest[]join[---]trim[]search-replace[{{||$:/anchor}}],[]] }}}>
             
             <$vars tag-name={{{ 
                 [<currentTiddler>get[text]search-replace[{{||$:/anchor}}],[]split<lb>first[]splitregexp<reg-pattern>join[]trim[]first[30]] 
@@ -25,6 +25,7 @@ title: $:/anchor
                         stream-type="default"
                         tags=<<tag-name>>
                         anchored=<<p-tiddler>>
+                        text=<<payload>>
                     />
                     <$action-listops $tiddler=<<p-tiddler>> $field="stream-list" $subfilter="+[insertafter:currentTiddler<new-title>]" />
                     <$action-setfield $tiddler=<<row-edit-state>> text=<<new-title>>/>
