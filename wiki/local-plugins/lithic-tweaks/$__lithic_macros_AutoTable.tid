@@ -1,0 +1,87 @@
+created: 20260207032921340
+modified: 20260207035104474
+tags: $:/tags/Macro
+title: $:/lithic/macros/AutoTable
+
+\define AutoTableCell(row, field, colNum, maxCols)
+<$set name="CellState" value={{{ [[$:/state/AutoTable/]addsuffix<currentTiddler>addsuffix[/]addsuffix[$row$]addsuffix[/]addsuffix[$field$]] }}}>
+
+<$reveal type="nomatch" state=<<CellState>> text="edit">
+  <$button class="tc-btn-invisible tc-tiddler-link" style="width:100%; height:100%; display:block; padding:4px; text-align:center;" set=<<CellState>> setTo="edit">
+    <$view tiddler="$row$" field="$field$">
+       &nbsp;
+    </$view>
+  </$button>
+</$reveal>
+
+<$reveal type="match" state=<<CellState>> text="edit">
+  <$keyboard key="escape" actions="""<$action-setfield $tiddler=<<CellState>> text=""/>""">
+  <$keyboard key="enter" actions="""
+      <$action-setfield $tiddler=<<CellState>> text=""/>
+      
+      <$list filter="[[$colNum$]compare:number:lt[$maxCols$]]" variable="ignore">
+         <$action-setfield $tiddler={{{ [[$colNum$]add[1]addprefix[col-]addprefix[/]addprefix[$row$]addprefix[/]addprefix<currentTiddler>addprefix[$:/state/AutoTable/]] }}} text="edit"/>
+      </$list>
+      
+      <$list filter="[[$colNum$]compare:number:eq[$maxCols$]]" variable="ignore">
+          <$list filter="[tag<currentTiddler>sort[title]after[$row$]]" variable="NextRow" emptyMessage='
+             <$vars NextIndex={{{ [tag<currentTiddler>count[]add[1]] }}}>
+                <$action-createtiddler $basetitle={{{ [<currentTiddler>addsuffix[-]addsuffix<NextIndex>] }}} tags={{{ [<currentTiddler>format:titlelist[]] }}}/>
+                <$action-setfield $tiddler={{{ [[$:/state/AutoTable/]addsuffix<currentTiddler>addsuffix[/]addsuffix<currentTiddler>addsuffix[-]addsuffix<NextIndex>addsuffix[/col-1]] }}} text="edit"/>
+             </$vars>
+          '>
+             <$action-setfield $tiddler={{{ [[$:/state/AutoTable/]addsuffix<currentTiddler>addsuffix[/]addsuffix<NextRow>addsuffix[/col-1]] }}} text="edit"/>
+          </$list>
+      </$list>
+  """>
+    <$edit-text tiddler="$row$" field="$field$" tag="input" focus="yes" class="tc-edit-texteditor" style="width:100%; text-align:center;"/>
+  </$keyboard>
+  </$keyboard>
+</$reveal>
+
+</$set>
+\end
+
+\define AutoTable(columns:3, headers)
+<table class="tc-table" style="width:100%; table-layout:fixed;">
+<thead>
+<tr style="background-color:#f4f4f4;">
+  <$list filter="[range[1,$columns$]]" variable="ColNum">
+    <th style="text-align:center;">
+      <$text text={{{ [enlist[$headers$]nth<ColNum>] ~[[col-]addsuffix<ColNum>] }}} />
+    </th>
+  </$list>
+  <th style="width:30px;"></th>
+</tr>
+</thead>
+<tbody>
+<$list filter="[tag<currentTiddler>sort[title]]" variable="RowTiddler">
+  <tr>
+    <$list filter="[range[1,$columns$]]" variable="ColNum">
+       <td>
+         <$macrocall $name="AutoTableCell" row=<<RowTiddler>> field={{{ [[col-]addsuffix<ColNum>] }}} colNum=<<ColNum>> maxCols="$columns$"/>
+       </td>
+    </$list>
+    
+    <td style="text-align:center; vertical-align:middle;">
+       <$button class="tc-btn-invisible tc-tiddler-link" tooltip="Remove Row">
+         {{$:/core/images/close-button}}
+         <$action-listops $tiddler=<<RowTiddler>> $tags="-[<currentTiddler>]"/>
+       </$button>
+    </td>
+  </tr>
+</$list>
+
+<tr>
+  <td colspan={{{ [[$columns$]add[1]] }}}>
+    <$button class="tc-btn-invisible" style="width:100%; padding:5px; color:#888; font-style:italic;">
+      + Add Row
+      <$vars NextIndex={{{ [tag<currentTiddler>count[]add[1]] }}}>
+         <$action-createtiddler $basetitle={{{ [<currentTiddler>addsuffix[-]addsuffix<NextIndex>] }}} tags={{{ [<currentTiddler>format:titlelist[]] }}}/>
+      </$vars>
+    </$button>
+  </td>
+</tr>
+</tbody>
+</table>
+\end
