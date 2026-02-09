@@ -3,9 +3,10 @@
     "plugins": [
         "tiddlywiki/highlight",
         "bj/unieditor",
-        "xyvir/lithic-python-codeblocks",
+        "tiddlywiki/context-menu",
+        "xyvir/lithic-patch-context-menu",
         "xyvir/lithic-wikitext-highlight",
-        "tiddlywiki/context-menu"
+        "xyvir/lithic-python-codeblocks"
     ],
     "themes": []
 }
