@@ -3,7 +3,7 @@
     "plugins": [
         "tiddlywiki/highlight",
         "bj/unieditor",
-        "tiddlywiki/context-menu",
+        "ahanniga/context-menu-plugin",
         "xyvir/lithic-patch-context-menu",
         "xyvir/lithic-wikitext-highlight",
         "xyvir/lithic-python-codeblocks"
