@@ -112,7 +112,10 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
             paramFilter = tid.getFieldString("param-filter");
             customParam = "";
             if (paramFilter) {
-                var results = $tw.wiki.filterTiddlers(paramFilter, null, $tw.utils.makeSingleTiddlerIterator(targ));
+                var iterator = function (callback) {
+                    callback(targ, $tw.wiki.getTiddler(targ));
+                };
+                var results = $tw.wiki.filterTiddlers(paramFilter, null, iterator);
                 if (results.length > 0) {
                     customParam = sanitize(results[0]);
                 }
