@@ -109,9 +109,26 @@ Usage:
                 .replace(/\bln\b/g, "\\ln")
                 .replace(/\bpi\b/g, "\\pi");
 
-            var parts = displayString.split('/');
-            if (parts.length === 2) {
-                displayString = "\\frac{" + parts[0].trim() + "}{" + parts[1].trim() + "}";
+            // Find a top-level '/' (at parenthesis depth 0) for \frac formatting
+            var splitIndex = -1;
+            var depth = 0;
+            for (var i = 0; i < displayString.length; i++) {
+                if (displayString[i] === '(') depth++;
+                else if (displayString[i] === ')') depth--;
+                else if (displayString[i] === '/' && depth === 0) {
+                    if (splitIndex !== -1) {
+                        // Multiple top-level slashes — too complex for a single \frac
+                        splitIndex = -2;
+                        break;
+                    }
+                    splitIndex = i;
+                }
+            }
+
+            if (splitIndex >= 0) {
+                var numer = displayString.slice(0, splitIndex).trim();
+                var denom = displayString.slice(splitIndex + 1).trim();
+                displayString = "\\frac{" + numer + "}{" + denom + "}";
             } else {
                 displayString = displayString.replace(/\//g, "\\div");
             }
