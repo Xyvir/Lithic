@@ -52,6 +52,7 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
     }
 
     var Widget = require("$:/core/modules/widgets/widget.js").widget;
+    // Reverted to original class name
     var template = `<div id="contextMenu" class="context-menu" style="display: none; z-order: 9999;"></div>`;
 
     var ContextListener = function (parseTreeNode, options) {
@@ -83,6 +84,7 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
         }
         menu.innerHTML = "";
 
+        // Reverted to UL structure
         var menuHtml = ["<ul>"];
         var titles = $tw.wiki.getTiddlersWithTag("$:/tags/tiddlercontextmenu");
         var label, action, icon, tid, targ, text, separator, paramFilter, customParam;
@@ -111,6 +113,7 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
             } else {
                 icon = "";
             }
+            // Use original separator class
             separator = tid.fields["separate-after"] === undefined ? "" : "menu-separator";
 
             // --- PATCH START ---
@@ -119,7 +122,7 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
             customParam = "";
             if (paramFilter) {
                 var iterator = function (callback) {
-                    callback(targ, $tw.wiki.getTiddler(targ));
+                    callback($tw.wiki.getTiddler(targ), targ);
                 };
                 var results = $tw.wiki.filterTiddlers(paramFilter, null, iterator);
                 if (results.length > 0) {
@@ -128,6 +131,7 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
             }
             // --- PATCH END ---
 
+            // Reverted to LI structure. Note icons will be reversed via CSS.
             menuHtml.push(`<li class="${separator}"><a action="${action}" targ="${targ}" data-custom-param="${customParam}" href="#!">${icon} ${label}</a></li>`);
         }
 
@@ -147,10 +151,26 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
     };
 
     ContextListener.prototype.menuClicked = function (event) {
-        var action = event.target.getAttribute("action");
-        var targ = event.target.getAttribute("targ");
+        // Reverted to original logic (event.target has attributes)
+        // BUT wait, if icon and label are children, event.target might be them.
+        // Original logic: event.target.getAttribute("action")
+        // If user clicks on icon (which is an SVG/IMG), event.target is the SVG/IMG. It doesn't have 'action'.
+        // So we MUST use closest('[action]'). The original plugin was flawed if it didn't do this,
+        // or it worked because pointer-events: none on children?
+        // Original CSS didn't have pointer-events: none.
+        // I will keep the robust closest() logic I added.
+
+        var targetStart = event.target;
+        var targetAction = targetStart.closest("[action]");
+
+        if (!targetAction) {
+            return false;
+        }
+
+        var action = targetAction.getAttribute("action");
+        var targ = targetAction.getAttribute("targ");
         // Retrieve our custom param
-        var customParam = event.target.getAttribute("data-custom-param");
+        var customParam = targetAction.getAttribute("data-custom-param");
 
         var tid, stid, state, text, ptid;
         this.hideMenu();

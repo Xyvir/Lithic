@@ -1,0 +1,75 @@
+title: $:/plugins/ahanniga/context-menu/styles.css
+type: text/vnd.tiddlywiki
+tags: $:/tags/Stylesheet
+
+.context-menu {
+	position: absolute;
+	min-width: 180px;
+	max-width: 240px;
+	z-index: 1000;
+	display: flex;
+	flex-direction: column;
+	background-color: <<colour dropdown-background>>;
+	border-radius: 6px;
+	box-shadow: rgba(0, 0, 0, 0.40) 0px 2px 20px;
+	padding: 12px 0;
+	border: 1px solid #dce0e2;
+	font-family: "Segoe UI", Roboto, Helvetica, Arial;
+	font-size: 13px;
+	margin-top: 4px;
+}
+
+.context-menu > ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.context-menu > ul > li > a {
+	font: inherit;
+	border: 0;
+	padding: 4px 18px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-direction: row-reverse;
+	position: relative;
+	text-decoration: unset;
+	color: #4b5155;
+	line-height: 24px;
+	font-weight: normal;
+	transition: none;
+	cursor: default;
+}
+
+.context-menu > ul > li > a:hover {
+	background: <<colour tiddler-link-foreground>>;
+	color: <<colour tiddler-link-background>>; 
+	fill: <<colour tiddler-link-background>>; 
+}
+
+.context-menu > ul > li > a:hover > svg {
+	color: <<colour tiddler-link-background>>; 
+	fill: <<colour tiddler-link-background>>; 
+}
+
+.context-menu > ul > li > a > i {
+	padding-left: 10px;
+}
+
+.context-menu > ul > li > a > svg {
+	color: #b7bcbf;
+	fill: #b7bcbf;
+	width: 13px;
+	margin-left: 16px;
+	margin-right: 0;
+	height: 13px;
+}
+
+ul .menu-separator {
+	border-bottom: 1px solid #eceef0;
+	margin-bottom: 6px;
+	margin-top: 6px;
+	padding-bottom: 0;
+}
