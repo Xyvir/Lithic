@@ -1,0 +1,17 @@
+created: 20260209172907000
+modified: 20260209172907000
+tags: $:/tags/Stylesheet
+title: $:/plugins/xyvir/anchors-for-streams/styles
+type: text/css
+
+/* 
+   Scoping: Only target tiddlers that contain the Anchor Overlay 
+   (This ensures we don't break normal tiddlers that use horizontal rules)
+*/
+.tc-tiddler-frame:has(.lithic-lock-overlay) hr ~ *:not(.lithic-lock-overlay):not(.lithic-anchor-ui) {
+    display: none;
+}
+
+.tc-tiddler-frame:has(.lithic-lock-overlay) hr {
+    display: none;
+}

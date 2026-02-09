@@ -4,7 +4,8 @@
         "tiddlywiki/highlight",
         "bj/unieditor",
         "xyvir/lithic-python-codeblocks",
-        "xyvir/lithic-wikitext-highlight"
+        "xyvir/lithic-wikitext-highlight",
+        "tiddlywiki/context-menu"
     ],
     "themes": []
 }

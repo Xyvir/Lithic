@@ -13,7 +13,7 @@ title: $:/anchor
         <$vars lb={{{ [charcode[10]] }}} reg-pattern="[^a-zA-Z0-9]" payload={{{ [<currentTiddler>get[text]split[---]rest[]join[---]trim[]search-replace[{{||$:/anchor}}],[]] }}}>
             
             <$vars tag-name={{{ 
-                [<currentTiddler>get[text]search-replace[{{||$:/anchor}}],[]split<lb>first[]splitregexp<reg-pattern>join[]trim[]first[30]] 
+                [<currentTiddler>get[text]search-replace[{{||$:/anchor}}],[]trim[]split<lb>first[]splitregexp<reg-pattern>join[]trim[]first[30]] 
             }}}>
             
                 <$wikify name="title-fmt" text={{$:/config/sq/streams/new-node-title}}>
@@ -44,7 +44,7 @@ title: $:/anchor
     </$eventcatcher>
 </div>
 
-<span style="position: relative; z-index: 20;">
+<span class="lithic-anchor-ui" style="position: relative; z-index: 20;">
     <$button tag="span" class="tc-btn-invisible" tooltip="Drop Anchor" actions=<<anchor-actions>> style="cursor: pointer;">
         {{$:/lithic/images/anchor}}
     </$button>

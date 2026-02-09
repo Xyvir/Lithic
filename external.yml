@@ -41,6 +41,10 @@
   url: https://unieditor.tiddlyhost.com/
   type: plugins
 
+- name: context-menu
+  url: https://context-menu-plugin.tiddlyhost.com/
+  type: plugins
+
 - name: captivate
   url: https://cdruan.github.io/tw5-captivate/
   type: disable
