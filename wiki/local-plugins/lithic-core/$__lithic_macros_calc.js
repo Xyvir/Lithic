@@ -40,12 +40,24 @@ Usage:
             );
 
             // 2. PREPARE FOR CALCULATION
+
             var calcString = expandedEquation
                 .replace(/\^/g, "**")
-                .replace(/sqrt/g, "Math.sqrt");
+                .replace(/\bsqrt\b/g, "Math.sqrt")
+                .replace(/\bsin\b/g, "Math.sin")
+                .replace(/\bcos\b/g, "Math.cos")
+                .replace(/\btan\b/g, "Math.tan")
+                .replace(/\blog\b/g, "Math.log10")
+                .replace(/\bln\b/g, "Math.log")
+                .replace(/\bpi\b/g, "Math.PI")
+                .replace(/\be\b/g, "Math.E");
 
             // 3. SECURITY CHECK
-            if (/[^0-9+\-*/(). \t\r\nMath.sqrt]/.test(calcString.replace("Math.sqrt", ""))) {
+            // Remove known safe math functions to check for unknown characters
+            var checkString = calcString
+                .replace(/Math\.(sqrt|sin|cos|tan|log10|log|PI|E)/g, "");
+
+            if (/[^0-9+\-*/(). \t\r\n]/.test(checkString)) {
                 return showKatex ? "$$ \\text{Error} $$" : "Error";
             }
 
@@ -88,7 +100,14 @@ Usage:
             // B. Format the Equation
             var displayString = expandedEquation;
 
-            displayString = displayString.replace(/sqrt\(([^)]+)\)/g, "\\sqrt{$1}");
+            displayString = displayString
+                .replace(/\bsqrt\(([^)]+)\)/g, "\\sqrt{$1}")
+                .replace(/\bsin\b/g, "\\sin")
+                .replace(/\bcos\b/g, "\\cos")
+                .replace(/\btan\b/g, "\\tan")
+                .replace(/\blog\b/g, "\\log")
+                .replace(/\bln\b/g, "\\ln")
+                .replace(/\bpi\b/g, "\\pi");
 
             var parts = displayString.split('/');
             if (parts.length === 2) {
