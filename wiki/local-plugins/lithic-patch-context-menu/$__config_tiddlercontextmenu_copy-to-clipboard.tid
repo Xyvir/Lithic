@@ -1,0 +1,7 @@
+caption: Copy Body
+title: $:/config/tiddlercontextmenu/copy-to-clipboard
+text: show
+tm-message: tm-copy-to-clipboard
+icon: $:/core/images/copy-clipboard
+tags: $:/tags/tiddlercontextmenu
+type: text/vnd.tiddlywiki
