@@ -44,6 +44,8 @@ Version 1.95 released:
 - "Time Spent" indicator.
 - A few other cross-plugin teaks and improvments. 
 
+Version 1.98 released:
+
 Version 1.99 plans:
  - Image Handling improvements:
    - Paste image from clipboard into overtype
