@@ -1,0 +1,16 @@
+title: $:/plugins/bj/calendar/styles.css
+type: text/vnd.tiddlywiki
+tags: $:/tags/Stylesheet
+
+/* Fallback style for dates without journal entries */
+.calendar-date-fallback a.tc-tiddlylink {
+    color: <<colour foreground>>;
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: none;
+}
+
+.calendar-date-fallback a.tc-tiddlylink:hover {
+    color: <<colour tiddler-link-foreground>>;
+    text-decoration: underline;
+}
