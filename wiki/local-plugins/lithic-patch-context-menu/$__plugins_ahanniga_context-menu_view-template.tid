@@ -2,4 +2,4 @@ title: $:/plugins/ahanniga/context-menu/view-template
 type: text/vnd.tiddlywiki
 tags: $:/tags/PageTemplate
 
-<$contextmenu/>
+<$contextMenu/>
