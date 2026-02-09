@@ -92,11 +92,30 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
         // Check if we can find a closer tiddler title (e.g. Streams node)
         // Streams uses data-node-title, standard TW uses data-tiddler-title
         var closestTiddler = event.target.closest("[data-tiddler-title], [data-node-title]");
-        if (closestTiddler) {
-            // Prioritize node-title if it exists (it's likely the specific row)
-            targ = closestTiddler.getAttribute("data-node-title") || closestTiddler.getAttribute("data-tiddler-title");
-        } else {
-            targ = event.currentTarget.getAttribute("data-tiddler-title");
+
+        // Priority 1: Check if we clicked on a link directly
+        var link = event.target.closest(".tc-tiddlylink");
+        if (link) {
+            var title = link.getAttribute("data-tiddler-title");
+            if (!title && link.hasAttribute("href")) {
+                var href = link.getAttribute("href");
+                if (href.startsWith("#")) {
+                    title = decodeURIComponent(href.substring(1));
+                }
+            }
+            if (title) {
+                targ = title;
+            }
+        }
+
+        // Priority 2: Fallback to container if no link found
+        if (!targ) {
+            if (closestTiddler) {
+                // Prioritize node-title if it exists (it's likely the specific row)
+                targ = closestTiddler.getAttribute("data-node-title") || closestTiddler.getAttribute("data-tiddler-title");
+            } else {
+                targ = event.currentTarget.getAttribute("data-tiddler-title");
+            }
         }
 
         for (var a = 0; a < titles.length; a++) {
