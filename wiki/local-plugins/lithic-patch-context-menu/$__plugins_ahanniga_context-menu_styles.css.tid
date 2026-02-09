@@ -36,7 +36,8 @@ tags: $:/tags/Stylesheet
 	flex-direction: row-reverse;
 	position: relative;
 	text-decoration: unset;
-	color: #4b5155;
+	color: #c8ced8 !important;
+	fill: #c8ced8 !important;
 	line-height: 24px;
 	font-weight: normal;
 	transition: none;
@@ -59,8 +60,8 @@ tags: $:/tags/Stylesheet
 }
 
 .context-menu > ul > li > a > svg {
-	color: #b7bcbf;
-	fill: #b7bcbf;
+	color: #c8ced8 !important;
+	fill: #c8ced8 !important;
 	width: 13px;
 	margin-left: 16px;
 	margin-right: 0;
