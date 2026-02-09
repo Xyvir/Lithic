@@ -4,7 +4,7 @@ tags: $:/tags/Macro
 title: $:/lithic/config/PublishFilterPatch
 
 \define publishFilter()
--[prefix[$:/state/]]
+-[prefix[$:/state/]!prefix[$:/state/sq/streams/visibility/]]
 -[prefix[$:/temp/]]
 -[prefix[$:/info/]]
 -[[$:/StoryList]]

@@ -1,0 +1,4 @@
+modifier: Antigravity
+module-type: widget
+title: $:/core/modules/widgets/text.js
+type: application/javascript

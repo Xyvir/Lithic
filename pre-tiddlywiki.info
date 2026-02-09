@@ -4,6 +4,7 @@
         "tiddlywiki/highlight",
         "bj/unieditor",
         "ahanniga/context-menu-plugin",
+        "nico/notebook-mobile",
         "xyvir/lithic-patch-context-menu",
         "xyvir/lithic-wikitext-highlight",
         "xyvir/lithic-python-codeblocks"
