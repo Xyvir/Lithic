@@ -27,7 +27,13 @@
         "mklauber/aliases",
         "nico/notebook-mobile",
         "oeyoews/notebook-theme-sidebar-resizer",
-        "bj/Calendar"
+        "bj/Calendar",
+        "tiddlywiki/highlight",
+        "bj/unieditor",
+        "ahanniga/context-menu-plugin",
+        "xyvir/lithic-patch-context-menu",
+        "xyvir/lithic-wikitext-highlight",
+        "xyvir/lithic-python-codeblocks"
     ],
     "themes": [
         "tiddlywiki/vanilla",
@@ -36,7 +42,10 @@
     ],
     "build": {
         "index": [
-            "--render", "$:/core/save/all", "index.html", "text/plain"
+            "--render",
+            "$:/core/save/all",
+            "index.html",
+            "text/plain"
         ]
     }
 }
