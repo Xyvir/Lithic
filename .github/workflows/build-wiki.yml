@@ -60,6 +60,10 @@ jobs:
       - name: Rename Output
         run: mv wiki/output/index.html wiki/output/lith.html
 
+      - name: Brand Output
+        run: |
+          sed -i 's/content="TiddlyWiki"/content="Lithic PKMS"/g' wiki/output/lith.html
+
       - name: Archive Wiki Folder
         run: zip -r wiki.zip wiki
 
