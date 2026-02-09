@@ -53,7 +53,7 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
 
     var Widget = require("$:/core/modules/widgets/widget.js").widget;
     // Reverted to original class name
-    var template = `<div id="contextMenu" class="context-menu" style="display: none; z-order: 9999;"></div>`;
+    var template = `<div id="contextMenu" class="context-menu" style="display: none; z-index: 10000;"></div>`;
 
     var ContextListener = function (parseTreeNode, options) {
         this.initialise(parseTreeNode, options);
