@@ -1,7 +1,7 @@
 title: $:/config/lithic/constants
+type: text/vnd.tiddlywiki
 open-double-bracket: [[
 close-double-bracket: ]]
 open-double-brace: {{
 close-double-brace: }}
-type: text/vnd.tiddlywiki
 

@@ -1,0 +1,8 @@
+caption: Copy Ref
+title: $:/config/tiddlercontextmenu/copy-ref
+text: show
+tm-message: tm-copy-to-clipboard
+param-filter: [<currentTiddler>addprefix{$:/config/lithic/constants!!open-double-bracket}addsuffix{$:/config/lithic/constants!!close-double-bracket}]
+icon: $:/core/images/link
+tags: $:/tags/tiddlercontextmenu
+type: text/vnd.tiddlywiki
