@@ -87,7 +87,13 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
         var titles = $tw.wiki.getTiddlersWithTag("$:/tags/tiddlercontextmenu");
         var label, action, icon, tid, targ, text, separator, paramFilter, customParam;
 
-        targ = event.currentTarget.getAttribute("data-tiddler-title");
+        // Check if we can find a closer tiddler title (e.g. Streams node)
+        var closestTiddler = event.target.closest("[data-tiddler-title]");
+        if (closestTiddler) {
+            targ = closestTiddler.getAttribute("data-tiddler-title");
+        } else {
+            targ = event.currentTarget.getAttribute("data-tiddler-title");
+        }
 
         for (var a = 0; a < titles.length; a++) {
             tid = $tw.wiki.getTiddler(titles[a]);
