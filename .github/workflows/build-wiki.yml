@@ -8,7 +8,7 @@ on:
         description: 'Create a Release'
         required: true
         type: boolean
-        default: true
+        default: false
       build_config:
         description: 'Build Configuration'
         required: true
@@ -63,6 +63,16 @@ jobs:
       - name: Brand Output
         run: |
           sed -i 's/content="TiddlyWiki"/content="Lithic PKMS"/g' wiki/output/lith.html
+
+      - name: Commit Built Wiki to src/lithic.html
+        if: ${{ inputs.create_release == true }}
+        run: |
+          cp wiki/output/lith.html src/lithic.html
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/lithic.html
+          git diff --cached --quiet || git commit -m "Update src/lithic.html from build-${{ steps.tag.outputs.date }}"
+          git push
 
       - name: Archive Wiki Folder
         run: zip -r wiki.zip wiki
