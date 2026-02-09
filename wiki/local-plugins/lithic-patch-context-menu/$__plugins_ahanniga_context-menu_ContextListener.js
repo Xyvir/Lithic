@@ -64,7 +64,7 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
     ContextListener.prototype.render = function (parent, nextSibling) {
         this.parentDomNode = parent;
         var self = this;
-        parent.addEventListener("contextmenu", function (event) { self.contextmenu.call(self, event) });
+        document.addEventListener("contextmenu", function (event) { self.contextmenu.call(self, event) });
         document.onclick = this.hideMenu;
     };
 
@@ -113,9 +113,12 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
             if (closestTiddler) {
                 // Prioritize node-title if it exists (it's likely the specific row)
                 targ = closestTiddler.getAttribute("data-node-title") || closestTiddler.getAttribute("data-tiddler-title");
-            } else {
-                targ = event.currentTarget.getAttribute("data-tiddler-title");
             }
+        }
+
+        // If still no target, return true to allow default browser context menu
+        if (!targ) {
+            return true;
         }
 
         for (var a = 0; a < titles.length; a++) {
