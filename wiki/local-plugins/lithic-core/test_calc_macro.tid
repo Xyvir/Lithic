@@ -1,0 +1,117 @@
+title: $:/lithic/tests/calc
+type: text/x-markdown
+tags: $:/tags/Macro
+
+## Addition
+`<<calc "2+2">>`
+<<calc "2+2">>
+
+`<<calc "2+2=">>`
+<<calc "2+2=">>
+
+## Division
+`<<calc "10/3">>`
+<<calc "10/3">>
+
+`<<calc "10/3=">>`
+<<calc "10/3=">>
+
+## Exponentiation
+`<<calc "2^3">>`
+<<calc "2^3">>
+
+`<<calc "2^3=">>`
+<<calc "2^3=">>
+
+## Square Root
+`<<calc "sqrt(16)">>`
+<<calc "sqrt(16)">>
+
+`<<calc "sqrt(16)=">>`
+<<calc "sqrt(16)=">>
+
+## Sine
+`<<calc "sin(0)">>`
+<<calc "sin(0)">>
+
+`<<calc "sin(0)=">>`
+<<calc "sin(0)=">>
+
+`<<calc "sin(pi/2)">>`
+<<calc "sin(pi/2)">>
+
+`<<calc "sin(pi/2)=">>`
+<<calc "sin(pi/2)=">>
+
+## Cosine
+`<<calc "cos(0)">>`
+<<calc "cos(0)">>
+
+`<<calc "cos(0)=">>`
+<<calc "cos(0)=">>
+
+`<<calc "cos(pi)">>`
+<<calc "cos(pi)">>
+
+`<<calc "cos(pi)=">>`
+<<calc "cos(pi)=">>
+
+## Tangent
+`<<calc "tan(0)">>`
+<<calc "tan(0)">>
+
+`<<calc "tan(0)=">>`
+<<calc "tan(0)=">>
+
+`<<calc "tan(pi/4)">>`
+<<calc "tan(pi/4)">>
+
+`<<calc "tan(pi/4)=">>`
+<<calc "tan(pi/4)=">>
+
+## Logarithm (Base 10)
+`<<calc "log(100)">>`
+<<calc "log(100)">>
+
+`<<calc "log(100)=">>`
+<<calc "log(100)=">>
+
+## Natural Logarithm
+`<<calc "ln(e)">>`
+<<calc "ln(e)">>
+
+`<<calc "ln(e)=">>`
+<<calc "ln(e)=">>
+
+## Constants
+`<<calc "pi">>`
+<<calc "pi">>
+
+`<<calc "pi=">>`
+<<calc "pi=">>
+
+`<<calc "e">>`
+<<calc "e">>
+
+`<<calc "e=">>`
+<<calc "e=">>
+
+## Complex Expressions
+`<<calc "sin(pi/2) + cos(0)">>`
+<<calc "sin(pi/2) + cos(0)">>
+
+`<<calc "sin(pi/2) + cos(0)=">>`
+<<calc "sin(pi/2) + cos(0)=">>
+
+`<<calc "log(10^3) * ln(e^2)">>`
+<<calc "log(10^3) * ln(e^2)">>
+
+`<<calc "log(10^3) * ln(e^2)=">>`
+<<calc "log(10^3) * ln(e^2)=">>
+
+## Error Handling
+`<<calc "alert(1)">>`
+<<calc "alert(1)">>
+
+`<<calc "alert(1)=">>`
+<<calc "alert(1)=">>

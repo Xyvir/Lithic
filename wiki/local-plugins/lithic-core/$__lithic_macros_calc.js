@@ -86,8 +86,8 @@ Usage:
             }
             // Check for repeating decimals / irrational
             else if (resultStr.length > 10 && resultStr.includes('.')) {
-                if (/3{5,}$/.test(resultStr)) {
-                    formattedResult = resultStr.replace(/3{5,}$/, "") + "\\overline{3}";
+                if (/3{5,}5?$/.test(resultStr)) {
+                    formattedResult = resultStr.replace(/3{5,}5?$/, "") + "\\overline{3}";
                 }
                 else if (/6{5,}7?$/.test(resultStr)) {
                     formattedResult = resultStr.replace(/6{5,}7?$/, "") + "\\overline{6}";
