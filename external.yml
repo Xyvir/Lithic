@@ -26,7 +26,7 @@
   type: plugins
 
 - name: notebook-mobile
-  url: https://saqimtiaz.github.io/sq-tw/
+  url: https://saqimtiaz.github.io/sq-tw/notebook.html
   type: plugins
 
 - name: sidebar-resize
