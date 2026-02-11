@@ -1,5 +1,7 @@
 {
     "description": "Lithic (Pre)",
-    "plugins": [],
+    "plugins": [
+        "byper/code-copy-button"
+    ],
     "themes": []
 }

@@ -45,6 +45,10 @@
   url: https://context-menu-plugin.tiddlyhost.com/
   type: plugins
 
+- name: copy-code
+  url: https://b-yp.github.io/tiddlywiki-plugins/
+  type: plugins
+  
 - name: captivate
   url: https://cdruan.github.io/tw5-captivate/
   type: disable
