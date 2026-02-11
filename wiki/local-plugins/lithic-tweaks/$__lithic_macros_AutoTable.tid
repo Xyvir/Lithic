@@ -26,8 +26,8 @@ title: $:/lithic/macros/AutoTable
       <$list filter="[[$colNum$]compare:number:eq[$maxCols$]]" variable="ignore">
           <$list filter="[tag<currentTiddler>sort[title]after[$row$]]" variable="NextRow" emptyMessage='
              <$vars NextIndex={{{ [tag<currentTiddler>count[]add[1]] }}}>
-                <$action-createtiddler $basetitle={{{ [<currentTiddler>addsuffix[-]addsuffix<NextIndex>] }}} tags={{{ [<currentTiddler>format:titlelist[]] }}}/>
-                <$action-setfield $tiddler={{{ [[$:/state/AutoTable/]addsuffix<currentTiddler>addsuffix[/]addsuffix<currentTiddler>addsuffix[-]addsuffix<NextIndex>addsuffix[/col-1]] }}} text="edit"/>
+                <$action-createtiddler $basetitle={{{ [<currentTiddler>addsuffix[-row]addsuffix<NextIndex>] }}} tags={{{ [<currentTiddler>format:titlelist[]] }}}/>
+                <$action-setfield $tiddler={{{ [[$:/state/AutoTable/]addsuffix<currentTiddler>addsuffix[/]addsuffix<currentTiddler>addsuffix[-row]addsuffix<NextIndex>addsuffix[/col-1]] }}} text="edit"/>
              </$vars>
           '>
              <$action-setfield $tiddler={{{ [[$:/state/AutoTable/]addsuffix<currentTiddler>addsuffix[/]addsuffix<NextRow>addsuffix[/col-1]] }}} text="edit"/>
@@ -77,7 +77,7 @@ title: $:/lithic/macros/AutoTable
     <$button class="tc-btn-invisible" style="width:100%; padding:5px; color:#888; font-style:italic;">
       + Add Row
       <$vars NextIndex={{{ [tag<currentTiddler>count[]add[1]] }}}>
-         <$action-createtiddler $basetitle={{{ [<currentTiddler>addsuffix[-]addsuffix<NextIndex>] }}} tags={{{ [<currentTiddler>format:titlelist[]] }}}/>
+         <$action-createtiddler $basetitle={{{ [<currentTiddler>addsuffix[-row]addsuffix<NextIndex>] }}} tags={{{ [<currentTiddler>format:titlelist[]] }}}/>
       </$vars>
     </$button>
   </td>
