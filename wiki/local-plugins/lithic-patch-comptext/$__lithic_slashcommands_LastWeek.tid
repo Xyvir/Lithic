@@ -1,1 +1,4 @@
+tags: 
+title: $:/lithic/slashcommands/lastweek
+
 <<stamp "{{{ [<now YYYY0MM0DD0hh0mm0ss0XXX>format:date[TIMESTAMP]subtract[604800000]format:timestamp[DD MMM YYYY]] }}}">>
