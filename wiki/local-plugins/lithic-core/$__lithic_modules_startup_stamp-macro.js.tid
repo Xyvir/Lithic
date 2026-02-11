@@ -33,67 +33,87 @@ exports.startup = function() {
 
 	function processStampLogic(tiddler) {
 		// --- SAFETY SHIELD ---
-		// If it's not a real object, or doesn't have fields, or text isn't a string: skip.
-		if(!tiddler || !tiddler.fields || typeof tiddler.fields.text !== "string") {
-			return tiddler;
-		}
-		
-		var text = tiddler.fields.text;
-		
-		// Optimization: If the word "stamp" isn't even in the text, skip regex entirely.
-		if(text.indexOf("stamp") === -1) {
+		// If it's not a real object, or doesn't have fields: skip.
+		if(!tiddler || !tiddler.fields) {
 			return tiddler;
 		}
 
 		var fieldUpdates = {};
 		var hasFieldUpdates = false;
 
-		// Dormancy Check (---)
-		var fenceRegex = /(?:^|\n)\s*---+\s*(?:\n|$)/;
-		var fenceMatch = fenceRegex.exec(text);
-		var fenceIndex = fenceMatch ? fenceMatch.index : Infinity;
+		// Helper to process a single string for stamps
+		function processString(text, fieldName) {
+			if(typeof text !== "string" || text.indexOf("stamp") === -1) {
+				return { text: text, updates: {} };
+			}
 
-		// Stamp Regex (Flexible spaces)
-		var stampRegex = /<<stamp\s*(?:"""([\s\S]*?)"""|"([^"]*)"|'([^']*)')(?:(?:\s+)(?:"""([\s\S]*?)"""|"([^"]*)"|'([^']*)'))?\s*>>/g;
+			// Dormancy Check (Fence)
+			var fenceRegex = /(?:^|\n)\s*---+\s*(?:\n|$)/;
+			var fenceMatch = fenceRegex.exec(text);
+			var fenceIndex = fenceMatch ? fenceMatch.index : Infinity;
 
-		if(!stampRegex.test(text)) {
-			return tiddler;
+			// Stamp Regex (Flexible spaces)
+			var stampRegex = /<<stamp\s*(?:"""([\s\S]*?)"""|"([^"]*)"|'([^']*)')(?:(?:\s+)(?:"""([\s\S]*?)"""|"([^"]*)"|'([^']*)'))?\s*>>/g;
+
+			if(!stampRegex.test(text)) {
+				return { text: text, updates: {} };
+			}
+
+			var localUpdates = {};
+			stampRegex.lastIndex = 0;
+			
+			var newText = text.replace(stampRegex, function(match, c3, c2, c1, f3, f2, f1, offset) {
+				if (offset > fenceIndex) return match;
+
+				var contentToStamp = c3 || c2 || c1;
+				var targetField = f3 || f2 || f1;
+				if (!contentToStamp) return match;
+
+				var renderedResult = "";
+				try {
+					renderedResult = $tw.wiki.renderText(
+						"text/plain", 
+						"text/vnd.tiddlywiki", 
+						contentToStamp, 
+						{ variables: { currentTiddler: tiddler.fields.title } }
+					);
+				} catch (e) {
+					return match;
+				}
+
+				if (targetField) {
+					localUpdates[targetField] = renderedResult;
+					return "";
+				}
+				return renderedResult;
+			});
+
+			return { text: newText, updates: localUpdates };
 		}
 
-		stampRegex.lastIndex = 0;
-		var newText = text.replace(stampRegex, function(match, c3, c2, c1, f3, f2, f1, offset) {
-			if (offset > fenceIndex) return match;
+		// Iterate over all fields
+		Object.keys(tiddler.fields).forEach(function(fieldName) {
+			var value = tiddler.fields[fieldName];
+			var result = processString(value, fieldName);
 
-			var contentToStamp = c3 || c2 || c1;
-			var targetField = f3 || f2 || f1;
-			if (!contentToStamp) return match;
-
-			var renderedResult = "";
-			try {
-				renderedResult = $tw.wiki.renderText(
-					"text/plain", 
-					"text/vnd.tiddlywiki", 
-					contentToStamp, 
-					{ variables: { currentTiddler: tiddler.fields.title } }
-				);
-			} catch (e) {
-				return match;
-			}
-
-			if (targetField) {
-				if (tiddler.fields[targetField] === renderedResult) {
-					fieldUpdates[targetField] = undefined;
-				} else {
-					fieldUpdates[targetField] = renderedResult;
-				}
+			// If text changed (in-place replacement or removal due to side-effect stamp)
+			if(result.text !== value) {
+				fieldUpdates[fieldName] = result.text;
 				hasFieldUpdates = true;
-				return "";
 			}
-			return renderedResult;
+
+			// Apply side-effect updates
+			Object.keys(result.updates).forEach(function(target) {
+				// Only update if value is different from original
+				if (tiddler.fields[target] !== result.updates[target]) {
+					fieldUpdates[target] = result.updates[target];
+					hasFieldUpdates = true;
+				}
+			});
 		});
 
-		if(newText !== text || hasFieldUpdates) {
-			return new $tw.Tiddler(tiddler, fieldUpdates, {text: newText});
+		if(hasFieldUpdates) {
+			return new $tw.Tiddler(tiddler, fieldUpdates);
 		}
 
 		return tiddler;
