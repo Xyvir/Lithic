@@ -1,6 +1,6 @@
 created: 20251203150721992
 modified: 20251203150801214
 tags: 
-title: $:/lithic/slashcommands/table4x4
+title: $:/lithic/slashcommands/table4
 
 <<AutoTable 4 "H1 H2 H3 H4">>
