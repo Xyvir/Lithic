@@ -4,4 +4,4 @@ caret-pos: 8
 tags: 
 title: $:/lithic/slashcommands/calc
 
-<<calc " ">>
+<<calc "">>
