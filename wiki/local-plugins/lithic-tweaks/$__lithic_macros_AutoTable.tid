@@ -8,9 +8,9 @@ title: $:/lithic/macros/AutoTable
 
 <$reveal type="nomatch" state=<<CellState>> text="edit">
   <$button class="tc-btn-invisible tc-tiddler-link" style="width:100%; height:100%; display:block; padding:4px; text-align:center;" set=<<CellState>> setTo="edit">
-    <$view tiddler="$row$" field="$field$">
+    <$transclude tiddler="$row$" field="$field$">
        &nbsp;
-    </$view>
+    </$transclude>
   </$button>
 </$reveal>
 
