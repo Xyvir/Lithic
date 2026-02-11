@@ -26,6 +26,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.tag.outputs.date }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -92,6 +94,14 @@ jobs:
         id: tag
         run: echo "date=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_OUTPUT
 
+      - name: Upload Built Wiki Artifact
+        if: ${{ inputs.create_release == true && inputs.build_config == 'prod' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-wiki
+          path: wiki/output/lith.html
+          retention-days: 1
+
       - name: Create Release
         if: ${{ inputs.create_release == true && inputs.build_config == 'prod' }}
         uses: softprops/action-gh-release@v1
@@ -120,4 +130,15 @@ jobs:
           path: |
             wiki/mirror.log
             wiki/flatten-manifest.log
+
             wiki/tiddlywiki.log
+
+  build-tauri:
+
+    needs: build
+    if: ${{ inputs.create_release == true && inputs.build_config == 'prod' }}
+    uses: ./.github/workflows/windows-release.yaml
+    with:
+      tag_name: build-${{ needs.build.outputs.tag_name }}
+    secrets: inherit
+

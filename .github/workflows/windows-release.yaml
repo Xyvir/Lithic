@@ -2,6 +2,11 @@ name: Windows Manual Release
 
 on:
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      tag_name:
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -13,6 +18,17 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Download Built Wiki Artifact
+        if: ${{ inputs.tag_name != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: built-wiki
+          path: src
+
+      - name: Rename Downloaded Wiki
+        if: ${{ inputs.tag_name != '' }}
+        run: Move-Item src/lith.html src/lithic.html
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -83,7 +99,12 @@ jobs:
 
       - name: Generate Date-Based Tag
         id: tag
-        run: echo "date=v$(Get-Date -Format 'yyyy.MM.dd-HHmm')" >> $env:GITHUB_OUTPUT
+        run: |
+           if ("${{ inputs.tag_name }}" -ne "") {
+             echo "date=${{ inputs.tag_name }}" >> $env:GITHUB_OUTPUT
+           } else {
+             echo "date=v$(Get-Date -Format 'yyyy.MM.dd-HHmm')" >> $env:GITHUB_OUTPUT
+           }
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
