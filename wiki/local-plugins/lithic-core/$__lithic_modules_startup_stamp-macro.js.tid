@@ -1,0 +1,110 @@
+created: 20260211004759590
+modified: 20260211010356664
+module-type: startup
+tags: 
+title: $:/lithic/modules/startup/stamp-macro.js
+type: application/javascript
+
+/*\
+title: $:/lithic/modules/startup/stamp-macro.js
+type: application/javascript
+module-type: startup
+
+Stamp Macro Hook (v11 - Shielded Monkeypatch)
+- Overrides addTiddler with aggressive null-checks.
+- Prevents "undefined" crashes on state tiddlers.
+
+\*/
+
+(function(){
+
+/*jslint node: true, browser: true */
+/*global $tw: false */
+"use strict";
+
+exports.name = "stamp-macro-monkeypatch";
+exports.platforms = ["browser"];
+exports.after = ["startup"];
+exports.synchronous = true;
+
+exports.startup = function() {
+
+	var originalAddTiddler = $tw.wiki.addTiddler;
+
+	function processStampLogic(tiddler) {
+		// --- SAFETY SHIELD ---
+		// If it's not a real object, or doesn't have fields, or text isn't a string: skip.
+		if(!tiddler || !tiddler.fields || typeof tiddler.fields.text !== "string") {
+			return tiddler;
+		}
+		
+		var text = tiddler.fields.text;
+		
+		// Optimization: If the word "stamp" isn't even in the text, skip regex entirely.
+		if(text.indexOf("stamp") === -1) {
+			return tiddler;
+		}
+
+		var fieldUpdates = {};
+		var hasFieldUpdates = false;
+
+		// Dormancy Check (---)
+		var fenceRegex = /(?:^|\n)\s*---+\s*(?:\n|$)/;
+		var fenceMatch = fenceRegex.exec(text);
+		var fenceIndex = fenceMatch ? fenceMatch.index : Infinity;
+
+		// Stamp Regex (Flexible spaces)
+		var stampRegex = /<<stamp\s*(?:"""([\s\S]*?)"""|"([^"]*)"|'([^']*)')(?:(?:\s+)(?:"""([\s\S]*?)"""|"([^"]*)"|'([^']*)'))?\s*>>/g;
+
+		if(!stampRegex.test(text)) {
+			return tiddler;
+		}
+
+		stampRegex.lastIndex = 0;
+		var newText = text.replace(stampRegex, function(match, c3, c2, c1, f3, f2, f1, offset) {
+			if (offset > fenceIndex) return match;
+
+			var contentToStamp = c3 || c2 || c1;
+			var targetField = f3 || f2 || f1;
+			if (!contentToStamp) return match;
+
+			var renderedResult = "";
+			try {
+				renderedResult = $tw.wiki.renderText(
+					"text/plain", 
+					"text/vnd.tiddlywiki", 
+					contentToStamp, 
+					{ variables: { currentTiddler: tiddler.fields.title } }
+				);
+			} catch (e) {
+				return match;
+			}
+
+			if (targetField) {
+				if (tiddler.fields[targetField] === renderedResult) {
+					fieldUpdates[targetField] = undefined;
+				} else {
+					fieldUpdates[targetField] = renderedResult;
+				}
+				hasFieldUpdates = true;
+				return "";
+			}
+			return renderedResult;
+		});
+
+		if(newText !== text || hasFieldUpdates) {
+			return new $tw.Tiddler(tiddler, fieldUpdates, {text: newText});
+		}
+
+		return tiddler;
+	}
+
+	// Override core function
+	$tw.wiki.addTiddler = function(tiddler) {
+		// Ensure we are working with the tiddler object
+		var processedTiddler = processStampLogic(tiddler);
+		return originalAddTiddler.call($tw.wiki, processedTiddler);
+	};
+};
+
+})();
