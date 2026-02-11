@@ -2,6 +2,6 @@ caption: Clone Tiddler
 title: $:/config/tiddlercontextmenu/clone-tiddler
 text: show
 tm-message: tm-new-tiddler
-icon: $:/core/images/clone
+icon: $:/core/images/clone-button
 tags: $:/tags/tiddlercontextmenu
 type: text/vnd.tiddlywiki
