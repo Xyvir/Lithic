@@ -1,0 +1,22 @@
+created: 20260211175843232
+modified: 20260211180622823
+tags: $:/tags/Global
+title: $:/lithic/macros/render-progeny
+type: text/vnd.tiddlywiki
+
+\procedure .stream-recurse()
+<ul>
+  <$list filter="[enlist{!!stream-list}]">
+    <li>
+      <$transclude mode="block"/>
+      <<.stream-recurse>>
+    </li>
+  </$list>
+</ul>
+\end
+
+\procedure render-progeny(parent)
+<$tiddler tiddler=<<parent>>>
+  <<.stream-recurse>>
+</$tiddler>
+\end
