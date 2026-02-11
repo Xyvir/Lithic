@@ -28,7 +28,7 @@ jobs:
 
       - name: Rename Downloaded Wiki
         if: ${{ inputs.tag_name != '' }}
-        run: Move-Item src/lith.html src/lithic.html
+        run: Move-Item -Force src/lith.html src/lithic.html
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
