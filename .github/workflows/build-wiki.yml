@@ -64,14 +64,24 @@ jobs:
         run: |
           sed -i 's/content="TiddlyWiki"/content="Lithic PKMS"/g' wiki/output/lith.html
 
-      - name: Commit Built Wiki to src/lithic.html
-        if: ${{ inputs.create_release == true }}
+      - name: Commit Built Wiki to src/lithic.html (prod release)
+        if: ${{ inputs.create_release == true && inputs.build_config == 'prod' }}
         run: |
           cp wiki/output/lith.html src/lithic.html
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/lithic.html
           git diff --cached --quiet || git commit -m "Update src/lithic.html from build-${{ steps.tag.outputs.date }}"
+          git push
+
+      - name: Commit Built Wiki to repo root (non-prod)
+        if: ${{ inputs.build_config != 'prod' }}
+        run: |
+          cp wiki/output/lith.html ${{ inputs.build_config }}.html
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ${{ inputs.build_config }}.html
+          git diff --cached --quiet || git commit -m "Update ${{ inputs.build_config }}.html from build"
           git push
 
       - name: Archive Wiki Folder
