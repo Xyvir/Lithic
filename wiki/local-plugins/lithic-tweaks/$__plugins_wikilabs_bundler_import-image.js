@@ -3,39 +3,40 @@ title: $:/plugins/wikilabs/bundler/import-image.js
 type: application/javascript
 module-type: upgrader
 
-This module checks, if tiddlers, that are imported are named "image.png". 
-If so, they are renamed according the template config tiddler.
+This module checks if imported tiddlers are named "image.png". 
+If so, they are renamed according to the hardcoded template.
 
-The default image name comming from the clipboard depends on the browser language setting.
 \*/
 
 /*jslint node: true, browser: true */
 /*global $tw: false */
 "use strict";
 
-var IMAGE_DEFAULT_TITLE = "$:/config/wikilabs/import/image/default-title",
-    IMAGE_TITLE_TEMPLATE = "$:/config/wikilabs/import/image/title-template",
-    ENABLE_IMPORT_RENAME = "$:/config/wikilabs/enableImportRename";
+// Define sane defaults directly here
+var DEFAULT_IMPORT_TITLE = "image.png",
+    NEW_TITLE_TEMPLATE = "image YYYY-0MM-0DD, 0hh:0mm:0XXX.png";
 
 exports.upgrade = function (wiki, titles, tiddlers) {
-    // Check if function is enabled
-    if ($tw.wiki.getTiddlerText(ENABLE_IMPORT_RENAME, "no").trim() !== "yes") {
-        return {};
-    }
+    // We removed the ENABLE check, so this now runs automatically.
+
     var self = this,
-        messages = {},
-        defaultTitle = $tw.wiki.getTiddlerText(IMAGE_DEFAULT_TITLE, "image.png").trim(),
-        targetTitle = $tw.wiki.getTiddlerText(IMAGE_TITLE_TEMPLATE, "image YYYY-0MM-0DD, 0hh:0mm:0XXX.png").trim();
+        messages = {};
 
     $tw.utils.each(titles, function (title) {
         var tiddler = {};
-        // If the tiddler has been removed, there will be no fields.
-        if (title === defaultTitle) {
+
+        // Check if the imported title matches our default (e.g. "image.png")
+        if (title === DEFAULT_IMPORT_TITLE) {
             messages[title] = "auto-renamed";
-            var newTitle = $tw.utils.formatDateString(new Date(), targetTitle);
+
+            // Generate the new title using the template
+            var newTitle = $tw.utils.formatDateString(new Date(), NEW_TITLE_TEMPLATE);
+
+            // Create the new tiddler with the renamed title
             tiddler = new $tw.Tiddler(tiddlers[title], { "title": newTitle });
             tiddlers[tiddler.fields.title] = tiddler.fields;
-            // remove the original tiddler
+
+            // Remove the original "image.png" tiddler from the import list
             tiddlers[title] = Object.create(null);
         }
     });
