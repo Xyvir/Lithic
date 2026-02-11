@@ -1,7 +1,5 @@
-created: 20260211175843232
-modified: 20260211180622823
 tags: $:/tags/Global
-title: $:/lithic/macros/render-progeny
+title: $:/lithic/macros/embed-stream
 type: text/vnd.tiddlywiki
 
 \procedure .stream-recurse()
@@ -15,7 +13,7 @@ type: text/vnd.tiddlywiki
 </ul>
 \end
 
-\procedure render-progeny(parent)
+\procedure embed-stream(parent)
 <$tiddler tiddler=<<parent>>>
   <<.stream-recurse>>
 </$tiddler>
