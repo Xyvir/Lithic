@@ -470,6 +470,11 @@ TODO : CHECK if needed
 			// Pattern below cursor : undefined if no pattern
 			var pattern = extractPattern(val, curPos, this._template);
 			if (key === 13) { // ENTER
+				// Check pattern validity
+				if (!pattern) {
+					this._abortPattern(this._popNode);
+					return;
+				}
 				//DEBUG console.log( "KEY : Enter" );
 				// Choice made in the displayNode ?
 				var selected = this._idxChoice > -1 && this._idxChoice !== this._maxMatch;
@@ -609,6 +614,12 @@ TODO : CHECK if needed
 		var curPos = this._areaNode.selectionStart;  // cursor position
 		var val = this._areaNode.value;   // text in the area
 		var pattern = extractPattern(val, curPos, this._template);
+
+		if (!pattern) {
+			this._abortPattern(this._popNode);
+			this._areaNode.focus();
+			return;
+		}
 
 		//DEBUG console.log( "__handleItemClik idx="+idx_select, this );
 
