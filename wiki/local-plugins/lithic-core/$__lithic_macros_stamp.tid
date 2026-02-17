@@ -1,0 +1,40 @@
+title: $:/lithic/macros/stamp
+tags: $:/tags/Macro
+type: text/vnd.tiddlywiki
+
+\define stamp(text)
+<$wikify name="result" text=<<__text__>>>
+  <$button 
+    tooltip="Click to stamp"
+    style={{{ 
+      [[background-color:]] [[message-background-warning]colour[]] [[;]]
+      [[color:]] [[message-foreground-warning]colour[]] [[;]]
+      [[border: 1px solid]] [[message-border-warning]colour[]] [[;]]
+      [[padding: 1px 4px; border-radius: 3px; font-size: 0.8em; line-height: 1.1; text-align: center; vertical-align: middle;]] 
+      +[join[]] 
+    }}}
+  >
+    <span style="font-family: monospace; font-weight: bold; display: block;">
+      <$text text=<<__text__>>/>
+    </span>
+
+    <span style="font-style: italic; font-size: 0.9em; opacity: 0.85; display: block;">
+      <<result>>
+    </span>
+
+    <$vars 
+       raw=<<__text__>>
+    >
+      <$vars 
+        s-single={{{ [<raw>addprefix[<<stamp ']addsuffix['>>]] }}}
+        s-double={{{ [<raw>addprefix[<<stamp "]addsuffix[">>]] }}}
+      >
+        <$action-setfield text={{{ 
+            [{!!text}search-replace<s-single>,<result>search-replace<s-double>,<result>] 
+        }}} /> 
+      </$vars>
+    </$vars>
+
+  </$button>
+</$wikify>
+\end
