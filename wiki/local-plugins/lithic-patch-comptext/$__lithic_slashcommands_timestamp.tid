@@ -3,4 +3,4 @@ modified: 20251203150801214
 tags: 
 title: $:/lithic/slashcommands/timestamp
 
-<<stamp '<<now>>' >>
+<<stamp "now">>

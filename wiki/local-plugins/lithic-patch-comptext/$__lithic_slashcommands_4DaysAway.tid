@@ -1,4 +1,4 @@
 tags: 
 title: $:/lithic/slashcommands/4daysaway
 
-<<stamp "{{{ [<now YYYY0MM0DD0hh0mm0ss0XXX>format:date[TIMESTAMP]add[345600000]format:timestamp[DD MMM YYYY]] }}}">>
+<<stamp "date-4daysaway">>
