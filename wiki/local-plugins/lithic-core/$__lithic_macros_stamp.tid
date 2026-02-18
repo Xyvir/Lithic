@@ -5,15 +5,10 @@ type: text/vnd.tiddlywiki
 \define stamp(text)
 <$vars code={{{ [<__text__>addprefix[<<]addsuffix[>>]] }}}>
 <$wikify name="result" text=<<code>>>
+<$wikify name="css" text="background-color: <<colour message-background>>; color: <<colour primary>>; border: 1px solid <<colour message-border>>; padding: 1px 4px; border-radius: 3px; font-size: 0.8em; line-height: 1.1; text-align: center; vertical-align: middle;">
   <$button 
     tooltip="Click to stamp"
-    style={{{ 
-      [[background-color:]] [[message-background-warning]colour[]] [[;]]
-      [[color:]] [[message-foreground-warning]colour[]] [[;]]
-      [[border: 1px solid]] [[message-border-warning]colour[]] [[;]]
-      [[padding: 1px 4px; border-radius: 3px; font-size: 0.8em; line-height: 1.1; text-align: center; vertical-align: middle;]] 
-      +[join[]] 
-    }}}
+    style=<<css>>
   >
     <span style="font-family: monospace; font-weight: bold; display: block;">
       <$text text=<<code>>/>
@@ -37,6 +32,7 @@ type: text/vnd.tiddlywiki
     </$vars>
 
   </$button>
+</$wikify>
 </$wikify>
 </$vars>
 \end
