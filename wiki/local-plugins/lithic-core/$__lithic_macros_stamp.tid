@@ -3,7 +3,8 @@ tags: $:/tags/Macro
 type: text/vnd.tiddlywiki
 
 \define stamp(text)
-<$wikify name="result" text=<<__text__>>>
+<$vars code={{{ [<__text__>addprefix[<<]addsuffix[>>]] }}}>
+<$wikify name="result" text=<<code>>>
   <$button 
     tooltip="Click to stamp"
     style={{{ 
@@ -15,7 +16,7 @@ type: text/vnd.tiddlywiki
     }}}
   >
     <span style="font-family: monospace; font-weight: bold; display: block;">
-      <$text text=<<__text__>>/>
+      <$text text=<<code>>/>
     </span>
 
     <span style="font-style: italic; font-size: 0.9em; opacity: 0.85; display: block;">
@@ -37,4 +38,5 @@ type: text/vnd.tiddlywiki
 
   </$button>
 </$wikify>
+</$vars>
 \end
