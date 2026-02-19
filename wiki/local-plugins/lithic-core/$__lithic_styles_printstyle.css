@@ -3,7 +3,7 @@
        1. HIDE ALL NAVIGATION AND INTERFACE ELEMENTS
        (Ensures only content is printed)
        ======================================================= */
-    
+
     /* Hide the entire custom top bar */
     .nc-topbar {
         display: none !important;
@@ -19,7 +19,7 @@
     .tc-sidebar-header {
         display: none !important;
     }
-    
+
     /* HIDE THE TIDDLER TITLE BAR (including title and controls) */
     .tc-titlebar {
         display: none !important;
@@ -51,7 +51,7 @@
     .tc-edit-text-wrapper {
         display: none !important;
     }
-    
+
     /* Hide the 'Add New Node' button/control from Streams plugin */
     .stream-node-control-addnew {
         display: none !important;
@@ -64,6 +64,11 @@
 
     /* Hide the Tiddler Tags wrapper */
     .tc-tags-wrapper {
+        display: none !important;
+    }
+
+    /* Hide the 'Copy to Clipboard' button on code blocks */
+    svg.tc-image-copy-clipboard {
         display: none !important;
     }
 
@@ -80,7 +85,7 @@
         /* Set page break to keep tiddlers from splitting awkwardly */
         page-break-inside: avoid;
     }
-    
+
     /* Ensure the Story River expands to full width */
     .tc-story-river {
         width: 100% !important;
@@ -90,12 +95,12 @@
        3. GENERAL TIDDLER FRAME MODIFICATIONS
        (Removes borders and stream indentation lines)
        ======================================================= */
-    
+
     /* Remove the top border from ALL Tiddler frames being printed */
     .tc-tiddler-frame {
-        border-top: none !important; 
+        border-top: none !important;
     }
-    
+
     /* Remove the left indentation border from ALL stream children */
     .stream-row-children {
         border-left: none !important;
@@ -109,5 +114,27 @@
     /* Force body text to pure black for better print contrast */
     body.tc-body {
         color: #000000 !important;
+    }
+
+    /* =======================================================
+       5. CODEBLOCK BORDER FIX
+       (Prevents double-bordering from pre and code tags)
+       ======================================================= */
+
+    /* Enforce a single, solid border on the outer pre container */
+    pre.hljs,
+    pre {
+        border: 1px solid #cccccc !important;
+        padding: 10px !important;
+        background-color: #fcfcfc !important;
+    }
+
+    /* Strip the redundant border and padding from the inner code element */
+    pre code.hljs,
+    pre code {
+        border: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
     }
 }
