@@ -47,7 +47,7 @@
 
 - name: copy-code
   url: https://b-yp.github.io/tiddlywiki-plugins/
-  type: plugins
+  type: disable
   
 - name: captivate
   url: https://cdruan.github.io/tw5-captivate/
