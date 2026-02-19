@@ -34,7 +34,6 @@
         "xyvir/lithic-patch-context-menu",
         "xyvir/lithic-wikitext-highlight",
         "xyvir/lithic-python-codeblocks",
-        "byper/code-copy-button"
     ],
     "themes": [
         "tiddlywiki/vanilla",

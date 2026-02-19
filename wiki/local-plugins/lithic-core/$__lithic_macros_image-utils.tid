@@ -1,0 +1,9 @@
+title: $:/lithic/macros/image-utils
+tags: $:/tags/Macro
+type: text/vnd.tiddlywiki
+
+\define latest-image-markdown()
+<$list filter="[all[tiddlers]is[image]!sort[created]limit[1]]">
+![<<currentTiddler>>](<<currentTiddler>>)
+</$list>
+\end
