@@ -14,7 +14,7 @@ If so, they are renamed according to the hardcoded template.
 
 // Define sane defaults directly here
 var DEFAULT_IMPORT_TITLE = "image.png",
-    NEW_TITLE_TEMPLATE = "image YYYY-0MM-0DD, 0hh:0mm:0XXX.png";
+    NEW_TITLE_TEMPLATE = "image_YYYY-0MM-0DD_0hh:0mm:0XXX.png";
 
 exports.upgrade = function (wiki, titles, tiddlers) {
     // We removed the ENABLE check, so this now runs automatically.
