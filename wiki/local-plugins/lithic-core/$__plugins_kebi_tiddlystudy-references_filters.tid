@@ -7,7 +7,7 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 \define generate-list(statetiddler, filter, class)
 \whitespace trim
   <$reveal type="match" state="$statetiddler$" text="enable">
-    <$list filter="$filter$">
+    <$list filter="$filter$ -[is[blank]]">
       <li class="$class$">
         <$link to={{!!title}}>
           <$view field="title"/>
@@ -23,9 +23,16 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
   safeAlias={{{ [enlist{!!aliases}first[]] ~[[$:/no-match-placeholder]] }}} 
   targets={{{ [<currentTiddler>] [enlist{!!aliases}first[]] }}}
 >
+<$let 
+  lbrack="[[" rbrack="]]" pipe="|"
+  hardLinks={{{ [enlist<targets>addprefix<lbrack>addsuffix<rbrack>] [enlist<targets>addprefix<pipe>addsuffix<rbrack>] }}}
+  textBacklinks={{{ [enlist<hardLinks>] :map[all[tiddlers]!is[system]search:text<currentTiddler>] }}}
+  allBacklinks={{{ [enlist<targets>backlinks[]] [enlist<textBacklinks>] +[format:titlelist[]join[ ]] }}}
+>
 <<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/transclusions" filter:"[enlist<targets>backtranscludes[]] -[is[current]] -[is[system]] -[all[shadows]] -[is[image]]" class:"filtertransclude">>
 <<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/tags" filter:"[enlist<targets>tagging[]] -[enlist<targets>backtranscludes[]] -[is[current]] -[is[system]] -[all[shadows]]" class:"filtertag">>
-<<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/backlinks" filter:"[enlist<targets>backlinks[]] -[enlist<targets>backtranscludes[]] -[enlist<targets>tagging[]] -[is[current]] -[is[system]] -[all[shadows]] -[is[image]]" class:"filterbacklink">>
-<<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/mentions-title" filter:"[all[tiddlers]!is[system]search:title<targetTitle>] [all[tiddlers]!is[system]search:title<safeAlias>] +[unique[]] -[enlist<targets>backlinks[]] -[enlist<targets>backtranscludes[]] -[enlist<targets>tagging[]] -[has[parent]] -[is[current]] -[all[shadows]]" class:"filtertitle">>
+<<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/backlinks" filter:"[enlist<allBacklinks>] -[enlist<targets>backtranscludes[]] -[enlist<targets>tagging[]] -[is[current]] -[is[system]] -[all[shadows]] -[is[image]] +[unique[]]" class:"filterbacklink">>
+<<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/mentions-title" filter:"[all[tiddlers]!is[system]search:title<targetTitle>] [all[tiddlers]!is[system]search:title<safeAlias>] +[unique[]] -[enlist<allBacklinks>] -[enlist<targets>backtranscludes[]] -[enlist<targets>tagging[]] -[has[parent]] -[is[current]] -[all[shadows]]" class:"filtertitle">>
+</$let>
 </$vars>
 </ul>
