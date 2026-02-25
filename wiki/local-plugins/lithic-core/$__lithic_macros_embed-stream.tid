@@ -6,7 +6,7 @@ type: text/vnd.tiddlywiki
 <ul>
   <$list filter="[enlist{!!stream-list}]">
     <li>
-      <$transclude mode="block"/>
+      {{||$:/plugins/sq/streams/templates/stream-row-body}}
       <<.stream-recurse>>
     </li>
   </$list>

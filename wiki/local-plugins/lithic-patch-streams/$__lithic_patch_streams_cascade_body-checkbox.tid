@@ -1,0 +1,8 @@
+created: 20260225154000000
+modified: 20260225154000000
+list-before: 
+tags: $:/tags/ViewTemplateBodyFilter
+title: $:/lithic/patch/streams/cascade/body-checkbox
+type: text/vnd.tiddlywiki
+
+[has[parent]!has[draft.of]then[$:/plugins/sq/streams/templates/stream-row-body]]
