@@ -3,42 +3,57 @@ title: $:/plugins/wikilabs/bundler/import-image.js
 type: application/javascript
 module-type: upgrader
 
-This module checks if imported tiddlers are named "image.png". 
-If so, they are renamed according to the hardcoded template.
-
+This module checks imported tiddlers. If named "image.png", they are renamed.
+It also injects a creation date for all imported image tiddlers if missing.
 \*/
-
 /*jslint node: true, browser: true */
 /*global $tw: false */
 "use strict";
 
-// Define sane defaults directly here
 var DEFAULT_IMPORT_TITLE = "image.png",
-    NEW_TITLE_TEMPLATE = "image_YYYY-0MM-0DD_0hh:0mm:0XXX.png";
+    NEW_TITLE_TEMPLATE = "image_YYYY-0MM-0DD_0hh:0mm:0XXX.png",
+    TW_DATE_TEMPLATE = "YYYY0MM0DD0hh0mm0ss0XXX";
 
 exports.upgrade = function (wiki, titles, tiddlers) {
-    // We removed the ENABLE check, so this now runs automatically.
-
     var self = this,
         messages = {};
 
     $tw.utils.each(titles, function (title) {
-        var tiddler = {};
+        var tiddlerFields = tiddlers[title];
 
-        // Check if the imported title matches our default (e.g. "image.png")
-        if (title === DEFAULT_IMPORT_TITLE) {
-            messages[title] = "auto-renamed";
+        // Skip if undefined for some reason
+        if (!tiddlerFields) return;
 
-            // Generate the new title using the template
-            var newTitle = $tw.utils.formatDateString(new Date(), NEW_TITLE_TEMPLATE);
+        var isImagePng = (title === DEFAULT_IMPORT_TITLE);
+        var isAnyImage = tiddlerFields.type && tiddlerFields.type.indexOf("image/") === 0;
 
-            // Create the new tiddler with the renamed title
-            tiddler = new $tw.Tiddler(tiddlers[title], { "title": newTitle });
-            tiddlers[tiddler.fields.title] = tiddler.fields;
+        // If it's our target pasted image OR any other imported image
+        if (isImagePng || isAnyImage) {
+            var now = new Date();
+            var additionalFields = {};
 
-            // Remove the original "image.png" tiddler from the import list
-            tiddlers[title] = Object.create(null);
+            // 1. Handle the renaming if it's exactly "image.png"
+            if (isImagePng) {
+                messages[title] = "auto-renamed and date-stamped";
+                additionalFields.title = $tw.utils.formatDateString(now, NEW_TITLE_TEMPLATE);
+            }
+
+            // 2. Inject the created date if it doesn't already have one
+            if (!tiddlerFields.created) {
+                additionalFields.created = $tw.utils.formatDateString(now, TW_DATE_TEMPLATE);
+            }
+
+            // Apply modifications if we generated any
+            if (Object.keys(additionalFields).length > 0) {
+                var tiddler = new $tw.Tiddler(tiddlerFields, additionalFields);
+                tiddlers[tiddler.fields.title] = tiddler.fields;
+
+                // If we renamed it, delete the old placeholder title from the import queue
+                if (isImagePng && tiddler.fields.title !== title) {
+                    tiddlers[title] = Object.create(null);
+                }
+            }
         }
     });
     return messages;
-}
+};
