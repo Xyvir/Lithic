@@ -4,6 +4,6 @@ type: text/vnd.tiddlywiki
 
 \define latest-image-markdown()
 <$list filter="[all[tiddlers]is[image]has[created]!sort[created]limit[1]]">
-![<<currentTiddler>>](<<currentTiddler>>)
+[img width="100%" [<<currentTiddler>>]]
 </$list>
 \end

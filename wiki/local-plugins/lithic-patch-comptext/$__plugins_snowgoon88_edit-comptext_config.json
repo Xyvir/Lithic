@@ -1,37 +1,44 @@
 {
-  "configuration": {
-      "caseSensitive" : false,
-      "maxMatch" : 8,
-      "minPatLength" : 1,
-      "triggerKeyCombination" : "^ "
-  },
-  "template": [{
-      "pattern": "[[",
-      "filter": "[all[tiddlers]!is[system]]",
-      "start": "[[",
-      "end": "]]"
-      },
-      {
-      "pattern": "||",
-      "filter": "[all[tiddlers]!is[system]]",
-      "start": "[[|",
-      "end": "]]",
-      "startOffset" : 2
-      },
-      {
-          "pattern": "/",
-          "body": "[all[shadows+tiddlers]prefix[$:/lithic/slashcommands/]]",
-          "mask": "$:/lithic/slashcommands/",
-          "start": "",
-          "end": ""
-      },
-     {
-      "pattern": "=",
-      "body":"[all[shadows+tiddlers]prefix[$:/lithic/slashcommands/calc]]",
-      "mask": "$:/lithic/slashcommands/",
-      "start": "",
-      "end": "",
-      "startOffset": 8
-      }
-  ]
+    "configuration": {
+        "caseSensitive": false,
+        "maxMatch": 8,
+        "minPatLength": 1,
+        "triggerKeyCombination": "^ "
+    },
+    "template": [
+        {
+            "pattern": "[[",
+            "filter": "[all[tiddlers]!is[system]]",
+            "start": "[[",
+            "end": "]]"
+        },
+        {
+            "pattern": "||",
+            "filter": "[all[tiddlers]!is[system]]",
+            "start": "[[|",
+            "end": "]]",
+            "startOffset": 2
+        },
+        {
+            "pattern": "[img width=\"100%\" [",
+            "filter": "[all[tiddlers]is[image]!sort[created]]",
+            "start": "[img width=\"100%\" [",
+            "end": ""
+        },
+        {
+            "pattern": "/",
+            "body": "[all[shadows+tiddlers]prefix[$:/lithic/slashcommands/]]",
+            "mask": "$:/lithic/slashcommands/",
+            "start": "",
+            "end": ""
+        },
+        {
+            "pattern": "=",
+            "body": "[all[shadows+tiddlers]prefix[$:/lithic/slashcommands/calc]]",
+            "mask": "$:/lithic/slashcommands/",
+            "start": "",
+            "end": "",
+            "startOffset": 8
+        }
+    ]
 }
