@@ -21,12 +21,12 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 <$vars 
   targetTitle=<<currentTiddler>>
   safeAlias={{{ [enlist{!!aliases}first[]] ~[[$:/no-match-placeholder]] }}} 
-  targets={{{ [<currentTiddler>] [enlist{!!aliases}first[]] }}}
+  targets={{{ [<currentTiddler>] [enlist{!!aliases}first[]] +[format:titlelist[]join[ ]] }}}
 >
 <$let 
   lbrack="[[" rbrack="]]" pipe="|"
   hardLinks={{{ [enlist<targets>addprefix<lbrack>addsuffix<rbrack>] [enlist<targets>addprefix<pipe>addsuffix<rbrack>] +[format:titlelist[]join[ ]] }}}
-  textBacklinks={{{ [enlist<hardLinks>] :map[all[tiddlers]!is[system]search:text<currentTiddler>] +[format:titlelist[]join[ ]] }}}
+  textBacklinks={{{ [enlist<hardLinks>] :map[all[tiddlers]!is[system]search:text:literal<currentTiddler>] +[format:titlelist[]join[ ]] }}}
   allBacklinks={{{ [enlist<targets>backlinks[]] [enlist<textBacklinks>] +[format:titlelist[]join[ ]] }}}
 >
 <<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/transclusions" filter:"[enlist<targets>backtranscludes[]] -[is[current]] -[is[system]] -[all[shadows]] -[is[image]]" class:"filtertransclude">>
