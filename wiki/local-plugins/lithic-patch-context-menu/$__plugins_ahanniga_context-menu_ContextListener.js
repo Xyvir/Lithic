@@ -166,8 +166,8 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
             this.hideMenu();
         } else {
             menu.style.display = 'block';
-            menu.style.left = event.pageX + "px";
-            menu.style.top = event.pageY + "px";
+            menu.style.left = event.clientX + "px";
+            menu.style.top = event.clientY + "px";
         }
 
         event.preventDefault();
