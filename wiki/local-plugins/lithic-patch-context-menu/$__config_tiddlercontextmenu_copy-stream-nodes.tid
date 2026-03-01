@@ -1,10 +1,8 @@
-caption: Copy Stream
+caption: Copy Stream Nodes
 title: $:/config/tiddlercontextmenu/copy-stream-nodes
 type: text/vnd.tiddlywiki
 text: show
 tm-message: tm-copy-to-clipboard
-param-filter: [<currentTiddler>get-stream-nodes[]] :map[get[text]] +[join[
-
-]]
+param-filter: [<currentTiddler>get-stream-nodes[]] :map[get[text]] +[join[%0A]decodeuricomponent[]]
 icon: $:/core/images/copy-clipboard
 tags: $:/tags/tiddlercontextmenu
