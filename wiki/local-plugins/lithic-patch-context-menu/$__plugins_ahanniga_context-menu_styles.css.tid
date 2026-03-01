@@ -3,7 +3,7 @@ type: text/vnd.tiddlywiki
 tags: $:/tags/Stylesheet
 
 .context-menu {
-	position: fixed;
+	position: absolute;
 	min-width: 180px;
 	max-width: 240px;
 	z-index: 10000;
