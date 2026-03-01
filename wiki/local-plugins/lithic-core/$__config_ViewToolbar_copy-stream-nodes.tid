@@ -1,0 +1,17 @@
+caption: Copy Stream Nodes
+tags: $:/tags/ViewToolbar
+title: $:/config/ViewToolbar/copy-stream-nodes
+type: text/vnd.tiddlywiki
+description: Copy stream nodes
+
+<$list filter="[<currentTiddler>has[stream-list]]" variable="ignore">
+<$button class="tc-btn-invisible" tooltip="Copy stream nodes">
+<$action-sendmessage
+  $message="tm-copy-to-clipboard"
+  $param={{{ [<currentTiddler>get-stream-nodes[]] :map[get[text]] +[join[
+
+]] }}}
+/>
+{{$:/core/images/copy-clipboard}}
+</$button>
+</$list>

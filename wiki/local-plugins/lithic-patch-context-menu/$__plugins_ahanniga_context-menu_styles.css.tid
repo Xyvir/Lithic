@@ -3,7 +3,7 @@ type: text/vnd.tiddlywiki
 tags: $:/tags/Stylesheet
 
 .context-menu {
-	position: fixed;
+	/* position: fixed; */
 	min-width: 180px;
 	max-width: 240px;
 	z-index: 10000;
@@ -34,7 +34,7 @@ tags: $:/tags/Stylesheet
 	align-items: center;
 	justify-content: space-between;
 	flex-direction: row-reverse;
-	position: relative;
+	/* position: relative; */
 	text-decoration: unset;
 	color: #c8ced8 !important;
 	fill: #c8ced8 !important;
