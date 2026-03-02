@@ -5,6 +5,7 @@ type: text/vnd.tiddlywiki
 description: Copy stream nodes
 
 <$list filter="[<currentTiddler>has[stream-list]]" variable="ignore">
+<$list filter="[{$:/config/ViewToolbarButtons/Visibility/$:/config/ViewToolbar/copy-stream-nodes}match[hide]then[hide]else[show]!match[hide]]" variable="ignore">
 <$button class="tc-btn-invisible" tooltip="Copy stream nodes">
 <$action-sendmessage
   $message="tm-copy-to-clipboard"
@@ -12,4 +13,5 @@ description: Copy stream nodes
 />
 {{$:/core/images/copy-clipboard}}
 </$button>
+</$list>
 </$list>
