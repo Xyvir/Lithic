@@ -145,10 +145,15 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
             paramFilter = tid.getFieldString("param-filter");
             customParam = "";
             if (paramFilter) {
+                // TiddlyWiki filterTiddlers often fails variable resolution (<currentTiddler>) when called outside a real Widget DOM tree.
+                // We bypass this entirely by text-replacing <currentTiddler> with our known target row title.
+                var resolvedFilter = paramFilter.replace(/<currentTiddler>/g, "[" + targ + "]");
+
                 var iterator = function (callback) {
                     callback($tw.wiki.getTiddler(targ), targ);
                 };
-                var results = $tw.wiki.filterTiddlers(paramFilter, null, iterator);
+
+                var results = $tw.wiki.filterTiddlers(resolvedFilter, null, iterator);
                 if (results.length > 0) {
                     customParam = sanitize(results.join('\n'));
                 }
