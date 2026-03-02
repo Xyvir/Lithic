@@ -13,6 +13,9 @@ description: Returns 4 spaces of indentation for each level of depth of a stream
         var results = [];
         var rootTitle = operator.operand || "";
 
+        var rootNode = options.wiki.getTiddler(rootTitle);
+        var rootIsBlank = (!rootNode || !rootNode.fields.text || rootNode.fields.text.trim() === "");
+
         source(function (tiddler, title) {
             var depth = 0;
             var current = title;
@@ -23,6 +26,10 @@ description: Returns 4 spaces of indentation for each level of depth of a stream
                 current = node.fields.parent;
                 depth++;
                 if (depth > 50) break; // safeguard against circular references
+            }
+
+            if (rootIsBlank) {
+                depth = Math.max(0, depth - 1);
             }
             var indent = "";
             for (var i = 0; i < depth; i++) {
