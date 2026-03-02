@@ -77,6 +77,11 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
             return true;
         }
 
+        // Allow default context menu for unieditor elements to use spell check
+        if (event.target && event.target.closest && event.target.closest(".unieditor__textarea")) {
+            return true;
+        }
+
         if (menu == null) {
             this.document.body.appendChild(htmlToElement(template));
             menu = document.getElementById("contextMenu");
