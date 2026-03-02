@@ -9,7 +9,7 @@ description: Copy stream nodes
 <$button class="tc-btn-invisible" tooltip="Copy stream nodes">
 <$action-sendmessage
   $message="tm-copy-to-clipboard"
-  $param={{{ [<currentTiddler>] [<currentTiddler>get-stream-nodes[]] :map[get[text]] +[join[%0A%0A]decodeuricomponent[]] }}}
+  $param={{{ [<currentTiddler>] [<currentTiddler>get-stream-nodes[]] :map[stream-indent<..currentTiddler>addsuffix{!!text}] +[join[%0A]decodeuricomponent[]] }}}
 />
 {{$:/core/images/copy-clipboard}}
 </$button>
