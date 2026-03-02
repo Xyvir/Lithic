@@ -2,7 +2,7 @@
 title: $:/lithic/filters/stream-indent.js
 type: application/javascript
 module-type: filteroperator
-description: Returns 4 spaces of indentation for each level of depth of a stream node from a given root node
+description: Returns an indented string for each level of depth of a stream node from a given root node, applying indentation to every line within the node
 
 \*/
 (function () {
@@ -35,7 +35,10 @@ description: Returns 4 spaces of indentation for each level of depth of a stream
             for (var i = 0; i < depth; i++) {
                 indent += "    "; // 4 spaces per depth
             }
-            results.push(indent);
+
+            var text = (tiddler && tiddler.fields.text) ? tiddler.fields.text : "";
+            var indentedText = indent + text.split('\n').join('\n' + indent);
+            results.push(indentedText);
         });
         return results;
     };
