@@ -150,7 +150,7 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
                 };
                 var results = $tw.wiki.filterTiddlers(paramFilter, null, iterator);
                 if (results.length > 0) {
-                    customParam = sanitize(results[0]);
+                    customParam = sanitize(results.join('\n'));
                 }
             }
             // --- PATCH END ---
