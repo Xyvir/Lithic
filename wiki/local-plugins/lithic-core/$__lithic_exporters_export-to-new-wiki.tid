@@ -1,7 +1,7 @@
 title: $:/lithic/exporters/export-to-new-wiki
 tags: $:/tags/Exporter
 extension: .html
-description: Export to new Empty Wiki
+description: Export to monolith HTML
 code-body: yes
 
 \define saveTiddlerFilter()
