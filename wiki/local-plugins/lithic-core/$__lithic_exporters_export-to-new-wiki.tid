@@ -5,7 +5,7 @@ description: Export to monolith HTML
 code-body: yes
 
 \define saveTiddlerFilter()
-[all[tiddlers]prefix[$:/]] -[prefix[$:/temp/]] -[prefix[$:/state/]] -[prefix[$:/status/]] -[prefix[$:/HistoryList]] -[[$:/StoryList]] -[type[application/javascript]library[yes]] -[has[plugin-type]field:platform[server]] $(exportFilter)$ +[sort[title]]
+[[$:/core]] [all[shadows+tiddlers]has[plugin-type]] [all[tiddlers]prefix[$:/]] -[prefix[$:/temp/]] -[prefix[$:/state/]] -[prefix[$:/status/]] -[prefix[$:/HistoryList]] -[[$:/StoryList]] -[[$:/boot/boot.css]] -[type[application/javascript]library[yes]] -[[$:/boot/boot.js]] -[[$:/boot/bootprefix.js]] -[has[plugin-type]field:platform[server]] $(exportFilter)$ +[sort[title]]
 \end
 
 {{$:/core/templates/tiddlywiki5.html}}
