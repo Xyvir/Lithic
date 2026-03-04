@@ -17,6 +17,11 @@ fn get_startup_file(state: tauri::State<StartupFile>) -> Option<String> {
     file.take() 
 }
 
+#[tauri::command]
+fn get_cli_args() -> Vec<String> {
+  std::env::args().collect()
+}
+
 fn main() {
     // Grab command line arguments
     let args: Vec<String> = std::env::args().collect();
@@ -31,8 +36,8 @@ fn main() {
     tauri::Builder::default()
         // Manage the state so our command can access it
         .manage(StartupFile(Mutex::new(startup_file)))
-        // Register the command to be called from Javascript
-        .invoke_handler(tauri::generate_handler![get_startup_file])
+        // Register the commands to be called from Javascript
+        .invoke_handler(tauri::generate_handler![get_startup_file, get_cli_args])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

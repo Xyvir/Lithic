@@ -33,9 +33,12 @@
       --accent-text: #1a1a1a;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-    html, body {
+    html,
+    body {
       height: 100%;
       overflow: hidden;
     }
@@ -72,12 +75,12 @@
     }
 
     h1 img {
-      height: 1.5em; 
+      height: 1.5em;
       width: auto;
       margin-right: 15px;
       border-radius: 6px;
     }
-    
+
     /* --- FALLBACK ICON --- */
     .fallback-icon {
       height: 1.5em;
@@ -110,7 +113,7 @@
       display: flex;
       gap: 10px;
     }
-    
+
     .dual-buttons button {
       flex: 1;
       margin-top: 0;
@@ -122,7 +125,7 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
-      margin-bottom: 50px; 
+      margin-bottom: 50px;
       transition: margin-bottom 0.2s;
     }
 
@@ -143,11 +146,17 @@
       scrollbar-width: thin;
       scrollbar-color: var(--button-hover) transparent;
       margin-top: 5px;
-      padding-bottom: 60px; 
+      padding-bottom: 60px;
     }
 
-    #recent-files ul::-webkit-scrollbar { width: 6px; }
-    #recent-files ul::-webkit-scrollbar-track { background: transparent; }
+    #recent-files ul::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #recent-files ul::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
     #recent-files ul::-webkit-scrollbar-thumb {
       background-color: var(--button-hover);
       border-radius: 20px;
@@ -174,13 +183,24 @@
       border-color: #666;
     }
 
-    button:active { transform: scale(0.99); }
+    button:active {
+      transform: scale(0.99);
+    }
 
-    ul { list-style-type: none; padding-left: 0; margin: 0; }
-    
-    li { margin-bottom: 6px; display: flex; gap: 8px; align-items: center; }
-    
-    li > button {
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    li {
+      margin-bottom: 6px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    li>button {
       flex-grow: 1;
       text-align: left;
       padding-left: 15px;
@@ -194,7 +214,7 @@
       width: 2em;
       height: 2em;
       flex-grow: 0 !important;
-      flex-shrink: 0; 
+      flex-shrink: 0;
       padding: 0;
       font-size: 1.4rem;
       line-height: 1;
@@ -203,7 +223,7 @@
       align-items: center;
       justify-content: center;
     }
-    
+
     li .remove-item-btn:hover {
       background-color: rgba(255, 85, 85, 0.15);
       border-color: #ff5555;
@@ -218,40 +238,86 @@
       opacity: 0.7;
       flex-shrink: 0;
     }
-    .clear-btn:hover { background-color: rgba(255, 255, 255, 0.05); opacity: 1; }
+
+    .clear-btn:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      opacity: 1;
+    }
 
     /* --- GITHUB LINK --- */
     #github-link {
-      position: fixed; bottom: 15px; left: 15px;
-      background-color: var(--button-bg); color: var(--text-color);
-      border: 1px solid var(--border-color); border-radius: 6px;
-      padding: 8px 12px; font-size: 0.75rem; text-decoration: none;
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      background-color: var(--button-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      text-decoration: none;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
       transition: background-color 0.2s, transform 0.1s;
-      z-index: 1000; text-align: center; line-height: 1.2;
+      z-index: 1000;
+      text-align: center;
+      line-height: 1.2;
     }
 
     /* --- INSTALL PWA BUTTON --- */
     #install-pwa {
       display: none;
-      position: fixed; bottom: 15px; right: 15px; width: auto;
-      background-color: var(--accent-color); color: var(--accent-text);
-      font-weight: 600; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      border: none; z-index: 1000; animation: fadein 1s;
-      padding: 10px 15px; border-radius: 6px; cursor: pointer; margin-top: 0;
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      width: auto;
+      background-color: var(--accent-color);
+      color: var(--accent-text);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      border: none;
+      z-index: 1000;
+      animation: fadein 1s;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 0;
     }
-    @keyframes fadein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    @keyframes fadein {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     /* --- MOBILE & PWA OVERRIDES --- */
     @media (max-width: 600px) {
-      #github-link { display: none !important; }
-      #recent-files { margin-bottom: 0; } 
+      #github-link {
+        display: none !important;
+      }
+
+      #recent-files {
+        margin-bottom: 0;
+      }
     }
 
     @media all and (display-mode: standalone) {
-      #install-pwa { display: none !important; }
-      #github-link { display: none !important; }
-      #recent-files { margin-bottom: 0; } 
+      #install-pwa {
+        display: none !important;
+      }
+
+      #github-link {
+        display: none !important;
+      }
+
+      #recent-files {
+        margin-bottom: 0;
+      }
     }
   </style>
 
@@ -260,40 +326,40 @@
     let idbKeyval = (function (exports) {
       'use strict';
       class Store {
-          constructor(dbName = 'keyval-store', storeName = 'keyval') {
-              this.storeName = storeName;
-              this._dbp = new Promise((resolve, reject) => {
-                  const openreq = indexedDB.open(dbName, 1);
-                  openreq.onerror = () => reject(openreq.error);
-                  openreq.onsuccess = () => resolve(openreq.result);
-                  openreq.onupgradeneeded = () => {
-                      openreq.result.createObjectStore(storeName);
-                  };
-              });
-          }
-          _withIDBStore(type, callback) {
-              return this._dbp.then(db => new Promise((resolve, reject) => {
-                  const transaction = db.transaction(this.storeName, type);
-                  transaction.oncomplete = () => resolve();
-                  transaction.onabort = transaction.onerror = () => reject(transaction.error);
-                  callback(transaction.objectStore(this.storeName));
-              }));
-          }
+        constructor(dbName = 'keyval-store', storeName = 'keyval') {
+          this.storeName = storeName;
+          this._dbp = new Promise((resolve, reject) => {
+            const openreq = indexedDB.open(dbName, 1);
+            openreq.onerror = () => reject(openreq.error);
+            openreq.onsuccess = () => resolve(openreq.result);
+            openreq.onupgradeneeded = () => {
+              openreq.result.createObjectStore(storeName);
+            };
+          });
+        }
+        _withIDBStore(type, callback) {
+          return this._dbp.then(db => new Promise((resolve, reject) => {
+            const transaction = db.transaction(this.storeName, type);
+            transaction.oncomplete = () => resolve();
+            transaction.onabort = transaction.onerror = () => reject(transaction.error);
+            callback(transaction.objectStore(this.storeName));
+          }));
+        }
       }
       let store;
       function getDefaultStore() { if (!store) store = new Store(); return store; }
       function get(key, store = getDefaultStore()) {
-          let req;
-          return store._withIDBStore('readonly', store => { req = store.get(key); }).then(() => req.result);
+        let req;
+        return store._withIDBStore('readonly', store => { req = store.get(key); }).then(() => req.result);
       }
       function set(key, value, store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => { store.put(value, key); });
+        return store._withIDBStore('readwrite', store => { store.put(value, key); });
       }
       function del(key, store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => { store.delete(key); });
+        return store._withIDBStore('readwrite', store => { store.delete(key); });
       }
       function clear(store = getDefaultStore()) {
-          return store._withIDBStore('readwrite', store => { store.clear(); });
+        return store._withIDBStore('readwrite', store => { store.clear(); });
       }
       exports.Store = Store; exports.get = get; exports.set = set; exports.del = del; exports.clear = clear;
       return exports;
@@ -304,7 +370,7 @@
 
     async function fetchCoreEngine(url = 'lithic.html') {
       const isLocalFile = window.location.protocol === 'file:';
-      
+
       if (!isLocalFile) {
         try {
           const res = await fetch(url);
@@ -323,7 +389,7 @@
 
     /* Saver Logic */
     function createTwCustomSaver(fileHandle, isJsonMode = false) {
-      return function(text, method, callback) {
+      return function (text, method, callback) {
         let textToWrite = text;
 
         if (isJsonMode) {
@@ -346,23 +412,23 @@
     }
 
     function setTwCustomSaver(fileHandle, isJsonMode = false) {
-      window.$tw = {customSaver: {save: createTwCustomSaver(fileHandle, isJsonMode)}};
+      window.$tw = { customSaver: { save: createTwCustomSaver(fileHandle, isJsonMode) } };
     }
 
     function setTwCustomSaveAsSaver(isJsonMode = false) {
       let writeTw;
-      let save = function(text, method, callback) {
+      let save = function (text, method, callback) {
         if (writeTw) {
           writeTw(text, method, callback);
         } else {
           const saveOptions = isJsonMode ? {
             suggestedName: 'new_pack.lith',
-            types: [{ description: 'Lithic Data Pack', accept: {'application/json': ['.lith', '.json']} }],
+            types: [{ description: 'Lithic Data Pack', accept: { 'application/json': ['.lith', '.json'] } }],
           } : {
             suggestedName: 'lith.html',
-            types: [{ description: 'Lithic HTML File', accept: {'text/html': ['.html', '.htm']} }],
+            types: [{ description: 'Lithic HTML File', accept: { 'text/html': ['.html', '.htm'] } }],
           };
-          
+
           window.showSaveFilePicker(saveOptions)
             .then(fileHandle => {
               writeTw = createTwCustomSaver(fileHandle, isJsonMode);
@@ -376,23 +442,23 @@
         }
         return true;
       }
-      window.$tw = {customSaver: {save: save}};
+      window.$tw = { customSaver: { save: save } };
     }
 
     const twFileManager = {
-      openFile: async function(fileHandle) {
+      openFile: async function (fileHandle) {
         let isJsonMode = false;
         if (fileHandle) {
-          const options = {mode: 'read'};
+          const options = { mode: 'read' };
           if ((await fileHandle.queryPermission(options)) !== 'granted') {
             await fileHandle.requestPermission(options);
           }
           isJsonMode = fileHandle.name.endsWith('.lith') || fileHandle.name.endsWith('.json');
         } else {
           const openOptions = {
-             types: [
-               { description: 'Lithic Files & Data Packs', accept: {'text/html': ['.html', '.htm'], 'application/json': ['.lith', '.json']} }
-             ]
+            types: [
+              { description: 'Lithic Files & Data Packs', accept: { 'text/html': ['.html', '.htm'], 'application/json': ['.lith', '.json'] } }
+            ]
           };
           [fileHandle] = await window.showOpenFilePicker(openOptions);
           isJsonMode = fileHandle.name.endsWith('.lith') || fileHandle.name.endsWith('.json');
@@ -400,24 +466,24 @@
 
         const file = await fileHandle.getFile();
         let contents = await file.text();
-        
+
         if (isJsonMode) {
           let coreHtml = await fetchCoreEngine();
-          
+
           let innerLithData = contents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
 
           if (innerLithData) {
             contents = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
           } else {
-            contents = coreHtml; 
+            contents = coreHtml;
           }
         }
 
         setTwCustomSaver(fileHandle, isJsonMode);
-        return {fileHandle, contents, isJsonMode};
+        return { fileHandle, contents, isJsonMode };
       },
 
-      addRecent: async function(fileHandle) {
+      addRecent: async function (fileHandle) {
         let recentFiles = (await idbKeyval.get('recentFiles')) || [];
         if (!fileHandle.isSameEntry) return recentFiles;
 
@@ -430,16 +496,16 @@
         return recentFiles;
       },
 
-      removeRecent: async function(fileHandleToRemove) {
+      removeRecent: async function (fileHandleToRemove) {
         let recentFiles = (await idbKeyval.get('recentFiles')) || [];
-        
+
         let newRecentFiles = [];
         for (let f of recentFiles) {
-             if (f.isSameEntry && !(await f.isSameEntry(fileHandleToRemove))) {
-                 newRecentFiles.push(f);
-             }
+          if (f.isSameEntry && !(await f.isSameEntry(fileHandleToRemove))) {
+            newRecentFiles.push(f);
+          }
         }
-        
+
         await idbKeyval.set('recentFiles', newRecentFiles);
         return newRecentFiles;
       },
@@ -474,11 +540,11 @@
         alert("Failed to mount file. See console for details.");
       }
     }
-    
+
     window.openFromUrl = async function (url) {
       try {
         const contents = await fetchCoreEngine(url);
-        setTwCustomSaveAsSaver(false); 
+        setTwCustomSaveAsSaver(false);
         replacePageContents(contents);
       } catch (err) {
         console.error("Failed to load Starter HTML:", err);
@@ -486,10 +552,10 @@
       }
     }
 
-    window.openStarterLith = async function() {
+    window.openStarterLith = async function () {
       try {
         let coreHtml = await fetchCoreEngine();
-        setTwCustomSaveAsSaver(true); 
+        setTwCustomSaveAsSaver(true);
         replacePageContents(coreHtml);
       } catch (err) {
         console.error("Failed to load Starter Lith:", err);
@@ -500,7 +566,7 @@
     function clearRecent() {
       twFileManager.clearRecent().then(() => {
         const elem = document.getElementById("recent-files");
-        if (elem) elem.innerHTML = ""; 
+        if (elem) elem.innerHTML = "";
       });
     }
 
@@ -517,21 +583,21 @@
               const list = document.createElement('ul');
               for (const recent of recentFiles) {
                 const li = document.createElement('li');
-                
+
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.innerText = recent.name;
                 button.onclick = () => window.openFile(recent);
-                
+
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
-                removeBtn.innerHTML = '&times;'; 
+                removeBtn.innerHTML = '&times;';
                 removeBtn.className = 'remove-item-btn';
                 removeBtn.title = "Remove from list";
                 removeBtn.onclick = async (e) => {
-                    e.stopPropagation();
-                    await twFileManager.removeRecent(recent);
-                    displayRecentFiles();
+                  e.stopPropagation();
+                  await twFileManager.removeRecent(recent);
+                  displayRecentFiles();
                 };
 
                 li.appendChild(button);
@@ -545,7 +611,7 @@
               clearButton.onclick = clearRecent;
               clearButton.innerText = 'Clear All Recent Files';
               clearButton.className = 'clear-btn';
-              
+
               sectionDiv.appendChild(clearButton);
               elem.appendChild(sectionDiv);
             }
@@ -565,11 +631,11 @@
 
           // Ask Rust for any file passed via double-click / file association
           const startupFilePath = await invoke('get_startup_file');
-          
+
           if (startupFilePath) {
             console.log("Launched via file association:", startupFilePath);
             const isJsonMode = startupFilePath.endsWith('.lith') || startupFilePath.endsWith('.json');
-            
+
             // Bypass browser File API; use Tauri's native filesystem to read
             let rawContents = await readTextFile(startupFilePath);
             let contentsToLoad = rawContents;
@@ -578,7 +644,7 @@
               if (!rawContents.trim()) rawContents = "[]";
               let coreHtml = await fetchCoreEngine();
               let innerLithData = rawContents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
-              
+
               if (innerLithData) {
                 contentsToLoad = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
               } else {
@@ -589,7 +655,7 @@
             // Inject a Tauri-specific saver that writes directly to disk
             window.$tw = {
               customSaver: {
-                save: function(text, method, callback) {
+                save: function (text, method, callback) {
                   let textToWrite = text;
                   if (isJsonMode) {
                     try {
@@ -601,11 +667,11 @@
                       return true;
                     }
                   }
-                  
+
                   writeTextFile(startupFilePath, textToWrite)
                     .then(() => callback(null))
                     .catch(err => callback(err));
-                  
+
                   return true;
                 }
               }
@@ -620,12 +686,12 @@
       }
     }
   </script>
-  
+
   <script>
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/offline-service-worker.js').catch(function(error) {
+      navigator.serviceWorker.register('/offline-service-worker.js').catch(function (error) {
         console.error('Service Worker registration failed:', error);
-        });
+      });
     }
   </script>
 </head>
@@ -633,10 +699,11 @@
 <body>
   <div class="container">
     <h1>
-      <img src="/favicon.ico" alt="L" style="background:#333; padding:2px;" onerror="this.outerHTML='<span class=\'fallback-icon\'>L</span>'"> 
+      <img src="/app-icon.png" alt="L" style="background:#333; padding:2px;"
+        onerror="this.outerHTML='<span class=\'fallback-icon\'>L</span>'">
       Lithic - Launcher
     </h1>
-      
+
     <div class="section dual-buttons">
       <button type="button" onclick="openFromUrl('lithic.html')">Use Starter HTML</button>
       <button type="button" onclick="openStarterLith()">Use Starter Lith</button>
@@ -678,4 +745,5 @@
     });
   </script>
 </body>
+
 </html>
