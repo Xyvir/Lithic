@@ -25,11 +25,15 @@ fn get_cli_args() -> Vec<String> {
 fn main() {
     // Grab command line arguments
     let args: Vec<String> = std::env::args().collect();
+    println!("DEBUG: Raw CLI Args: {:?}", args);
     
     // args[0] is the executable path. args[1] will be the .lith file path if opened via Windows Explorer.
     let startup_file = if args.len() > 1 {
-        Some(args[1].clone())
+        let file_path = args[1].clone();
+        println!("DEBUG: Found startup file argument: {}", file_path);
+        Some(file_path)
     } else {
+        println!("DEBUG: No startup file argument provided.");
         None
     };
 

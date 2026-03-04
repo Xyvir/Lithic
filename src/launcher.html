@@ -319,6 +319,24 @@
         margin-bottom: 0;
       }
     }
+
+    /* --- DEBUG OVERLAY --- */
+    #debug-log {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 300px;
+      max-height: 50vh;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.8);
+      color: #0f0;
+      font-family: monospace;
+      font-size: 11px;
+      padding: 10px;
+      border: 1px solid #333;
+      z-index: 9999;
+      pointer-events: none;
+    }
   </style>
 
   <script type="module">
@@ -623,14 +641,26 @@
     window.onload = async () => {
       displayRecentFiles();
 
+      const debugLog = document.getElementById('debug-log');
+      const log = (msg) => {
+        if (debugLog) { debugLog.innerHTML += `<div>${msg}</div>`; }
+        console.log(`[DEBUG] ${msg}`);
+      };
+
+      log("Launcher loaded.");
+      log("window.__TAURI__ present? " + !!window.__TAURI__);
+
       // Check if running inside the Tauri wrapper
       if (window.__TAURI__) {
         try {
           const { invoke } = window.__TAURI__.tauri;
           const { readTextFile, writeTextFile } = window.__TAURI__.fs;
 
+          log("Calling get_startup_file...");
           // Ask Rust for any file passed via double-click / file association
           const startupFilePath = await invoke('get_startup_file');
+          log("Returned startupFilePath: " + startupFilePath);
+
 
           if (startupFilePath) {
             console.log("Launched via file association:", startupFilePath);
@@ -744,6 +774,8 @@
       deferredPrompt = null;
     });
   </script>
+
+  <div id="debug-log"></div>
 </body>
 
 </html>
