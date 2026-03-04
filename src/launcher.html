@@ -452,7 +452,7 @@
             .then(fileHandle => {
               writeTw = createTwCustomSaver(fileHandle, isJsonMode);
               writeTw(text, method, callback);
-              twFileManager.addRecent(fileHandle);
+              twFileManager.addRecent(fileHandle, null); // Manual Save As doesn't have a tauriPath link
             })
             .catch(err => {
               console.warn("Save cancelled or failed", err);
@@ -502,14 +502,32 @@
         return { fileHandle, contents, isJsonMode };
       },
 
-      addRecent: async function (fileHandle) {
+      addRecent: async function (fileHandle, tauriPath = null) {
         let recentFiles = (await idbKeyval.get('recentFiles')) || [];
-        if (!fileHandle.isSameEntry) return recentFiles;
 
-        const inList = await Promise.all(recentFiles.map((f) => fileHandle.isSameEntry(f)));
-        if (inList.some((val) => val)) return recentFiles;
+        // --- Schema Migration & Validation ---
+        // Ensure all stored items are { handle, tauriPath }
+        recentFiles = recentFiles.map(f => f.handle ? f : { handle: f, tauriPath: null });
 
-        recentFiles.unshift(fileHandle);
+        if (!fileHandle || !fileHandle.isSameEntry) return recentFiles;
+
+        const inList = await Promise.all(recentFiles.map((f) => fileHandle.isSameEntry(f.handle)));
+        const existingIndex = inList.findIndex((val) => val);
+
+        const newEntry = { handle: fileHandle, tauriPath };
+
+        if (existingIndex !== -1) {
+          // If we are passing a tauriPath now but it didn't have one before, update it.
+          if (tauriPath) {
+            recentFiles[existingIndex].tauriPath = tauriPath;
+          }
+          // Move to front
+          const [moved] = recentFiles.splice(existingIndex, 1);
+          recentFiles.unshift(moved);
+        } else {
+          recentFiles.unshift(newEntry);
+        }
+
         if (recentFiles.length > 20) recentFiles.pop();
         idbKeyval.set('recentFiles', recentFiles);
         return recentFiles;
@@ -517,10 +535,11 @@
 
       removeRecent: async function (fileHandleToRemove) {
         let recentFiles = (await idbKeyval.get('recentFiles')) || [];
+        recentFiles = recentFiles.map(f => f.handle ? f : { handle: f, tauriPath: null });
 
         let newRecentFiles = [];
         for (let f of recentFiles) {
-          if (f.isSameEntry && !(await f.isSameEntry(fileHandleToRemove))) {
+          if (f.handle.isSameEntry && !(await f.handle.isSameEntry(fileHandleToRemove))) {
             newRecentFiles.push(f);
           }
         }
@@ -530,7 +549,9 @@
       },
 
       getRecent: async function () {
-        return (await idbKeyval.get('recentFiles')) || [];
+        let recentFiles = (await idbKeyval.get('recentFiles')) || [];
+        // Map old schema on read
+        return recentFiles.map(f => f.handle ? f : { handle: f, tauriPath: null });
       },
 
       clearRecent: async function () {
@@ -548,63 +569,15 @@
 
     window.openFile = async function (fileHandle) {
       try {
-        if (fileHandle && fileHandle.fullTauriPath && window.__TAURI__) {
-          // It's a synthetic file handle from Tauri's CLI args!
-          // We need to bypass the browser API and do a native read again.
-          const { readTextFile, writeTextFile } = window.__TAURI__.fs;
-          let rawContents = await readTextFile(fileHandle.fullTauriPath);
-          let contentsToLoad = rawContents;
-          const isJsonMode = fileHandle.fullTauriPath.endsWith('.lith') || fileHandle.fullTauriPath.endsWith('.json');
-
-          if (isJsonMode) {
-            if (!rawContents.trim()) rawContents = "[]";
-            let coreHtml = await fetchCoreEngine();
-            let innerLithData = rawContents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
-
-            if (innerLithData) {
-              contentsToLoad = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
-            } else {
-              contentsToLoad = coreHtml;
-            }
-          }
-
-          window.$tw = {
-            customSaver: {
-              save: function (text, method, callback) {
-                let textToWrite = text;
-                if (isJsonMode) {
-                  try {
-                    const userTiddlerFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/plugins]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]]";
-                    textToWrite = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
-                  } catch (e) {
-                    console.error("Tauri Native Saver: Failed to extract JSON payload.", e);
-                    callback("JSON extraction failed: " + e.message);
-                    return true;
-                  }
-                }
-
-                writeTextFile(fileHandle.fullTauriPath, textToWrite)
-                  .then(() => callback(null))
-                  .catch(err => callback(err));
-
-                return true;
-              }
-            }
-          };
-
-          replacePageContents(contentsToLoad);
-          twFileManager.addRecent(fileHandle); // Just to bump it to the top
-          return { contents: contentsToLoad, isJsonMode };
-
-        } else {
-          // Standard browser file picker fallback
-          const file = await twFileManager.openFile(fileHandle);
-          replacePageContents(file.contents);
-          if (file.fileHandle) {
-            twFileManager.addRecent(file.fileHandle);
-          }
-          return file;
+        const file = await twFileManager.openFile(fileHandle);
+        replacePageContents(file.contents);
+        if (file.fileHandle) {
+          // If a file picker was shown, this might be a brand new path we haven't seen during the boot linking
+          // But usually we just pass `null` for the tauri path for manually opened files.
+          // twFileManager.addRecent is idempotent so it's fine.
+          await twFileManager.addRecent(file.fileHandle, null);
         }
+        return file;
       } catch (err) {
         console.error("Failed to mount Lithic:", err);
         alert("Failed to mount file. See console for details.");
@@ -656,8 +629,8 @@
 
                 const button = document.createElement('button');
                 button.type = 'button';
-                button.innerText = recent.name;
-                button.onclick = () => window.openFile(recent);
+                button.innerText = recent.handle.name + (recent.tauriPath ? ' (Linked)' : '');
+                button.onclick = () => window.openFile(recent.handle);
 
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
@@ -666,7 +639,7 @@
                 removeBtn.title = "Remove from list";
                 removeBtn.onclick = async (e) => {
                   e.stopPropagation();
-                  await twFileManager.removeRecent(recent);
+                  await twFileManager.removeRecent(recent.handle);
                   displayRecentFiles();
                 };
 
@@ -725,64 +698,59 @@
 
 
           if (startupFilePath) {
-            console.log("Launched via file association:", startupFilePath);
-            const isJsonMode = startupFilePath.endsWith('.lith') || startupFilePath.endsWith('.json');
+            log("Launched via file association:", startupFilePath);
 
-            // Bypass browser File API; use Tauri's native filesystem to read
-            let rawContents = await readTextFile(startupFilePath);
-            let contentsToLoad = rawContents;
+            // 1. Check if we already have a FileSystem API handle mapped to this Tauri Path
+            const recentFiles = await twFileManager.getRecent();
+            const linkedEntry = recentFiles.find(f => f.tauriPath === startupFilePath);
 
-            if (isJsonMode) {
-              if (!rawContents.trim()) rawContents = "[]";
-              let coreHtml = await fetchCoreEngine();
-              let innerLithData = rawContents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
-
-              if (innerLithData) {
-                contentsToLoad = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
-              } else {
-                contentsToLoad = coreHtml;
-              }
+            if (linkedEntry && linkedEntry.handle) {
+              log("Found linked browser handle! Simulating Recent Files click.");
+              // Passing the handle directly triggers standard twFileManager.openFile logic,
+              // which will prompt for permission quickly and elegantly.
+              window.openFile(linkedEntry.handle);
+              return;
             }
 
-            // Synthesize a minimal FileHandle matching the IDB spec to get it into recent files.
-            // We just need the name for the UI, and a generic method we can intercept later if needed.
-            const syntheticHandle = {
-              name: startupFilePath.replace(/^.*[\\\/]/, ''),
-              isSameEntry: async (other) => other.name === startupFilePath.replace(/^.*[\\\/]/, ''),
-              // When later clicked in "Recent Files", twFileManager won't know how to query permissions perfectly
-              // without this full object, so we hack it a bit:
-              fullTauriPath: startupFilePath
-            };
+            // 2. We don't have a mapping. We must force the user to select the file manually
+            // using the browser Picker to grant persistent FileSystem API permissions.
+            log("No linked handle found. Triggering first-time linking prompt.");
 
-            twFileManager.addRecent(syntheticHandle);
+            // We need to show some UI to explain why the picker is appearing
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000;
+                display: flex; flex-direction: column; align-items: center; justify-content: center;
+                color: white; font-family: sans-serif; text-align: center; padding: 40px;
+              `;
+            overlay.innerHTML = `
+                <h2>Link File Association</h2>
+                <p style="margin-bottom: 20px; max-width: 500px">
+                  To open files directly from Windows, Lithic needs permission to access your file system.<br><br>
+                  Please select <b>${startupFilePath.split('\\').pop().split('/').pop()}</b> in the dialog that appears next to permanently link it.
+                </p>
+                <button id="btn-link" style="padding: 10px 20px; font-size: 16px; cursor: pointer; color: black">Select File Now</button>
+              `;
+            document.body.appendChild(overlay);
 
-            // Inject a Tauri-specific saver that writes directly to disk
-            window.$tw = {
-              customSaver: {
-                save: function (text, method, callback) {
-                  let textToWrite = text;
-                  if (isJsonMode) {
-                    try {
-                      const userTiddlerFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/plugins]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]]";
-                      textToWrite = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
-                    } catch (e) {
-                      console.error("Tauri Native Saver: Failed to extract JSON payload.", e);
-                      callback("JSON extraction failed: " + e.message);
-                      return true;
-                    }
-                  }
+            document.getElementById('btn-link').onclick = async () => {
+              try {
+                const [fileHandle] = await window.showOpenFilePicker({
+                  types: [{ description: 'Lithic Files', accept: { 'application/json': ['.lith', '.json'] } }]
+                });
 
-                  writeTextFile(startupFilePath, textToWrite)
-                    .then(() => callback(null))
-                    .catch(err => callback(err));
+                // Wrap and store the mapping!
+                await twFileManager.addRecent(fileHandle, startupFilePath);
 
-                  return true;
-                }
+                // Boot the wiki using standard browser flow
+                overlay.remove();
+                window.openFile(fileHandle);
+
+              } catch (e) {
+                log("User cancelled file linkage.");
+                overlay.innerHTML += `<p style="color: coral; margin-top:20px">Linkage cancelled. Please restart the app or select Mount from Disk.</p>`;
               }
             };
-
-            // Boot the wiki immediately
-            replacePageContents(contentsToLoad);
           }
         } catch (err) {
           console.error("Failed to load Tauri startup file:", err);
