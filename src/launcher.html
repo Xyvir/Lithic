@@ -77,6 +77,23 @@
       margin-right: 15px;
       border-radius: 6px;
     }
+    
+    /* --- FALLBACK ICON --- */
+    .fallback-icon {
+      height: 1.5em;
+      width: 1.5em;
+      background-color: #333;
+      color: #fff;
+      border-radius: 6px;
+      margin-right: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Vollkorn', serif;
+      font-weight: 600;
+      font-size: 1em;
+      line-height: 1;
+    }
 
     .section {
       background-color: var(--card-bg);
@@ -88,13 +105,23 @@
       flex-shrink: 0;
     }
 
+    /* --- DUAL BUTTON LAYOUT --- */
+    .dual-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .dual-buttons button {
+      flex: 1;
+      margin-top: 0;
+    }
+
     /* --- RECENT FILES AREA --- */
     #recent-files {
       flex-grow: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
-      /* Default: Leave space at bottom for Desktop GitHub Link */
       margin-bottom: 50px; 
       transition: margin-bottom 0.2s;
     }
@@ -116,8 +143,6 @@
       scrollbar-width: thin;
       scrollbar-color: var(--button-hover) transparent;
       margin-top: 5px;
-      
-      /* Safety padding so last item isn't covered by floating Install button */
       padding-bottom: 60px; 
     }
 
@@ -165,7 +190,6 @@
       margin-top: 0;
     }
 
-    /* MODIFIED: 2em matches the height of the neighbor button (~45px) */
     li .remove-item-btn {
       width: 2em;
       height: 2em;
@@ -174,7 +198,6 @@
       padding: 0;
       font-size: 1.4rem;
       line-height: 1;
-      /* MODIFIED: Text color is now always red */
       color: #ff5555;
       display: flex;
       align-items: center;
@@ -182,7 +205,6 @@
     }
     
     li .remove-item-btn:hover {
-      /* MODIFIED: Only background and border change on hover */
       background-color: rgba(255, 85, 85, 0.15);
       border-color: #ff5555;
     }
@@ -211,7 +233,7 @@
 
     /* --- INSTALL PWA BUTTON --- */
     #install-pwa {
-      display: none; /* Hidden by default until prompted */
+      display: none;
       position: fixed; bottom: 15px; right: 15px; width: auto;
       background-color: var(--accent-color); color: var(--accent-text);
       font-weight: 600; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -221,18 +243,15 @@
     @keyframes fadein { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     /* --- MOBILE & PWA OVERRIDES --- */
-
-    /* 1. Mobile Web: Hide Github, Expand List */
     @media (max-width: 600px) {
       #github-link { display: none !important; }
-      #recent-files { margin-bottom: 0; } /* Reclaim space */
+      #recent-files { margin-bottom: 0; } 
     }
 
-    /* 2. Standalone PWA (Desktop OR Mobile): Hide Everything */
     @media all and (display-mode: standalone) {
       #install-pwa { display: none !important; }
       #github-link { display: none !important; }
-      #recent-files { margin-bottom: 0; } /* Reclaim space */
+      #recent-files { margin-bottom: 0; } 
     }
   </style>
 
@@ -280,36 +299,79 @@
       return exports;
     }({}));
 
+    /* --- CORE ENGINE FETCHER --- */
+    const REMOTE_CORE_URL = 'https://lithic.uk/src/lithic.html';
+
+    async function fetchCoreEngine(url = 'lithic.html') {
+      const isLocalFile = window.location.protocol === 'file:';
+      
+      if (!isLocalFile) {
+        try {
+          const res = await fetch(url);
+          if (res.ok) return await res.text();
+        } catch (e) {
+          console.warn("Relative fetch failed, falling back to remote URL...");
+        }
+      } else {
+        console.log("Local file:/// detected. Fetching core engine from remote server...");
+      }
+
+      const remoteRes = await fetch(REMOTE_CORE_URL);
+      if (!remoteRes.ok) throw new Error("Could not fetch core engine from " + REMOTE_CORE_URL);
+      return await remoteRes.text();
+    }
+
     /* Saver Logic */
-    function createTwCustomSaver(fileHandle) {
+    function createTwCustomSaver(fileHandle, isJsonMode = false) {
       return function(text, method, callback) {
+        let textToWrite = text;
+
+        if (isJsonMode) {
+          try {
+            const userTiddlerFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/plugins]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]]";
+            textToWrite = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
+          } catch (e) {
+            console.error("Lithic Launcher: Failed to extract JSON payload from live TW engine.", e);
+            callback("JSON extraction failed: " + e.message);
+            return true;
+          }
+        }
+
         fileHandle.createWritable()
-          .then(writable => { writable.write(text); return writable; })
+          .then(writable => { writable.write(textToWrite); return writable; })
           .then(writable => { writable.close(); callback(null); })
           .catch(error => { callback(error); });
         return true;
       }
     }
 
-    function setTwCustomSaver(fileHandle) {
-      window.$tw = {customSaver: {save: createTwCustomSaver(fileHandle)}};
+    function setTwCustomSaver(fileHandle, isJsonMode = false) {
+      window.$tw = {customSaver: {save: createTwCustomSaver(fileHandle, isJsonMode)}};
     }
 
-    function setTwCustomSaveAsSaver() {
+    function setTwCustomSaveAsSaver(isJsonMode = false) {
       let writeTw;
       let save = function(text, method, callback) {
         if (writeTw) {
           writeTw(text, method, callback);
         } else {
-          const saveOptions = {
+          const saveOptions = isJsonMode ? {
+            suggestedName: 'new_pack.lith',
+            types: [{ description: 'Lithic Data Pack', accept: {'application/json': ['.lith', '.json']} }],
+          } : {
             suggestedName: 'lith.html',
             types: [{ description: 'Lithic HTML File', accept: {'text/html': ['.html', '.htm']} }],
           };
+          
           window.showSaveFilePicker(saveOptions)
             .then(fileHandle => {
-              writeTw = createTwCustomSaver(fileHandle);
+              writeTw = createTwCustomSaver(fileHandle, isJsonMode);
               writeTw(text, method, callback);
               twFileManager.addRecent(fileHandle);
+            })
+            .catch(err => {
+              console.warn("Save cancelled or failed", err);
+              callback(err);
             });
         }
         return true;
@@ -319,27 +381,40 @@
 
     const twFileManager = {
       openFile: async function(fileHandle) {
+        let isJsonMode = false;
         if (fileHandle) {
           const options = {mode: 'read'};
           if ((await fileHandle.queryPermission(options)) !== 'granted') {
             await fileHandle.requestPermission(options);
           }
+          isJsonMode = fileHandle.name.endsWith('.lith') || fileHandle.name.endsWith('.json');
         } else {
           const openOptions = {
-             types: [{ description: 'HTML Files', accept: {'text/html': ['.html', '.htm']} }]
+             types: [
+               { description: 'Lithic Files & Data Packs', accept: {'text/html': ['.html', '.htm'], 'application/json': ['.lith', '.json']} }
+             ]
           };
           [fileHandle] = await window.showOpenFilePicker(openOptions);
+          isJsonMode = fileHandle.name.endsWith('.lith') || fileHandle.name.endsWith('.json');
         }
-        const file = await fileHandle.getFile();
-        const contents = await file.text();
-        setTwCustomSaver(fileHandle);
-        return {fileHandle, contents};
-      },
 
-      openFromUrl: async function(url) {
-        const contents = await fetch(url).then(res => res.text());
-        setTwCustomSaveAsSaver();
-        return {contents};
+        const file = await fileHandle.getFile();
+        let contents = await file.text();
+        
+        if (isJsonMode) {
+          let coreHtml = await fetchCoreEngine();
+          
+          let innerLithData = contents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
+
+          if (innerLithData) {
+            contents = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
+          } else {
+            contents = coreHtml; 
+          }
+        }
+
+        setTwCustomSaver(fileHandle, isJsonMode);
+        return {fileHandle, contents, isJsonMode};
       },
 
       addRecent: async function(fileHandle) {
@@ -355,12 +430,10 @@
         return recentFiles;
       },
 
-      // NEW: Remove a single entry
       removeRecent: async function(fileHandleToRemove) {
         let recentFiles = (await idbKeyval.get('recentFiles')) || [];
         
         let newRecentFiles = [];
-        // We have to iterate and check isSameEntry asynchronously
         for (let f of recentFiles) {
              if (f.isSameEntry && !(await f.isSameEntry(fileHandleToRemove))) {
                  newRecentFiles.push(f);
@@ -389,17 +462,39 @@
     }
 
     window.openFile = async function (fileHandle) {
-      const file = await twFileManager.openFile(fileHandle);
-      replacePageContents(file.contents);
-      if (file.fileHandle) {
-        twFileManager.addRecent(file.fileHandle);
+      try {
+        const file = await twFileManager.openFile(fileHandle);
+        replacePageContents(file.contents);
+        if (file.fileHandle) {
+          twFileManager.addRecent(file.fileHandle);
+        }
+        return file;
+      } catch (err) {
+        console.error("Failed to mount Lithic:", err);
+        alert("Failed to mount file. See console for details.");
       }
-      return file;
     }
+    
     window.openFromUrl = async function (url) {
-      const file = await twFileManager.openFromUrl(url);
-      replacePageContents(file.contents);
-      return file;
+      try {
+        const contents = await fetchCoreEngine(url);
+        setTwCustomSaveAsSaver(false); 
+        replacePageContents(contents);
+      } catch (err) {
+        console.error("Failed to load Starter HTML:", err);
+        alert("Failed to load starter. See console for details.");
+      }
+    }
+
+    window.openStarterLith = async function() {
+      try {
+        let coreHtml = await fetchCoreEngine();
+        setTwCustomSaveAsSaver(true); 
+        replacePageContents(coreHtml);
+      } catch (err) {
+        console.error("Failed to load Starter Lith:", err);
+        alert("Failed to create starter. See console for details.");
+      }
     }
 
     function clearRecent() {
@@ -423,23 +518,19 @@
               for (const recent of recentFiles) {
                 const li = document.createElement('li');
                 
-                // Open File Button
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.innerText = recent.name;
                 button.onclick = () => window.openFile(recent);
                 
-                // Remove Entry Button
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
-                removeBtn.innerHTML = '&times;'; // HTML entity for 'x'
+                removeBtn.innerHTML = '&times;'; 
                 removeBtn.className = 'remove-item-btn';
                 removeBtn.title = "Remove from list";
                 removeBtn.onclick = async (e) => {
-                    // Prevent propagation to avoid weird UI glitches
                     e.stopPropagation();
                     await twFileManager.removeRecent(recent);
-                    // Refresh the list immediately
                     displayRecentFiles();
                 };
 
@@ -478,16 +569,17 @@
 <body>
   <div class="container">
     <h1>
-      <img src="/favicon.ico" alt="" style="background:#333; padding:2px;"> 
+      <img src="/favicon.ico" alt="L" style="background:#333; padding:2px;" onerror="this.outerHTML='<span class=\'fallback-icon\'>L</span>'"> 
       Lithic - Launcher
     </h1>
       
-    <div class="section">
-      <button type="button" onclick="openFromUrl('lithic.html')">Use "Starter Lith"</button>
+    <div class="section dual-buttons">
+      <button type="button" onclick="openFromUrl('lithic.html')">Use Starter HTML</button>
+      <button type="button" onclick="openStarterLith()">Use Starter Lith</button>
     </div>
 
     <div class="section">
-      <button type="button" onclick="openFile()">Mount a Lith from Disk...</button>
+      <button type="button" onclick="openFile()">Mount HTML or Lith from Disk...</button>
     </div>
 
     <div id="recent-files"></div>
@@ -501,7 +593,6 @@
     let deferredPrompt;
     const installBtn = document.getElementById('install-pwa');
 
-    // Only show button if the browser prompts for it
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
