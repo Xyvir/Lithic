@@ -322,6 +322,7 @@
 
     /* --- DEBUG OVERLAY --- */
     #debug-log {
+      display: none;
       position: fixed;
       top: 10px;
       right: 10px;
@@ -642,6 +643,16 @@
       displayRecentFiles();
 
       const debugLog = document.getElementById('debug-log');
+
+      let typedSequence = '';
+      window.addEventListener('keydown', (e) => {
+        typedSequence += e.key;
+        if (typedSequence.length > 5) typedSequence = typedSequence.slice(-5);
+        if (typedSequence.toLowerCase() === 'debug' && debugLog) {
+          debugLog.style.display = debugLog.style.display === 'block' ? 'none' : 'block';
+        }
+      });
+
       const log = (msg) => {
         if (debugLog) { debugLog.innerHTML += `<div>${msg}</div>`; }
         console.log(`[DEBUG] ${msg}`);
