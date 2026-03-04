@@ -735,9 +735,30 @@
 
             document.getElementById('btn-link').onclick = async () => {
               try {
-                const [fileHandle] = await window.showOpenFilePicker({
+                // Heuristic to guess best "startIn" directory from the OS path
+                const lowerPath = startupFilePath.toLowerCase();
+                const wellKnownDirs = ['desktop', 'documents', 'downloads', 'music', 'pictures', 'videos'];
+                let bestStartIn = undefined;
+
+                for (const dir of wellKnownDirs) {
+                  // Look for \dir\ or /dir/ or ending in \dir
+                  if (lowerPath.includes(`\\${dir}\\`) ||
+                    lowerPath.includes(`/${dir}/`) ||
+                    lowerPath.endsWith(`\\${dir}`) ||
+                    lowerPath.endsWith(`/${dir}`)) {
+                    bestStartIn = dir;
+                    break;
+                  }
+                }
+
+                const pickerOptions = {
                   types: [{ description: 'Lithic Files', accept: { 'application/json': ['.lith', '.json'] } }]
-                });
+                };
+                if (bestStartIn) {
+                  pickerOptions.startIn = bestStartIn;
+                }
+
+                const [fileHandle] = await window.showOpenFilePicker(pickerOptions);
 
                 // Wrap and store the mapping!
                 await twFileManager.addRecent(fileHandle, startupFilePath);
