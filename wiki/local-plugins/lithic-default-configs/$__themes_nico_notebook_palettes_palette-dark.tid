@@ -50,7 +50,7 @@ notification-border: #192c19
 page-background: #262b33
 pre-background: <<colour page-background>>
 pre-border: <<colour tiddler-border>>
-primary: #9B59FF
+primary: #bf93ff
 select-tag-background: 
 select-tag-foreground: 
 sidebar-button-foreground: #5e646f
