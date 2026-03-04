@@ -552,8 +552,72 @@
           })
       }
     }
-    window.onload = () => {
+
+    // --- INITIALIZATION INTERCEPT ---
+    window.onload = async () => {
       displayRecentFiles();
+
+      // Check if running inside the Tauri wrapper
+      if (window.__TAURI__) {
+        try {
+          const { invoke } = window.__TAURI__.tauri;
+          const { readTextFile, writeTextFile } = window.__TAURI__.fs;
+
+          // Ask Rust for any file passed via double-click / file association
+          const startupFilePath = await invoke('get_startup_file');
+          
+          if (startupFilePath) {
+            console.log("Launched via file association:", startupFilePath);
+            const isJsonMode = startupFilePath.endsWith('.lith') || startupFilePath.endsWith('.json');
+            
+            // Bypass browser File API; use Tauri's native filesystem to read
+            let rawContents = await readTextFile(startupFilePath);
+            let contentsToLoad = rawContents;
+
+            if (isJsonMode) {
+              if (!rawContents.trim()) rawContents = "[]";
+              let coreHtml = await fetchCoreEngine();
+              let innerLithData = rawContents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
+              
+              if (innerLithData) {
+                contentsToLoad = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
+              } else {
+                contentsToLoad = coreHtml;
+              }
+            }
+
+            // Inject a Tauri-specific saver that writes directly to disk
+            window.$tw = {
+              customSaver: {
+                save: function(text, method, callback) {
+                  let textToWrite = text;
+                  if (isJsonMode) {
+                    try {
+                      const userTiddlerFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/plugins]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]]";
+                      textToWrite = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
+                    } catch (e) {
+                      console.error("Tauri Native Saver: Failed to extract JSON payload.", e);
+                      callback("JSON extraction failed: " + e.message);
+                      return true;
+                    }
+                  }
+                  
+                  writeTextFile(startupFilePath, textToWrite)
+                    .then(() => callback(null))
+                    .catch(err => callback(err));
+                  
+                  return true;
+                }
+              }
+            };
+
+            // Boot the wiki immediately
+            replacePageContents(contentsToLoad);
+          }
+        } catch (err) {
+          console.error("Failed to load Tauri startup file:", err);
+        }
+      }
     }
   </script>
   
