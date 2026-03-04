@@ -548,12 +548,63 @@
 
     window.openFile = async function (fileHandle) {
       try {
-        const file = await twFileManager.openFile(fileHandle);
-        replacePageContents(file.contents);
-        if (file.fileHandle) {
-          twFileManager.addRecent(file.fileHandle);
+        if (fileHandle && fileHandle.fullTauriPath && window.__TAURI__) {
+          // It's a synthetic file handle from Tauri's CLI args!
+          // We need to bypass the browser API and do a native read again.
+          const { readTextFile, writeTextFile } = window.__TAURI__.fs;
+          let rawContents = await readTextFile(fileHandle.fullTauriPath);
+          let contentsToLoad = rawContents;
+          const isJsonMode = fileHandle.fullTauriPath.endsWith('.lith') || fileHandle.fullTauriPath.endsWith('.json');
+
+          if (isJsonMode) {
+            if (!rawContents.trim()) rawContents = "[]";
+            let coreHtml = await fetchCoreEngine();
+            let innerLithData = rawContents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
+
+            if (innerLithData) {
+              contentsToLoad = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
+            } else {
+              contentsToLoad = coreHtml;
+            }
+          }
+
+          window.$tw = {
+            customSaver: {
+              save: function (text, method, callback) {
+                let textToWrite = text;
+                if (isJsonMode) {
+                  try {
+                    const userTiddlerFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/plugins]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]]";
+                    textToWrite = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
+                  } catch (e) {
+                    console.error("Tauri Native Saver: Failed to extract JSON payload.", e);
+                    callback("JSON extraction failed: " + e.message);
+                    return true;
+                  }
+                }
+
+                writeTextFile(fileHandle.fullTauriPath, textToWrite)
+                  .then(() => callback(null))
+                  .catch(err => callback(err));
+
+                return true;
+              }
+            }
+          };
+
+          replacePageContents(contentsToLoad);
+          twFileManager.addRecent(fileHandle); // Just to bump it to the top
+          return { contents: contentsToLoad, isJsonMode };
+
+        } else {
+          // Standard browser file picker fallback
+          const file = await twFileManager.openFile(fileHandle);
+          replacePageContents(file.contents);
+          if (file.fileHandle) {
+            twFileManager.addRecent(file.fileHandle);
+          }
+          return file;
         }
-        return file;
       } catch (err) {
         console.error("Failed to mount Lithic:", err);
         alert("Failed to mount file. See console for details.");
@@ -692,6 +743,18 @@
                 contentsToLoad = coreHtml;
               }
             }
+
+            // Synthesize a minimal FileHandle matching the IDB spec to get it into recent files.
+            // We just need the name for the UI, and a generic method we can intercept later if needed.
+            const syntheticHandle = {
+              name: startupFilePath.replace(/^.*[\\\/]/, ''),
+              isSameEntry: async (other) => other.name === startupFilePath.replace(/^.*[\\\/]/, ''),
+              // When later clicked in "Recent Files", twFileManager won't know how to query permissions perfectly
+              // without this full object, so we hack it a bit:
+              fullTauriPath: startupFilePath
+            };
+
+            twFileManager.addRecent(syntheticHandle);
 
             // Inject a Tauri-specific saver that writes directly to disk
             window.$tw = {
