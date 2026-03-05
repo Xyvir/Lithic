@@ -1,122 +1,70 @@
 # appveyor.yml — Fallback CI for when GitHub Actions is unavailable.
-# Mirrors the two-stage prod workflow: wiki build (Ubuntu) + Tauri build (Windows).
+# Single-job build: wiki (Node/TiddlyWiki) + Tauri, all on a Windows VS2022 runner.
 #
 # SETUP:
 #   1. Connect this repo at https://ci.appveyor.com (sign in with GitHub)
-#   2. In AppVeyor Project Settings → Environment, add a secret env var:
-#      GITHUB_TOKEN  =  <your PAT with repo scope> (check "Encrypt")
-#   3. Push a commit or trigger a manual build from the AppVeyor dashboard.
+#   2. Project Settings → Environment → add encrypted variable:
+#      GITHUB_TOKEN = <PAT with repo scope>
+#   3. Push a commit or trigger manually from the AppVeyor dashboard.
 
 version: '{build}'
+
+image: Visual Studio 2022
 
 branches:
   only:
     - main
 
-# Define the two jobs via the environment matrix.
-# Each row creates one job; the `for:` blocks below attach settings to each.
 environment:
-  matrix:
-    - JOB_NAME: wiki-build
-    - JOB_NAME: tauri-build
+  TIDDLYWIKI_PLUGIN_PATH: $(APPVEYOR_BUILD_FOLDER)/wiki;$(APPVEYOR_BUILD_FOLDER)/wiki/plugins
+  TIDDLYWIKI_THEME_PATH: $(APPVEYOR_BUILD_FOLDER)/wiki/themes
+  RUST_BACKTRACE: "1"
 
-matrix:
-  fast_finish: false    # Don't cancel remaining jobs if one fails
+install:
+  - nvm install 20
+  - nvm use 20
+  - node --version
+  - npm --version
+  - rustup update stable
+  - rustup default stable
+  - rustc --version
 
-# ---------------------------------------------------------------------------
-# STAGE 1 — Wiki Build (Ubuntu, Node 20)
-# ---------------------------------------------------------------------------
-for:
-  - matrix:
-      only:
-        - JOB_NAME: wiki-build
+build_script:
+  # ----- Stage 1: Wiki Build -----
+  - npm install
+  - npm run mirror
+  - node scripts/flatten-plugins.js
+  - node scripts/generate-config.js prod
+  - npx tiddlywiki wiki --build index
+  - ps: Move-Item wiki\output\index.html wiki\output\lith.html -Force
+  - ps: (Get-Content wiki\output\lith.html -Raw) -replace 'content="TiddlyWiki"', 'content="Lithic PKMS"' | Set-Content wiki\output\lith.html -Encoding UTF8
+  - ps: Copy-Item wiki\output\lith.html src\lithic.html -Force
+  - ps: Write-Host "Wiki build complete -> src/lithic.html"
 
-    image: Ubuntu2204
+  # ----- Stage 2: Tauri Build -----
+  - ps: if (Test-Path "src\app-icon.png") { npm run tauri icon src\app-icon.png } else { Write-Host "No app-icon.png, skipping." }
+  - npm run tauri build
+  - ps: |
+      $exe = Get-ChildItem "src-tauri\target\release\*.exe" | Select-Object -First 1
+      if ($exe) {
+          Move-Item $exe.FullName -Destination "Lithic-Offline.exe" -Force
+          Write-Host "Renamed to Lithic-Offline.exe"
+      } else {
+          throw "No .exe found — Tauri build failed."
+      }
 
-    environment:
-      TIDDLYWIKI_PLUGIN_PATH: $(APPVEYOR_BUILD_FOLDER)/wiki:$(APPVEYOR_BUILD_FOLDER)/wiki/plugins
-      TIDDLYWIKI_THEME_PATH: $(APPVEYOR_BUILD_FOLDER)/wiki/themes
+artifacts:
+  - path: src\lithic.html
+    name: built-wiki
+  - path: Lithic-Offline.exe
+    name: lithic-offline-exe
+  - path: wiki\tiddlywiki.log
+    name: tiddlywiki-log
 
-    install:
-      - nvm install 20
-      - nvm use 20
-      - node --version
-      - npm --version
-
-    build_script:
-      - npm install
-      - npm run mirror
-      - node scripts/flatten-plugins.js
-      - node scripts/generate-config.js prod
-      - npx tiddlywiki wiki --build index 2>&1 | tee wiki/tiddlywiki.log
-      - mv wiki/output/index.html wiki/output/lith.html
-      - sed -i 's/content="TiddlyWiki"/content="Lithic PKMS"/g' wiki/output/lith.html
-      - cp wiki/output/lith.html src/lithic.html
-
-    artifacts:
-      - path: src/lithic.html
-        name: built-wiki
-      - path: wiki/tiddlywiki.log
-        name: tiddlywiki-log
-
-    test: off
-
-# ---------------------------------------------------------------------------
-# STAGE 2 — Tauri Build (Windows, VS 2022)
-# ---------------------------------------------------------------------------
-  - matrix:
-      only:
-        - JOB_NAME: tauri-build
-
-    image: Visual Studio 2022
-
-    depends_on: wiki-build
-
-    environment:
-      RUST_BACKTRACE: "1"
-
-    install:
-      - nvm install 20
-      - nvm use 20
-      - rustup update stable
-      - rustup default stable
-      - rustc --version
-
-    before_build:
-      # Download the wiki artifact from job 1 into src/
-      - ps: |
-          $buildId = $env:APPVEYOR_BUILD_ID
-          $headers = @{ "Authorization" = "Bearer $env:APPVEYOR_API_TOKEN" }
-          $url = "https://ci.appveyor.com/api/builds/$buildId/artifacts/built-wiki"
-          Invoke-WebRequest -Uri $url -Headers $headers -OutFile "src\lithic.html"
-          Write-Host "Downloaded src/lithic.html from wiki-build job."
-
-    build_script:
-      - npm install
-      - ps: |
-          if (Test-Path "src\app-icon.png") {
-              npm run tauri icon src\app-icon.png
-          } else {
-              Write-Host "No app-icon.png, skipping icon generation."
-          }
-      - npm run tauri build
-      - ps: |
-          $exe = Get-ChildItem "src-tauri\target\release\*.exe" | Select-Object -First 1
-          if ($exe) {
-              Move-Item $exe.FullName -Destination "Lithic-Offline.exe" -Force
-              Write-Host "Renamed to Lithic-Offline.exe"
-          } else {
-              throw "No .exe found — Tauri build may have failed."
-          }
-
-    artifacts:
-      - path: Lithic-Offline.exe
-        name: lithic-offline-exe
-
-    test: off
+test: off
 
 # ---------------------------------------------------------------------------
-# Deploy — GitHub Release (runs after all jobs pass, main branch only)
+# Deploy — GitHub Release (main branch builds only)
 # ---------------------------------------------------------------------------
 deploy:
   - provider: GitHub
