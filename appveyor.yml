@@ -11,6 +11,9 @@ version: '{build}'
 
 image: Visual Studio 2022
 
+# AppVeyor natively manages Node.js — no nvm needed
+nodejs_version: "20"
+
 branches:
   only:
     - main
@@ -21,12 +24,11 @@ environment:
   RUST_BACKTRACE: "1"
 
 install:
-  - nvm install 20
-  - nvm use 20
   - node --version
   - npm --version
   - rustup update stable
   - rustup default stable
+  - refreshenv
   - rustc --version
 
 build_script:
