@@ -3,20 +3,25 @@
 #
 # SETUP:
 #   1. Connect this repo at https://ci.appveyor.com (sign in with GitHub)
-#   2. In AppVeyor Project Settings → Environment → add a secret env var:
-#      GITHUB_TOKEN  =  <your personal access token with repo + write:packages scope>
-#   3. Push a commit or trigger a build manually from the AppVeyor dashboard.
-#
-# RELEASE:
-#   A GitHub release is created automatically when the build runs on the
-#   `main` branch. Remove or adjust the `on:` condition below to change this.
+#   2. In AppVeyor Project Settings → Environment, add a secret env var:
+#      GITHUB_TOKEN  =  <your PAT with repo scope> (check "Encrypt")
+#   3. Push a commit or trigger a manual build from the AppVeyor dashboard.
 
 version: '{build}'
 
-# Only auto-run on pushes to main; you can also trigger manually from the dashboard.
 branches:
   only:
     - main
+
+# Define the two jobs via the environment matrix.
+# Each row creates one job; the `for:` blocks below attach settings to each.
+environment:
+  matrix:
+    - JOB_NAME: wiki-build
+    - JOB_NAME: tauri-build
+
+matrix:
+  fast_finish: false    # Don't cancel remaining jobs if one fails
 
 # ---------------------------------------------------------------------------
 # STAGE 1 — Wiki Build (Ubuntu, Node 20)
@@ -24,18 +29,17 @@ branches:
 for:
   - matrix:
       only:
-        - job_name: wiki-build
+        - JOB_NAME: wiki-build
 
     image: Ubuntu2204
 
     environment:
       TIDDLYWIKI_PLUGIN_PATH: $(APPVEYOR_BUILD_FOLDER)/wiki:$(APPVEYOR_BUILD_FOLDER)/wiki/plugins
       TIDDLYWIKI_THEME_PATH: $(APPVEYOR_BUILD_FOLDER)/wiki/themes
-      NODE_VERSION: "20"
 
     install:
-      - nvm install $NODE_VERSION
-      - nvm use $NODE_VERSION
+      - nvm install 20
+      - nvm use 20
       - node --version
       - npm --version
 
@@ -49,7 +53,6 @@ for:
       - sed -i 's/content="TiddlyWiki"/content="Lithic PKMS"/g' wiki/output/lith.html
       - cp wiki/output/lith.html src/lithic.html
 
-    # Pass the built wiki to the Tauri job
     artifacts:
       - path: src/lithic.html
         name: built-wiki
@@ -63,30 +66,30 @@ for:
 # ---------------------------------------------------------------------------
   - matrix:
       only:
-        - job_name: tauri-build
+        - JOB_NAME: tauri-build
 
     image: Visual Studio 2022
 
+    depends_on: wiki-build
+
     environment:
       RUST_BACKTRACE: "1"
-      NODE_VERSION: "20"
 
     install:
-      # Node.js
-      - nvm install %NODE_VERSION%
-      - nvm use %NODE_VERSION%
-      # Rust stable (rustup is pre-installed on AppVeyor VS images)
+      - nvm install 20
+      - nvm use 20
       - rustup update stable
       - rustup default stable
       - rustc --version
 
     before_build:
-      # Download the wiki artifact built in Stage 1
+      # Download the wiki artifact from job 1 into src/
       - ps: |
-          $token = $env:GITHUB_TOKEN
-          Write-Host "Fetching built-wiki artifact from AppVeyor..."
-          # AppVeyor artifact promotion: the wiki job uploads src/lithic.html,
-          # which is automatically available to downstream jobs in the same build.
+          $buildId = $env:APPVEYOR_BUILD_ID
+          $headers = @{ "Authorization" = "Bearer $env:APPVEYOR_API_TOKEN" }
+          $url = "https://ci.appveyor.com/api/builds/$buildId/artifacts/built-wiki"
+          Invoke-WebRequest -Uri $url -Headers $headers -OutFile "src\lithic.html"
+          Write-Host "Downloaded src/lithic.html from wiki-build job."
 
     build_script:
       - npm install
@@ -94,7 +97,7 @@ for:
           if (Test-Path "src\app-icon.png") {
               npm run tauri icon src\app-icon.png
           } else {
-              Write-Host "No app-icon.png found, skipping icon generation."
+              Write-Host "No app-icon.png, skipping icon generation."
           }
       - npm run tauri build
       - ps: |
@@ -113,23 +116,13 @@ for:
     test: off
 
 # ---------------------------------------------------------------------------
-# Jobs definition (order matters — wiki-build must finish before tauri-build)
-# ---------------------------------------------------------------------------
-jobs:
-  - name: wiki-build
-
-  - name: tauri-build
-    depends_on: wiki-build
-
-# ---------------------------------------------------------------------------
-# Deploy — Create a GitHub Release after both stages pass
-# Only runs on main branch builds.
+# Deploy — GitHub Release (runs after all jobs pass, main branch only)
 # ---------------------------------------------------------------------------
 deploy:
   - provider: GitHub
     auth_token:
-      secure: $(GITHUB_TOKEN)          # Set as an encrypted env var in AppVeyor project settings
-    tag: build-$(APPVEYOR_BUILD_VERSION)-$(APPVEYOR_REPO_COMMIT_TIMESTAMP)
+      secure: $(GITHUB_TOKEN)
+    tag: build-$(APPVEYOR_BUILD_VERSION)
     release: Build $(APPVEYOR_BUILD_VERSION)
     description: "Automated build from AppVeyor (fallback CI)"
     draft: false
