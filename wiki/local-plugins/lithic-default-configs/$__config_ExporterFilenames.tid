@@ -1,0 +1,5 @@
+title: $:/config/ExporterFilenames
+description: Maps exporter plugin titles to custom download filenames.
+type: application/x-tiddler-dictionary
+
+$:/lithic/exporters/export-to-new-wiki: lith_<<now "0MM-0DD-YY_0hh꞉0mm_0ss">>s

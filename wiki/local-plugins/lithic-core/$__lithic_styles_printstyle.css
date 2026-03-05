@@ -72,6 +72,11 @@
         display: none !important;
     }
 
+    /* Hide transient UI notifications like "Saved Wiki" */
+    .tc-notification {
+        display: none !important;
+    }
+
     /* =======================================================
        2. OPTIMIZE CONTENT DISPLAY
        (Ensures text takes up full page width)
@@ -136,5 +141,27 @@
         padding: 0 !important;
         background: transparent !important;
         box-shadow: none !important;
+    }
+
+    /* =======================================================
+       6. INTERNAL LINK FORMATTING
+       (Forces internal TiddlyWiki links to black text)
+       ======================================================= */
+
+    a.tc-tiddlylink:not(.tc-tiddlylink-external) {
+        color: #000000 !important;
+        text-decoration: none !important;
+    }
+
+    /* =======================================================
+       7. HORIZONTAL RULE AS PAGE BREAK
+       (Converts <hr> into a page break; hides the line itself)
+       ======================================================= */
+
+    hr {
+        border: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        page-break-before: always !important;
     }
 }
