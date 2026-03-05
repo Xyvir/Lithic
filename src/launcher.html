@@ -338,6 +338,21 @@
       z-index: 9999;
       pointer-events: none;
     }
+
+    /* --- DRAG AND DROP HIGHLIGHT --- */
+    body.drag-over::after {
+      content: '';
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      bottom: 15px;
+      border: 3px dashed var(--accent-color);
+      border-radius: 12px;
+      background-color: rgba(138, 180, 248, 0.7);
+      z-index: 10000;
+      pointer-events: none;
+    }
   </style>
 
   <script type="module">
@@ -781,7 +796,75 @@
           console.error("Failed to load Tauri startup file:", err);
         }
       }
-    }
+    };
+
+    // --- DRAG AND DROP HANDLING ---
+    let dragCounter = 0;
+
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if (e.dataTransfer) {
+        e.dataTransfer.dropEffect = 'copy';
+      }
+    });
+
+    window.addEventListener('dragenter', (e) => {
+      e.preventDefault();
+      dragCounter++;
+      if (dragCounter === 1) {
+        document.body.classList.add('drag-over');
+      }
+    });
+
+    window.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dragCounter--;
+      if (dragCounter === 0) {
+        document.body.classList.remove('drag-over');
+      }
+    });
+
+    window.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      dragCounter = 0;
+      document.body.classList.remove('drag-over');
+
+      if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length === 0) {
+        return;
+      }
+
+      const file = e.dataTransfer.files[0];
+      const fileName = file.name.toLowerCase();
+      const isJsonMode = fileName.endsWith('.lith') || fileName.endsWith('.json');
+      const isHtmlMode = fileName.endsWith('.html') || fileName.endsWith('.htm');
+
+      if (!isJsonMode && !isHtmlMode) {
+        return;
+      }
+
+      try {
+        let contents = await file.text();
+
+        if (isJsonMode) {
+          let coreHtml = await fetchCoreEngine();
+          let innerLithData = contents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
+
+          if (innerLithData) {
+            contents = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
+          } else {
+            contents = coreHtml;
+          }
+          setTwCustomSaveAsSaver(true);
+        } else if (isHtmlMode) {
+          setTwCustomSaveAsSaver(false);
+        }
+
+        replacePageContents(contents);
+      } catch (err) {
+        console.error("Failed to mount dropped file:", err);
+        alert("Failed to mount dropped file. See console for details.");
+      }
+    });
   </script>
 
   <script>
