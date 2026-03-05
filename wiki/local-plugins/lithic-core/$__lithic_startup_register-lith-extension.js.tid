@@ -1,0 +1,32 @@
+created: 20260305213812490
+modified: 20260305214038327
+module-type: startup
+tags: 
+title: $:/lithic/startup/register-lith-extension.js
+type: application/javascript
+
+/*\
+title: $:/lithic/startup/register-lith-extension.js
+type: application/javascript
+module-type: startup
+
+Registers the .lith file extension to be handled by the core JSON deserializer.
+\*/
+(function(){
+
+/*jslint node: true, browser: true */
+/*global $tw: false */
+"use strict";
+
+// Export name and synchronous status
+exports.name = "register-lith-extension";
+exports.platforms = ["browser", "node"];
+exports.after = ["startup"];
+exports.synchronous = true;
+
+exports.startup = function() {
+    // Map the custom extension to the standard JSON MIME type
+    $tw.config.fileExtensionInfo[".lith"] = { type: "application/json" };
+};
+
+})();
