@@ -1,0 +1,266 @@
+title: $:/plugins/lithic/lithic-pdf-to-whiteboard/pdf-drop-handler.js
+type: application/javascript
+module-type: startup
+
+/* Intercepts PDF file drops and converts them into TLDraw Whiteboard tiddlers. */
+(function(){
+
+/*jslint node: true, browser: true */
+/*global $tw: false */
+"use strict";
+
+exports.name = "pdf-to-whiteboard";
+exports.platforms = ["browser"];
+exports.after = ["startup"];
+exports.synchronous = true;
+
+function generateUUID() {
+    if (typeof crypto !== "undefined" && crypto.randomUUID) {
+        return crypto.randomUUID();
+    }
+    // Fallback UUID v4 generator
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+function generateWhiteboardData(images) {
+    const documentId = "doc";
+    const pages = {};
+    const assets = {};
+    const pageStates = {};
+
+    images.forEach((img, index) => {
+        const i = index + 1;
+        
+        const uuidAsset = generateUUID();
+        const uuidShape = generateUUID();
+        // TLDraw v1 expects the first page ID to typically be "page"
+        const uuidPage = i === 1 ? "page" : generateUUID();
+
+        // Add page
+        pages[uuidPage] = {
+            id: uuidPage,
+            name: `Page ${i}`,
+            childIndex: i,
+            shapes: {},
+            bindings: {}
+        };
+
+        // Add asset
+        assets[uuidAsset] = {
+            id: uuidAsset,
+            type: "image",
+            fileName: img.filename,
+            src: img.dataUri,
+            size: [img.width, img.height]
+        };
+
+        // Add shape to page
+        pages[uuidPage].shapes[uuidShape] = {
+            id: uuidShape,
+            type: "image",
+            name: "Image",
+            parentId: uuidPage,
+            childIndex: 1,
+            point: [0, 0],
+            size: [img.width, img.height],
+            rotation: 0,
+            style: {
+                color: "black",
+                size: "small",
+                isFilled: false,
+                dash: "draw",
+                scale: 1
+            },
+            assetId: uuidAsset,
+            isLocked: true
+        };
+
+        // Initialize page state
+        pageStates[uuidPage] = {
+            id: uuidPage,
+            selectedIds: [],
+            camera: { point: [80, 80], zoom: 1 }
+        };
+    });
+
+    return {
+        document: {
+            id: documentId,
+            name: "PDF Canvas",
+            version: 15.5,
+            pages: pages,
+            pageStates: pageStates,
+            assets: assets
+        }
+    };
+}
+
+exports.startup = function() {
+    document.addEventListener("drop", async function(event) {
+        if (!event.dataTransfer || !event.dataTransfer.files || event.dataTransfer.files.length === 0) {
+            return;
+        }
+
+        const files = event.dataTransfer.files;
+        const pdfFiles = Array.from(files).filter(f => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
+
+        if (pdfFiles.length === 0) {
+            return; // Not a PDF
+        }
+
+        // We have a PDF, intercept!
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        // Dismiss TiddlyWiki's orange drop zone bar by firing a synthetic dragleave
+        document.dispatchEvent(new DragEvent("dragleave", { bubbles: true }));
+
+        // Single progress alert tiddler - updated in place
+        var alertTitle = "$:/temp/alerts/pdf-import-progress";
+        function setProgress(msg) {
+            $tw.wiki.addTiddler(new $tw.Tiddler({
+                title: alertTitle,
+                text: msg,
+                component: "pdf-to-whiteboard",
+                tags: "$:/tags/Alert",
+                modified: new Date()
+            }));
+        }
+        function clearProgress() {
+            $tw.wiki.deleteTiddler(alertTitle);
+        }
+
+        try {
+            const pdfjsLib = require("$:/plugins/lithic/lithic-pdf-to-whiteboard/pdf.js");
+            
+            // --- Worker Configuration for file:// protocol ---
+            // Execute the pdf.worker.js bundle on the main thread so that
+            // globalThis.pdfjsWorker.WorkerMessageHandler is available for
+            // pdf.js's fake-worker (main-thread) fallback via LoopbackPort.
+            if (!globalThis.pdfjsWorker) {
+                var workerText = $tw.wiki.getTiddlerText("$:/plugins/lithic/lithic-pdf-to-whiteboard/pdf.worker.js");
+                if (workerText) {
+                    (new Function(workerText))();
+                }
+            }
+            
+            // Set workerSrc so _initialize() doesn't throw.
+            if (pdfjsLib.GlobalWorkerOptions && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = "data:application/javascript,";
+            }
+
+            var createdTitles = [];
+
+            for (const file of pdfFiles) {
+                setProgress("Converting " + file.name + " — loading PDF...");
+
+                const arrayBuffer = await file.arrayBuffer();
+                
+                const loadingTask = pdfjsLib.getDocument({ 
+                    data: arrayBuffer,
+                    isEvalSupported: false,
+                    disableStream: true,
+                    disableAutoFetch: true
+                });
+                
+                const pdf = await loadingTask.promise;
+
+                const images = [];
+                var pageTexts = [];
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    setProgress("Converting " + file.name + " — rendering page " + i + "/" + pdf.numPages + "...");
+
+                    const page = await pdf.getPage(i);
+                    const scale = 2.0; 
+                    const viewport = page.getViewport({ scale: scale });
+
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d");
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+
+                    const dataUri = canvas.toDataURL("image/png");
+                    images.push({
+                        filename: "page_" + i + ".png",
+                        dataUri: dataUri,
+                        width: viewport.width,
+                        height: viewport.height
+                    });
+
+                    // Extract text content from this page
+                    var textContent = await page.getTextContent();
+                    var pageText = textContent.items
+                        .map(function(item) { return item.str; })
+                        .join(" ")
+                        .replace(/\s+/g, " ")
+                        .trim();
+                    if (pageText) {
+                        pageTexts.push("## Page " + i + "\n\n" + pageText);
+                    }
+                }
+
+                // Create the whiteboard tiddler
+                setProgress("Converting " + file.name + " — creating tiddlers...");
+                const payload = generateWhiteboardData(images);
+                const baseName = file.name.replace(/\.pdf$/i, "");
+                const wbTitle = $tw.wiki.generateNewTitle(baseName + " Whiteboard");
+
+                $tw.wiki.addTiddler(new $tw.Tiddler({
+                    title: wbTitle,
+                    text: JSON.stringify(payload),
+                    type: "application/tldr"
+                }));
+
+                // Create the plaintext markdown tiddler
+                var markdownBody = "# " + baseName + "\n\n" + pageTexts.join("\n\n---\n\n");
+                var txtTitle = $tw.wiki.generateNewTitle(baseName);
+
+                $tw.wiki.addTiddler(new $tw.Tiddler({
+                    title: txtTitle,
+                    text: markdownBody,
+                    type: "text/x-markdown"
+                }));
+
+                createdTitles.push(wbTitle);
+                createdTitles.push(txtTitle);
+            }
+
+            // Clear progress
+            clearProgress();
+
+            // Create $:/Import tiddler listing what was imported
+            var importList = createdTitles.map(function(t) { return "# [[" + t + "]]"; }).join("\n");
+            $tw.wiki.addTiddler(new $tw.Tiddler({
+                title: "$:/Import",
+                text: "The following tiddlers were imported:\n\n" + importList,
+                status: "complete",
+                tags: "$:/tags/Import"
+            }));
+
+            // Add $:/Import to the top of $:/StoryList
+            var storyTiddler = $tw.wiki.getTiddler("$:/StoryList");
+            var storyList = storyTiddler ? ($tw.utils.parseStringArray(storyTiddler.fields.list) || []) : [];
+            // Remove any existing $:/Import from the list
+            storyList = storyList.filter(function(t) { return t !== "$:/Import"; });
+            // Prepend $:/Import
+            storyList.unshift("$:/Import");
+            $tw.wiki.addTiddler(new $tw.Tiddler({
+                title: "$:/StoryList",
+                list: $tw.utils.stringifyList(storyList)
+            }));
+
+        } catch (err) {
+            clearProgress();
+            console.error("PDF to Whiteboard error:", err);
+            setProgress("Failed to convert PDF: " + err.message);
+        }
+    }, true); 
+};
+
+})();
