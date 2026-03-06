@@ -428,7 +428,7 @@
 
         if (isJsonMode) {
           try {
-            const userTiddlerFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/plugins]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]]";
+            const userTiddlerFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/plugins]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]]";
             textToWrite = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
           } catch (e) {
             console.error("Lithic Launcher: Failed to extract JSON payload from live TW engine.", e);

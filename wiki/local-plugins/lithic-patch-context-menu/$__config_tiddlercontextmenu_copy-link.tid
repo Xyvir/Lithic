@@ -1,5 +1,5 @@
-caption: Copy Ref
-title: $:/config/tiddlercontextmenu/copy-ref
+caption: Copy Link
+title: $:/config/tiddlercontextmenu/copy-link
 text: show
 tm-message: tm-copy-to-clipboard
 param-filter: [addprefix{$:/config/lithic/constants!!open-double-bracket}addsuffix{$:/config/lithic/constants!!close-double-bracket}]

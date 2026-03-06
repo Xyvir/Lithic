@@ -1,5 +1,5 @@
-caption: Copy Stream Nodes
-title: $:/config/tiddlercontextmenu/copy-stream-nodes
+caption: Copy Body Text
+title: $:/config/tiddlercontextmenu/copy-body-text
 type: text/vnd.tiddlywiki
 text: show
 tm-message: tm-copy-to-clipboard
