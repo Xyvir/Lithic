@@ -11,19 +11,88 @@ title: $:/core/ui/SideBar/Tools
 <$action-listops $tiddler="$:/tags/PageControls" $subfilter="+[insertbefore:currentTiddler<actionTiddler>]"/>
 \end
 
+<style>
+.lith-sidebar-tools-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+	/* First number is row gap (vertical), second is column gap (horizontal) */
+	gap: 4px 2px; 
+	justify-items: center;
+	align-items: center;
+	text-align: center;
+}
+
+/* THE FLATTENER: Forces every hidden wrapper div to center its contents */
+.lith-sidebar-tools-item,
+.lith-sidebar-tools-item div {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.lith-sidebar-tools-item p {
+	margin: 0 !important;
+}
+
+/* Button Styling */
+.lith-sidebar-tools-item button,
+.lith-sidebar-tools-item label.tc-btn-invisible {
+	display: flex !important;
+	flex-wrap: nowrap !important;
+	align-items: center;
+	justify-content: center;
+	gap: 2px; 
+	width: 105px !important; 
+	max-width: 105px !important; 
+	padding: 4px 2px !important;
+	margin: 0 !important;
+	box-sizing: border-box;
+	white-space: nowrap;
+	overflow: hidden;
+	container-type: inline-size;
+}
+.lith-sidebar-tools-item button .tc-btn-text,
+.lith-sidebar-tools-item label.tc-btn-invisible .tc-btn-text {
+	font-size: clamp(8px, 12cqw, 0.9em) !important; 
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 1; 
+}
+.lith-sidebar-tools-item button svg,
+.lith-sidebar-tools-item label.tc-btn-invisible svg {
+	flex-shrink: 0;
+	width: 1.2em;
+	height: 1.2em;
+}
+
+/* Fixes Import functionality while removing it from the visual layout flow */
+.lith-sidebar-tools-item .tc-file-input-wrapper {
+	position: relative;
+}
+.lith-sidebar-tools-item .tc-file-input-wrapper input[type="file"] {
+	position: absolute !important;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+	cursor: pointer;
+	display: block !important;
+}
+</style>
+
 <$let tv-config-toolbar-icons=yes tv-config-toolbar-text=yes tv-config-toolbar-class="">
-
+<div class="lith-sidebar-tools-grid">
 <$list filter="[[$:/tags/PageControls]tagging[]!is[draft]] :filter[<currentTiddler>addprefix[$:/config/PageControlButtons/Visibility/]get[text]match[hide]]">
-
-<$droppable actions=<<drop-actions>> tag="div">
-<$draggable tiddler=<<currentTiddler>> tag="div">
-
-<div class={{{[<currentTiddler>encodeuricomponent[]addprefix[tc-btn-]]}}} style=position:relative; title={{{ [<currentTiddler>get[description]] }}}>
+<$droppable actions=<<drop-actions>> tag="div" class="lith-sidebar-tools-item">
+<$draggable tiddler=<<currentTiddler>> tag="div" class="lith-sidebar-tools-item">
+<div class={{{[<currentTiddler>encodeuricomponent[]addprefix[tc-btn-]]}}} style="position:relative; width: 100%;" title={{{ [<currentTiddler>get[description]] }}}>
 <$transclude tiddler=<<currentTiddler>>/>
 </div>
-
 </$draggable>
 </$droppable>
-
 </$list>
+</div>
 </$let>
