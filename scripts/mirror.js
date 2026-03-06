@@ -73,6 +73,7 @@ function errorFromLog(msg) {
 
 log(`Starting Mirror (External Mode)...`);
 let changesMade = false;
+let failedDownloads = 0;
 
 sources.forEach(source => {
     if (source.type === 'disable') return;
@@ -96,89 +97,107 @@ sources.forEach(source => {
         const ext = isZip ? '.zip' : '.html';
         const tempFile = `temp_${source.name}${ext}`;
 
+        let downloadSuccess = false;
         try {
             execSync(`curl -f -L -S "${source.url}" -o ${tempFile}`, { stdio: 'inherit' });
-
-            if (fs.existsSync(tempFile) && fs.statSync(tempFile).size > 0) {
-                if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true, force: true });
-
-                let updateSuccess = true;
-
-                if (isZip) {
-                    log(`📦 Unzipping...`);
-                    // If source.extract is set, we unzip to a temp dir first, then move the specific folder
-                    if (source.extract && source.target) {
-                        const tempUnzipDir = path.join(EXTERNAL_DIR, `${source.name}_temp_unzip`);
-                        if (fs.existsSync(tempUnzipDir)) fs.rmSync(tempUnzipDir, { recursive: true, force: true });
-                        fs.mkdirSync(tempUnzipDir, { recursive: true });
-
-                        execSync(`unzip -q -o ${tempFile} -d ${tempUnzipDir}`, { stdio: 'inherit' });
-
-                        const extractSourcePath = path.join(tempUnzipDir, source.extract);
-                        const finalTargetPath = path.join(__dirname, '..', source.target); // Resolve relative to script root
-
-                        if (fs.existsSync(extractSourcePath)) {
-                            log(`🚚 Moving extracted folder ${source.extract} -> ${source.target}`);
-                            if (fs.existsSync(finalTargetPath)) fs.rmSync(finalTargetPath, { recursive: true, force: true });
-                            fs.mkdirSync(path.dirname(finalTargetPath), { recursive: true });
-                            fs.renameSync(extractSourcePath, finalTargetPath);
-                        } else {
-                            errorFromLog(`❌ ERROR: Extraction path not found in zip: ${source.extract}`);
-                            updateSuccess = false;
-                        }
-
-                        // Cleanup temp unzip
-                        fs.rmSync(tempUnzipDir, { recursive: true, force: true });
-
-                    } else {
-                        // Standard unzip to targetDir
-                        fs.mkdirSync(targetDir, { recursive: true });
-                        execSync(`unzip -q -o ${tempFile} -d ${targetDir}`, { stdio: 'inherit' });
-                    }
-                } else {
-                    log(`💥 Exploding TiddlyWiki...`);
-                    execSync(`npx tiddlywiki --load ${tempFile} --savewikifolder ${targetDir}`, { stdio: 'inherit' });
-                }
-
-                // Pruning Logic based on 'type'
-                if (updateSuccess) {
-                    const tiddlersDir = path.join(targetDir, 'tiddlers');
-                    const pluginsDir = path.join(targetDir, 'plugins');
-                    const themesDir = path.join(targetDir, 'themes');
-
-                    if (source.type === 'plugins') {
-                        // Keep plugins, delete tiddlers and themes
-                        log('✂️  Type: plugins -> Removing tiddlers and themes...');
-                        if (fs.existsSync(tiddlersDir)) fs.rmSync(tiddlersDir, { recursive: true, force: true });
-                        if (fs.existsSync(themesDir)) fs.rmSync(themesDir, { recursive: true, force: true });
-                    } else if (source.type === 'themes') {
-                        // Keep themes, delete tiddlers and plugins
-                        log('✂️  Type: themes -> Removing tiddlers and plugins...');
-                        if (fs.existsSync(tiddlersDir)) fs.rmSync(tiddlersDir, { recursive: true, force: true });
-                        if (fs.existsSync(pluginsDir)) fs.rmSync(pluginsDir, { recursive: true, force: true });
-                    } else if (source.type === 'tiddlers') {
-                        // Keep tiddlers, delete plugins and themes
-                        log('✂️  Type: tiddlers -> Removing plugins and themes...');
-                        if (fs.existsSync(pluginsDir)) fs.rmSync(pluginsDir, { recursive: true, force: true });
-                        if (fs.existsSync(themesDir)) fs.rmSync(themesDir, { recursive: true, force: true });
-                    } else {
-                        log(`✨ Type: ${source.type || 'all'} -> No pruning.`);
-                    }
-                }
-
-                if (updateSuccess) {
-                    lockData[source.name] = {
-                        url: source.url,
-                        etag: remoteInfo ? remoteInfo.etag : null,
-                        lastModified: remoteInfo ? remoteInfo.lastModified : null,
-                        updatedAt: new Date().toISOString()
-                    };
-                    changesMade = true;
-                }
-            }
-            if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
+            downloadSuccess = true;
         } catch (error) {
-            errorFromLog(`❌ FAILED: ${error.message}`);
+            log(`⚠️ Download failed: ${error.message}. Retrying in 3 seconds...`);
+            execSync('node -e "setTimeout(()=>{}, 3000)"');
+            try {
+                log(`🔄 Retry downloading...`);
+                execSync(`curl -f -L -S "${source.url}" -o ${tempFile}`, { stdio: 'inherit' });
+                downloadSuccess = true;
+                log(`✅ Retry successful.`);
+            } catch (retryError) {
+                errorFromLog(`❌ FAILED (Retry limit reached): ${retryError.message}`);
+                failedDownloads++;
+            }
+        }
+
+        if (downloadSuccess) {
+            try {
+                if (fs.existsSync(tempFile) && fs.statSync(tempFile).size > 0) {
+                    if (fs.existsSync(targetDir)) fs.rmSync(targetDir, { recursive: true, force: true });
+
+                    let updateSuccess = true;
+
+                    if (isZip) {
+                        log(`📦 Unzipping...`);
+                        // If source.extract is set, we unzip to a temp dir first, then move the specific folder
+                        if (source.extract && source.target) {
+                            const tempUnzipDir = path.join(EXTERNAL_DIR, `${source.name}_temp_unzip`);
+                            if (fs.existsSync(tempUnzipDir)) fs.rmSync(tempUnzipDir, { recursive: true, force: true });
+                            fs.mkdirSync(tempUnzipDir, { recursive: true });
+
+                            execSync(`unzip -q -o ${tempFile} -d ${tempUnzipDir}`, { stdio: 'inherit' });
+
+                            const extractSourcePath = path.join(tempUnzipDir, source.extract);
+                            const finalTargetPath = path.join(__dirname, '..', source.target); // Resolve relative to script root
+
+                            if (fs.existsSync(extractSourcePath)) {
+                                log(`🚚 Moving extracted folder ${source.extract} -> ${source.target}`);
+                                if (fs.existsSync(finalTargetPath)) fs.rmSync(finalTargetPath, { recursive: true, force: true });
+                                fs.mkdirSync(path.dirname(finalTargetPath), { recursive: true });
+                                fs.renameSync(extractSourcePath, finalTargetPath);
+                            } else {
+                                errorFromLog(`❌ ERROR: Extraction path not found in zip: ${source.extract}`);
+                                updateSuccess = false;
+                            }
+
+                            // Cleanup temp unzip
+                            fs.rmSync(tempUnzipDir, { recursive: true, force: true });
+
+                        } else {
+                            // Standard unzip to targetDir
+                            fs.mkdirSync(targetDir, { recursive: true });
+                            execSync(`unzip -q -o ${tempFile} -d ${targetDir}`, { stdio: 'inherit' });
+                        }
+                    } else {
+                        log(`💥 Exploding TiddlyWiki...`);
+                        execSync(`npx tiddlywiki --load ${tempFile} --savewikifolder ${targetDir}`, { stdio: 'inherit' });
+                    }
+
+                    // Pruning Logic based on 'type'
+                    if (updateSuccess) {
+                        const tiddlersDir = path.join(targetDir, 'tiddlers');
+                        const pluginsDir = path.join(targetDir, 'plugins');
+                        const themesDir = path.join(targetDir, 'themes');
+
+                        if (source.type === 'plugins') {
+                            // Keep plugins, delete tiddlers and themes
+                            log('✂️  Type: plugins -> Removing tiddlers and themes...');
+                            if (fs.existsSync(tiddlersDir)) fs.rmSync(tiddlersDir, { recursive: true, force: true });
+                            if (fs.existsSync(themesDir)) fs.rmSync(themesDir, { recursive: true, force: true });
+                        } else if (source.type === 'themes') {
+                            // Keep themes, delete tiddlers and plugins
+                            log('✂️  Type: themes -> Removing tiddlers and plugins...');
+                            if (fs.existsSync(tiddlersDir)) fs.rmSync(tiddlersDir, { recursive: true, force: true });
+                            if (fs.existsSync(pluginsDir)) fs.rmSync(pluginsDir, { recursive: true, force: true });
+                        } else if (source.type === 'tiddlers') {
+                            // Keep tiddlers, delete plugins and themes
+                            log('✂️  Type: tiddlers -> Removing plugins and themes...');
+                            if (fs.existsSync(pluginsDir)) fs.rmSync(pluginsDir, { recursive: true, force: true });
+                            if (fs.existsSync(themesDir)) fs.rmSync(themesDir, { recursive: true, force: true });
+                        } else {
+                            log(`✨ Type: ${source.type || 'all'} -> No pruning.`);
+                        }
+                    }
+
+                    if (updateSuccess) {
+                        lockData[source.name] = {
+                            url: source.url,
+                            etag: remoteInfo ? remoteInfo.etag : null,
+                            lastModified: remoteInfo ? remoteInfo.lastModified : null,
+                            updatedAt: new Date().toISOString()
+                        };
+                        changesMade = true;
+                    }
+                }
+                if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
+            } catch (error) {
+                errorFromLog(`❌ FAILED Extractions/Processing: ${error.message}`);
+            }
         }
     } else {
         log(`✅ Up to date.`);
@@ -218,3 +237,8 @@ if (changesMade) {
 
 fs.writeFileSync(logPath, logContent);
 console.log(`Mirror complete. Log written to ${logPath}`);
+
+if (failedDownloads >= 2) {
+    console.error(`\n❌ ERROR: ${failedDownloads} source(s) failed to download completely. Failing the build.`);
+    process.exit(1);
+}
