@@ -229,6 +229,13 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
             case "tm-print":
                 this.dispatchEvent({ type: action, event: event });
                 break;
+            case "lithic-copy-share-url":
+                var filter = "[[" + targ + "]] [[" + targ + "]get-stream-nodes[]]";
+                var jsonPayload = $tw.wiki.getTiddlersAsJson(filter);
+                var encodedPayload = btoa(unescape(encodeURIComponent(jsonPayload)));
+                var shareUrl = "https://lithic.uk/?json=" + encodedPayload;
+                this.dispatchEvent({ type: "tm-copy-to-clipboard", param: shareUrl });
+                break;
             case "tm-unfold-all-tiddlers":
                 this.dispatchEvent({ type: action, param: targ, foldedStatePrefix: "$:/state/folded/" });
                 break;

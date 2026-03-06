@@ -702,6 +702,32 @@
       };
 
       log("Launcher loaded.");
+
+      // --- URL QUERY STRING INJECTION ---
+      const urlParams = new URLSearchParams(window.location.search);
+      const b64Json = urlParams.get('json');
+      if (b64Json) {
+        try {
+          // Native base64 decoding in JS
+          const jsonString = decodeURIComponent(escape(atob(b64Json)));
+
+          let coreHtml = await fetchCoreEngine();
+          let innerLithData = jsonString.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
+
+          let contents = coreHtml;
+          if (innerLithData) {
+            contents = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
+          }
+
+          setTwCustomSaveAsSaver(true);
+          replacePageContents(contents);
+          return; // Stop further execution since we mounted the wiki
+        } catch (e) {
+          log("Failed to parse/inject ?json= parameter: " + e.message);
+          console.error("Query param injection error:", e);
+        }
+      }
+
       log("window.__TAURI__ present? " + !!window.__TAURI__);
 
       // Check if running inside the Tauri wrapper
