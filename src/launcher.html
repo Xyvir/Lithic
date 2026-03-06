@@ -440,7 +440,14 @@
         fileHandle.createWritable()
           .then(writable => { writable.write(textToWrite); return writable; })
           .then(writable => { writable.close(); callback(null); })
-          .catch(error => { callback(error); });
+          .catch(err => {
+            if (err.name === 'AbortError') {
+              console.log("Save operation aborted by user");
+            } else {
+              console.error("Save failed", err);
+              callback(err);
+            }
+          });
         return true;
       }
     }
@@ -470,8 +477,12 @@
               twFileManager.addRecent(fileHandle, null); // Manual Save As doesn't have a tauriPath link
             })
             .catch(err => {
-              console.warn("Save cancelled or failed", err);
-              callback(err);
+              if (err.name === 'AbortError') {
+                console.log("Save As dialog cancelled by user");
+              } else {
+                console.error("Save failed", err);
+                callback(err);
+              }
             });
         }
         return true;
