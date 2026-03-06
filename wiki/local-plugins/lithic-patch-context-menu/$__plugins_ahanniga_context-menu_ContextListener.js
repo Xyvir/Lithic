@@ -231,7 +231,27 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
                 break;
             case "lithic-copy-share-url":
                 var filter = "[[" + targ + "]] [[" + targ + "]get-stream-nodes[]]";
-                var jsonPayload = $tw.wiki.getTiddlersAsJson(filter);
+                var tiddlerTitles = $tw.wiki.filterTiddlers(filter);
+                var exportData = [];
+                for (var t = 0; t < tiddlerTitles.length; t++) {
+                    var tidObj = $tw.wiki.getTiddler(tiddlerTitles[t]);
+                    if (tidObj) {
+                        if (t === 0) {
+                            // Inject $:/tags/PayloadURL into a transient copy of the parent tiddler
+                            var newTags = (tidObj.fields.tags || []).slice();
+                            if (newTags.indexOf("$:/tags/PayloadURL") < 0) {
+                                newTags.push("$:/tags/PayloadURL");
+                            }
+                            tidObj = new $tw.Tiddler(tidObj, { tags: newTags });
+                        }
+                        var fields = {};
+                        for (var field in tidObj.fields) {
+                            fields[field] = tidObj.getFieldString(field);
+                        }
+                        exportData.push(fields);
+                    }
+                }
+                var jsonPayload = JSON.stringify(exportData);
                 var encodedPayload = btoa(unescape(encodeURIComponent(jsonPayload)));
                 var shareUrl = "https://lithic.uk/?json=" + encodedPayload;
                 this.dispatchEvent({ type: "tm-copy-to-clipboard", param: shareUrl });
