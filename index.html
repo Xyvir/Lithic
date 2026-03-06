@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,7 @@
     <style>
         /* Optional: Dark background to prevent a white flash while redirecting */
         body {
-            background-color: #1a1a1a; 
+            background-color: #1a1a1a;
             margin: 0;
             overflow: hidden;
         }
@@ -15,9 +16,11 @@
     <script>
         // Immediately redirect to the new location of the main app file
         // distinct from the root.
-        window.location.replace('src/launcher.html');
+        window.location.replace('src/launcher.html' + window.location.search);
     </script>
 </head>
+
 <body>
 </body>
+
 </html>
