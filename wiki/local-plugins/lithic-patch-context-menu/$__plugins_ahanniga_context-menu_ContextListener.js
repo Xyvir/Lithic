@@ -3,7 +3,7 @@ title: $:/plugins/ahanniga/context-menu/ContextListener.js
 type: application/javascript
 module-type: widget
 
-This widgets implements context menus to tiddlers - Patched by Jane to support param-filter
+This widgets implements context menus to tiddlers
 \*/
 
 (function () {
@@ -185,15 +185,6 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
     };
 
     ContextListener.prototype.menuClicked = function (event) {
-        // Reverted to original logic (event.target has attributes)
-        // BUT wait, if icon and label are children, event.target might be them.
-        // Original logic: event.target.getAttribute("action")
-        // If user clicks on icon (which is an SVG/IMG), event.target is the SVG/IMG. It doesn't have 'action'.
-        // So we MUST use closest('[action]'). The original plugin was flawed if it didn't do this,
-        // or it worked because pointer-events: none on children?
-        // Original CSS didn't have pointer-events: none.
-        // I will keep the robust closest() logic I added.
-
         var targetStart = event.target;
         var targetAction = targetStart.closest("[action]");
 
@@ -254,7 +245,33 @@ This widgets implements context menus to tiddlers - Patched by Jane to support p
                 var jsonPayload = JSON.stringify(exportData);
                 var encodedPayload = btoa(unescape(encodeURIComponent(jsonPayload)));
                 var shareUrl = "https://lithic.uk/?json=" + encodedPayload;
-                this.dispatchEvent({ type: "tm-copy-to-clipboard", param: shareUrl });
+
+                // --- RICH CLIPBOARD IMPLEMENTATION START ---
+                var linkText = targ + " on Lithic.uk";
+                var htmlContent = '<a href="' + shareUrl + '">' + linkText + '</a>';
+                var plainContent = shareUrl;
+
+                if (navigator.clipboard && window.ClipboardItem) {
+                    var htmlBlob = new Blob([htmlContent], { type: "text/html" });
+                    var plainBlob = new Blob([plainContent], { type: "text/plain" });
+                    var item = new ClipboardItem({
+                        "text/html": htmlBlob,
+                        "text/plain": plainBlob
+                    });
+
+                    var widgetNode = this;
+                    navigator.clipboard.write([item]).then(function () {
+                        // Trigger standard TW visual notification to maintain UX
+                        widgetNode.dispatchEvent({ type: "tm-notify", param: "$:/core/ui/Notifications/CopiedToClipboard" });
+                    }).catch(function (err) {
+                        // Fallback if writing multiple blob types fails due to strict OS/Browser security
+                        widgetNode.dispatchEvent({ type: "tm-copy-to-clipboard", param: plainContent });
+                    });
+                } else {
+                    // Fallback for older browsers or non-secure contexts (HTTP vs HTTPS)
+                    this.dispatchEvent({ type: "tm-copy-to-clipboard", param: plainContent });
+                }
+                // --- RICH CLIPBOARD IMPLEMENTATION END ---
                 break;
             case "tm-unfold-all-tiddlers":
                 this.dispatchEvent({ type: action, param: targ, foldedStatePrefix: "$:/state/folded/" });
