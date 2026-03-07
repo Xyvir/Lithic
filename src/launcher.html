@@ -828,20 +828,17 @@
           // Native base64 decoding in JS
           const jsonString = decodeURIComponent(escape(atob(b64Json)));
 
-          let parsedData;
-          try {
-            parsedData = JSON.parse(jsonString);
-          } catch (e) {
-            log("Invalid JSON in url param.");
+          let coreHtml = await fetchCoreEngine();
+          let innerLithData = jsonString.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
+
+          let contents = coreHtml;
+          if (innerLithData) {
+            contents = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
           }
 
-          if (Array.isArray(parsedData)) {
-            window.pendingImports = window.pendingImports.concat(parsedData);
-            window.updatePendingImportsWindow();
-            // We NO LONGER boot immediately! We let the user choose a target.
-            log("Deferred payload from URL loaded into pendingImports");
-          }
-
+          setTwCustomSaveAsSaver(true);
+          replacePageContents(contents);
+          return; // Stop further execution since we mounted the wiki
         } catch (e) {
           log("Failed to parse/inject ?json= parameter: " + e.message);
           console.error("Query param injection error:", e);
