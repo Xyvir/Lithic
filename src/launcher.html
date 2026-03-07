@@ -464,7 +464,7 @@
         } else {
           const saveOptions = isJsonMode ? {
             suggestedName: 'new_pack.lith',
-            types: [{ description: 'Lithic Data Pack', accept: { 'application/json': ['.lith', '.json'] } }],
+            types: [{ description: 'Lithic Data Pack', accept: { 'application/x-lith': ['.lith'], 'application/json': ['.json'] } }],
           } : {
             suggestedName: 'lith.html',
             types: [{ description: 'Lithic HTML File', accept: { 'text/html': ['.html', '.htm'] } }],
@@ -502,7 +502,7 @@
         } else {
           const openOptions = {
             types: [
-              { description: 'Lithic Files & Data Packs', accept: { 'text/html': ['.html', '.htm'], 'application/json': ['.lith', '.json'] } }
+              { description: 'Lithic Files & Data Packs', accept: { 'text/html': ['.html', '.htm'], 'application/x-lith': ['.lith'], 'application/json': ['.json'] } }
             ]
           };
           [fileHandle] = await window.showOpenFilePicker(openOptions);
@@ -808,7 +808,7 @@
                 }
 
                 const pickerOptions = {
-                  types: [{ description: 'Lithic Files', accept: { 'application/json': ['.lith', '.json'] } }]
+                  types: [{ description: 'Lithic Files', accept: { 'application/x-lith': ['.lith'], 'application/json': ['.json'] } }]
                 };
                 if (bestStartIn) {
                   pickerOptions.startIn = bestStartIn;
