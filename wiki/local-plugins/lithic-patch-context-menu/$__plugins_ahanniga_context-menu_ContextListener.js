@@ -39,7 +39,6 @@ This widgets implements context menus to tiddlers
                 }
             });
 
-            // Remove the \parameters block from the src
             src = src.replace(paramMatcher, '').trim();
         }
 
@@ -52,7 +51,6 @@ This widgets implements context menus to tiddlers
     }
 
     var Widget = require("$:/core/modules/widgets/widget.js").widget;
-    // Reverted to original class name
     var template = `<div id="contextMenu" class="context-menu" style="display: none; z-index: 10000;"></div>`;
 
     var ContextListener = function (parseTreeNode, options) {
@@ -73,11 +71,9 @@ This widgets implements context menus to tiddlers
         var menu = document.getElementById("contextMenu");
 
         if (getSelection().toString().trim().length > 0) {
-            // User has selected text, so don't trigger this menu
             return true;
         }
 
-        // Allow default context menu for unieditor elements to use spell check
         if (event.target && event.target.closest && event.target.closest(".unieditor__textarea")) {
             return true;
         }
@@ -89,16 +85,12 @@ This widgets implements context menus to tiddlers
         }
         menu.innerHTML = "";
 
-        // Reverted to UL structure
         var menuHtml = ["<ul>"];
         var titles = $tw.wiki.getTiddlersWithTag("$:/tags/tiddlercontextmenu");
         var label, action, icon, tid, targ, text, separator, paramFilter, customParam;
 
-        // Check if we can find a closer tiddler title (e.g. Streams node)
-        // Streams uses data-node-title, standard TW uses data-tiddler-title
         var closestTiddler = event.target.closest("[data-tiddler-title], [data-node-title]");
 
-        // Priority 1: Check if we clicked on a link directly
         var link = event.target.closest(".tc-tiddlylink");
         if (link) {
             var title = link.getAttribute("data-tiddler-title");
@@ -113,15 +105,12 @@ This widgets implements context menus to tiddlers
             }
         }
 
-        // Priority 2: Fallback to container if no link found
         if (!targ) {
             if (closestTiddler) {
-                // Prioritize node-title if it exists (it's likely the specific row)
                 targ = closestTiddler.getAttribute("data-node-title") || closestTiddler.getAttribute("data-tiddler-title");
             }
         }
 
-        // If still no target, return true to allow default browser context menu
         if (!targ) {
             return true;
         }
@@ -142,16 +131,12 @@ This widgets implements context menus to tiddlers
             } else {
                 icon = "";
             }
-            // Use original separator class
             separator = tid.fields["separate-after"] === undefined ? "" : "menu-separator";
 
             // --- PATCH START ---
-            // Check for param-filter and pre-calculate the text to copy
             paramFilter = tid.getFieldString("param-filter");
             customParam = "";
             if (paramFilter) {
-                // TiddlyWiki filterTiddlers often fails variable resolution (<currentTiddler>) when called outside a real Widget DOM tree.
-                // We bypass this entirely by text-replacing <currentTiddler> with our known target row title.
                 var resolvedFilter = paramFilter.replace(/<currentTiddler>/g, "[" + targ + "]");
 
                 var iterator = function (callback) {
@@ -165,7 +150,6 @@ This widgets implements context menus to tiddlers
             }
             // --- PATCH END ---
 
-            // Reverted to LI structure. Note icons will be reversed via CSS.
             menuHtml.push(`<li class="${separator}"><a action="${action}" targ="${targ}" data-custom-param="${customParam}" href="#!">${icon} ${label}</a></li>`);
         }
 
@@ -194,7 +178,6 @@ This widgets implements context menus to tiddlers
 
         var action = targetAction.getAttribute("action");
         var targ = targetAction.getAttribute("targ");
-        // Retrieve our custom param
         var customParam = targetAction.getAttribute("data-custom-param");
 
         var tid, stid, state, text, ptid;
@@ -208,7 +191,6 @@ This widgets implements context menus to tiddlers
                 break;
             case "tm-copy-to-clipboard":
                 // --- PATCH START ---
-                // If we have a custom param, use it. Otherwise default to body text.
                 if (customParam && customParam !== "") {
                     text = customParam;
                 } else {
@@ -228,7 +210,6 @@ This widgets implements context menus to tiddlers
                     var tidObj = $tw.wiki.getTiddler(tiddlerTitles[t]);
                     if (tidObj) {
                         if (t === 0) {
-                            // Inject $:/tags/PayloadURL into a transient copy of the parent tiddler
                             var newTags = (tidObj.fields.tags || []).slice();
                             if (newTags.indexOf("$:/tags/PayloadURL") < 0) {
                                 newTags.push("$:/tags/PayloadURL");
@@ -252,52 +233,49 @@ This widgets implements context menus to tiddlers
                 var plainContent = shareUrl;
                 var widgetNode = this;
 
-                var fallbackSuccess = false;
-                var doFallbackCopy = function () {
+                var executeLegacyCopy = function () {
+                    var success = false;
                     var copyHandler = function (e) {
                         e.preventDefault();
                         if (e.clipboardData) {
                             e.clipboardData.setData('text/html', htmlContent);
                             e.clipboardData.setData('text/plain', plainContent);
-                            fallbackSuccess = true;
+                            success = true;
                         }
                     };
 
+                    document.addEventListener('copy', copyHandler);
                     try {
-                        var tempDiv = document.createElement("div");
-                        tempDiv.style.position = "fixed";
-                        tempDiv.style.left = "-9999px";
-                        tempDiv.style.top = "0";
-                        tempDiv.textContent = plainContent;
-                        document.body.appendChild(tempDiv);
+                        var tempSpan = document.createElement("span");
+                        tempSpan.textContent = plainContent;
+                        // Keep hidden from view but selectable by the browser
+                        tempSpan.style.position = "fixed";
+                        tempSpan.style.left = "-9999px";
+                        tempSpan.style.top = "0";
+                        document.body.appendChild(tempSpan);
 
                         var selection = window.getSelection();
                         if (selection) {
                             var range = document.createRange();
-                            range.selectNodeContents(tempDiv);
+                            range.selectNodeContents(tempSpan);
                             selection.removeAllRanges();
                             selection.addRange(range);
 
-                            document.addEventListener('copy', copyHandler);
-                            var success = document.execCommand('copy');
-                            document.removeEventListener('copy', copyHandler);
-
+                            document.execCommand('copy');
                             selection.removeAllRanges();
                         }
-
-                        document.body.removeChild(tempDiv);
+                        document.body.removeChild(tempSpan);
                     } catch (e) {
+                        console.error("Lithic Legacy Copy Failed:", e);
+                    } finally {
                         document.removeEventListener('copy', copyHandler);
                     }
-                    return fallbackSuccess;
+                    return success;
                 };
 
-                var syncSuccess = doFallbackCopy();
                 var isAndroid = /Android/i.test(navigator.userAgent);
 
-                // Android Chrome has a bug where navigator.clipboard.write silently drops text/html.
-                // It thus overwrites the successful rich text copy with plaintext-only.
-                // We exclusively rely on the sync fallback for Android, or if Async API is missing.
+                // Bypass Async API on Android due to text/html stripping bug
                 if (!isAndroid && navigator.clipboard && window.ClipboardItem) {
                     try {
                         var htmlBlob = new Blob([htmlContent], { type: "text/html" });
@@ -308,26 +286,23 @@ This widgets implements context menus to tiddlers
                         });
 
                         navigator.clipboard.write([item]).then(function () {
-                            // Trigger standard TW visual notification to maintain UX
                             widgetNode.dispatchEvent({ type: "tm-notify", param: "$:/core/ui/Notifications/CopiedToClipboard" });
                         }).catch(function (err) {
-                            // Fallback if writing multiple blob types fails due to strict OS/Browser security
-                            if (syncSuccess) {
+                            if (executeLegacyCopy()) {
                                 widgetNode.dispatchEvent({ type: "tm-notify", param: "$:/core/ui/Notifications/CopiedToClipboard" });
                             } else {
                                 widgetNode.dispatchEvent({ type: "tm-copy-to-clipboard", param: plainContent });
                             }
                         });
                     } catch (err) {
-                        if (syncSuccess) {
+                        if (executeLegacyCopy()) {
                             widgetNode.dispatchEvent({ type: "tm-notify", param: "$:/core/ui/Notifications/CopiedToClipboard" });
                         } else {
                             widgetNode.dispatchEvent({ type: "tm-copy-to-clipboard", param: plainContent });
                         }
                     }
                 } else {
-                    // Fallback for Android, older browsers, or non-secure contexts
-                    if (syncSuccess) {
+                    if (executeLegacyCopy()) {
                         widgetNode.dispatchEvent({ type: "tm-notify", param: "$:/core/ui/Notifications/CopiedToClipboard" });
                     } else {
                         widgetNode.dispatchEvent({ type: "tm-copy-to-clipboard", param: plainContent });
