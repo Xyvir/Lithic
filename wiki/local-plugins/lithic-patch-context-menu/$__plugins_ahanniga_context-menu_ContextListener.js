@@ -279,7 +279,7 @@ This widgets implements context menus to tiddlers
                             selection.addRange(range);
 
                             document.addEventListener('copy', copyHandler);
-                            document.execCommand('copy');
+                            var success = document.execCommand('copy');
                             document.removeEventListener('copy', copyHandler);
 
                             selection.removeAllRanges();
@@ -293,8 +293,12 @@ This widgets implements context menus to tiddlers
                 };
 
                 var syncSuccess = doFallbackCopy();
+                var isAndroid = /Android/i.test(navigator.userAgent);
 
-                if (navigator.clipboard && window.ClipboardItem) {
+                // Android Chrome has a bug where navigator.clipboard.write silently drops text/html.
+                // It thus overwrites the successful rich text copy with plaintext-only.
+                // We exclusively rely on the sync fallback for Android, or if Async API is missing.
+                if (!isAndroid && navigator.clipboard && window.ClipboardItem) {
                     try {
                         var htmlBlob = new Blob([htmlContent], { type: "text/html" });
                         var plainBlob = new Blob([plainContent], { type: "text/plain" });
@@ -322,7 +326,7 @@ This widgets implements context menus to tiddlers
                         }
                     }
                 } else {
-                    // Fallback for older browsers or non-secure contexts (HTTP vs HTTPS)
+                    // Fallback for Android, older browsers, or non-secure contexts
                     if (syncSuccess) {
                         widgetNode.dispatchEvent({ type: "tm-notify", param: "$:/core/ui/Notifications/CopiedToClipboard" });
                     } else {
