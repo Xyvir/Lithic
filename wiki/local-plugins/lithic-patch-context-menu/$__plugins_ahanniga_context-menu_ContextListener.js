@@ -250,26 +250,84 @@ This widgets implements context menus to tiddlers
                 var linkText = targ + " on Lithic.uk";
                 var htmlContent = '<a href="' + shareUrl + '">' + linkText + '</a>';
                 var plainContent = shareUrl;
+                var widgetNode = this;
+
+                var fallbackSuccess = false;
+                var doFallbackCopy = function () {
+                    var copyHandler = function (e) {
+                        e.preventDefault();
+                        if (e.clipboardData) {
+                            e.clipboardData.setData('text/html', htmlContent);
+                            e.clipboardData.setData('text/plain', plainContent);
+                            fallbackSuccess = true;
+                        }
+                    };
+
+                    try {
+                        var tempDiv = document.createElement("div");
+                        tempDiv.style.position = "fixed";
+                        tempDiv.style.left = "-9999px";
+                        tempDiv.style.top = "0";
+                        tempDiv.textContent = plainContent;
+                        document.body.appendChild(tempDiv);
+
+                        var selection = window.getSelection();
+                        if (selection) {
+                            var range = document.createRange();
+                            range.selectNodeContents(tempDiv);
+                            selection.removeAllRanges();
+                            selection.addRange(range);
+
+                            document.addEventListener('copy', copyHandler);
+                            document.execCommand('copy');
+                            document.removeEventListener('copy', copyHandler);
+
+                            selection.removeAllRanges();
+                        }
+
+                        document.body.removeChild(tempDiv);
+                    } catch (e) {
+                        document.removeEventListener('copy', copyHandler);
+                    }
+                    return fallbackSuccess;
+                };
+
+                var syncSuccess = doFallbackCopy();
 
                 if (navigator.clipboard && window.ClipboardItem) {
-                    var htmlBlob = new Blob([htmlContent], { type: "text/html" });
-                    var plainBlob = new Blob([plainContent], { type: "text/plain" });
-                    var item = new ClipboardItem({
-                        "text/html": htmlBlob,
-                        "text/plain": plainBlob
-                    });
+                    try {
+                        var htmlBlob = new Blob([htmlContent], { type: "text/html" });
+                        var plainBlob = new Blob([plainContent], { type: "text/plain" });
+                        var item = new ClipboardItem({
+                            "text/html": htmlBlob,
+                            "text/plain": plainBlob
+                        });
 
-                    var widgetNode = this;
-                    navigator.clipboard.write([item]).then(function () {
-                        // Trigger standard TW visual notification to maintain UX
-                        widgetNode.dispatchEvent({ type: "tm-notify", param: "$:/core/ui/Notifications/CopiedToClipboard" });
-                    }).catch(function (err) {
-                        // Fallback if writing multiple blob types fails due to strict OS/Browser security
-                        widgetNode.dispatchEvent({ type: "tm-copy-to-clipboard", param: plainContent });
-                    });
+                        navigator.clipboard.write([item]).then(function () {
+                            // Trigger standard TW visual notification to maintain UX
+                            widgetNode.dispatchEvent({ type: "tm-notify", param: "$:/core/ui/Notifications/CopiedToClipboard" });
+                        }).catch(function (err) {
+                            // Fallback if writing multiple blob types fails due to strict OS/Browser security
+                            if (syncSuccess) {
+                                widgetNode.dispatchEvent({ type: "tm-notify", param: "$:/core/ui/Notifications/CopiedToClipboard" });
+                            } else {
+                                widgetNode.dispatchEvent({ type: "tm-copy-to-clipboard", param: plainContent });
+                            }
+                        });
+                    } catch (err) {
+                        if (syncSuccess) {
+                            widgetNode.dispatchEvent({ type: "tm-notify", param: "$:/core/ui/Notifications/CopiedToClipboard" });
+                        } else {
+                            widgetNode.dispatchEvent({ type: "tm-copy-to-clipboard", param: plainContent });
+                        }
+                    }
                 } else {
                     // Fallback for older browsers or non-secure contexts (HTTP vs HTTPS)
-                    this.dispatchEvent({ type: "tm-copy-to-clipboard", param: plainContent });
+                    if (syncSuccess) {
+                        widgetNode.dispatchEvent({ type: "tm-notify", param: "$:/core/ui/Notifications/CopiedToClipboard" });
+                    } else {
+                        widgetNode.dispatchEvent({ type: "tm-copy-to-clipboard", param: plainContent });
+                    }
                 }
                 // --- RICH CLIPBOARD IMPLEMENTATION END ---
                 break;
