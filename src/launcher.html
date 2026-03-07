@@ -837,9 +837,10 @@
 
           if (Array.isArray(parsedData)) {
             window.pendingImports = window.pendingImports.concat(parsedData);
-            window.updatePendingImportsWindow();
-            // We NO LONGER boot immediately! We let the user choose a target.
-            log("Deferred payload from URL loaded into pendingImports");
+            // Automatically boot into a fresh lithic.html
+            log("Payload from URL loaded. Booting fresh lithic.html...");
+            window.openStarterLith();
+            return;
           }
 
         } catch (e) {
