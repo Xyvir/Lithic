@@ -353,9 +353,63 @@
       z-index: 10000;
       pointer-events: none;
     }
+
+    /* --- PENDING IMPORTS WINDOW --- */
+    #pending-imports-window {
+      display: none;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      width: 250px;
+      max-width: 90vw;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      flex-direction: column;
+      max-height: 50vh;
+    }
+
+    #pending-imports-header {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+      font-size: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    #pending-imports-body {
+      padding: 12px;
+      overflow-y: auto;
+      flex-grow: 1;
+      font-size: 0.9rem;
+    }
+
+    #pending-imports-list {
+      list-style-type: disc;
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    #pending-imports-list li {
+      margin-bottom: 4px;
+      color: var(--text-color);
+    }
+
+    #pending-imports-list li.subtiddler-list {
+      color: #888;
+      font-size: 0.8rem;
+    }
   </style>
 
   <script type="module">
+    // Global Pending Imports
+    window.pendingImports = [];
+
     /* IDB-KEYVAL & FILE MANAGER LOGIC */
     let idbKeyval = (function (exports) {
       'use strict';
@@ -587,10 +641,62 @@
 
     function replacePageContents(contents) {
       if (contents) {
+
+        // --- INJECT PENDING IMPORTS ---
+        if (window.pendingImports && window.pendingImports.length > 0) {
+          console.log(`Injecting ${window.pendingImports.length} pending tiddlers...`);
+          const jsonBundle = JSON.stringify(window.pendingImports);
+
+          if (contents.includes('<script class="tiddlywiki-tiddler-store" type="application/json">')) {
+            // Appending to an existing JSON store boot script.
+            contents = contents.replace(/\]\s*<\/script>/is, ',' + jsonBundle.substring(1) + '<\/script>');
+          } else {
+            // Injecting a new script block before </body>
+            const scriptTag = `<script class="tiddlywiki-tiddler-store" type="application/json">${jsonBundle}<\/script>`;
+            contents = contents.replace(/<\/body>/i, scriptTag + '\n</body>');
+          }
+
+          window.pendingImports = []; // clear after injection
+        }
+
         document.open();
         document.write(contents);
         document.close();
       }
+    }
+
+    window.clearPendingImports = function () {
+      window.pendingImports = [];
+      const win = document.getElementById("pending-imports-window");
+      if (win) win.style.display = "none";
+    }
+
+    window.updatePendingImportsWindow = function () {
+      const win = document.getElementById("pending-imports-window");
+      const list = document.getElementById("pending-imports-list");
+      if (!win || !list) return;
+
+      if (window.pendingImports.length === 0) {
+        win.style.display = "none";
+        return;
+      }
+
+      list.innerHTML = "";
+      // Grouping logic based on stream-list node paths could go here, 
+      // but for simplicity we'll just list titles.
+      window.pendingImports.forEach(tiddler => {
+        const li = document.createElement("li");
+        li.textContent = tiddler.title || "Untitled Payload";
+
+        // Optional: dim stream sub-nodes if we can detect them
+        if (tiddler.title && (tiddler.title.match(/^\d{14}-\d{3,4}$/) || tiddler['stream-type'])) {
+          li.classList.add("subtiddler-list");
+        }
+
+        list.appendChild(li);
+      });
+
+      win.style.display = "flex";
     }
 
     window.openFile = async function (fileHandle) {
@@ -722,17 +828,20 @@
           // Native base64 decoding in JS
           const jsonString = decodeURIComponent(escape(atob(b64Json)));
 
-          let coreHtml = await fetchCoreEngine();
-          let innerLithData = jsonString.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
-
-          let contents = coreHtml;
-          if (innerLithData) {
-            contents = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
+          let parsedData;
+          try {
+            parsedData = JSON.parse(jsonString);
+          } catch (e) {
+            log("Invalid JSON in url param.");
           }
 
-          setTwCustomSaveAsSaver(true);
-          replacePageContents(contents);
-          return; // Stop further execution since we mounted the wiki
+          if (Array.isArray(parsedData)) {
+            window.pendingImports = window.pendingImports.concat(parsedData);
+            window.updatePendingImportsWindow();
+            // We NO LONGER boot immediately! We let the user choose a target.
+            log("Deferred payload from URL loaded into pendingImports");
+          }
+
         } catch (e) {
           log("Failed to parse/inject ?json= parameter: " + e.message);
           console.error("Query param injection error:", e);
@@ -866,6 +975,26 @@
       dragCounter = 0;
       document.body.classList.remove('drag-over');
 
+      // 1. Try to process dropped text/URLs (e.g., from the Lithic Share URL)
+      const droppedUrl = e.dataTransfer.getData('URL') || e.dataTransfer.getData('text/plain');
+      if (droppedUrl && droppedUrl.includes('?json=')) {
+        try {
+          const urlObj = new URL(droppedUrl);
+          const b64Json = urlObj.searchParams.get('json');
+          if (b64Json) {
+            const jsonString = decodeURIComponent(escape(atob(b64Json)));
+            const parsedData = JSON.parse(jsonString);
+            if (Array.isArray(parsedData)) {
+              window.pendingImports = window.pendingImports.concat(parsedData);
+              window.updatePendingImportsWindow();
+              return; // Handled as deferred payload
+            }
+          }
+        } catch (err) {
+          console.warn("Dropped text looked like a payload URL but failed to parse", err);
+        }
+      }
+
       if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length === 0) {
         return;
       }
@@ -883,20 +1012,22 @@
         let contents = await file.text();
 
         if (isJsonMode) {
-          let coreHtml = await fetchCoreEngine();
-          let innerLithData = contents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
-
-          if (innerLithData) {
-            contents = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
-          } else {
-            contents = coreHtml;
+          // Instead of mounting immediately, we parse the JSON and add to pendingImports
+          try {
+            const parsedData = JSON.parse(contents);
+            if (Array.isArray(parsedData)) {
+              window.pendingImports = window.pendingImports.concat(parsedData);
+              window.updatePendingImportsWindow();
+              return; // Handled as deferred payload
+            }
+          } catch (err) {
+            console.error("Failed to parse dropped JSON file:", err);
+            alert("Dropped file is not valid JSON.");
           }
-          setTwCustomSaveAsSaver(true);
         } else if (isHtmlMode) {
           setTwCustomSaveAsSaver(false);
+          replacePageContents(contents); // HTML files still mount immediately
         }
-
-        replacePageContents(contents);
       } catch (err) {
         console.error("Failed to mount dropped file:", err);
         alert("Failed to mount dropped file. See console for details.");
@@ -960,6 +1091,18 @@
       deferredPrompt = null;
     });
   </script>
+
+  <!-- PENDING IMPORTS OVERLAY -->
+  <div id="pending-imports-window">
+    <div id="pending-imports-header">
+      <span>To Be Imported</span>
+      <button style="width: auto; padding: 4px 8px; font-size: 0.8rem; margin: 0;"
+        onclick="window.clearPendingImports()">Cancel</button>
+    </div>
+    <div id="pending-imports-body">
+      <ul id="pending-imports-list"></ul>
+    </div>
+  </div>
 
   <div id="debug-log"></div>
 </body>
