@@ -193,10 +193,14 @@ tags: $:/tags/Macro
 
 \define cancel-edit-node-actions()
 <!-- handle cancelling the edit on an empty node -->
-<$list filter="[<currentTiddler>!has[stream-list]!has[text]]" variable="_NULL">
+<$vars 
+  todo1="[ ] " todo2="- [ ] " done1="[x] " done2="[X] " done3="- [x] " done4="- [X] "
+>
+<$list filter="[<currentTiddler>!has[stream-list]!has[text]] [<currentTiddler>!has[stream-list]get[text]match<todo1>] [<currentTiddler>!has[stream-list]get[text]match<todo2>] [<currentTiddler>!has[stream-list]get[text]match<done1>] [<currentTiddler>!has[stream-list]get[text]match<done2>] [<currentTiddler>!has[stream-list]get[text]match<done3>] [<currentTiddler>!has[stream-list]get[text]match<done4>]" variable="_NULL">
 	<$action-listops $tiddler={{{[{!!parent}]}}} $field="stream-list" $subfilter="+[is[tiddler]] -[<currentTiddler>]"/>
 	<$action-deletetiddler $tiddler=<<currentTiddler>> />
 </$list>
+</$vars>
 <!--<$action-deletefield $tiddler=<<currentTiddler>> $field="throttle.refresh" />-->
 <$action-deletetiddler $tiddler=<<row-edit-state>> />
 \end
