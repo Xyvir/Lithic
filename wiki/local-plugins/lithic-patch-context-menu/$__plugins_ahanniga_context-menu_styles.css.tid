@@ -74,3 +74,16 @@ ul .menu-separator {
 	margin-top: 6px;
 	padding-bottom: 0;
 }
+
+/* Context Menu Highlight Patch - applies when right-clicking a stream node */
+.lithic-context-menu-active {
+	background-color: rgba(46, 204, 113, 0.15) !important;
+	border-radius: 4px;
+	outline: 2px solid rgba(46, 204, 113, 0.4) !important;
+}
+
+.lithic-context-menu-active-children {
+	background-color: rgba(46, 204, 113, 0.05) !important;
+	border-radius: 4px;
+	box-shadow: inset 2px 0 0 0 rgba(46, 204, 113, 0.4) !important;
+}

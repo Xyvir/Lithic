@@ -175,6 +175,23 @@ This widgets implements context menus to tiddlers
         if (menu.style.display == "block") {
             this.hideMenu();
         } else {
+            // --- HIGHLIGHT PATCH START ---
+            document.querySelectorAll(".lithic-context-menu-active, .lithic-context-menu-active-children").forEach(function (el) {
+                el.classList.remove("lithic-context-menu-active", "lithic-context-menu-active-children");
+            });
+
+            var activeTarget = link || closestTiddler;
+            if (activeTarget) {
+                activeTarget.classList.add("lithic-context-menu-active");
+                if (activeTarget.classList.contains("stream-row")) {
+                    var droppable = activeTarget.closest(".stream-droppable");
+                    if (droppable && droppable.nextElementSibling && droppable.nextElementSibling.classList.contains("stream-row-children")) {
+                        droppable.nextElementSibling.classList.add("lithic-context-menu-active-children");
+                    }
+                }
+            }
+            // --- HIGHLIGHT PATCH END ---
+
             menu.style.display = 'block';
             menu.style.left = event.clientX + "px";
             menu.style.top = event.clientY + "px";
@@ -311,6 +328,11 @@ This widgets implements context menus to tiddlers
         if (menu != null) {
             menu.style.display = "none";
         }
+        // --- HIGHLIGHT PATCH START ---
+        document.querySelectorAll(".lithic-context-menu-active, .lithic-context-menu-active-children").forEach(function (el) {
+            el.classList.remove("lithic-context-menu-active", "lithic-context-menu-active-children");
+        });
+        // --- HIGHLIGHT PATCH END ---
     };
 
     exports.contextMenu = ContextListener;
