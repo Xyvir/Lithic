@@ -106,7 +106,17 @@ tags: $:/tags/Macro
 <$list filter="[<selectionEnd>!is[blank]else[0]!match[0]]" variable="_NULL">
 <$list filter="[<currentTiddler>get[text]length[]subtract<selectionEnd>!match[0]]" variable="_NULL" emptyMessage=<<add-node-actions>>>
 	<$macrocall $name="add-node-actions" startText={{{[<currentTiddler>get[text]split[]rest<selectionEnd>join[]trim[]]}}} streamList={{!!stream-list}} /><!--insertPosition="title"-->
-	<$action-setfield $tiddler="$:/state/sq/streams/caret-position" text="0"/>
+	<$vars 
+	  todo1="[ ] " todo2="- [ ] " done1="[x] " done2="[X] " done3="- [x] " done4="- [X] "
+	>
+	<$let 
+	  tText={{{ [<currentTiddler>get[text]] }}}
+	  prefixText={{{ [<tText>prefix<todo1>then<todo1>] ~[<tText>prefix<todo2>then<todo2>] ~[<tText>prefix<done1>then<done1>] ~[<tText>prefix<done2>then<done2>] ~[<tText>prefix<done3>then<done3>] ~[<tText>prefix<done4>then<done4>] }}}
+	  pLen={{{ [<prefixText>length[]] ~[[0]] }}}
+	>
+	<$action-setfield $tiddler="$:/state/sq/streams/caret-position" text=<<pLen>>/>
+	</$let>
+	</$vars>
 	<$action-setfield $tiddler=<<currentTiddler>> text={{{[<currentTiddler>get[text]split[]first<selectionEnd>join[]]}}} stream-list=""/>
 </$list>
 </$list>
@@ -133,7 +143,20 @@ tags: $:/tags/Macro
 <$set name="parent" filter="[<currentTiddler>match<stream-root-title>] ~[{!!parent}] +[first[]]" select="0">
 <$wikify name="new-node" text={{$:/config/sq/streams/new-node-title}}>
 <$wikify name="new-node" text={{{[[<<unusedtitle """]addsuffix<new-node>addsuffix[""">>]]}}}>
-	<$action-createtiddler $basetitle=<<new-node>> text=<<__startText__>> $template={{$:/config/sq/streams/new-node-tiddler-template}} parent=<<parent>> stream-type="default" stream-list=<<__streamList__>>/>
+<$vars 
+  todo1="[ ] " 
+  todo2="- [ ] " 
+  done1="[x] " 
+  done2="[X] " 
+  done3="- [x] " 
+  done4="- [X] "
+>
+<$let 
+  tText={{{ [<currentTiddler>get[text]] }}}
+  prefixText={{{ [<tText>prefix<todo1>then<todo1>] ~[<tText>prefix<todo2>then<todo2>] ~[<tText>prefix<done1>then<done1>] ~[<tText>prefix<done2>then<done2>] ~[<tText>prefix<done3>then<done3>] ~[<tText>prefix<done4>then<done4>] }}}
+  actualStartText={{{ [<prefixText>addsuffix<__startText__>] }}}
+>
+	<$action-createtiddler $basetitle=<<new-node>> text=<<actualStartText>> $template={{$:/config/sq/streams/new-node-tiddler-template}} parent=<<parent>> stream-type="default" stream-list=<<__streamList__>>/>
 	<$set name="parent-nodes" filter="[<parent>get[stream-list]]" select="0">
 	<$set name="next-node" filter="[enlist<parent-nodes>is[tiddler]$insertPosition$<currentTiddler>]" select="0">
 	<$action-listops $tiddler=<<parent>> $field="stream-list" $subfilter="+[is[tiddler]] +[insertbefore:next-node<new-node>]"/>
@@ -146,6 +169,8 @@ tags: $:/tags/Macro
 	</$set>
 	</$set>
 	<$action-setfield $tiddler=<<row-edit-state>> text=<<new-node>>/>
+</$let>
+</$vars>
 </$wikify>
 </$wikify>
 </$set>
