@@ -826,7 +826,7 @@
 
       // --- URL QUERY STRING INJECTION ---
       const urlParams = new URLSearchParams(window.location.search);
-      let b64Json = urlParams.get('json');
+      let b64Json = urlParams.get('json') || urlParams.get('lith');
       let remoteUrl = urlParams.get('url');
 
       if (remoteUrl) {
@@ -847,6 +847,11 @@
             throw new Error("Remote URL payload is not JSON.");
           }
           if (Array.isArray(parsedData)) {
+            // Replicate ?json behavior by tagging imports with PayloadURL
+            parsedData = parsedData.map(node => ({
+              ...node,
+              tags: node.tags ? [...new Set([...(Array.isArray(node.tags) ? node.tags : (typeof node.tags === 'string' ? node.tags.split(' ') : [])), '$:/tags/PayloadURL'])].join(' ') : '$:/tags/PayloadURL'
+            }));
             window.pendingImports = window.pendingImports.concat(parsedData);
             log("Remote Payload loaded. Booting fresh lithic.html...");
             window.openStarterLith();
@@ -1021,10 +1026,10 @@
 
       // 1. Try to process dropped text/URLs (e.g., from the Lithic Share URL)
       const droppedUrl = e.dataTransfer.getData('URL') || e.dataTransfer.getData('text/plain');
-      if (droppedUrl && (droppedUrl.includes('?json=') || droppedUrl.includes('?url='))) {
+      if (droppedUrl && (droppedUrl.includes('?json=') || droppedUrl.includes('?lith=') || droppedUrl.includes('?url='))) {
         try {
           const urlObj = new URL(droppedUrl);
-          let b64Json = urlObj.searchParams.get('json');
+          let b64Json = urlObj.searchParams.get('json') || urlObj.searchParams.get('lith');
           let remoteUrl = urlObj.searchParams.get('url');
 
           if (remoteUrl) {
