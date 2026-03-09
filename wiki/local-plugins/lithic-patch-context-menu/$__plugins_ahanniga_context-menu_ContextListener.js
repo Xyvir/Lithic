@@ -243,6 +243,7 @@ This widgets implements context menus to tiddlers
                 this.dispatchEvent({ type: action, event: event });
                 break;
             case "lithic-copy-share-url":
+                var exportData = [];
                 var filter = "[[" + targ + "]] [[" + targ + "]get-stream-nodes[]]";
                 var tiddlerTitles = $tw.wiki.filterTiddlers(filter);
                 var baseTarg = targ;

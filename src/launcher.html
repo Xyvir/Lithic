@@ -408,6 +408,40 @@
       color: #888;
       font-size: 0.8rem;
     }
+
+    /* --- LOADING SPINNER OVERLAY --- */
+    #loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 26, 26, 0.85);
+      z-index: 20000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-color);
+      backdrop-filter: blur(3px);
+    }
+
+    .spinner {
+      margin-bottom: 20px;
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--border-color);
+      border-top: 4px solid var(--accent-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
   </style>
 
   <script type="module">
@@ -829,6 +863,10 @@
       let b64Json = urlParams.get('json') || urlParams.get('lith');
       let remoteUrl = urlParams.get('url');
 
+      if (remoteUrl || b64Json) {
+        document.getElementById('loading-overlay').style.display = 'flex';
+      }
+
       if (remoteUrl) {
         try {
           // intelligently support b64 or plain url string
@@ -846,12 +884,10 @@
           } catch (e) {
             throw new Error("Remote URL payload is not JSON.");
           }
-          if (Array.isArray(parsedData)) {
-            // Replicate ?json behavior by tagging imports with PayloadURL
-            parsedData = parsedData.map(node => ({
-              ...node,
-              tags: node.tags ? [...new Set([...(Array.isArray(node.tags) ? node.tags : (typeof node.tags === 'string' ? node.tags.split(' ') : [])), '$:/tags/PayloadURL'])].join(' ') : '$:/tags/PayloadURL'
-            }));
+          if (Array.isArray(parsedData) && parsedData.length > 0) {
+            // Replicate ?json behavior by tagging only the root parent with PayloadURL
+            let node = parsedData[0];
+            node.tags = node.tags ? [...new Set([...(Array.isArray(node.tags) ? node.tags : (typeof node.tags === 'string' ? node.tags.split(' ') : [])), '$:/tags/PayloadURL'])].join(' ') : '$:/tags/PayloadURL';
             window.pendingImports = window.pendingImports.concat(parsedData);
             log("Remote Payload loaded. Booting fresh lithic.html...");
             window.openStarterLith();
@@ -1176,6 +1212,11 @@
   </div>
 
   <div id="debug-log"></div>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+  </div>
 </body>
 
 </html>
