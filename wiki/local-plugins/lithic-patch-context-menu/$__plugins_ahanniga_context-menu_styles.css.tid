@@ -74,3 +74,11 @@ ul .menu-separator {
 	margin-top: 6px;
 	padding-bottom: 0;
 }
+
+/* Context Menu Highlight Patch - applies when right-clicking a stream node or link */
+.lithic-context-menu-active,
+.lithic-context-menu-active-children {
+	background: #3a5e39 !important;
+	color: #d5e2f1 !important;
+	border-radius: 4px; /* Optional: adds a slight rounding for standalone links */
+}

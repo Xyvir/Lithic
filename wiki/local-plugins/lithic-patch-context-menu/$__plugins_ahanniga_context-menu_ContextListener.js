@@ -175,6 +175,28 @@ This widgets implements context menus to tiddlers
         if (menu.style.display == "block") {
             this.hideMenu();
         } else {
+            // --- HIGHLIGHT PATCH START ---
+            document.querySelectorAll(".lithic-context-menu-active, .lithic-context-menu-active-children").forEach(function (el) {
+                el.classList.remove("lithic-context-menu-active", "lithic-context-menu-active-children");
+            });
+
+            if (link) {
+                // If a specific link was clicked, only highlight the link
+                link.classList.add("lithic-context-menu-active");
+            } else if (closestTiddler) {
+                // Otherwise, check if it's a stream node
+                var droppable = closestTiddler.closest(".stream-droppable");
+                if (droppable) {
+                    droppable.classList.add("lithic-context-menu-active");
+                    if (droppable.nextElementSibling && droppable.nextElementSibling.classList.contains("stream-row-children")) {
+                        droppable.nextElementSibling.classList.add("lithic-context-menu-active-children");
+                    }
+                } else {
+                    closestTiddler.classList.add("lithic-context-menu-active");
+                }
+            }
+            // --- HIGHLIGHT PATCH END ---
+
             menu.style.display = 'block';
             menu.style.left = event.clientX + "px";
             menu.style.top = event.clientY + "px";
@@ -311,6 +333,11 @@ This widgets implements context menus to tiddlers
         if (menu != null) {
             menu.style.display = "none";
         }
+        // --- HIGHLIGHT PATCH START ---
+        document.querySelectorAll(".lithic-context-menu-active, .lithic-context-menu-active-children").forEach(function (el) {
+            el.classList.remove("lithic-context-menu-active", "lithic-context-menu-active-children");
+        });
+        // --- HIGHLIGHT PATCH END ---
     };
 
     exports.contextMenu = ContextListener;
