@@ -268,39 +268,9 @@ This widgets implements context menus to tiddlers
                             });
                         }
 
-                        // --- COMPRESS NODE TITLES ---
-                        // Stream nodes typically have titles like "Parent Tiddler/20230101120000000"
-                        // To save bytes in the URL payload, if this is a child node of the shared root, 
-                        // we compress the parent part of the title to a simple "c"
-                        var outTitle = tidObj.fields.title;
-                        var outParent = tidObj.fields.parent;
-                        var outList = (tidObj.fields.list || []).slice();
-
-                        // Check if the title starts with the parent target and has a slash
-                        if (!isParent && outTitle.startsWith(baseTarg + "/")) {
-                            outTitle = "c" + outTitle.substring(baseTarg.length);
-                        }
-                        // Update parent pointer if it points to the root, or another compressed node
-                        if (outParent) {
-                            if (outParent === baseTarg) {
-                                // Points to root, doesn't need compression (root keeps its original name)
-                            } else if (outParent.startsWith(baseTarg + "/")) {
-                                outParent = "c" + outParent.substring(baseTarg.length);
-                            }
-                        }
-                        // Update stream-list references
-                        for (var i = 0; i < outList.length; i++) {
-                            if (outList[i].startsWith(baseTarg + "/")) {
-                                outList[i] = "c" + outList[i].substring(baseTarg.length);
-                            }
-                        }
-
                         tidObj = new $tw.Tiddler(tidObj, {
-                            title: outTitle,
                             tags: newTags,
-                            text: flattenedText,
-                            parent: outParent,
-                            list: outList
+                            text: flattenedText
                         });
 
                         var fields = {};

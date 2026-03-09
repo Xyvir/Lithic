@@ -154,7 +154,7 @@ tags: $:/tags/Macro
 <$let 
   tText={{{ [<currentTiddler>get[text]] }}}
   prefixText={{{ [<tText>prefix<todo1>then<todo1>] ~[<tText>prefix<todo2>then<todo2>] ~[<tText>prefix<done1>then<done1>] ~[<tText>prefix<done2>then<done2>] ~[<tText>prefix<done3>then<done3>] ~[<tText>prefix<done4>then<done4>] }}}
-  actualStartText={{{ [<prefixText>addsuffix<__startText__>] }}}
+  actualStartText={{{ [<__startText__>match[]then<prefixText>] ~[<__startText__>!match[]then<__startText__>] }}}
 >
 	<$action-createtiddler $basetitle=<<new-node>> text=<<actualStartText>> $template={{$:/config/sq/streams/new-node-tiddler-template}} parent=<<parent>> stream-type="default" stream-list=<<__streamList__>>/>
 	<$set name="parent-nodes" filter="[<parent>get[stream-list]]" select="0">
