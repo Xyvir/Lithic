@@ -98,3 +98,22 @@
     background-color: color-mix(in srgb, currentColor 6%, transparent);
   }
 }
+
+/* === Mobile Layout for Tiddler Titles === */
+@media (max-width: 960px) {
+  .tc-titlebar {
+    display: flex;
+    flex-direction: column;
+  }
+  .tc-titlebar .tc-tiddler-controls {
+    /* Maintain controls on the right */
+    align-self: flex-end;
+    /* Optional: add slight spacing below the controls */
+    margin-bottom: 8px;
+  }
+  .tc-titlebar .tc-title {
+    /* Ensure title takes full width below controls */
+    align-self: flex-start;
+    margin-top: 0;
+  }
+}

@@ -60,7 +60,7 @@ title: $:/plugins/sq/streams/templates/stream-row-template
                 raw-result={{{ [<chunks>divide[2]fixed[1]] }}}
              >
                 <$list filter="[<total-1>!match[0]] :filter[<total-2>!match[0]] :filter[<raw-result>!match[0.0]]">
-                    <div style="position: absolute; top: 18px; right: 1em; text-align: right; pointer-events: none; line-height: 1;">
+                    <div style="position: absolute; bottom: 2px; right: 1em; text-align: right; pointer-events: none; line-height: 1;">
                         <code style="font-size: 0.9em; padding: 1px 4px; border-radius: 4px; opacity: 0.8;">
                             <span style="margin-right: 1px;">⏱</span>
                             <$text text={{{ [<raw-result>search-replace[.5],[ ½]trim:suffix[.0]trim:prefix[0]] }}} />

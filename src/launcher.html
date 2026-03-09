@@ -639,8 +639,26 @@
       }
     }
 
-    function replacePageContents(contents) {
+    function replacePageContents(contents, fileName) {
       if (contents) {
+
+        // --- INJECT FILENAME SCRIPT ---
+        if (fileName) {
+          const scriptTag = '<script>\n' +
+            '(function() {\n' +
+            '  var fn = ' + JSON.stringify(fileName) + ';\n' +
+            '  var obs = new MutationObserver(function() {\n' +
+            '    if (document.title && !document.title.includes(" - " + fn)) {\n' +
+            '      document.title = document.title + " - " + fn;\n' +
+            '      obs.disconnect();\n' +
+            '    }\n' +
+            '  });\n' +
+            '  obs.observe(document.querySelector("head > title") || document.head, \n' +
+            '    { childList: true, subtree: true, characterData: true });\n' +
+            '})();\n' +
+            '</sc' + 'ript>';
+          contents = contents.replace(/<\/head>/i, scriptTag + '\n</head>');
+        }
 
         // --- INJECT PENDING IMPORTS ---
         if (window.pendingImports && window.pendingImports.length > 0) {
@@ -702,7 +720,8 @@
     window.openFile = async function (fileHandle) {
       try {
         const file = await twFileManager.openFile(fileHandle);
-        replacePageContents(file.contents);
+        let fn = file.fileHandle ? file.fileHandle.name : null;
+        replacePageContents(file.contents, fn);
         if (file.fileHandle) {
           // If a file picker was shown, this might be a brand new path we haven't seen during the boot linking
           // But usually we just pass `null` for the tauri path for manually opened files.
@@ -724,7 +743,8 @@
       try {
         const contents = await fetchCoreEngine(url);
         setTwCustomSaveAsSaver(false);
-        replacePageContents(contents);
+        let fn = url ? url.split('?')[0].split('/').pop() : null;
+        replacePageContents(contents, fn);
       } catch (err) {
         console.error("Failed to load Starter HTML:", err);
         alert("Failed to load starter. See console for details.");
@@ -1027,7 +1047,7 @@
           }
         } else if (isHtmlMode) {
           setTwCustomSaveAsSaver(false);
-          replacePageContents(contents); // HTML files still mount immediately
+          replacePageContents(contents, file.name); // HTML files still mount immediately
         }
       } catch (err) {
         console.error("Failed to mount dropped file:", err);
