@@ -1,0 +1,79 @@
+[
+  {
+    "title": "Introduction",
+    "stream-list": "Introduction/1 Introduction/2 Introduction/3 Introduction/4 Introduction/5 Introduction/6 Introduction/7 Introduction/8 Introduction/9 Introduction/10 Introduction/11 Introduction/12",
+    "text": "Here is a quick introduction to some of the features Lithic has to offer:"
+  },
+  {
+    "title": "Introduction/1",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**1. Zero Friction Entry:** Put all new items into today's journal and simply describe what you are doing. Lithic will automatically track the time between bullets, but these can be manually edited. Use CamelCase or [[links]] to create stub pages and then click on them to fill them out."
+  },
+  {
+    "title": "Introduction/2",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**2. Slashcommands:** Type `/` to access formatting and component insertion options quickly without leaving the keyboard."
+  },
+  {
+    "title": "Introduction/3",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**3. Easy Todo with integrated calendar/date picker:** Keep track of tasks with simple `[ ]` markdown. Use inline calendar pages to mark due dates. Try typing `/date` or clicking the calendar icon in the sidebar toolbar!"
+  },
+  {
+    "title": "Introduction/4",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**4. Markdown and KaTeX Formatting:** Full support for `**markdown**` and math equations with `$$KaTeX$$`."
+  },
+  {
+    "title": "Introduction/5",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**5. Easy templating with anchors feature:** Quickly apply structured templates to any stream item using the anchor feature."
+  },
+  {
+    "title": "Introduction/6",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**6. AutoTable for simple tabular entry and analysis:** Create dynamic tables easily using the `<<AutoTable>>` macro for quick structured data entry."
+  },
+  {
+    "title": "Introduction/7",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**7. Calc for in-line calculation or LaTeX rendered view:** Perform inline math evaluations directly in your notes."
+  },
+  {
+    "title": "Introduction/8",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**8. Sane print defaults:** Lithic is optimized to look great when printed or exported to PDF natively through your browser."
+  },
+  {
+    "title": "Introduction/9",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**9. PDF annotations:** Read, highlight, and extract notes from PDFs directly within Lithic."
+  },
+  {
+    "title": "Introduction/10",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**10. Syntax highlighting:** Automatic code highlighting for popular languages perfectly styled out-of-the-box."
+  },
+  {
+    "title": "Introduction/11",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**11. Backlink Pills:** See all related notes and incoming connections in one convenient place using backlink pills."
+  },
+  {
+    "title": "Introduction/12",
+    "parent": "Introduction",
+    "stream-type": "default",
+    "text": "**12. Infinite portability and customization:** Being built on TiddlyWiki means Lithic is a self-contained HTML file you can take anywhere, hack, and customize to your heart's content."
+  }
+]
