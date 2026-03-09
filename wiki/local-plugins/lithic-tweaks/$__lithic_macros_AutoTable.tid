@@ -1,7 +1,18 @@
 created: 20260207032921340
-modified: 20260207035104474
+modified: 20260309044000000
 tags: $:/tags/Macro
 title: $:/lithic/macros/AutoTable
+
+\define GenerateMarkdown(columns, headers)
+|<$list filter="[range[1,$columns$]]" variable="ColNum"> {{{ [enlist[$headers$]nth<ColNum>] ~[[col-]addsuffix<ColNum>] }}} |</$list>
+|<$list filter="[range[1,$columns$]]" variable="ColNum"> - |</$list><$list filter="[tag<currentTiddler>sort[title]]" variable="RowTiddler">
+|<$list filter="[range[1,$columns$]]" variable="ColNum"> <$view tiddler=<<RowTiddler>> field={{{ [[col-]addsuffix<ColNum>] }}} format="text" /> |</$list></$list>
+\end
+
+\define GenerateCSV(columns, headers)
+{{{ [enlist[$headers$]] ~[range[1,$columns$]addprefix[col-]] +[join[,]] }}}<$list filter="[tag<currentTiddler>sort[title]]" variable="RowTiddler">
+<$list filter="[range[1,$columns$]]" variable="ColNum"><$view tiddler=<<RowTiddler>> field={{{ [[col-]addsuffix<ColNum>] }}} format="text" /><$list filter="[<ColNum>compare:number:lt[$columns$]]" variable="ignore">,</$list></$list></$list>
+\end
 
 \define AutoTableCell(row, field, colNum, maxCols)
 <$set name="CellState" value={{{ [[$:/state/AutoTable/]addsuffix<currentTiddler>addsuffix[/]addsuffix[$row$]addsuffix[/]addsuffix[$field$]] }}}>
@@ -43,7 +54,22 @@ title: $:/lithic/macros/AutoTable
 \end
 
 \define AutoTable(columns:3, headers)
-<table class="tc-table" style="width:100%; table-layout:fixed;">
+<style>
+tr.lithic-row-droppable.tc-dragover > td {
+  background-color: #d1e8ff !important;
+  border-top: 2px dashed #0078d7;
+  border-bottom: 2px dashed #0078d7;
+}
+tr.lithic-drag-source > td {
+  background-color: #f4f4f4 !important;
+  opacity: 0.5;
+}
+.lithic-primary-color {
+  color: <<colour primary>> !important;
+  fill: <<colour primary>> !important;
+}
+</style>
+<table class="tc-table" style="width:100%; table-layout:fixed; border-collapse:collapse;">
 <thead>
 <tr style="background-color:#f4f4f4;">
   <$list filter="[range[1,$columns$]]" variable="ColNum">
@@ -51,37 +77,83 @@ title: $:/lithic/macros/AutoTable
       <$text text={{{ [enlist[$headers$]nth<ColNum>] ~[[col-]addsuffix<ColNum>] }}} />
     </th>
   </$list>
-  <th style="width:30px;"></th>
-</tr>
+  <th style="width:40px;"></th> </tr>
 </thead>
 <tbody>
+<$let DragStateTiddler={{{ [[$:/state/AutoTable/Dragging/]addsuffix<currentTiddler>] }}}>
 <$list filter="[tag<currentTiddler>sort[title]]" variable="RowTiddler">
-  <tr>
+  <$let IsBeingDragged={{{ [<DragStateTiddler>get[text]match<RowTiddler>then[lithic-drag-source]else[]] }}}>
+  <$droppable tag="tr" class={{{ [[lithic-row-droppable]addsuffix[ ]addsuffix<IsBeingDragged>] }}} actions="""
+     <$list filter="[range[1,$columns$]]" variable="ColNum">
+        <$vars ColName={{{ [[col-]addsuffix<ColNum>] }}}>
+           <$vars DraggedVal={{{ [<actionTiddler>get<ColName>] }}} TargetVal={{{ [<RowTiddler>get<ColName>] }}}>
+              <$action-setfield $tiddler=<<actionTiddler>> $field=<<ColName>> $value=<<TargetVal>>/>
+              <$action-setfield $tiddler=<<RowTiddler>> $field=<<ColName>> $value=<<DraggedVal>>/>
+           </$vars>
+        </$vars>
+     </$list>
+     <$action-setfield $tiddler=<<DragStateTiddler>> text=""/>
+  """>
     <$list filter="[range[1,$columns$]]" variable="ColNum">
        <td>
          <$macrocall $name="AutoTableCell" row=<<RowTiddler>> field={{{ [[col-]addsuffix<ColNum>] }}} colNum=<<ColNum>> maxCols="$columns$"/>
        </td>
     </$list>
-    
-    <td style="text-align:center; vertical-align:middle;">
-       <$button class="tc-btn-invisible tc-tiddler-link" tooltip="Remove Row">
-         {{$:/core/images/close-button}}
-         <$action-listops $tiddler=<<RowTiddler>> $tags="-[<currentTiddler>]"/>
-       </$button>
+
+    <td style="text-align:center; vertical-align:middle; padding:0; position:relative;">
+      <$set name="DeletePopupState" value={{{ [[$:/state/AutoTable/DeletePopup/]addsuffix<RowTiddler>] }}}>
+        <$button popup=<<DeletePopupState>> class="tc-btn-invisible" style="width:100%; height:100%;" tooltip="Drag to swap, click to delete">
+          <$draggable tiddler=<<RowTiddler>> 
+             startactions="""<$action-setfield $tiddler=<<DragStateTiddler>> text=<<RowTiddler>>/>"""
+             endactions="""<$action-setfield $tiddler=<<DragStateTiddler>> text=""/>""">
+             <div class="lithic-primary-color" style="cursor:grab; padding:5px; transition: all 0.2s ease-in-out;">
+                {{$:/core/images/menu-button}}
+             </div>
+          </$draggable>
+        </$button>
+      <$reveal state=<<DeletePopupState>> type="popup" position="belowleft">
+         <div class="tc-drop-down" style="min-width:auto; padding:4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); border-radius: 4px; z-index:100; white-space:nowrap;">
+            <$button class="tc-btn-invisible" style="color:#e53e3e; font-weight:bold; padding:4px 8px; display:flex; align-items:center; gap:4px;" tooltip="Confirm Delete">
+               {{$:/core/images/close-button}} Delete Row
+               <$vars NewTags={{{ [<RowTiddler>tags[]] -[<currentTiddler>] format:titlelist[] +[join[ ]] }}}>
+                 <$action-createtiddler $basetitle={{{ [<RowTiddler>addsuffix[ (del)]] }}} $template=<<RowTiddler>> tags=<<NewTags>>/>
+               </$vars>
+               <$action-deletetiddler $tiddler=<<RowTiddler>>/>
+            </$button>
+         </div>
+      </$reveal>
+      </$set>
     </td>
-  </tr>
+  </$droppable>
+  </$let>
 </$list>
+</$let>
 
 <tr>
-  <td colspan={{{ [[$columns$]add[1]] }}}>
-    <$button class="tc-btn-invisible" style="width:100%; padding:5px; color:#888; font-style:italic;">
-      + Add Row
-      <$vars NextIndex={{{ [tag<currentTiddler>count[]add[1]] }}}>
-         <$action-createtiddler $basetitle={{{ [<currentTiddler>addsuffix[-row]addsuffix<NextIndex>] }}} tags={{{ [<currentTiddler>format:titlelist[]] }}}/>
-      </$vars>
-    </$button>
+  <td colspan="$columns$" style="padding:0;">
+    <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+      <$button class="tc-btn-invisible lithic-primary-color" style="flex-grow:1; padding:5px; font-style:italic; text-align:left;">
+        + Add Row
+        <$vars NextIndex={{{ [tag<currentTiddler>count[]add[1]] }}}>
+           <$action-createtiddler $basetitle={{{ [<currentTiddler>addsuffix[-row]addsuffix<NextIndex>] }}} tags={{{ [<currentTiddler>format:titlelist[]] }}}/>
+        </$vars>
+      </$button>
+      
+      <div style="white-space:nowrap; padding-right:8px;">
+        <$wikify name="csvOutput" text=<<GenerateCSV "$columns$" "$headers$">> output="text">
+           <$button class="tc-btn-invisible tc-tiddler-link lithic-primary-color" tooltip="Copy as CSV" message="tm-copy-to-clipboard" param=<<csvOutput>> style="font-weight:bold; font-size:0.8em; margin-right:8px;">
+             CSV
+           </$button>
+        </$wikify>
+        <$wikify name="mdOutput" text=<<GenerateMarkdown "$columns$" "$headers$">> output="text">
+           <$button class="tc-btn-invisible tc-tiddler-link lithic-primary-color" tooltip="Copy as Markdown" message="tm-copy-to-clipboard" param=<<mdOutput>> style="font-weight:bold; font-size:0.8em;">
+             MD
+           </$button>
+        </$wikify>
+      </div>
+    </div>
   </td>
-</tr>
+  <td></td> </tr>
 </tbody>
 </table>
 \end
