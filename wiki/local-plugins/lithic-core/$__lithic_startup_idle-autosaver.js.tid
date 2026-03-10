@@ -59,15 +59,27 @@ exports.startup = function() {
 	// Persistently hijack the notifier to swallow save notifications when auto-save is active
 	if ($tw.notifier && typeof $tw.notifier.display === "function") {
 		var originalNotifier = $tw.notifier.display;
+		var wasLocked = $tw.wiki.getTiddlerText("$:/state/DisableAutoSaver") === "yes";
+		var unlockedAt = 0;
+
 		$tw.notifier.display = function(title, options) {
 			var disableAutoSave = $tw.wiki.getTiddlerText("$:/state/DisableAutoSaver");
-			// If auto-save is fully active (no lock), hide the save-related popups completely
-			if (disableAutoSave !== "yes") {
+			
+			// Track the transition from locked to unlocked
+			if (disableAutoSave === "yes") {
+				wasLocked = true;
+			} else if (wasLocked) {
+				wasLocked = false;
+				unlockedAt = Date.now();
+			}
+
+			// If auto-save is fully active (no lock) AND we are past the 3-second grace period
+			if (disableAutoSave !== "yes" && (Date.now() - unlockedAt > 3000)) {
 				if (title === "$:/language/Notifications/Save/Done" || title === "$:/language/Notifications/Save/Starting") {
 					return;
 				}
 			}
-			// Pass through any other notifications (errors, etc) or all notifications if auto-save is locked
+			// Pass through any other notifications (errors, etc) or all notifications if auto-save is locked/graced
 			originalNotifier.apply($tw.notifier, arguments);
 		};
 	}
