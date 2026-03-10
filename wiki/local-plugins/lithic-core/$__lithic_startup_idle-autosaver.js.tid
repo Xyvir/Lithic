@@ -40,7 +40,7 @@ exports.startup = function() {
 		return;
 	}
 
-	var IDLE_TIMEOUT = 15000; // 15 seconds
+	var IDLE_TIMEOUT = 3000; // 3 seconds
 	var saveTimer = null;
 
 	function triggerSave() {
