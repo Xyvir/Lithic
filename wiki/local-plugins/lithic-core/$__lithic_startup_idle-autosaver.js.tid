@@ -56,6 +56,22 @@ exports.startup = function() {
 		}
 	}
 
+	// Persistently hijack the notifier to swallow save notifications when auto-save is active
+	if ($tw.notifier && typeof $tw.notifier.display === "function") {
+		var originalNotifier = $tw.notifier.display;
+		$tw.notifier.display = function(title, options) {
+			var disableAutoSave = $tw.wiki.getTiddlerText("$:/state/DisableAutoSaver");
+			// If auto-save is fully active (no lock), hide the save-related popups completely
+			if (disableAutoSave !== "yes") {
+				if (title === "$:/language/Notifications/Save/Done" || title === "$:/language/Notifications/Save/Starting") {
+					return;
+				}
+			}
+			// Pass through any other notifications (errors, etc) or all notifications if auto-save is locked
+			originalNotifier.apply($tw.notifier, arguments);
+		};
+	}
+
 	function resetTimer() {
 		if(saveTimer) {
 			clearTimeout(saveTimer);
