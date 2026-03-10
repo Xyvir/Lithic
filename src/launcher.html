@@ -4,6 +4,17 @@
 <head>
   <title>Lithic - Launcher</title>
 
+  <script>
+    // Save original path to retain relative fetching behavior
+    window.__ORIGINAL_PATH__ = window.location.pathname;
+    
+    // Rewrite URL to hide /src/launcher.html from the address bar
+    if (window.location.pathname.endsWith('/src/launcher.html')) {
+      const newPath = window.location.pathname.replace(/\/src\/launcher\.html$/, '/');
+      window.history.replaceState(null, '', newPath + window.location.search + window.location.hash);
+    }
+  </script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <link rel="manifest" href="/manifest.json">
@@ -496,6 +507,11 @@
 
     async function fetchCoreEngine(url = 'lithic.html') {
       const isLocalFile = window.location.protocol === 'file:';
+
+      // Adjust path if we rewrote the URL from /src/launcher.html to /
+      if (url === 'lithic.html' && window.__ORIGINAL_PATH__ && window.__ORIGINAL_PATH__.endsWith('/src/launcher.html')) {
+        url = 'src/lithic.html';
+      }
 
       if (!isLocalFile) {
         try {
