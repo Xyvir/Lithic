@@ -2,5 +2,6 @@ created: 20251203150721992
 modified: 20251203150801214
 tags: 
 title: $:/lithic/slashcommands/table4
+caret-pos: 15
 
-<<AutoTable 4 "H1 H2 H3 H4">>
+<<AutoTable 4 "">>
