@@ -1,0 +1,58 @@
+created: 20260310110500000
+modified: 20260310110500000
+module-type: startup
+tags: 
+title: $:/lithic/startup/idle-autosaver.js
+type: application/javascript
+
+/*\
+title: $:/lithic/startup/idle-autosaver.js
+type: application/javascript
+module-type: startup
+
+Idle-based Auto-Saver for Lithic TiddlyWiki
+\*/
+(function(){
+
+/*jslint node: true, browser: true */
+/*global $tw: false */
+"use strict";
+
+exports.name = "idle-autosaver";
+exports.platforms = ["browser"];
+exports.after = ["startup"];
+exports.synchronous = true;
+
+exports.startup = function() {
+	var IDLE_TIMEOUT = 15000; // 15 seconds
+	var saveTimer = null;
+
+	function triggerSave() {
+		if ($tw.rootWidget) {
+			// Trigger the core auto-save mechanism
+			$tw.rootWidget.dispatchEvent({type: "tm-auto-save-wiki"});
+		}
+	}
+
+	function resetTimer() {
+		if(saveTimer) {
+			clearTimeout(saveTimer);
+		}
+		// Reset the 15 second countdown
+		saveTimer = setTimeout(triggerSave, IDLE_TIMEOUT);
+	}
+
+	if(typeof window !== "undefined") {
+		// Listen for typical interaction events to debounce
+		window.addEventListener("keydown", resetTimer, {passive: true});
+		window.addEventListener("mousedown", resetTimer, {passive: true});
+		window.addEventListener("mousemove", resetTimer, {passive: true});
+		window.addEventListener("touchstart", resetTimer, {passive: true});
+		window.addEventListener("scroll", resetTimer, {passive: true});
+		
+		// Start the initial countdown
+		resetTimer();
+	}
+};
+
+})();
