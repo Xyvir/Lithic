@@ -584,6 +584,11 @@
               writeTw = createTwCustomSaver(fileHandle, isJsonMode);
               writeTw(text, method, callback);
               twFileManager.addRecent(fileHandle, null); // Manual Save As doesn't have a tauriPath link
+              
+              // SUCCESS: Clear the suppression lock once we have a file handle!
+              if (window.$tw && window.$tw.wiki) {
+                window.$tw.wiki.deleteTiddler("$:/state/DisableAutoSaver");
+              }
             })
             .catch(err => {
               if (err.name === 'AbortError') {
@@ -596,7 +601,8 @@
         }
         return true;
       }
-      window.$tw = { customSaver: { save: save } };
+      if (!window.$tw) window.$tw = {};
+      window.$tw.customSaver = { save: save };
     }
 
     const twFileManager = {

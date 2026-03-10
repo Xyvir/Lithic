@@ -56,13 +56,6 @@ exports.startup = function() {
 		}
 	}
 
-	// Add event listener to clear the disable flag upon explicit user save
-	var clearLock = function(event) {
-		$tw.wiki.deleteTiddler("$:/state/DisableAutoSaver");
-	};
-	$tw.rootWidget.addEventListener("tm-save-wiki", clearLock);
-	$tw.rootWidget.addEventListener("tm-download-file", clearLock);
-
 	function resetTimer() {
 		if(saveTimer) {
 			clearTimeout(saveTimer);
