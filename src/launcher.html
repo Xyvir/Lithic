@@ -780,19 +780,19 @@
         setTwCustomSaveAsSaver(false);
         replacePageContents(contents);
       } catch (err) {
-        console.error("Failed to load Starter HTML:", err);
-        alert("Failed to load starter. See console for details.");
+        console.error("Failed to load engine HTML:", err);
+        alert("Failed to load engine. See console for details.");
       }
     }
 
-    window.openStarterLith = async function () {
+    window.openNewBlankLith = async function () {
       try {
         let coreHtml = await fetchCoreEngine();
         setTwCustomSaveAsSaver(true);
         replacePageContents(coreHtml);
       } catch (err) {
-        console.error("Failed to load Starter Lith:", err);
-        alert("Failed to create starter. See console for details.");
+        console.error("Failed to load New Blank Lith:", err);
+        alert("Failed to create new blank lith. See console for details.");
       }
     }
 
@@ -908,7 +908,7 @@
             log("Remote Payload loaded. Booting fresh lithic.html...");
             // Clear URL query params to prevent reload loop
             window.history.replaceState({}, document.title, window.location.pathname);
-            window.openStarterLith();
+            window.openNewBlankLith();
             return;
           }
         } catch (e) {
@@ -941,7 +941,7 @@
             log("Payload from URL loaded. Booting fresh lithic.html...");
             // Clear URL query params to prevent reload loop
             window.history.replaceState({}, document.title, window.location.pathname);
-            window.openStarterLith();
+            window.openNewBlankLith();
             return;
           }
 
@@ -1180,11 +1180,11 @@
     </h1>
 
     <div class="section dual-buttons">
-      <button type="button" onclick="openStarterLith()">Use Starter Lith</button>
+      <button type="button" onclick="openNewBlankLith()">New Blank Lith</button>
     </div>
 
     <div class="section">
-      <button type="button" onclick="openFile()">Mount HTML or Lith from Disk...</button>
+      <button type="button" onclick="openFile()">Mount a Lith (or HTML) from Disk</button>
     </div>
 
     <div id="recent-files"></div>
