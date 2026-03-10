@@ -458,6 +458,7 @@
   <script type="module">
     // Global Pending Imports
     window.pendingImports = [];
+    let isNewOrInjected = false;
 
     /* IDB-KEYVAL & FILE MANAGER LOGIC */
     let idbKeyval = (function (exports) {
@@ -695,6 +696,12 @@
 
     function replacePageContents(contents) {
       if (contents) {
+        // --- CONTEXT SENSITIVE AUTO-SAVER SUPPRESSION ---
+        // If this is a new or injected wiki, we disable auto-save until the first manual save.
+        if (isNewOrInjected) {
+          window.pendingImports.push({ title: "$:/state/DisableAutoSaver", text: "yes" });
+          isNewOrInjected = false; // Reset for the next engine mount
+        }
 
         // --- INJECT PENDING IMPORTS ---
         if (window.pendingImports && window.pendingImports.length > 0) {
@@ -776,7 +783,8 @@
 
     window.openFromUrl = async function (url) {
       try {
-        const contents = await fetchCoreEngine(url);
+        let contents = await fetchCoreEngine(url);
+        isNewOrInjected = true;
         setTwCustomSaveAsSaver(false);
         replacePageContents(contents);
       } catch (err) {
@@ -788,6 +796,7 @@
     window.openNewBlankLith = async function () {
       try {
         let coreHtml = await fetchCoreEngine();
+        isNewOrInjected = true;
         setTwCustomSaveAsSaver(true);
         replacePageContents(coreHtml);
       } catch (err) {
