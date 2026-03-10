@@ -24,6 +24,22 @@ exports.after = ["startup"];
 exports.synchronous = true;
 
 exports.startup = function() {
+	if(typeof window === "undefined") {
+		return;
+	}
+
+	// 1. Prevent the script from running entirely on standalone file:// wikis
+	if (window.location.protocol === "file:") {
+		return;
+	}
+
+	// 2. Short-circuit if AutoSave configuration is not explicitly set to "yes" at startup
+	// Note: Changing this config setting requires reloading the wiki to take effect.
+	var autoSaveConfig = $tw.wiki.getTiddlerText("$:/config/AutoSave", "no");
+	if (autoSaveConfig !== "yes") {
+		return;
+	}
+
 	var IDLE_TIMEOUT = 15000; // 15 seconds
 	var saveTimer = null;
 
@@ -42,17 +58,15 @@ exports.startup = function() {
 		saveTimer = setTimeout(triggerSave, IDLE_TIMEOUT);
 	}
 
-	if(typeof window !== "undefined") {
-		// Listen for typical interaction events to debounce
-		window.addEventListener("keydown", resetTimer, {passive: true});
-		window.addEventListener("mousedown", resetTimer, {passive: true});
-		window.addEventListener("mousemove", resetTimer, {passive: true});
-		window.addEventListener("touchstart", resetTimer, {passive: true});
-		window.addEventListener("scroll", resetTimer, {passive: true});
-		
-		// Start the initial countdown
-		resetTimer();
-	}
+	// Listen for typical interaction events to debounce
+	window.addEventListener("keydown", resetTimer, {passive: true});
+	window.addEventListener("mousedown", resetTimer, {passive: true});
+	window.addEventListener("mousemove", resetTimer, {passive: true});
+	window.addEventListener("touchstart", resetTimer, {passive: true});
+	window.addEventListener("scroll", resetTimer, {passive: true});
+	
+	// Start the initial countdown
+	resetTimer();
 };
 
 })();
