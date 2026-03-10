@@ -890,6 +890,8 @@
             node.tags = node.tags ? [...new Set([...(Array.isArray(node.tags) ? node.tags : (typeof node.tags === 'string' ? node.tags.split(' ') : [])), '$:/tags/PayloadURL'])].join(' ') : '$:/tags/PayloadURL';
             window.pendingImports = window.pendingImports.concat(parsedData);
             log("Remote Payload loaded. Booting fresh lithic.html...");
+            // Clear URL query params to prevent reload loop
+            window.history.replaceState({}, document.title, window.location.pathname);
             window.openStarterLith();
             return;
           }
@@ -921,6 +923,8 @@
             window.pendingImports = window.pendingImports.concat(parsedData);
             // Automatically boot into a fresh lithic.html
             log("Payload from URL loaded. Booting fresh lithic.html...");
+            // Clear URL query params to prevent reload loop
+            window.history.replaceState({}, document.title, window.location.pathname);
             window.openStarterLith();
             return;
           }
