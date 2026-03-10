@@ -1,0 +1,13 @@
+created: 20260310163724159
+modified: 20260310163758345
+tags: $:/tags/Stylesheet
+title: $:/lithic/styles/center_notifications.css
+
+/* Center the TiddlyWiki notifications at the top of the window */
+.tc-notification {
+    right: 0 !important;
+    left: 0 !important;
+    margin: 0 auto !important;
+    width: max-content !important;
+    max-width: 60vw !important;
+}

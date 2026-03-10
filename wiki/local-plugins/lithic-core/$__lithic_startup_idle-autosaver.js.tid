@@ -44,11 +44,22 @@ exports.startup = function() {
 	var saveTimer = null;
 
 	function triggerSave() {
+		// Respect the temporary disable state for new/injected wikis
+		var disableAutoSave = $tw.wiki.getTiddlerText("$:/state/DisableAutoSaver");
+		if (disableAutoSave === "yes") {
+			return;
+		}
+
 		if ($tw.rootWidget) {
 			// Trigger the core auto-save mechanism
 			$tw.rootWidget.dispatchEvent({type: "tm-auto-save-wiki"});
 		}
 	}
+
+	// Add event listener to clear the disable flag upon explicit user save
+	$tw.rootWidget.addEventListener("tm-save-wiki", function(event) {
+		$tw.wiki.deleteTiddler("$:/state/DisableAutoSaver");
+	});
 
 	function resetTimer() {
 		if(saveTimer) {

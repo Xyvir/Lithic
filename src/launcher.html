@@ -7,7 +7,7 @@
   <script>
     // Save original path to retain relative fetching behavior
     window.__ORIGINAL_PATH__ = window.location.pathname;
-    
+
     // Rewrite URL to hide /src/launcher.html from the address bar
     if (window.location.pathname.endsWith('/src/launcher.html')) {
       const newPath = window.location.pathname.replace(/\/src\/launcher\.html$/, '/');
