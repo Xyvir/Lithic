@@ -1,4 +1,4 @@
-# Lithic PKMS
+# Lithic: Unitary Knowledge 
 
 **A Portability-First Outliner Knowledgebase**
 
