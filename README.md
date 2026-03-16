@@ -1,4 +1,4 @@
-# Lithic: 
+# Lithic UK
 ## Unitary Knowledge 
 
 **A Portability-First Outliner Knowledgebase**
