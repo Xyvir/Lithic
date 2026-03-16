@@ -1,4 +1,5 @@
-# Lithic: Unitary Knowledge 
+# Lithic: 
+## Unitary Knowledge 
 
 **A Portability-First Outliner Knowledgebase**
 
