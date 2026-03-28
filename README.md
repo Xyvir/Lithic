@@ -28,6 +28,10 @@ Lithic is a bespoke Personal Knowledge Management System (PKMS) built on the pow
 ---
 *An extension of [TiddlyStudy](https://github.com/postkevone/tiddlystudy) based on [TiddlyWiki](https://tiddlywiki.com/).*
 
+# Self Hosting
+
+Self hosting instructions can be found in [self-host.md](https://github.com/Xyvir/Lithic-UK/blob/main/self-host.md)
+
 # Roadmap
 1. Version 1 Released: 
 - Lithic is packaged as a plugin
