@@ -4,6 +4,11 @@
        (Ensures only content is printed)
        ======================================================= */
 
+    /* Hide breadcrumbs */
+    .sq-breadcrumbs-fragment {
+        display: none !important;
+    }
+
     /* Hide the entire custom top bar */
     .nc-topbar {
         display: none !important;
