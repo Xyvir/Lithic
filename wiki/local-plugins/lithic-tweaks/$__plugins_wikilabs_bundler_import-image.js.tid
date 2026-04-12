@@ -1,0 +1,63 @@
+﻿title: $:/plugins/wikilabs/bundler/import-image.js
+type: application/javascript
+module-type: upgrader
+
+/*\
+title: $:/plugins/wikilabs/bundler/import-image.js
+type: application/javascript
+module-type: upgrader
+
+This module checks imported tiddlers. If named "image.png", they are renamed.
+It also injects a creation date for all imported image tiddlers if missing.
+\*/
+/*jslint node: true, browser: true */
+/*global $tw: false */
+"use strict";
+
+var DEFAULT_IMPORT_TITLE = "image.png",
+    NEW_TITLE_TEMPLATE = "image_YYYY-0MM-0DD_0hh:0mm:0XXX.png",
+    TW_DATE_TEMPLATE = "YYYY0MM0DD0hh0mm0ss0XXX";
+
+exports.upgrade = function (wiki, titles, tiddlers) {
+    var self = this,
+        messages = {};
+
+    $tw.utils.each(titles, function (title) {
+        var tiddlerFields = tiddlers[title];
+
+        // Skip if undefined for some reason
+        if (!tiddlerFields) return;
+
+        var isImagePng = (title === DEFAULT_IMPORT_TITLE);
+        var isAnyImage = tiddlerFields.type && tiddlerFields.type.indexOf("image/") === 0;
+
+        // If it's our target pasted image OR any other imported image
+        if (isImagePng || isAnyImage) {
+            var now = new Date();
+            var additionalFields = {};
+
+            // 1. Handle the renaming if it's exactly "image.png"
+            if (isImagePng) {
+                messages[title] = "auto-renamed and date-stamped";
+                additionalFields.title = $tw.utils.formatDateString(now, NEW_TITLE_TEMPLATE);
+            }
+
+            // 2. Inject the created date if it doesn't already have one
+            if (!tiddlerFields.created) {
+                additionalFields.created = $tw.utils.formatDateString(now, TW_DATE_TEMPLATE);
+            }
+
+            // Apply modifications if we generated any
+            if (Object.keys(additionalFields).length > 0) {
+                var tiddler = new $tw.Tiddler(tiddlerFields, additionalFields);
+                tiddlers[tiddler.fields.title] = tiddler.fields;
+
+                // If we renamed it, delete the old placeholder title from the import queue
+                if (isImagePng && tiddler.fields.title !== title) {
+                    tiddlers[title] = Object.create(null);
+                }
+            }
+        }
+    });
+    return messages;
+};

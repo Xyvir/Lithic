@@ -1,0 +1,155 @@
+﻿created: 20251203135448328
+modified: 20251203135804381
+module-type: macro
+tags: 
+title: $:/lithic/macros/calc
+type: application/javascript
+
+/*\
+title: $:/lithic/macros/calc
+type: application/javascript
+module-type: macro
+
+Macro to evaluate arithmetic.
+Usage: 
+  <<calc "3+3">>   -> Returns "6" (Plaintext)
+  <<calc "3+3=">>  -> Returns "$$ 3+3=6 $$" (KaTeX with formatting)
+\*/
+(function () {
+
+    /*jslint node: true, browser: true */
+    /*global $tw: false */
+    "use strict";
+
+    exports.name = "calc";
+
+    exports.params = [
+        { name: "equation" }
+    ];
+
+    exports.run = function (equation) {
+        try {
+            // 0. CHECK MODE: Does it end with "="?
+            var rawEq = equation.trim();
+            var showKatex = false;
+
+            if (rawEq.endsWith("=")) {
+                showKatex = true;
+                rawEq = rawEq.slice(0, -1);
+            }
+
+            // 1. EXPAND
+            var expandedEquation = $tw.wiki.renderText(
+                "text/plain",
+                "text/vnd.tiddlywiki",
+                rawEq,
+                { parentWidget: this.parentWidget }
+            );
+
+            // 2. PREPARE FOR CALCULATION
+
+            var calcString = expandedEquation
+                .replace(/\^/g, "**")
+                .replace(/\bsqrt\b/g, "Math.sqrt")
+                .replace(/\bsin\b/g, "Math.sin")
+                .replace(/\bcos\b/g, "Math.cos")
+                .replace(/\btan\b/g, "Math.tan")
+                .replace(/\blog\b/g, "Math.log10")
+                .replace(/\bln\b/g, "Math.log")
+                .replace(/\bpi\b/g, "Math.PI")
+                .replace(/\be\b/g, "Math.E");
+
+            // 3. SECURITY CHECK
+            // Remove known safe math functions to check for unknown characters
+            var checkString = calcString
+                .replace(/Math\.(sqrt|sin|cos|tan|log10|log|PI|E)/g, "");
+
+            if (/[^0-9+\-*/(). \t\r\n]/.test(checkString)) {
+                return showKatex ? "$$ \\text{Error} $$" : "Error";
+            }
+
+            // 4. SOLVE
+            var result = Function('"use strict";return (' + calcString + ')')();
+
+            // --- IF PLAINTEXT MODE, RETURN NOW ---
+            if (!showKatex) {
+                if (!Number.isInteger(result) && isFinite(result)) {
+                    return parseFloat(result.toFixed(4)).toString();
+                }
+                return result.toString();
+            }
+
+            // --- KATEX FORMATTING LOGIC ---
+
+            // A. Format the Result
+            var resultStr = result.toString();
+            var formattedResult = resultStr;
+
+            // Check for Infinity
+            if (result === Infinity) {
+                formattedResult = "\\infty";
+            } else if (result === -Infinity) {
+                formattedResult = "-\\infty";
+            }
+            // Check for repeating decimals / irrational
+            else if (resultStr.length > 10 && resultStr.includes('.')) {
+                if (/3{5,}5?$/.test(resultStr)) {
+                    formattedResult = resultStr.replace(/3{5,}5?$/, "") + "\\overline{3}";
+                }
+                else if (/6{5,}7?$/.test(resultStr)) {
+                    formattedResult = resultStr.replace(/6{5,}7?$/, "") + "\\overline{6}";
+                }
+                else {
+                    formattedResult = parseFloat(result.toFixed(4)) + "...";
+                }
+            }
+
+            // B. Format the Equation
+            var displayString = expandedEquation;
+
+            displayString = displayString
+                .replace(/\bsqrt\(([^)]+)\)/g, "\\sqrt{$1}")
+                .replace(/\bsin\b/g, "\\sin")
+                .replace(/\bcos\b/g, "\\cos")
+                .replace(/\btan\b/g, "\\tan")
+                .replace(/\blog\b/g, "\\log")
+                .replace(/\bln\b/g, "\\ln")
+                .replace(/\bpi\b/g, "\\pi");
+
+            // Find a top-level '/' (at parenthesis depth 0) for \frac formatting
+            var splitIndex = -1;
+            var depth = 0;
+            for (var i = 0; i < displayString.length; i++) {
+                if (displayString[i] === '(') depth++;
+                else if (displayString[i] === ')') depth--;
+                else if (displayString[i] === '/' && depth === 0) {
+                    if (splitIndex !== -1) {
+                        // Multiple top-level slashes â€” too complex for a single \frac
+                        splitIndex = -2;
+                        break;
+                    }
+                    splitIndex = i;
+                }
+            }
+
+            if (splitIndex >= 0) {
+                var numer = displayString.slice(0, splitIndex).trim();
+                var denom = displayString.slice(splitIndex + 1).trim();
+                displayString = "\\frac{" + numer + "}{" + denom + "}";
+            } else {
+                displayString = displayString.replace(/\//g, "\\div");
+            }
+
+            displayString = displayString
+                .replace(/\*/g, "\\times")
+                .replace(/\^/g, "^");
+
+            return "$$ " + displayString + " = " + formattedResult + " $$";
+
+        } catch (e) {
+            console.log("Calc Macro Error:", e);
+            return showKatex ? "$$ \\text{Calc Error} $$" : "Error";
+        }
+    };
+
+})();
