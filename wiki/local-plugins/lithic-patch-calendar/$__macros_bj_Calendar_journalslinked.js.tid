@@ -1,3 +1,9 @@
+created: 20260120200251801
+modified: 20260121181517977
+module-type: global
+title: $:/macros/bj/Calendar/journalslinked.js
+type: application/javascript
+
 /*\
 title: $:/macros/bj/Calendar/journalslinked.js
 type: application/javascript
@@ -18,7 +24,7 @@ module-type: global
     }
 
     function escapeRegExp(string) {
-        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return string.replace(/[.*+?^${}()|[\]\\]/g, function(match){ return '\\\\' + match; });
     }
 
     function createDate(i, mnth, year, options) {

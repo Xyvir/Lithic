@@ -1,7 +1,15 @@
 title: $:/plugins/sq/streams/action-macros
 tags: $:/tags/Macro
-
 \whitespace trim
+
+\define scaffold-missing-refs()
+<$list filter="[{!!parent}links[]first[]]" variable="parentTag">
+    <$list filter="[<currentTiddler>links[]is[missing]]" variable="missingLink">
+        <$action-createtiddler $basetitle=<<missingLink>> type="text/x-markdown"/>
+        <$action-listops $tiddler=<<missingLink>> $tags="[<parentTag>]"/>
+    </$list>
+</$list>
+\end
 
 \define swiped-right-actions()
 <$list filter="[{$:/config/sq/streams/swipe-behaviour}match[contextmenu]]" variable="_NULL">
@@ -53,6 +61,7 @@ tags: $:/tags/Macro
 
 
 \define save-edit-node-actions()
+<<scaffold-missing-refs>>
 <$action-deletetiddler $tiddler=<<row-edit-state>> />
 \end
 
@@ -94,6 +103,7 @@ tags: $:/tags/Macro
 
 
 \define save-node-actions()
+<<scaffold-missing-refs>>
 <$list filter="""[{$:/config/sq/streams/split-at-caret}match[yes]]""" variable="_NULL" emptyMessage=<<add-node-actions>> >
 <$list filter="[<selectionEnd>!is[blank]else[0]!match[0]]" variable="_NULL">
 <$list filter="[<currentTiddler>get[text]length[]subtract<selectionEnd>!match[0]]" variable="_NULL" emptyMessage=<<add-node-actions>>>

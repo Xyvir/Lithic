@@ -1,0 +1,258 @@
+created: 20260120191139905
+modified: 20260120192345081
+module-type: macro
+title: $:/macros/buggyj/Calendar/base.js
+type: application/javascript
+
+/*\
+title: $:/macros/buggyj/Calendar/base.js
+type: application/javascript
+module-type: macro
+
+<<diary year month>>
+<<diary year>> - year calendar
+<<diary>> - this month
+
+Options:$:/macros/diary/options.json
+\*/
+(function () {
+
+    /*jslint node: true, browser: true */
+    /*global $tw: false */
+    "use strict";
+
+    exports.name = "calendarbase";
+
+    exports.params = [
+        { name: "year" }, { name: "month" }, { name: "opts" }
+    ];
+
+    exports.run = function (year, month, opts) {
+        if (!opts) opts = "default";
+        var options = $tw.wiki.getTiddlerData("$:/config/bj/Calendar.json")[opts] ||
+            { lastDayOfWeek: "6", formatter: "", titlebold: "", highlightThisDay: "", highlightThisDate: "" };
+        var createMonth;
+        try {
+            createMonth = require(options.formatter).createMonth;
+        } catch (e) {
+            createMonth = function (mnth, year) {
+                var month = [];
+                for (var i = 1; i < 1 + daysInMonth(mnth, year); i++) month[i] = i;
+                return month;
+            }
+        }
+        var boldtitle = (options.titlebold == 'yes') ? '!' : '';
+        var day_of_week = (function () {
+            var days = [];
+            for (var i = 0; i < 7; i++) { days[i] = $tw.language.getString("Date/Short/Day/" + i); }
+            return days;
+        })();
+        var month_of_year = (function () {
+            var months = [];
+            for (var i = 1; i < 13; i++) { months[i] = $tw.language.getString("Date/Long/Month/" + i); }
+            return months;
+        })();
+        var Calendar = new Date();
+        var thisyear = Calendar.getFullYear();  //  year (xxxx)
+        var thismonth = Calendar.getMonth() + 1;	//  month (0-11)
+        var thisday = Calendar.getDay();        //  day (0-6)
+        var WEEKFIN = parseInt(options.lastDayOfWeek);
+        var MONTHS_IN_YEAR = 12;
+
+        var lf = '\n';
+        var cal = '<div>' + lf + lf;
+        var ayear = thisyear;
+
+        // Helper to calculate next month for the preview
+        function getNext(m, y) {
+            var nm = parseInt(m) + 1;
+            var ny = parseInt(y);
+            if (nm > 12) { nm = 1; ny++; }
+            return { m: nm, y: ny };
+        }
+
+        if (!!month) {
+            // CASE 1: Specific Month Requested
+            if (!!year) {
+                cal += calendar(month, year, options) + lf;
+                var next = getNext(month, year);
+                cal += calendar(next.m, next.y, options, true); // Append next 2 weeks
+            } else {
+                cal += calendar(month, thisyear, options) + lf;
+                var next = getNext(month, thisyear);
+                cal += calendar(next.m, next.y, options, true); // Append next 2 weeks
+            }
+        } else {
+            if (!!year) {
+                // CASE 2: Year View (Single Column Stack)
+                ayear = year;
+                // MODIFIED: Show 15 months (spill over into next year's Jan/Feb/Mar)
+                var tmpI, currentMonth, currentYear;
+                // MODIFIED: Show 15 months (spill over into next year's Jan/Feb/Mar)
+                for (tmpI = 0; tmpI < 15; tmpI++) {
+                    currentMonth = (tmpI % 12) + 1;
+                    // Calculate year offset (0 for first 12 months, +1 for months 13-15)
+                    currentYear = parseInt(ayear, 10) + Math.floor(tmpI / 12);
+                    cal += calendar(currentMonth, currentYear, options) + lf;
+                }
+            }
+            else {
+                // CASE 3: Current Month View (Default)
+                cal += calendar(thismonth, thisyear, options) + lf;
+                var next = getNext(thismonth, thisyear);
+                cal += calendar(next.m, next.y, options, true); // Append next 2 weeks
+            }
+        }
+        return cal + lf + lf + '</div>';
+
+        // calendar function now accepts previewMode boolean
+        function calendar(mnth, year, options, previewMode) {
+            var month = createMonth(mnth, year, options);
+            var blankdays = (firstDayInMonth(mnth, year) + 13 - WEEKFIN) % 7;
+            return titleOfMonth(mnth, year) + createWeekHeading(mnth, year) +
+                formatAsMonth(month, blankdays, previewMode, mnth, year, options);
+        }
+
+        function getMonthDates(mnth, year) {
+            var format = $tw.wiki.getTiddlerText("$:/config/NewJournal/Title") || "YYYY MM DD";
+            var dates = [];
+            var days = daysInMonth(mnth, year);
+            var i, date, tiddlerDate;
+            for(i=1; i<=days; i++) {
+                date = new Date(year, mnth-1, i);
+                tiddlerDate = $tw.utils.formatDateString(date, format);
+                dates.push(tiddlerDate);
+            }
+            return dates;
+        }
+
+        function titleOfMonth(mth, year) {
+            var dates = getMonthDates(mth, year);
+            var tooltipText = "Targeting: " + dates.join(' | ');
+            var actionString = "";
+            if (dates && dates.length > 0) {
+                for (var j = 0; j < dates.length; j++) {
+                    if ($tw.wiki.getTiddler(dates[j])) {
+                        actionString += '<$action-navigate $to="""' + dates[j] + '""" $scroll="no"/>';
+                    }
+                }
+            }
+            var button = '<$button class="tc-btn-invisible tc-tiddlylink" tooltip="' + tooltipText.replace(/"/g, "'") + '">' + month_of_year[mth] + ' ' + year + actionString + '</$button>';
+            return '|calendar-table|k' + lf + '|>|>|>|' + centre(boldtitle + button) + '|<|<|<|<|' + lf;
+        }
+
+        function getWeekDates(cellDate, options) {
+            var format = $tw.wiki.getTiddlerText("$:/config/NewJournal/Title") || "YYYY MM DD";
+            var dates = [];
+            var wkstart = (parseInt(options.lastDayOfWeek, 10) + 1) % 7; 
+            var day = cellDate.getDay();
+            var diff = (day >= wkstart) ? (day - wkstart) : (7 - wkstart + day);
+            var startDate = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate() - diff);
+            var i, d;
+            
+            for(i=0; i<7; i++) {
+                d = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i);
+                dates.push($tw.utils.formatDateString(d, format));
+            }
+            return dates;
+        }
+
+        function getWeekNumber(date) {
+            var d = new Date(date.getTime());
+            var week1;
+            d.setHours(0, 0, 0, 0);
+            d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+            week1 = new Date(d.getFullYear(), 0, 4);
+            return 1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+        }
+
+        function formatAsMonth(month, blankdays, previewMode, mth, year, options) {
+            var theday, blank = ['', '|', '||', '|||', '||||', '|||||', '||||||', '|||||||'];
+            var weekCount = 0;
+            var cal, i; // moving cal and i to function scope
+
+            function getWeekCell(dayNumber) {
+                var cellDate = new Date(year, mth - 1, dayNumber);
+                var dates = getWeekDates(cellDate, options);
+                var tooltipText = "Targeting: " + dates.join(' | ');
+                var actionString = "";
+                if (dates && dates.length > 0) {
+                    for (var j = 0; j < dates.length; j++) {
+                        if ($tw.wiki.getTiddler(dates[j])) {
+                            actionString += '<$action-navigate $to="""' + dates[j] + '""" $scroll="no"/>';
+                        }
+                    }
+                }
+                var wn = getWeekNumber(cellDate);
+                var button = '<$button class="tc-btn-invisible tc-tiddlylink" tooltip="' + tooltipText.replace(/"/g, "'") + '">' + ("0"+wn).slice(-2) + actionString + '</$button>';
+                return centre(button);
+            }
+
+            cal = '|' + getWeekCell(1) + blank[blankdays];
+
+            for (i = 1; i < month.length; i++) {//first '0' month element is not used
+                cal += '|' + month[i];
+                theday = (i + blankdays - 1) % 7;
+                if (theday == 6) {
+                    cal += '|' + lf;
+                    weekCount++;
+                    if (previewMode && weekCount >= 2) return cal;
+                    
+                    if (i < month.length - 1) {
+                        cal += '|' + getWeekCell(i + 1);
+                    }
+                }
+            }
+            if (theday !== 6) cal += blank[7 - theday] + lf;//pad out rest of week, if needed
+            return cal;
+        }
+        function createWeekHeading(mnth, year) {
+            var daystitle = [], weekdays = day_of_week.slice(0);
+            var i;
+            var format = $tw.wiki.getTiddlerText("$:/config/NewJournal/Title") || "YYYY MM DD";
+            
+            var datesByWeekday = [[], [], [], [], [], [], []]; 
+            if (mnth && year) {
+                var days = daysInMonth(mnth, year);
+                for(var d=1; d<=days; d++) {
+                    var dateObj = new Date(year, mnth-1, d);
+                    var tiddlerDate = $tw.utils.formatDateString(dateObj, format);
+                    datesByWeekday[dateObj.getDay()].push(tiddlerDate);
+                }
+            }
+
+            if (options.highlightThisDay == 'yes') weekdays[thisday] = '!' + weekdays[thisday];
+            
+            for (i = 0; i < weekdays.length; i++) {
+                var logicalDay = (i + 1 + WEEKFIN) % 7;
+                var label = weekdays[logicalDay];
+                
+                if (mnth && year) {
+                    var targetDates = datesByWeekday[logicalDay];
+                    var actionString = "";
+                    if (targetDates && targetDates.length > 0) {
+                        for (var j = 0; j < targetDates.length; j++) {
+                            if ($tw.wiki.getTiddler(targetDates[j])) {
+                                actionString += '<$action-navigate $to="""' + targetDates[j] + '""" $scroll="no"/>';
+                            }
+                        }
+                    }
+                    var tooltipText = "Targeting (" + label + "): " + targetDates.join(' | ');
+                    var hc = '<$button class="tc-btn-invisible tc-tiddlylink" tooltip="' + tooltipText.replace(/"/g, "'") + '">' + label + actionString + '</$button>';
+                    daystitle[i] = centre(hc);
+                } else {
+                    daystitle[i] = centre(label);
+                }
+            }
+            return '|!W|' + daystitle.join('|') + '|' + lf;
+        }
+        function centre(x) { return ' ' + x + ' '; }
+        function daysInMonth(iMonth, iYear) {
+            return 32 - new Date(iYear, iMonth - 1, 32).getDate();
+        }
+        function firstDayInMonth(iMonth, iYear) {
+            return new Date(iYear, iMonth - 1, 1).getDay();
+        }
+    }
+
+})();

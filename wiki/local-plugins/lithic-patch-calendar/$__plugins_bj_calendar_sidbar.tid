@@ -6,10 +6,22 @@ title: $:/plugins/bj/calendar/sidbar
 type: text/vnd.tiddlywiki
 
 <$reveal state="$:/temp/plugins/bj/Calendar" text="Year" type="nomatch">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
   <$button set="$:/temp/plugins/bj/Calendar" setTo="Year">Year</$button>
-  <<calendar "" "">>
+  <$button class="tc-btn-invisible" tooltip="Refresh Calendar">
+    <$action-setfield $tiddler="$:/temp/calendar/refresh" text=<<now "YYYY0MM0DD0hh0mm0ss">> />
+    {{$:/core/images/refresh-button}}
+  </$button>
+</div>
+<$macrocall $name="calendar" year="" month="" refresh={{$:/temp/calendar/refresh}} />
 </$reveal>
 <$reveal state="$:/temp/plugins/bj/Calendar" text="Year" type="match">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
   <$button set="$:/temp/plugins/bj/Calendar" setTo="Month">Month</$button>
-  <$macrocall $name="calendar" year=<<now YYYY>> />
+  <$button class="tc-btn-invisible" tooltip="Refresh Calendar">
+    <$action-setfield $tiddler="$:/temp/calendar/refresh" text=<<now "YYYY0MM0DD0hh0mm0ss">> />
+    {{$:/core/images/refresh-button}}
+  </$button>
+</div>
+<$macrocall $name="calendar" year=<<now YYYY>> refresh={{$:/temp/calendar/refresh}} />
 </$reveal>

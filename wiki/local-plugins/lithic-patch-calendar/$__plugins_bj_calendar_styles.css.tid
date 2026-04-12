@@ -14,3 +14,22 @@ tags: $:/tags/Stylesheet
     color: <<colour tiddler-link-foreground>>;
     text-decoration: underline;
 }
+
+/* Week column styles - hide gridlines */
+.calendar-table tr > th:first-child,
+.calendar-table tr > td:first-child {
+    border: none !important;
+    background: transparent !important;
+    text-align: right;
+    padding-right: 8px;
+    font-weight: bold;
+    color: <<colour muted-foreground>>;
+}
+
+/* Adjust heading specific styles */
+.calendar-table tr:first-child th {
+    /* Make sure the month title row doesn't have its borders removed if it is spanning across all columns */
+    border: 1px solid <<colour table-border>> !important;
+    background: <<colour table-header-background>> !important;
+    text-align: center;
+}

@@ -2,4 +2,4 @@ created: 20210504152138318
 modified: 20251209204830542
 title: $:/DefaultTiddlers
 
-[tag[$:/tags/PayloadURL]] [tag[Journal]!sort[created]limit[7]] $:/JournalArchiveFeed
+[tag[$:/tags/PayloadURL]] [tag[Journal]!sort[created]limit[14]]
