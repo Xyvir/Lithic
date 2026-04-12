@@ -1,0 +1,8 @@
+created: 20260412154004095
+modified: 20260412155607053
+tags: $:/tags/Macro
+title: $:/lithic/macros/num
+
+\define num()
+''<$text text={{{ [<currentTiddler>get[parent]get[stream-list]enlist-input[]allbefore<currentTiddler>count[]add[1]] }}}/>)''
+\end
