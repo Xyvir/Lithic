@@ -749,7 +749,10 @@
         }
         // --- AUTO-INJECT DAILY JOURNAL ---
         const todayTitle = getTodayTitle();
-        if (!contents.includes(`"title":"${todayTitle}"`) && !contents.includes(`&quot;title&quot;:&quot;${todayTitle}&quot;`)) {
+        const jsonTitleRegex = new RegExp(`"title"\\s*:\\s*"${todayTitle}"`, 'i');
+        const htmlTitleRegex = new RegExp(`&quot;title&quot;\\s*:\\s*&quot;${todayTitle}&quot;`, 'i');
+        
+        if (!jsonTitleRegex.test(contents) && !htmlTitleRegex.test(contents)) {
           const twDate = getTwTime();
           window.pendingImports.push({
             created: twDate,
