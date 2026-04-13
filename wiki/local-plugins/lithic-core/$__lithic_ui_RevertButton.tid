@@ -4,7 +4,7 @@ tags: $:/tags/PageControls
 title: $:/lithic/ui/RevertButton
 
 <$button 
-    tooltip="Revert all browser-stored changes" 
+    tooltip="Return to Launcher" 
     class=<<tv-config-toolbar-class>>
 >
     <$action-sendmessage $message="tm-clear-browser-storage"/>

@@ -738,8 +738,15 @@
       return `${getOrdinalNum(d.getDate())} ${months[d.getMonth()]} ${d.getFullYear()}`;
     }
 
-    function replacePageContents(contents) {
+    function replacePageContents(contents, isJsonMode = false) {
       if (contents) {
+        // --- LITHIC MODE OVERRIDES ---
+        if (isJsonMode) {
+          window.pendingImports.push({
+            title: "$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/new-journal",
+            text: "hide"
+          });
+        }
         // --- AUTO-INJECT DAILY JOURNAL ---
         const todayTitle = getTodayTitle();
         if (!contents.includes(`"title":"${todayTitle}"`) && !contents.includes(`&quot;title&quot;:&quot;${todayTitle}&quot;`)) {
@@ -820,7 +827,7 @@
     window.openFile = async function (fileHandle) {
       try {
         const file = await twFileManager.openFile(fileHandle);
-        replacePageContents(file.contents);
+        replacePageContents(file.contents, file.isJsonMode);
         if (file.fileHandle) {
           // If a file picker was shown, this might be a brand new path we haven't seen during the boot linking
           // But usually we just pass `null` for the tauri path for manually opened files.
@@ -843,7 +850,7 @@
         let contents = await fetchCoreEngine(url);
         isNewOrInjected = true;
         setTwCustomSaveAsSaver(false);
-        replacePageContents(contents);
+        replacePageContents(contents, false);
       } catch (err) {
         console.error("Failed to load engine HTML:", err);
         alert("Failed to load engine. See console for details.");
@@ -855,7 +862,7 @@
         let coreHtml = await fetchCoreEngine();
         isNewOrInjected = true;
         setTwCustomSaveAsSaver(true);
-        replacePageContents(coreHtml);
+        replacePageContents(coreHtml, true);
       } catch (err) {
         console.error("Failed to load New Blank Lith:", err);
         alert("Failed to create new blank lith. See console for details.");
