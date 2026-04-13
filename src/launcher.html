@@ -255,6 +255,145 @@
       opacity: 1;
     }
 
+    /* --- SEARCH BAR --- */
+    .search-container {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .search-container svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: #888;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .search-input {
+      width: 100%;
+      background-color: var(--button-bg);
+      color: var(--text-color);
+      font-family: 'Vollkorn', serif;
+      font-size: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 35px 10px 35px;
+      outline: none;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .search-input:focus {
+      background-color: #2a2a2a;
+      border-color: var(--accent-color);
+    }
+    .search-input:focus + svg {
+      opacity: 0.2;
+    }
+
+    .search-clear-btn {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2em;
+      height: 2em;
+      padding: 0;
+      font-size: 1.4rem;
+      line-height: 1;
+      color: #ff5555;
+      background: transparent;
+      border: none;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-top: 0;
+      border-radius: 6px;
+    }
+
+    .search-input:not(:placeholder-shown) ~ .search-clear-btn {
+      display: flex;
+    }
+
+    .search-clear-btn:hover {
+      background-color: rgba(255, 85, 85, 0.15);
+    }
+
+    /* --- SEARCH PREVIEW --- */
+    .search-preview {
+      position: fixed;
+      width: max-content;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: monospace;
+      font-size: 0.65rem;
+      line-height: 1.25;
+      color: var(--text-color);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      z-index: 1000;
+      pointer-events: auto;
+      cursor: pointer;
+      white-space: pre;
+      opacity: 0;
+      transition: opacity 0.2s, border-color 0.2s;
+      display: none;
+    }
+    
+    .search-preview:hover {
+      border-color: var(--accent-color);
+    }
+    
+    @media (max-width: 950px) {
+      .search-preview {
+        display: none !important;
+      }
+    }
+
+    li {
+      position: relative;
+    }
+
+    .search-preview mark {
+      background-color: transparent;
+      color: #ff9800;
+      font-weight: bold;
+      border-radius: 0;
+      padding: 0;
+    }
+
+    /* --- CACHE STATUS ICON --- */
+    .cache-icon-btn {
+      width: 2em;
+      height: 2em;
+      flex-shrink: 0;
+      background: transparent;
+      border: none;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+      opacity: 0.3;
+      padding: 0;
+    }
+
+    .cache-icon-btn.has-cache {
+      opacity: 0.8;
+      cursor: pointer;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    
+    .cache-icon-btn.has-cache:hover {
+      opacity: 1;
+      color: var(--accent-color);
+    }
+
     /* --- GITHUB LINK --- */
     #github-link {
       position: fixed;
@@ -565,7 +704,16 @@
 
         fileHandle.createWritable()
           .then(writable => { writable.write(textToWrite); return writable; })
-          .then(writable => { writable.close(); callback(null); })
+          .then(writable => { 
+            writable.close(); 
+            if (isJsonMode) {
+              idbKeyval.set('search_cache_' + fileHandle.name, {
+                text: textToWrite,
+                lastModified: new Date().toLocaleString()
+              });
+            }
+            callback(null); 
+          })
           .catch(err => {
             if (err.name === 'AbortError') {
               console.log("Save operation aborted by user");
@@ -828,6 +976,7 @@
     }
 
     window.openFile = async function (fileHandle) {
+      if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'flex';
       try {
         const file = await twFileManager.openFile(fileHandle);
         replacePageContents(file.contents, file.isJsonMode);
@@ -839,6 +988,7 @@
         }
         return file;
       } catch (err) {
+        if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'none';
         if (err.name === 'AbortError') {
           console.log("User cancelled file selection");
           return;
@@ -849,35 +999,212 @@
     }
 
     window.openFromUrl = async function (url) {
+      if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'flex';
       try {
         let contents = await fetchCoreEngine(url);
         isNewOrInjected = true;
         setTwCustomSaveAsSaver(false);
         replacePageContents(contents, false);
       } catch (err) {
+        if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'none';
         console.error("Failed to load engine HTML:", err);
         alert("Failed to load engine. See console for details.");
       }
     }
 
     window.openNewBlankLith = async function () {
+      if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'flex';
       try {
         let coreHtml = await fetchCoreEngine();
         isNewOrInjected = true;
         setTwCustomSaveAsSaver(true);
         replacePageContents(coreHtml, true);
       } catch (err) {
+        if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'none';
         console.error("Failed to load New Blank Lith:", err);
         alert("Failed to create new blank lith. See console for details.");
       }
     }
 
     function clearRecent() {
-      twFileManager.clearRecent().then(() => {
+      twFileManager.getRecent().then(recentFiles => {
+        if (recentFiles && recentFiles.length > 0) {
+          const promises = recentFiles.map(r => {
+             if(r.handle && r.handle.name) return idbKeyval.del('search_cache_' + r.handle.name);
+             return Promise.resolve();
+          });
+          return Promise.all(promises);
+        }
+        return Promise.resolve();
+      }).then(() => {
+        return twFileManager.clearRecent();
+      }).then(() => {
         const elem = document.getElementById("recent-files");
         if (elem) elem.innerHTML = "";
       });
     }
+
+    window.updatePreviewsPosition = function() {
+      const container = document.querySelector('.container');
+      if (!container) return;
+      const containerRect = container.getBoundingClientRect();
+      const rightX = containerRect.right + 10;
+      
+      const listItems = document.querySelectorAll('#recent-files ul li');
+      listItems.forEach(li => {
+        const previewDiv = li.querySelector('.search-preview');
+        if (li.style.display !== 'none' && previewDiv && previewDiv.style.display === 'block') {
+          const rect = li.getBoundingClientRect();
+          const ul = li.closest('ul');
+          const ulRect = ul.getBoundingClientRect();
+          
+          if (rect.bottom < ulRect.top || rect.top > ulRect.bottom) {
+             previewDiv.style.opacity = '0';
+          } else {
+             previewDiv.style.position = 'fixed';
+             previewDiv.style.left = rightX + 'px';
+             previewDiv.style.top = (rect.top + rect.height/2) + 'px';
+             previewDiv.style.transform = 'translateY(-50%)';
+             previewDiv.style.opacity = '1';
+          }
+        }
+      });
+    };
+
+    window.handleSearch = function(query) {
+      window.currentSearchTick = query;
+      const q = query.toLowerCase();
+      const listItems = document.querySelectorAll('#recent-files ul li');
+      if (!listItems) return;
+
+      listItems.forEach(li => {
+        const fileBtn = li.querySelector('button');
+        if(!fileBtn) return;
+        
+        let fileNameMatch = fileBtn.innerText;
+        if(fileNameMatch.endsWith(' (Linked)')) fileNameMatch = fileNameMatch.slice(0, -9);
+
+        const previewDiv = li.querySelector('.search-preview');
+
+        if (!q) {
+          li.style.display = 'flex';
+          if(previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.opacity = '0'; }
+          return;
+        }
+
+        idbKeyval.get('search_cache_' + fileNameMatch).then(cache => {
+          if (window.currentSearchTick !== query) return;
+          if (!cache || !cache.text) {
+             li.style.display = 'none';
+             if(previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.opacity = '0'; }
+             return; 
+          }
+          
+          let cleanText = cache.text.replace(/(\\n|\n|\r)/g, ' ');
+          let textLower = cleanText.toLowerCase();
+          let matchIndex = textLower.indexOf(q);
+
+          if (matchIndex !== -1) {
+            li.style.display = 'flex';
+            if(previewDiv) {
+              const L = 46;
+              let charsBeforeMatchInLine2 = Math.floor((L - q.length) / 2);
+              let charsAfterMatchInLine2 = L - q.length - charsBeforeMatchInLine2;
+              
+              let requiredBefore = L + charsBeforeMatchInLine2;
+              let requiredAfter = charsAfterMatchInLine2 + L;
+              
+              let actualBefore = Math.min(requiredBefore, matchIndex);
+              let actualAfter = Math.min(requiredAfter, cleanText.length - (matchIndex + q.length));
+              
+              let missingBefore = requiredBefore - actualBefore;
+              let missingAfter = requiredAfter - actualAfter;
+              
+              let textBefore = cleanText.substring(matchIndex - actualBefore, matchIndex);
+              let textMatch = cleanText.substring(matchIndex, matchIndex + q.length);
+              let textAfter = cleanText.substring(matchIndex + q.length, matchIndex + q.length + actualAfter);
+              
+              if (missingBefore > 0) textBefore = '.'.repeat(missingBefore) + textBefore;
+              if (missingAfter > 0) textAfter = textAfter + '.'.repeat(missingAfter);
+              
+              let escapeHtml = (str) => str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+              
+              let line1 = textBefore.substring(0, L);
+              let line2Front = textBefore.substring(L);
+              let line2Back = textAfter.substring(0, charsAfterMatchInLine2);
+              let line3 = textAfter.substring(charsAfterMatchInLine2);
+
+              let tiddlerTitle = "";
+              let titleSearchText = cache.text.substring(0, matchIndex);
+              let idx = titleSearchText.lastIndexOf('"title":');
+              if(idx !== -1) {
+                  let startTitle = titleSearchText.indexOf('"', idx + 8);
+                  if(startTitle !== -1) {
+                      let endTitle = -1;
+                      for(let i = startTitle + 1; i < titleSearchText.length; i++) {
+                         if(titleSearchText[i] === '"' && titleSearchText[i-1] !== '\\') {
+                            endTitle = i;
+                            break;
+                         }
+                      }
+                      if(endTitle !== -1) {
+                          tiddlerTitle = titleSearchText.substring(startTitle + 1, endTitle).replace(/\\"/g, '"');
+                      }
+                  }
+              }
+              
+              let line1Html = escapeHtml(line1);
+              if (tiddlerTitle) {
+                  let prefix = tiddlerTitle + ' ';
+                  if (prefix.length > L) prefix = prefix.substring(0, L-3) + '...';
+                  let pLen = prefix.length;
+                  line1Html = `<b style="color:var(--accent-color)">${escapeHtml(prefix)}</b>` + escapeHtml(line1.substring(pLen));
+              }
+
+              previewDiv.innerHTML = 
+                line1Html + '<br>' + 
+                escapeHtml(line2Front) + '<mark>' + escapeHtml(textMatch) + '</mark>' + escapeHtml(line2Back) + '<br>' + 
+                escapeHtml(line3);
+
+              previewDiv.onclick = (e) => {
+                  e.stopPropagation();
+                  if (tiddlerTitle) {
+                      try {
+                          const tiddlers = JSON.parse(cache.text);
+                          let existingPinFile = tiddlers.find(t => t.title === "$:/config/TiddlyTools/Pin");
+                          let currentList = existingPinFile && existingPinFile.list ? existingPinFile.list : "";
+                          
+                          let items = [];
+                          let regex = /\[\[(.*?)\]\]|(\S+)/g;
+                          let matchVar;
+                          while((matchVar = regex.exec(currentList)) !== null) {
+                              let val = matchVar[1] || matchVar[2];
+                              if(val !== tiddlerTitle) items.push(matchVar[0]);
+                          }
+                          
+                          let titleForList = tiddlerTitle.includes(" ") ? `[[${tiddlerTitle}]]` : tiddlerTitle;
+                          items.unshift(titleForList);
+                          
+                          let payload = existingPinFile ? { ...existingPinFile, list: items.join(' ') } : { title: "$:/config/TiddlyTools/Pin", list: items.join(' ') };
+                          window.pendingImports.push(payload);
+                      } catch (err) {
+                          console.log("Could not parse pin config from cache:", err);
+                      }
+                  }
+                  fileBtn.click();
+              };
+
+              previewDiv.style.display = 'block';
+              window.updatePreviewsPosition();
+            }
+          } else {
+            li.style.display = 'none';
+            if(previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.opacity = '0'; }
+          }
+        });
+      });
+      setTimeout(window.updatePreviewsPosition, 20);
+    };
 
     function displayRecentFiles() {
       const elem = document.getElementById("recent-files");
@@ -889,6 +1216,15 @@
               const sectionDiv = document.createElement('div');
               sectionDiv.className = 'section';
 
+              const searchContainer = document.createElement('div');
+              searchContainer.className = 'search-container';
+              searchContainer.innerHTML = `
+                <input type="text" class="search-input" placeholder="Search recent liths..." oninput="handleSearch(this.value)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <button type="button" class="search-clear-btn" onclick="const i=this.previousElementSibling.previousElementSibling; i.value=''; handleSearch(''); i.focus();" title="Clear search">&times;</button>
+              `;
+              sectionDiv.appendChild(searchContainer);
+
               const list = document.createElement('ul');
               for (const recent of recentFiles) {
                 const li = document.createElement('li');
@@ -898,6 +1234,29 @@
                 button.innerText = recent.handle.name + (recent.tauriPath ? ' (Linked)' : '');
                 button.onclick = () => window.openFile(recent.handle);
 
+                const cacheBtn = document.createElement('button');
+                cacheBtn.type = 'button';
+                cacheBtn.className = 'cache-icon-btn';
+                cacheBtn.title = "No search cache found for this file.";
+                cacheBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>`;
+
+                idbKeyval.get('search_cache_' + recent.handle.name).then(cache => {
+                  if (cache && cache.text) {
+                    cacheBtn.classList.add('has-cache');
+                    cacheBtn.title = `Browser Storage Search Cache\n(Last updated: ${cache.lastModified})\nClick to download for disaster recovery.`;
+                    cacheBtn.onclick = (e) => {
+                      e.stopPropagation();
+                      const blob = new Blob([cache.text], { type: 'application/x-lith' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = recent.handle.name.replace(/\.lith$/, '') + '_recovered.lith';
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    };
+                  }
+                });
+
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
                 removeBtn.innerHTML = '&times;';
@@ -906,13 +1265,20 @@
                 removeBtn.onclick = async (e) => {
                   e.stopPropagation();
                   await twFileManager.removeRecent(recent.handle);
+                  await idbKeyval.del('search_cache_' + recent.handle.name);
                   displayRecentFiles();
                 };
 
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'search-preview';
+
                 li.appendChild(button);
+                li.appendChild(cacheBtn);
                 li.appendChild(removeBtn);
+                li.appendChild(previewDiv);
                 list.appendChild(li);
               }
+              list.addEventListener('scroll', () => { if (window.updatePreviewsPosition) window.updatePreviewsPosition(); });
               sectionDiv.appendChild(list);
 
               const clearButton = document.createElement('button');
