@@ -537,7 +537,24 @@
 
         if (isJsonMode) {
           try {
-            const userTiddlerFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/plugins]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] [is[shadow]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]]";
+            const defaultPlugins = [
+              "tiddlywiki/markdown", "tiddlywiki/freelinks", "xyvir/anchors-for-streams", 
+              "xyvir/lithic-core", "xyvir/lithic-default-configs", "xyvir/lithic-patch-calendar", 
+              "xyvir/lithic-patch-comptext", "xyvir/lithic-patch-markdown", "xyvir/lithic-patch-streams", 
+              "xyvir/lithic-patch-whiteboard", "xyvir/lithic-tweaks", "xyvir/overtype", 
+              "linonetwo/tw-react", "linonetwo/tw-whiteboard", "snowgoon88/edit-comptext", 
+              "tiddlywiki/katex", "flibbles/relink", "flibbles/relink-titles", 
+              "flibbles/relink-markdown", "sq/streams", "kebi/tiddlystudy", 
+              "kebi/tiddlystudy-references", "kebi/relink-tweaks", "mklauber/aliases", 
+              "nico/notebook-mobile", "oeyoews/notebook-theme-sidebar-resizer", "bj/Calendar", 
+              "tiddlywiki/highlight", "bj/unieditor", "ahanniga/context-menu-plugin", 
+              "xyvir/lithic-patch-context-menu", "xyvir/lithic-wikitext-highlight", 
+              "xyvir/lithic-python-codeblocks", "xyvir/lithic-pdf-to-whiteboard"
+            ];
+            const pluginExclusions = defaultPlugins.map(p => `-[[$:/plugins/${p}]]`).join(' ');
+            const baseFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] [is[shadow]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]]";
+            
+            const userTiddlerFilter = `${baseFilter} ${pluginExclusions}`;
             textToWrite = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
           } catch (e) {
             console.error("Lithic Launcher: Failed to extract JSON payload from live TW engine.", e);
@@ -584,7 +601,7 @@
               writeTw = createTwCustomSaver(fileHandle, isJsonMode);
               writeTw(text, method, callback);
               twFileManager.addRecent(fileHandle, null); // Manual Save As doesn't have a tauriPath link
-              
+
               // SUCCESS: Clear the suppression lock once we have a file handle!
               if (window.$tw && window.$tw.wiki) {
                 window.$tw.wiki.deleteTiddler("$:/state/DisableAutoSaver");
@@ -633,7 +650,7 @@
           let innerLithData = contents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
 
           if (innerLithData) {
-            contents = coreHtml.replace(/\]\s*<\/script>/is, ',' + innerLithData + ']<\/script>');
+            contents = coreHtml.replace(/\]\s*<\/script>/is, () => ',' + innerLithData + ']<\/script>');
           } else {
             contents = coreHtml;
           }
@@ -700,8 +717,42 @@
       }
     }
 
+    function getTwTime() {
+      const d = new Date();
+      return d.getUTCFullYear() + 
+        String(d.getUTCMonth()+1).padStart(2,'0') + 
+        String(d.getUTCDate()).padStart(2,'0') + 
+        String(d.getUTCHours()).padStart(2,'0') + 
+        String(d.getUTCMinutes()).padStart(2,'0') + 
+        String(d.getUTCSeconds()).padStart(2,'0') + 
+        String(d.getUTCMilliseconds()).padStart(3,'0');
+    }
+
+    function getOrdinalNum(n) {
+      return n + (n > 0 ? ['th', 'st', 'nd', 'rd'][(n > 3 && n < 21) || n % 10 > 3 ? 0 : n % 10] : '');
+    }
+
+    function getTodayTitle() {
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      const d = new Date();
+      return `${getOrdinalNum(d.getDate())} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
     function replacePageContents(contents) {
       if (contents) {
+        // --- AUTO-INJECT DAILY JOURNAL ---
+        const todayTitle = getTodayTitle();
+        if (!contents.includes(`"title":"${todayTitle}"`) && !contents.includes(`&quot;title&quot;:&quot;${todayTitle}&quot;`)) {
+          const twDate = getTwTime();
+          window.pendingImports.push({
+            created: twDate,
+            modified: twDate,
+            tags: "Journal",
+            title: todayTitle,
+            type: ""
+          });
+        }
+
         // --- CONTEXT SENSITIVE AUTO-SAVER SUPPRESSION ---
         // If this is a new or injected wiki, we disable auto-save until the first manual save.
         if (isNewOrInjected) {
@@ -716,11 +767,11 @@
 
           if (contents.includes('<script class="tiddlywiki-tiddler-store" type="application/json">')) {
             // Appending to an existing JSON store boot script.
-            contents = contents.replace(/\]\s*<\/script>/is, ',' + jsonBundle.substring(1) + '<\/script>');
+            contents = contents.replace(/\]\s*<\/script>/is, () => ',' + jsonBundle.substring(1) + '<\/script>');
           } else {
             // Injecting a new script block before </body>
             const scriptTag = `<script class="tiddlywiki-tiddler-store" type="application/json">${jsonBundle}<\/script>`;
-            contents = contents.replace(/<\/body>/i, scriptTag + '\n</body>');
+            contents = contents.replace(/<\/body>/i, () => scriptTag + '\n</body>');
           }
 
           window.pendingImports = []; // clear after injection
