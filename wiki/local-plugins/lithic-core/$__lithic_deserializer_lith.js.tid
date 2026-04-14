@@ -10,7 +10,7 @@ title: $:/lithic/deserializer/lith.js
 type: application/javascript
 module-type: deserializer
 
-Deserializer for Lithic Data Packs (.lith).
+Deserializer for Lithic Monoliths (.lith).
 \*/
 (function(){
 
