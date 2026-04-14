@@ -1131,7 +1131,10 @@
       });
     }
 
+    const mobilePreviewQuery = window.matchMedia('(max-width: 950px)');
+
     window.updatePreviewsPosition = function () {
+      if (mobilePreviewQuery.matches) return;
       const container = document.querySelector('.container');
       if (!container) return;
       const containerRect = container.getBoundingClientRect();
@@ -1193,7 +1196,7 @@
 
           if (matchIndex !== -1) {
             li.style.display = 'flex';
-            if (previewDiv) {
+            if (previewDiv && !mobilePreviewQuery.matches) {
               const L = 46;
               let charsBeforeMatchInLine2 = Math.floor((L - q.length) / 2);
               let charsAfterMatchInLine2 = L - q.length - charsBeforeMatchInLine2;
