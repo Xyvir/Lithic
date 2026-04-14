@@ -25,8 +25,8 @@ exports.after = ["startup"];
 exports.synchronous = true;
 
 exports.startup = function() {
-    // Map the custom extension to the standard JSON MIME type
-    $tw.config.fileExtensionInfo[".lith"] = { type: "application/json" };
+    // Map the custom extension to our custom .lith MIME type
+    $tw.config.fileExtensionInfo[".lith"] = { type: "text/vnd.lithic" };
 };
 
 })();

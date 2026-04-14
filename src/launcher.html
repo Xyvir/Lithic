@@ -290,7 +290,8 @@
       background-color: #2a2a2a;
       border-color: var(--accent-color);
     }
-    .search-input:focus + svg {
+
+    .search-input:focus+svg {
       opacity: 0.2;
     }
 
@@ -315,7 +316,7 @@
       border-radius: 6px;
     }
 
-    .search-input:not(:placeholder-shown) ~ .search-clear-btn {
+    .search-input:not(:placeholder-shown)~.search-clear-btn {
       display: flex;
     }
 
@@ -335,7 +336,7 @@
       font-size: 0.65rem;
       line-height: 1.25;
       color: var(--text-color);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
       z-index: 1000;
       pointer-events: auto;
       cursor: pointer;
@@ -344,11 +345,11 @@
       transition: opacity 0.2s, border-color 0.2s;
       display: none;
     }
-    
+
     .search-preview:hover {
       border-color: var(--accent-color);
     }
-    
+
     @media (max-width: 950px) {
       .search-preview {
         display: none !important;
@@ -388,7 +389,7 @@
       cursor: pointer;
       transition: opacity 0.2s, color 0.2s;
     }
-    
+
     .cache-icon-btn.has-cache:hover {
       opacity: 1;
       color: var(--accent-color);
@@ -642,6 +643,74 @@
       return exports;
     }({}));
 
+    /* --- LITHIC FORMAT HELPERS --- */
+    function parseLithToJSON(lithText) {
+      const blocks = lithText.split(/(?:\r?\n)*⁂⁂⁂(?:\r?\n)*/);
+      const tiddlers = [];
+      for (let block of blocks) {
+        if (!block.trim()) continue;
+
+        let delimiterIdx = block.indexOf("\n\n");
+        let delimiterLen = 2;
+        let altRN = block.indexOf("\r\n\r\n");
+        if (altRN !== -1 && (delimiterIdx === -1 || altRN < delimiterIdx)) {
+          delimiterIdx = altRN;
+          delimiterLen = 4;
+        }
+
+        let fieldsStr = "";
+        let text = "";
+        if (delimiterIdx !== -1) {
+          fieldsStr = block.substring(0, delimiterIdx);
+          text = block.substring(delimiterIdx + delimiterLen);
+        } else {
+          fieldsStr = block;
+        }
+
+        const tiddlerObj = {};
+        if (text) tiddlerObj.text = text;
+
+        const lines = fieldsStr.split(/\r?\n/);
+        for (let line of lines) {
+          let colon = line.indexOf(":");
+          if (colon !== -1) {
+            const key = line.substring(0, colon).trim();
+            const val = line.substring(colon + 1).trim();
+            if (key) tiddlerObj[key] = val;
+          }
+        }
+        if (Object.keys(tiddlerObj).length > 0) {
+          tiddlers.push(tiddlerObj);
+        }
+      }
+      return tiddlers;
+    }
+
+    function serializeJsonToLith(jsonArrayText) {
+      try {
+        const tiddlers = JSON.parse(jsonArrayText);
+        const lithBlocks = tiddlers.map(t => {
+          let text = "";
+          let fields = Object.keys(t).filter(k => k !== "text").sort();
+          for (let k of fields) {
+            if (t[k] !== undefined && t[k] !== null && t[k] !== "") {
+              text += `${k}: ${t[k]}\n`;
+            }
+          }
+          if (t.text) {
+            text += "\n" + t.text;
+          } else {
+            text += "\n";
+          }
+          return text;
+        });
+        return lithBlocks.join("\n⁂⁂⁂\n");
+      } catch (err) {
+        console.error("Failed to serialize array to .lith format:", err);
+        return "";
+      }
+    }
+
     /* --- CORE ENGINE FETCHER --- */
     const REMOTE_CORE_URL = 'https://lithic.uk/src/lithic.html';
 
@@ -677,42 +746,48 @@
         if (isJsonMode) {
           try {
             const defaultPlugins = [
-              "tiddlywiki/markdown", "tiddlywiki/freelinks", "xyvir/anchors-for-streams", 
-              "xyvir/lithic-core", "xyvir/lithic-default-configs", "xyvir/lithic-patch-calendar", 
-              "xyvir/lithic-patch-comptext", "xyvir/lithic-patch-markdown", "xyvir/lithic-patch-streams", 
-              "xyvir/lithic-patch-whiteboard", "xyvir/lithic-tweaks", "xyvir/overtype", 
-              "linonetwo/tw-react", "linonetwo/tw-whiteboard", "snowgoon88/edit-comptext", 
-              "tiddlywiki/katex", "flibbles/relink", "flibbles/relink-titles", 
-              "flibbles/relink-markdown", "sq/streams", "kebi/tiddlystudy", 
-              "kebi/tiddlystudy-references", "kebi/relink-tweaks", "mklauber/aliases", 
-              "nico/notebook-mobile", "oeyoews/notebook-theme-sidebar-resizer", "bj/Calendar", 
-              "tiddlywiki/highlight", "bj/unieditor", "ahanniga/context-menu-plugin", 
-              "xyvir/lithic-patch-context-menu", "xyvir/lithic-wikitext-highlight", 
+              "tiddlywiki/markdown", "tiddlywiki/freelinks", "xyvir/anchors-for-streams",
+              "xyvir/lithic-core", "xyvir/lithic-default-configs", "xyvir/lithic-patch-calendar",
+              "xyvir/lithic-patch-comptext", "xyvir/lithic-patch-markdown", "xyvir/lithic-patch-streams",
+              "xyvir/lithic-patch-whiteboard", "xyvir/lithic-tweaks", "xyvir/overtype",
+              "linonetwo/tw-react", "linonetwo/tw-whiteboard", "snowgoon88/edit-comptext",
+              "tiddlywiki/katex", "flibbles/relink", "flibbles/relink-titles",
+              "flibbles/relink-markdown", "sq/streams", "kebi/tiddlystudy",
+              "kebi/tiddlystudy-references", "kebi/relink-tweaks", "mklauber/aliases",
+              "nico/notebook-mobile", "oeyoews/notebook-theme-sidebar-resizer", "bj/Calendar",
+              "tiddlywiki/highlight", "bj/unieditor", "ahanniga/context-menu-plugin",
+              "xyvir/lithic-patch-context-menu", "xyvir/lithic-wikitext-highlight",
               "xyvir/lithic-python-codeblocks", "xyvir/lithic-pdf-to-whiteboard"
             ];
             const pluginExclusions = defaultPlugins.map(p => `-[[$:/plugins/${p}]]`).join(' ');
             const baseFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] [is[shadow]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]]";
-            
+
             const userTiddlerFilter = `${baseFilter} ${pluginExclusions}`;
-            textToWrite = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
+            let jsonText = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
+
+            if (fileHandle && fileHandle.name.endsWith('.lith')) {
+              textToWrite = serializeJsonToLith(jsonText);
+            } else {
+              textToWrite = jsonText;
+            }
           } catch (e) {
-            console.error("Lithic Launcher: Failed to extract JSON payload from live TW engine.", e);
-            callback("JSON extraction failed: " + e.message);
+            console.error("Lithic Launcher: Failed to extract payload from live TW engine.", e);
+            callback("Data extraction failed: " + e.message);
             return true;
           }
         }
 
         fileHandle.createWritable()
           .then(writable => { writable.write(textToWrite); return writable; })
-          .then(writable => { 
-            writable.close(); 
+          .then(writable => {
+            writable.close();
             if (isJsonMode) {
               idbKeyval.set('search_cache_' + fileHandle.name, {
                 text: textToWrite,
                 lastModified: new Date().toLocaleString()
               });
             }
-            callback(null); 
+            callback(null);
           })
           .catch(err => {
             if (err.name === 'AbortError') {
@@ -737,8 +812,10 @@
           writeTw(text, method, callback);
         } else {
           const saveOptions = isJsonMode ? {
-            suggestedName: 'new_pack.lith',
-            types: [{ description: 'Lithic Data Pack', accept: { 'application/x-lith': ['.lith'], 'application/json': ['.json'] } }],
+            suggestedName: 'new.lith',
+            types: [
+              { description: 'Lithic Data Pack', accept: { 'application/x-lith': ['.lith'] } }
+            ],
           } : {
             suggestedName: 'lith.html',
             types: [{ description: 'Lithic HTML File', accept: { 'text/html': ['.html', '.htm'] } }],
@@ -782,7 +859,9 @@
         } else {
           const openOptions = {
             types: [
-              { description: 'Lithic Files & Data Packs', accept: { 'text/html': ['.html', '.htm'], 'application/x-lith': ['.lith'], 'application/json': ['.json'] } }
+              { description: 'Lithic Data Packs', accept: { 'application/x-lith': ['.lith'] } },
+              { description: 'Lithic JSON Backups', accept: { 'application/json': ['.json'] } },
+              { description: 'Lithic HTML Files', accept: { 'text/html': ['.html', '.htm'] } }
             ]
           };
           [fileHandle] = await window.showOpenFilePicker(openOptions);
@@ -795,10 +874,18 @@
         if (isJsonMode) {
           let coreHtml = await fetchCoreEngine();
 
-          let innerLithData = contents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
+          let tiddlerArrayText = "";
+          if (fileHandle && fileHandle.name.endsWith('.lith')) {
+            const tiddlers = parseLithToJSON(contents);
+            tiddlerArrayText = JSON.stringify(tiddlers);
+          } else {
+            tiddlerArrayText = contents.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
+          }
 
-          if (innerLithData) {
-            contents = coreHtml.replace(/\]\s*<\/script>/is, () => ',' + innerLithData + ']<\/script>');
+          if (tiddlerArrayText) {
+            // Strip leading '[' and trailing ']' if it is a JSON array string
+            tiddlerArrayText = tiddlerArrayText.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
+            contents = coreHtml.replace(/\]\s*<\/script>/is, () => ',' + tiddlerArrayText + ']<\/script>');
           } else {
             contents = coreHtml;
           }
@@ -867,13 +954,13 @@
 
     function getTwTime() {
       const d = new Date();
-      return d.getUTCFullYear() + 
-        String(d.getUTCMonth()+1).padStart(2,'0') + 
-        String(d.getUTCDate()).padStart(2,'0') + 
-        String(d.getUTCHours()).padStart(2,'0') + 
-        String(d.getUTCMinutes()).padStart(2,'0') + 
-        String(d.getUTCSeconds()).padStart(2,'0') + 
-        String(d.getUTCMilliseconds()).padStart(3,'0');
+      return d.getUTCFullYear() +
+        String(d.getUTCMonth() + 1).padStart(2, '0') +
+        String(d.getUTCDate()).padStart(2, '0') +
+        String(d.getUTCHours()).padStart(2, '0') +
+        String(d.getUTCMinutes()).padStart(2, '0') +
+        String(d.getUTCSeconds()).padStart(2, '0') +
+        String(d.getUTCMilliseconds()).padStart(3, '0');
     }
 
     function getOrdinalNum(n) {
@@ -899,7 +986,7 @@
         const todayTitle = getTodayTitle();
         const jsonTitleRegex = new RegExp(`"title"\\s*:\\s*"${todayTitle}"`, 'i');
         const htmlTitleRegex = new RegExp(`&quot;title&quot;\\s*:\\s*&quot;${todayTitle}&quot;`, 'i');
-        
+
         if (!jsonTitleRegex.test(contents) && !htmlTitleRegex.test(contents)) {
           const twDate = getTwTime();
           window.pendingImports.push({
@@ -1030,8 +1117,8 @@
       twFileManager.getRecent().then(recentFiles => {
         if (recentFiles && recentFiles.length > 0) {
           const promises = recentFiles.map(r => {
-             if(r.handle && r.handle.name) return idbKeyval.del('search_cache_' + r.handle.name);
-             return Promise.resolve();
+            if (r.handle && r.handle.name) return idbKeyval.del('search_cache_' + r.handle.name);
+            return Promise.resolve();
           });
           return Promise.all(promises);
         }
@@ -1044,12 +1131,12 @@
       });
     }
 
-    window.updatePreviewsPosition = function() {
+    window.updatePreviewsPosition = function () {
       const container = document.querySelector('.container');
       if (!container) return;
       const containerRect = container.getBoundingClientRect();
       const rightX = containerRect.right + 10;
-      
+
       const listItems = document.querySelectorAll('#recent-files ul li');
       listItems.forEach(li => {
         const previewDiv = li.querySelector('.search-preview');
@@ -1057,21 +1144,21 @@
           const rect = li.getBoundingClientRect();
           const ul = li.closest('ul');
           const ulRect = ul.getBoundingClientRect();
-          
+
           if (rect.bottom < ulRect.top || rect.top > ulRect.bottom) {
-             previewDiv.style.opacity = '0';
+            previewDiv.style.opacity = '0';
           } else {
-             previewDiv.style.position = 'fixed';
-             previewDiv.style.left = rightX + 'px';
-             previewDiv.style.top = (rect.top + rect.height/2) + 'px';
-             previewDiv.style.transform = 'translateY(-50%)';
-             previewDiv.style.opacity = '1';
+            previewDiv.style.position = 'fixed';
+            previewDiv.style.left = rightX + 'px';
+            previewDiv.style.top = (rect.top + rect.height / 2) + 'px';
+            previewDiv.style.transform = 'translateY(-50%)';
+            previewDiv.style.opacity = '1';
           }
         }
       });
     };
 
-    window.handleSearch = function(query) {
+    window.handleSearch = function (query) {
       window.currentSearchTick = query;
       const q = query.toLowerCase();
       const listItems = document.querySelectorAll('#recent-files ul li');
@@ -1079,56 +1166,56 @@
 
       listItems.forEach(li => {
         const fileBtn = li.querySelector('button');
-        if(!fileBtn) return;
-        
+        if (!fileBtn) return;
+
         let fileNameMatch = fileBtn.innerText;
-        if(fileNameMatch.endsWith(' (Linked)')) fileNameMatch = fileNameMatch.slice(0, -9);
+        if (fileNameMatch.endsWith(' (Linked)')) fileNameMatch = fileNameMatch.slice(0, -9);
 
         const previewDiv = li.querySelector('.search-preview');
 
         if (!q) {
           li.style.display = 'flex';
-          if(previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.opacity = '0'; }
+          if (previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.opacity = '0'; }
           return;
         }
 
         idbKeyval.get('search_cache_' + fileNameMatch).then(cache => {
           if (window.currentSearchTick !== query) return;
           if (!cache || !cache.text) {
-             li.style.display = 'none';
-             if(previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.opacity = '0'; }
-             return; 
+            li.style.display = 'none';
+            if (previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.opacity = '0'; }
+            return;
           }
-          
+
           let cleanText = cache.text.replace(/(\\n|\n|\r)/g, ' ');
           let textLower = cleanText.toLowerCase();
           let matchIndex = textLower.indexOf(q);
 
           if (matchIndex !== -1) {
             li.style.display = 'flex';
-            if(previewDiv) {
+            if (previewDiv) {
               const L = 46;
               let charsBeforeMatchInLine2 = Math.floor((L - q.length) / 2);
               let charsAfterMatchInLine2 = L - q.length - charsBeforeMatchInLine2;
-              
+
               let requiredBefore = L + charsBeforeMatchInLine2;
               let requiredAfter = charsAfterMatchInLine2 + L;
-              
+
               let actualBefore = Math.min(requiredBefore, matchIndex);
               let actualAfter = Math.min(requiredAfter, cleanText.length - (matchIndex + q.length));
-              
+
               let missingBefore = requiredBefore - actualBefore;
               let missingAfter = requiredAfter - actualAfter;
-              
+
               let textBefore = cleanText.substring(matchIndex - actualBefore, matchIndex);
               let textMatch = cleanText.substring(matchIndex, matchIndex + q.length);
               let textAfter = cleanText.substring(matchIndex + q.length, matchIndex + q.length + actualAfter);
-              
+
               if (missingBefore > 0) textBefore = '.'.repeat(missingBefore) + textBefore;
               if (missingAfter > 0) textAfter = textAfter + '.'.repeat(missingAfter);
-              
+
               let escapeHtml = (str) => str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-              
+
               let line1 = textBefore.substring(0, L);
               let line2Front = textBefore.substring(L);
               let line2Back = textAfter.substring(0, charsAfterMatchInLine2);
@@ -1137,61 +1224,61 @@
               let tiddlerTitle = "";
               let titleSearchText = cache.text.substring(0, matchIndex);
               let idx = titleSearchText.lastIndexOf('"title":');
-              if(idx !== -1) {
-                  let startTitle = titleSearchText.indexOf('"', idx + 8);
-                  if(startTitle !== -1) {
-                      let endTitle = -1;
-                      for(let i = startTitle + 1; i < titleSearchText.length; i++) {
-                         if(titleSearchText[i] === '"' && titleSearchText[i-1] !== '\\') {
-                            endTitle = i;
-                            break;
-                         }
-                      }
-                      if(endTitle !== -1) {
-                          tiddlerTitle = titleSearchText.substring(startTitle + 1, endTitle).replace(/\\"/g, '"');
-                      }
+              if (idx !== -1) {
+                let startTitle = titleSearchText.indexOf('"', idx + 8);
+                if (startTitle !== -1) {
+                  let endTitle = -1;
+                  for (let i = startTitle + 1; i < titleSearchText.length; i++) {
+                    if (titleSearchText[i] === '"' && titleSearchText[i - 1] !== '\\') {
+                      endTitle = i;
+                      break;
+                    }
                   }
-              }
-              
-              let line1Html = escapeHtml(line1);
-              if (tiddlerTitle) {
-                  let prefix = tiddlerTitle + ' ';
-                  if (prefix.length > L) prefix = prefix.substring(0, L-3) + '...';
-                  let pLen = prefix.length;
-                  line1Html = `<b style="color:var(--accent-color)">${escapeHtml(prefix)}</b>` + escapeHtml(line1.substring(pLen));
+                  if (endTitle !== -1) {
+                    tiddlerTitle = titleSearchText.substring(startTitle + 1, endTitle).replace(/\\"/g, '"');
+                  }
+                }
               }
 
-              previewDiv.innerHTML = 
-                line1Html + '<br>' + 
-                escapeHtml(line2Front) + '<mark>' + escapeHtml(textMatch) + '</mark>' + escapeHtml(line2Back) + '<br>' + 
+              let line1Html = escapeHtml(line1);
+              if (tiddlerTitle) {
+                let prefix = tiddlerTitle + ' ';
+                if (prefix.length > L) prefix = prefix.substring(0, L - 3) + '...';
+                let pLen = prefix.length;
+                line1Html = `<b style="color:var(--accent-color)">${escapeHtml(prefix)}</b>` + escapeHtml(line1.substring(pLen));
+              }
+
+              previewDiv.innerHTML =
+                line1Html + '<br>' +
+                escapeHtml(line2Front) + '<mark>' + escapeHtml(textMatch) + '</mark>' + escapeHtml(line2Back) + '<br>' +
                 escapeHtml(line3);
 
               previewDiv.onclick = (e) => {
-                  e.stopPropagation();
-                  if (tiddlerTitle) {
-                      try {
-                          const tiddlers = JSON.parse(cache.text);
-                          let existingPinFile = tiddlers.find(t => t.title === "$:/config/TiddlyTools/Pin");
-                          let currentList = existingPinFile && existingPinFile.list ? existingPinFile.list : "";
-                          
-                          let items = [];
-                          let regex = /\[\[(.*?)\]\]|(\S+)/g;
-                          let matchVar;
-                          while((matchVar = regex.exec(currentList)) !== null) {
-                              let val = matchVar[1] || matchVar[2];
-                              if(val !== tiddlerTitle) items.push(matchVar[0]);
-                          }
-                          
-                          let titleForList = tiddlerTitle.includes(" ") ? `[[${tiddlerTitle}]]` : tiddlerTitle;
-                          items.unshift(titleForList);
-                          
-                          let payload = existingPinFile ? { ...existingPinFile, list: items.join(' ') } : { title: "$:/config/TiddlyTools/Pin", list: items.join(' ') };
-                          window.pendingImports.push(payload);
-                      } catch (err) {
-                          console.log("Could not parse pin config from cache:", err);
-                      }
+                e.stopPropagation();
+                if (tiddlerTitle) {
+                  try {
+                    const tiddlers = JSON.parse(cache.text);
+                    let existingPinFile = tiddlers.find(t => t.title === "$:/config/TiddlyTools/Pin");
+                    let currentList = existingPinFile && existingPinFile.list ? existingPinFile.list : "";
+
+                    let items = [];
+                    let regex = /\[\[(.*?)\]\]|(\S+)/g;
+                    let matchVar;
+                    while ((matchVar = regex.exec(currentList)) !== null) {
+                      let val = matchVar[1] || matchVar[2];
+                      if (val !== tiddlerTitle) items.push(matchVar[0]);
+                    }
+
+                    let titleForList = tiddlerTitle.includes(" ") ? `[[${tiddlerTitle}]]` : tiddlerTitle;
+                    items.unshift(titleForList);
+
+                    let payload = existingPinFile ? { ...existingPinFile, list: items.join(' ') } : { title: "$:/config/TiddlyTools/Pin", list: items.join(' ') };
+                    window.pendingImports.push(payload);
+                  } catch (err) {
+                    console.log("Could not parse pin config from cache:", err);
                   }
-                  fileBtn.click();
+                }
+                fileBtn.click();
               };
 
               previewDiv.style.display = 'block';
@@ -1199,7 +1286,7 @@
             }
           } else {
             li.style.display = 'none';
-            if(previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.opacity = '0'; }
+            if (previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.opacity = '0'; }
           }
         });
       });
@@ -1464,7 +1551,10 @@
                 }
 
                 const pickerOptions = {
-                  types: [{ description: 'Lithic Files', accept: { 'application/x-lith': ['.lith'], 'application/json': ['.json'] } }]
+                  types: [
+                    { description: 'Lithic Data Packs', accept: { 'application/x-lith': ['.lith'] } },
+                    { description: 'Lithic JSON Backups', accept: { 'application/json': ['.json'] } }
+                  ]
                 };
                 if (bestStartIn) {
                   pickerOptions.startIn = bestStartIn;
@@ -1576,17 +1666,23 @@
         let contents = await file.text();
 
         if (isJsonMode) {
-          // Instead of mounting immediately, we parse the JSON and add to pendingImports
+          // Instead of mounting immediately, we parse the data and add to pendingImports
           try {
-            const parsedData = JSON.parse(contents);
+            let parsedData;
+            if (fileName.endsWith('.lith')) {
+              parsedData = parseLithToJSON(contents);
+            } else {
+              parsedData = JSON.parse(contents);
+            }
+
             if (Array.isArray(parsedData)) {
               window.pendingImports = window.pendingImports.concat(parsedData);
               window.updatePendingImportsWindow();
               return; // Handled as deferred payload
             }
           } catch (err) {
-            console.error("Failed to parse dropped JSON file:", err);
-            alert("Dropped file is not valid JSON.");
+            console.error("Failed to parse dropped data file:", err);
+            alert("Dropped file is not valid data format.");
           }
         } else if (isHtmlMode) {
           setTwCustomSaveAsSaver(false);
