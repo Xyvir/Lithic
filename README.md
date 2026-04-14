@@ -60,6 +60,10 @@ Create 'official' .tar.gz self-host package (caddy and html with preconfig)
 Create Docker and LCX Wrapper
 Create https://railway.app or Render.com configuration for users to self-host.
 
+BYOAI improvements?
+Create a vs-code extension? or extend an existing extension for viewing, editing, and folding *.lith files.
+With per-section syntax highlighting, etc.
+
 2. Version 2 plans:
 
 - "Full-screen" long-from editor when clicking on bullet points.
