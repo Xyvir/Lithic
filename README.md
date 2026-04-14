@@ -55,6 +55,7 @@ TODO:
 Update this list as several planned featuers has been updated.
 
 SELF-HOST IMPROVEMENTS:
+Update launcher.html to support webdav enviroment saving.
 Create 'official' .tar.gz self-host package (caddy and html with preconfig)
 Create Docker and LCX Wrapper
 Create https://railway.app or Render.com configuration for users to self-host.
