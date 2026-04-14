@@ -24,17 +24,35 @@ exports["text/vnd.lithic"] = function(text,fields) {
 	var chunks = text.split(/(?:\r?\n)*⁂⁂⁂(?:\r?\n)*/);
 	for(var i=0; i<chunks.length; i++) {
 		var chunk = chunks[i].trim();
-		if(chunk) {
-			var tiddlerFields = $tw.utils.parseFields(chunk);
-			if(tiddlerFields) {
-				// Merge dropped-file payload fields but don't overwrite parsed actual fields
+		if(!chunk) continue;
+		// .tid format: RFC 822 headers, blank line, then body text
+		// Find the first blank line (the boundary between headers and body)
+		var blankLineMatch = /\r?\n\r?\n/.exec(chunk);
+		var headerStr, bodyText;
+		if(blankLineMatch) {
+			headerStr = chunk.substring(0, blankLineMatch.index);
+			bodyText = chunk.substring(blankLineMatch.index + blankLineMatch[0].length);
+		} else {
+			// No blank line found — entire chunk is headers only, no body
+			headerStr = chunk;
+			bodyText = "";
+		}
+		// Parse the header fields
+		var tiddlerFields = $tw.utils.parseFields(headerStr);
+		if(tiddlerFields) {
+			// Assign the body text
+			if(bodyText) {
+				tiddlerFields.text = bodyText;
+			}
+			// Merge dropped-file payload fields but don't overwrite parsed actual fields
+			if(fields) {
 				for(var field in fields) {
 					if(tiddlerFields[field] === undefined) {
 						tiddlerFields[field] = fields[field];
 					}
 				}
-				results.push(tiddlerFields);
 			}
+			results.push(tiddlerFields);
 		}
 	}
 	return results;
