@@ -1,89 +1,172 @@
 # Self-Hosting Lithic
 
-Lithic is built entirely on TiddlyWiki, which means the app and your data are bundled together in a single, monolithic HTML file. Because of this, Lithic does not require a complex Node.js backend or database to be self-hosted. 
+Lithic is a TiddlyWiki-powered PKMS that stores your data in `.lith` files. The self-hosted server bundles a custom **Caddy** binary with a **WebDAV** plugin, providing a static file server for the Lithic UI and a WebDAV sync endpoint for your data — all protected by BasicAuth.
 
-Instead, Lithic leverages TiddlyWiki's native **WebDAV saver**. By simply placing your Lithic HTML file on a WebDAV server, the app will automatically fire HTTP `PUT` requests to save your notes directly back to your server's filesystem whenever you make a change.
+## Quick Start
 
-Here is how to deploy Lithic in a homelab environment.
-
-## 1. Prepare Your Data Directory
-
-First, create a directory on your server to hold your Lithic instances, and navigate into it. (For native Linux setups, do this in a standard location like `/opt` or your home folder).
+### Method A: Docker (Recommended)
 
 ```bash
-mkdir ~/lithic-data
-cd ~/lithic-data
+docker run -d --name lithic \
+  -p 8080:8080 \
+  -e LITHIC_USER=admin \
+  -e LITHIC_PASSWORD=your-secret-password \
+  -v lithic-data:/data \
+  ghcr.io/xyvir/lithic-uk:latest
 ```
 
-## 2. Download Lithic
-
-Download the latest version of Lithic into your new directory. 
-
-If you want to run multiple, separate wikis (e.g., one for personal notes, one for work), you don't need a complex manager. Simply download the file multiple times and rename it for each instance using the lowercase `-o` flag:
+Or build from the Dockerfile:
 
 ```bash
-# Download a general instance
-curl -O https://lithic.uk/src/lithic.html
-
-# Download additional instances as needed
-curl -o personal.html https://lithic.uk/src/lithic.html
-curl -o work.html [https://lithic.uk/src/lithic.html
+cd deploy/
+docker build -t lithic .
+docker run -d --name lithic \
+  -p 8080:8080 \
+  -e LITHIC_USER=admin \
+  -e LITHIC_PASSWORD=your-secret-password \
+  -v lithic-data:/data \
+  lithic
 ```
 
-## 3. Start the WebDAV Server
+### Method B: Proxmox LXC (One-Liner)
 
-You can serve this directory using any WebDAV-compatible server. Choose the method below that best fits your infrastructure.
+Run this inside a Debian/Ubuntu LXC container:
 
-### Method A: Native Linux / Proxmox LXC 
-If you are running a Proxmox LXC (Debian/Ubuntu) and want to avoid nested containers, you can install `rclone` natively and run it as a background system service.
-
-1. **Install rclone:**
-   ```bash
-   sudo apt update && sudo apt install rclone -y
-   ```
-2. **Create a systemd service file:**
-   ```bash
-   sudo nano /etc/systemd/system/lithic-webdav.service
-   ```
-3. **Paste the following configuration** (ensure you replace `yourusername` with your actual Linux user, and verify the path to `lithic-data`):
-   ```ini
-   [Unit]
-   Description=Lithic WebDAV Server
-   After=network.target
-
-   [Service]
-   Type=simple
-   User=yourusername
-   ExecStart=/usr/bin/rclone serve webdav /home/yourusername/lithic-data --addr :8080
-   Restart=always
-
-   [Install]
-   WantedBy=multi-user.target
-   ```
-4. **Enable and start the service:**
-   ```bash
-   sudo systemctl daemon-reload
-   sudo systemctl enable --now lithic-webdav
-   ```
-
-### Method B: Using Docker
-If you prefer containerized services, use the lightweight `rclone` image:
 ```bash
-docker run -d --name lithic-webdav --restart unless-stopped -p 8080:8080 -v "$(pwd):/data" rclone/rclone:latest serve webdav /data --addr :8080
+curl -fsSL https://raw.githubusercontent.com/Xyvir/Lithic-UK/main/deploy/install-lxc.sh | bash
 ```
 
-### Method C: Using Podman (Rootless)
-For rootless Podman, include the `:Z` flag for SELinux permissions and `--userns=keep-id` to map host users correctly:
+Then edit your credentials:
+
 ```bash
-podman run -d --name lithic-webdav -p 8080:8080 --userns=keep-id -v "$(pwd):/data:Z" docker.io/rclone/rclone:latest serve webdav /data --addr :8080
+sudo nano /etc/default/lithic
+sudo systemctl restart lithic
+```
+
+### Method C: Manual Install
+
+1. Download the latest `lithic-server.tar.gz` from [GitHub Releases](https://github.com/Xyvir/Lithic-UK/releases).
+2. Extract it:
+   ```bash
+   mkdir -p /app
+   tar -xzf lithic-server.tar.gz -C /
+   mkdir -p /data
+   ```
+3. Run it:
+   ```bash
+   LITHIC_USER=admin LITHIC_PASSWORD=your-secret-password /app/entrypoint.sh
+   ```
+
+---
+
+## Configuration
+
+The server is configured entirely through environment variables:
+
+| Variable | Default | Description |
+|---|---|---|
+| `LITHIC_USER` | `admin` | BasicAuth username |
+| `LITHIC_PASSWORD` | `changeme` | BasicAuth password |
+| `LITHIC_PORT` | `8080` | HTTP listen port |
+
+For the LXC install, these are stored in `/etc/default/lithic`.
+
+---
+
+## Architecture
+
+```
+:8080
+├── /              → Static file server (Lithic Launcher + Engine)
+├── /sync/*        → WebDAV endpoint (your .lith files)
+└── BasicAuth      → Protects everything
+```
+
+- **`/`** — Serves the Lithic Launcher UI. The launcher automatically detects WebDAV mode and shows your remote `.lith` files.
+- **`/sync/`** — A WebDAV directory backed by the `/data` volume. All `.lith` files are stored here. The launcher uses `PROPFIND`, `PUT`, and `DELETE` to manage files.
+- **`/data`** — Persistent volume mount point. Back this up to protect your data.
+
+---
+
+## Managing Your Wikis
+
+Once the server is running, open your browser and navigate to:
+
+**`http://YOUR_SERVER_IP:8080`**
+
+The Lithic Launcher will appear in **WebDAV mode** with the following features:
+
+- **Upload a Lith** — Upload an existing `.lith` file to the server.
+- **New Blank Lith** — Create a new wiki with a name you choose.
+- **Open** — Click any listed file to load it in the Lithic engine. Changes auto-save back to the server via WebDAV.
+- **Delete** — Remove a `.lith` file from the server (with confirmation).
+- **Search** — Full-text search across cached files.
+
+---
+
+## Reverse Proxy
+
+The server listens on HTTP (no TLS) by default, designed to sit behind your existing reverse proxy. Example Caddy reverse proxy config:
+
+```caddyfile
+lithic.yourdomain.com {
+    reverse_proxy localhost:8080
+}
+```
+
+Example Nginx:
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name lithic.yourdomain.com;
+
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
 ```
 
 ---
 
-## 4. Access Your Wiki
+## Backups
 
-Once your server or proxy is running, open your web browser and navigate to your deployed URL or local IP:
-**`http://YOUR_SERVER_IP:8080/lithic.html`**
-*(Or `/personal.html`, `/work.html`, etc.)*
+Your data lives in the `/data` directory (Docker volume or `/opt/lithic/data` on LXC). Back up this directory to preserve your wikis.
 
-Any changes you make and save in the browser will be written directly to the corresponding HTML file on your server.
+```bash
+# Docker
+docker cp lithic:/data ./lithic-backup
+
+# LXC
+cp -r /opt/lithic/data ~/lithic-backup
+```
+
+---
+
+## Updating
+
+### Docker
+```bash
+docker pull ghcr.io/xyvir/lithic-uk:latest
+docker stop lithic && docker rm lithic
+# Re-run the docker run command above
+```
+
+### LXC
+Re-run the installer — it will download the latest release and restart the service:
+```bash
+curl -fsSL https://raw.githubusercontent.com/Xyvir/Lithic-UK/main/deploy/install-lxc.sh | bash
+```
+
+---
+
+## Service Management (LXC)
+
+```bash
+sudo systemctl status lithic      # Check status
+sudo systemctl restart lithic     # Restart
+sudo systemctl stop lithic        # Stop
+journalctl -u lithic -f           # View logs
+```
