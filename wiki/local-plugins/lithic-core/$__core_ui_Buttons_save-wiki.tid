@@ -5,7 +5,7 @@ modified: 20251129235100592
 tags: $:/tags/PageControls
 title: $:/core/ui/Buttons/save-wiki
 
-<$button tooltip="Download this Lith" aria-label={{$:/language/Buttons/SaveWiki/Caption}} class=<<tv-config-toolbar-class>>>
+<$button tooltip="Commit Changes" aria-label={{$:/language/Buttons/SaveWiki/Caption}} class=<<tv-config-toolbar-class>>>
 <$wikify name="site-title" text={{$:/config/SaveWikiButton/Filename}}>
 <$action-sendmessage $message="tm-save-wiki" $param={{$:/config/SaveWikiButton/Template}} filename=<<site-title>>/>
 </$wikify>
