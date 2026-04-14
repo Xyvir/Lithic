@@ -639,9 +639,66 @@
       function clear(store = getDefaultStore()) {
         return store._withIDBStore('readwrite', store => { store.clear(); });
       }
-      exports.Store = Store; exports.get = get; exports.set = set; exports.del = del; exports.clear = clear;
+      function keys(store = getDefaultStore()) {
+        let req;
+        return store._withIDBStore('readonly', store => { req = store.getAllKeys(); }).then(() => req.result);
+      }
+      exports.Store = Store; exports.get = get; exports.set = set; exports.del = del; exports.clear = clear; exports.keys = keys;
       return exports;
     }({}));
+
+    /* --- PROACTIVE CACHE PURGE --- */
+    async function purgeOldestCachesIfNeeded() {
+      if (!navigator.storage || !navigator.storage.estimate) return;
+
+      const { usage, quota } = await navigator.storage.estimate();
+      const usageRatio = usage / quota;
+      const THRESHOLD = 0.80;
+
+      if (usageRatio < THRESHOLD) return;
+
+      console.log(`[Lithic] Storage at ${(usageRatio * 100).toFixed(1)}% (${(usage / 1048576).toFixed(1)}MB / ${(quota / 1048576).toFixed(1)}MB). Checking caches...`);
+
+      const allKeys = await idbKeyval.keys();
+      const cacheKeys = allKeys.filter(k => typeof k === 'string' && k.startsWith('search_cache_'));
+
+      // Never purge if only 1 cache exists
+      if (cacheKeys.length <= 1) {
+        console.log(`[Lithic] Only ${cacheKeys.length} cache(s). Skipping purge.`);
+        return;
+      }
+
+      // Gather metadata for each cache
+      const caches = [];
+      for (const key of cacheKeys) {
+        const cache = await idbKeyval.get(key);
+        if (cache) {
+          caches.push({
+            key,
+            lastModified: cache.lastModified ? new Date(cache.lastModified) : new Date(0),
+            size: cache.text ? new Blob([cache.text]).size : 0
+          });
+        }
+      }
+
+      // Sort oldest-modified first
+      caches.sort((a, b) => a.lastModified - b.lastModified);
+
+      let currentUsage = usage;
+      let purged = 0;
+
+      while (caches.length > 1 && (currentUsage / quota) >= THRESHOLD) {
+        const oldest = caches.shift();
+        await idbKeyval.del(oldest.key);
+        currentUsage -= oldest.size;
+        purged++;
+        console.log(`[Lithic] Purged cache: ${oldest.key} (~${(oldest.size / 1024).toFixed(0)}KB, modified: ${oldest.lastModified.toLocaleString()})`);
+      }
+
+      if (purged > 0) {
+        console.log(`[Lithic] Purged ${purged} cache(s). Est. usage now: ${(currentUsage / 1048576).toFixed(1)}MB (${((currentUsage / quota) * 100).toFixed(1)}%)`);
+      }
+    }
 
     /* --- LITHIC FORMAT HELPERS --- */
     function parseLithToJSON(lithText) {
@@ -1387,6 +1444,7 @@
     // --- INITIALIZATION INTERCEPT ---
     window.onload = async () => {
       displayRecentFiles();
+      purgeOldestCachesIfNeeded(); // fire-and-forget, non-blocking
 
       const debugLog = document.getElementById('debug-log');
 
