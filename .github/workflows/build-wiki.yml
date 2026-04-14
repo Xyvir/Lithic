@@ -142,3 +142,12 @@ jobs:
       tag_name: build-${{ needs.build.outputs.tag_name }}
     secrets: inherit
 
+  build-server:
+
+    needs: build
+    if: ${{ inputs.create_release == true && inputs.build_config == 'prod' }}
+    uses: ./.github/workflows/build-server.yml
+    with:
+      tag_name: build-${{ needs.build.outputs.tag_name }}
+    secrets: inherit
+

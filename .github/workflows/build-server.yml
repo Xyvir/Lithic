@@ -1,0 +1,121 @@
+name: Build Server Artifact
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      tag_name:
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      # --- Build custom Caddy with WebDAV plugin ---
+      - name: Install xcaddy
+        run: go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+
+      - name: Build Caddy with WebDAV
+        run: |
+          xcaddy build \
+            --with github.com/mholt/caddy-webdav \
+            --output build/caddy
+
+      - name: Verify Caddy binary
+        run: |
+          ./build/caddy version
+          ./build/caddy list-modules | grep webdav || echo "WARNING: webdav module not found"
+
+      # --- Download built wiki if chained from build-wiki ---
+      - name: Download Built Wiki Artifact
+        if: ${{ inputs.tag_name != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: built-wiki
+          path: build/wiki-artifact
+
+      - name: Use Downloaded Wiki
+        if: ${{ inputs.tag_name != '' }}
+        run: |
+          cp build/wiki-artifact/lith.html src/lithic.html
+
+      # --- Assemble public directory ---
+      - name: Assemble public directory
+        run: |
+          mkdir -p build/app/public/src
+
+          # Core Lithic files
+          cp src/launcher.html build/app/public/src/launcher.html
+          cp src/lithic.html   build/app/public/src/lithic.html
+
+          # Root index (redirects to launcher)
+          cp index.html build/app/public/index.html
+
+          # Static assets
+          cp -f favicon.ico              build/app/public/ 2>/dev/null || true
+          cp -f favicon-16x16.png        build/app/public/ 2>/dev/null || true
+          cp -f favicon-32x32.png        build/app/public/ 2>/dev/null || true
+          cp -f mstile-150x150.png       build/app/public/ 2>/dev/null || true
+          cp -f mstile-310x310.png       build/app/public/ 2>/dev/null || true
+          cp -f android-chrome-192x192.png build/app/public/ 2>/dev/null || true
+          cp -f android-chrome-512x512.png build/app/public/ 2>/dev/null || true
+          cp -f apple-touch-icon.png     build/app/public/ 2>/dev/null || true
+          cp -f manifest.json            build/app/public/ 2>/dev/null || true
+          cp -f site.webmanifest         build/app/public/ 2>/dev/null || true
+          cp -f offline-service-worker.js build/app/public/ 2>/dev/null || true
+          cp -f intro.html               build/app/public/ 2>/dev/null || true
+          cp -f intro.lith               build/app/public/ 2>/dev/null || true
+          cp -f 404.html                 build/app/public/ 2>/dev/null || true
+
+          # Copy src/ static assets
+          cp -f src/mstile-150x150.png   build/app/public/src/ 2>/dev/null || true
+          cp -f src/app-icon.png         build/app/public/src/ 2>/dev/null || true
+
+      # --- Assemble app directory ---
+      - name: Assemble app contents
+        run: |
+          mv build/caddy build/app/caddy
+          cp deploy/entrypoint.sh build/app/entrypoint.sh
+          chmod +x build/app/entrypoint.sh build/app/caddy
+
+      # --- Create tarball ---
+      - name: Create God Artifact tarball
+        run: |
+          cd build
+          tar -czf ../lithic-server.tar.gz app/
+          cd ..
+          ls -lh lithic-server.tar.gz
+          echo "=== Contents ==="
+          tar -tzf lithic-server.tar.gz | head -30
+
+      # --- Upload artifact (always) ---
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lithic-server
+          path: lithic-server.tar.gz
+          retention-days: 7
+
+      # --- Create/update GitHub Release (chained only) ---
+      - name: Upload to Release
+        if: ${{ inputs.tag_name != '' }}
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.tag_name }}
+          name: Release ${{ inputs.tag_name }}
+          draft: false
+          prerelease: false
+          files: |
+            lithic-server.tar.gz

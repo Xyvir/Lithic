@@ -1,0 +1,42 @@
+# ==============================================================================
+# Lithic Caddyfile — Reference Template
+# This file is NOT used at runtime. The entrypoint.sh script generates
+# the actual Caddyfile dynamically from environment variables.
+# ==============================================================================
+#
+# Environment Variables:
+#   LITHIC_USER      — BasicAuth username (default: admin)
+#   LITHIC_PASSWORD   — BasicAuth password (default: changeme)
+#   LITHIC_PORT       — Listen port (default: 8080)
+#
+# Directories:
+#   /app/public       — Static Lithic HTML files (launcher + engine)
+#   /data             — Persistent volume for .lith files (WebDAV root)
+#
+# ==============================================================================
+
+{
+	auto_https off
+}
+
+:8080 {
+	# Protect everything with BasicAuth
+	basicauth * {
+		admin $2a$14$EXAMPLE_BCRYPT_HASH_HERE
+	}
+
+	# WebDAV endpoint for .lith file sync
+	route /sync/* {
+		uri strip_prefix /sync
+		webdav {
+			root /data
+		}
+	}
+
+	# Static file server for Lithic UI
+	route * {
+		file_server {
+			root /app/public
+		}
+	}
+}
