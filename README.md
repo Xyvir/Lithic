@@ -51,11 +51,13 @@ Version 1.95 released:
 
 Version 1.98 released:
 
-Version 1.99 plans:
- - Image Handling improvements:
-   - Paste image from clipboard into overtype
-   - Draggable image resizer (resizer plugin)
-   - resizable sidebar via resizer plugin. 
+TODO:
+Update this list as several planned featuers has been updated.
+
+SELF-HOST IMPROVEMENTS:
+Create 'official' .tar.gz self-host package (caddy and html with preconfig)
+Create Docker and LCX Wrapper
+Create https://railway.app or Render.com configuration for users to self-host.
 
 2. Version 2 plans:
 
