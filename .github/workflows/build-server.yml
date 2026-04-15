@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   build-server:
@@ -108,14 +109,31 @@ jobs:
           path: lithic-server.tar.gz
           retention-days: 7
 
-      # --- Create/update GitHub Release (chained only) ---
-      - name: Upload to Release
+      # --- Docker Publish (chained only) ---
+      - name: Log in to the Container registry
         if: ${{ inputs.tag_name != '' }}
-        uses: softprops/action-gh-release@v1
+        uses: docker/login-action@v3
         with:
-          tag_name: ${{ inputs.tag_name }}
-          name: Release ${{ inputs.tag_name }}
-          draft: false
-          prerelease: false
-          files: |
-            lithic-server.tar.gz
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        if: ${{ inputs.tag_name != '' }}
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ inputs.tag_name }}
+
+      - name: Build and push Docker image
+        if: ${{ inputs.tag_name != '' }}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: deploy/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
