@@ -58,12 +58,36 @@ cat > "${CADDYFILE}" <<EOF
 	}
 
 	# PWA support: manifest, icons, and service worker must be public for browsers to install correctly
-	handle /manifest.json { file_server { root ${PUBLIC_DIR} } }
-	handle /site.webmanifest { file_server { root ${PUBLIC_DIR} } }
-	handle /offline-service-worker.js { file_server { root ${PUBLIC_DIR} } }
-	handle /android-chrome-* { file_server { root ${PUBLIC_DIR} } }
-	handle /apple-touch-icon.png { file_server { root ${PUBLIC_DIR} } }
-	handle /favicon* { file_server { root ${PUBLIC_DIR} } }
+	handle /manifest.json {
+		file_server {
+			root ${PUBLIC_DIR}
+		}
+	}
+	handle /site.webmanifest {
+		file_server {
+			root ${PUBLIC_DIR}
+		}
+	}
+	handle /offline-service-worker.js {
+		file_server {
+			root ${PUBLIC_DIR}
+		}
+	}
+	handle /android-chrome-* {
+		file_server {
+			root ${PUBLIC_DIR}
+		}
+	}
+	handle /apple-touch-icon.png {
+		file_server {
+			root ${PUBLIC_DIR}
+		}
+	}
+	handle /favicon* {
+		file_server {
+			root ${PUBLIC_DIR}
+		}
+	}
 
 	# 2. Private WebDAV Syncd UI
 	basicauth * {
