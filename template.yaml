@@ -1,0 +1,23 @@
+name: Lithic Server
+description: Self-hosted backend for the Lithic Unified PKMS. Optimized for WebDAV sync and privacy.
+# Official template configuration for Railway
+# See https://docs.railway.app/deploy/templates
+
+services:
+  lithic-server:
+    name: lithic-server
+    icon: 🛡️
+    build:
+      builder: DOCKERFILE
+      dockerfilePath: deploy/Dockerfile
+    deploy:
+      numReplicas: 1
+      restartPolicyType: ON_FAILURE
+    variables:
+      LITHIC_USER:
+        default: admin
+        description: Choose a username for WebDAV access.
+      LITHIC_PASSWORD: "${{railway.randomString(32)}}"
+      LITHIC_PORT: 8080
+    volumes:
+      - mountPath: /data
