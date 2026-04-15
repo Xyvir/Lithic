@@ -639,7 +639,12 @@
 
     // --- WEBDAV MODE DETECTION ---
     const IS_WEBDAV = ((window.__ORIGINAL_PATH__ || window.location.pathname).startsWith('/sync/'))
-      || document.querySelector('meta[name="lithic-webdav"]') !== null;
+      || document.querySelector('meta[name="lithic-webdav"]') !== null
+      || (window.location.protocol.startsWith('http') && 
+          !['localhost', '127.0.0.1'].includes(window.location.hostname) && 
+          !window.location.hostname.endsWith('lithic.uk') && 
+          !window.location.hostname.endsWith('github.io') && 
+          !window.__TAURI__);
 
     /* IDB-KEYVAL & FILE MANAGER LOGIC */
     let idbKeyval = (function (exports) {

@@ -40,16 +40,6 @@ echo "Generating password hash..."
 HASHED_PASSWORD=$("${APP_DIR}/caddy" hash-password --plaintext "${LITHIC_PASSWORD}")
 echo "Password hash generated."
 
-# --- Inject WebDAV meta tag into served launcher ---
-# This patches the served copy so IS_WEBDAV activates via the meta tag fallback.
-LAUNCHER_SRC="${PUBLIC_DIR}/src/launcher.html"
-if [ -f "${LAUNCHER_SRC}" ]; then
-  if ! grep -q 'name="lithic-webdav"' "${LAUNCHER_SRC}"; then
-    echo "Injecting WebDAV meta tag into launcher..."
-    sed -i 's|<head>|<head><meta name="lithic-webdav" content="true">|I' "${LAUNCHER_SRC}"
-  fi
-fi
-
 # --- Write Caddyfile ---
 echo "Writing Caddyfile..."
 cat > "${CADDYFILE}" <<EOF

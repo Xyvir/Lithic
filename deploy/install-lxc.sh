@@ -140,14 +140,6 @@ mkdir -p "${DATA_DIR}"
 echo "Generating password hash..."
 HASHED_PASSWORD=$("${APP_DIR}/caddy" hash-password --plaintext "${LITHIC_PASSWORD}")
 
-LAUNCHER_SRC="${PUBLIC_DIR}/src/launcher.html"
-if [ -f "${LAUNCHER_SRC}" ]; then
-  if ! grep -q 'name="lithic-webdav"' "${LAUNCHER_SRC}"; then
-    echo "Injecting WebDAV meta tag into launcher..."
-    sed -i 's|<head>|<head><meta name="lithic-webdav" content="true">|I' "${LAUNCHER_SRC}"
-  fi
-fi
-
 echo "Writing Caddyfile..."
 cat > "${CADDYFILE}" <<CADDY
 {
