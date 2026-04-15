@@ -13,6 +13,7 @@ services:
     deploy:
       numReplicas: 1
       restartPolicyType: ON_FAILURE
+      healthcheckPath: /health
     variables:
       LITHIC_USER:
         default: admin
