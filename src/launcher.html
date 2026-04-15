@@ -1097,7 +1097,6 @@
       try {
         // 1. Check for existing lock
         const existingLock = await webdavCheckLock(fileName);
-        if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'none';
 
         if (existingLock) {
           const modal = document.getElementById('collision-modal');
@@ -2351,7 +2350,7 @@
       <div class="modal-buttons">
         <button id="collision-btn-readonly" style="background: var(--button-bg); border: 1px solid var(--border-color);">Open Read-Only</button>
         <button id="collision-btn-ignore" style="background: #e53935; color: white; border: none;">Ignore and Open (Overwrite Risk)</button>
-        <button onclick="document.getElementById('collision-modal').style.display='none'" style="background: transparent; border: 1px solid var(--border-color); opacity: 0.7;">Cancel</button>
+        <button onclick="document.getElementById('collision-modal').style.display='none'; if(document.getElementById('loading-overlay'))document.getElementById('loading-overlay').style.display='none';" style="background: transparent; border: 1px solid var(--border-color); opacity: 0.7;">Cancel</button>
       </div>
     </div>
   </div>
