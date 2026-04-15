@@ -2,7 +2,14 @@
 <html>
 
 <head>
-    <meta http-equiv="refresh" content="0; url=https://lithic.uk/?url=https://lithic.uk/intro.lith" />
+    <script>
+        // Use current origin if remote, fallback to public site if running as a local file
+        const isLocal = window.location.protocol === 'file:';
+        const baseUrl = isLocal ? 'https://lithic.uk' : window.location.origin;
+        const landingPage = isLocal ? 'https://lithic.uk' : '/';
+        const targetUrl = `${landingPage}?url=${baseUrl}/intro.lith`;
+        window.location.replace(targetUrl);
+    </script>
     <title>Redirecting to Lithic Introduction...</title>
     <style>
         body {
