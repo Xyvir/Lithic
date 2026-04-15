@@ -48,18 +48,31 @@ cat > "${CADDYFILE}" <<EOF
 }
 
 :${LITHIC_PORT} {
-	basicauth * {
-		${LITHIC_USER} ${HASHED_PASSWORD}
+	# 1. Public Healthcheck
+	handle /health {
+		@noStorage not file {
+			root /
+		} /data/
+		respond @noStorage "Storage Mount Failure" 500
+		respond "OK" 200
 	}
 
-	route /sync/* {
+	# 2. Private WebDAV Sync
+	handle /sync/* {
+		basicauth {
+			${LITHIC_USER} ${HASHED_PASSWORD}
+		}
 		uri strip_prefix /sync
 		webdav {
 			root ${DATA_DIR}
 		}
 	}
 
-	route * {
+	# 3. Private Web Server
+	handle * {
+		basicauth {
+			${LITHIC_USER} ${HASHED_PASSWORD}
+		}
 		file_server {
 			root ${PUBLIC_DIR}
 		}
