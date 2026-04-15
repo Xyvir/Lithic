@@ -48,7 +48,24 @@ cat > "${CADDYFILE}" <<EOF
 }
 
 :${LITHIC_PORT} {
-	# Private WebDAV and UI
+	# 1. Public Assets (Health & PWA)
+	handle /health {
+		@noStorage not file {
+			root /
+		} /data/
+		respond @noStorage "Storage Mount Failure" 500
+		respond "OK" 200
+	}
+
+	# PWA support: manifest, icons, and service worker must be public for browsers to install correctly
+	handle /manifest.json { file_server { root ${PUBLIC_DIR} } }
+	handle /site.webmanifest { file_server { root ${PUBLIC_DIR} } }
+	handle /offline-service-worker.js { file_server { root ${PUBLIC_DIR} } }
+	handle /android-chrome-* { file_server { root ${PUBLIC_DIR} } }
+	handle /apple-touch-icon.png { file_server { root ${PUBLIC_DIR} } }
+	handle /favicon* { file_server { root ${PUBLIC_DIR} } }
+
+	# 2. Private WebDAV Syncd UI
 	basicauth * {
 		${LITHIC_USER} ${HASHED_PASSWORD}
 	}

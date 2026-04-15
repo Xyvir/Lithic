@@ -2305,8 +2305,8 @@
     const installBtn = document.getElementById('install-pwa');
 
     window.addEventListener('beforeinstallprompt', (e) => {
-      // Don't show install prompt in Tauri or WebDAV mode
-      if (window.__TAURI__ || window.__TAURI_INTERNALS__ || document.body.classList.contains('webdav-mode')) return;
+      // Don't show install prompt in Tauri
+      if (window.__TAURI__ || window.__TAURI_INTERNALS__) return;
       
       e.preventDefault();
       deferredPrompt = e;
