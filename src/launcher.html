@@ -624,11 +624,62 @@
         transform: rotate(360deg);
       }
     }
+
+    /* --- COLLISION MODAL --- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 30000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+      color: #ff5252;
+      font-size: 1.5rem;
+    }
+
+    .modal-content p {
+      line-height: 1.6;
+      margin-bottom: 24px;
+      opacity: 0.9;
+      font-size: 0.95rem;
+    }
+
+    .modal-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .modal-buttons button {
+      margin: 0;
+      width: 100%;
+      padding: 12px;
+      font-weight: 600;
+    }
   </style>
 
   <script type="module">
-    // Global Pending Imports
+    // Global State
     window.pendingImports = [];
+    window.lithicSessionId = Math.random().toString(36).substring(2, 15);
+    window.currentLockFileName = null;
     let isNewOrInjected = false;
 
     // --- WEBDAV MODE DETECTION ---
@@ -835,6 +886,62 @@
       return await remoteRes.text();
     }
 
+    /* --- WEBDAV LOCKING (Presence) --- */
+    async function webdavCheckLock(fileName) {
+      try {
+        const res = await fetch(WEBDAV_BASE + encodeURIComponent(fileName) + '.lock');
+        if (res.status === 404) return null;
+        if (!res.ok) return null;
+        const lock = await res.json();
+        // A lock is active if updated in the last 60s
+        if (lock && lock.timestamp && (Date.now() - lock.timestamp < 60000)) {
+          // If it's our own lock (same session), ignore it
+          if (lock.sessionId === window.lithicSessionId) return null;
+          return lock;
+        }
+        return null;
+      } catch (e) { return null; }
+    }
+
+    let heartbeatInterval = null;
+    async function webdavStartHeartbeat(fileName) {
+      window.currentLockFileName = fileName;
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+      const updateLock = async () => {
+        const lockData = {
+          user: "Someone",
+          timestamp: Date.now(),
+          sessionId: window.lithicSessionId
+        };
+        try {
+          await fetch(WEBDAV_BASE + encodeURIComponent(fileName) + '.lock', {
+            method: 'PUT',
+            body: JSON.stringify(lockData)
+          });
+        } catch (e) {}
+      };
+      await updateLock();
+      heartbeatInterval = setInterval(updateLock, 30000);
+    }
+
+    function webdavStopHeartbeat() {
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+      }
+      if (window.currentLockFileName) {
+        fetch(WEBDAV_BASE + encodeURIComponent(window.currentLockFileName) + '.lock', { method: 'DELETE' }).catch(() => {});
+        window.currentLockFileName = null;
+      }
+    }
+
+    window.addEventListener('beforeunload', () => {
+      if (window.currentLockFileName) {
+        // Use synchronous-ish fetch if allowed or just fire and forget
+        webdavStopHeartbeat();
+      }
+    });
+
     /* --- WEBDAV MODE HELPERS --- */
     const WEBDAV_BASE = '/sync/';
 
@@ -947,34 +1054,75 @@
 
     async function webdavOpenFile(fileName) {
       if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'flex';
-      try {
-        const res = await fetch(WEBDAV_BASE + encodeURIComponent(fileName));
-        if (!res.ok) throw new Error('Failed to fetch file: ' + res.status);
-        let contents = await res.text();
 
-        let coreHtml = await fetchCoreEngine();
-        const tiddlers = parseLithToJSON(contents);
-        const tiddlerArrayText = JSON.stringify(tiddlers);
+      const proceed = async (readOnly = false) => {
+        try {
+          const res = await fetch(WEBDAV_BASE + encodeURIComponent(fileName));
+          if (!res.ok) throw new Error('Failed to fetch file: ' + res.status);
+          let contents = await res.text();
 
-        if (tiddlers.length > 0) {
-          const stripped = tiddlerArrayText.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
-          coreHtml = coreHtml.replace(/\]\s*<\/script>/is, () => ',' + stripped + ']<\/script>');
+          let coreHtml = await fetchCoreEngine();
+          const tiddlers = parseLithToJSON(contents);
+          const tiddlerArrayText = JSON.stringify(tiddlers);
+
+          if (tiddlers.length > 0) {
+            const stripped = tiddlerArrayText.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
+            coreHtml = coreHtml.replace(/\]\s*<\/script>/is, () => ',' + stripped + ']<\/script>');
+          }
+
+          // Populate search cache
+          await idbKeyval.set('search_cache_' + fileName, {
+            text: tiddlerArrayText,
+            lastModified: new Date().toLocaleString()
+          });
+
+          if (readOnly) {
+            // In Read-Only, we do NOT set $tw.customSaver and we disable autosaver
+            window.pendingImports.push({ title: "$:/state/DisableAutoSaver", text: "yes" });
+          } else {
+            // Set up WebDAV saver
+            window.$tw = { customSaver: { save: createWebdavSaver(fileName) } };
+            // Acquire lock
+            webdavStartHeartbeat(fileName).catch(console.error);
+          }
+
+          replacePageContents(coreHtml, true);
+        } catch (err) {
+          if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'none';
+          console.error("Failed to open remote file:", err);
+          alert("Failed to open remote file. See console for details.");
         }
+      };
 
-        // Populate search cache
-        await idbKeyval.set('search_cache_' + fileName, {
-          text: tiddlerArrayText,
-          lastModified: new Date().toLocaleString()
-        });
+      try {
+        // 1. Check for existing lock
+        const existingLock = await webdavCheckLock(fileName);
+        if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'none';
 
-        // Set up WebDAV saver
-        window.$tw = { customSaver: { save: createWebdavSaver(fileName) } };
+        if (existingLock) {
+          const modal = document.getElementById('collision-modal');
+          const msg = document.getElementById('collision-message');
+          msg.innerHTML = `Another user is currently editing <b>${fileName}</b>. Opening it may lead to data loss as Lithic does not support collaboration (last-write-wins).`;
+          modal.style.display = 'flex';
 
-        replacePageContents(coreHtml, true);
+          document.getElementById('collision-btn-readonly').onclick = () => {
+            modal.style.display = 'none';
+            if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'flex';
+            proceed(true);
+          };
+
+          document.getElementById('collision-btn-ignore').onclick = () => {
+            modal.style.display = 'none';
+            if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'flex';
+            proceed(false);
+          };
+        } else {
+          await proceed(false);
+        }
       } catch (err) {
         if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'none';
-        console.error("Failed to open remote file:", err);
-        alert("Failed to open remote file. See console for details.");
+        console.error("Lock check failed:", err);
+        await proceed(false); // Fallback to normal if lock check fails
       }
     }
 
@@ -2193,6 +2341,19 @@
   <!-- LOADING OVERLAY -->
   <div id="loading-overlay">
     <div class="spinner"></div>
+  </div>
+
+  <!-- COLLISION MODAL -->
+  <div id="collision-modal" class="modal-overlay">
+    <div class="modal-content">
+      <h2 id="collision-title">Active Session Detected</h2>
+      <p id="collision-message">Another user is currently editing this file. Opening it may lead to data loss as Lithic does not support collaboration (last-write-wins).</p>
+      <div class="modal-buttons">
+        <button id="collision-btn-readonly" style="background: var(--button-bg); border: 1px solid var(--border-color);">Open Read-Only</button>
+        <button id="collision-btn-ignore" style="background: #e53935; color: white; border: none;">Ignore and Open (Overwrite Risk)</button>
+        <button onclick="document.getElementById('collision-modal').style.display='none'" style="background: transparent; border: 1px solid var(--border-color); opacity: 0.7;">Cancel</button>
+      </div>
+    </div>
   </div>
 </body>
 
