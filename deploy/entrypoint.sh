@@ -48,15 +48,7 @@ cat > "${CADDYFILE}" <<EOF
 }
 
 :${LITHIC_PORT} {
-	# 1. Public Assets (Health & PWA)
-	handle /health {
-		@noStorage not file {
-			root /
-		} /data/
-		respond @noStorage "Storage Mount Failure" 500
-		respond "OK" 200
-	}
-
+	# 1. Public Assets (PWA)
 	# PWA support: manifest, icons, and service worker must be public for browsers to install correctly
 	handle /manifest.json {
 		file_server {
