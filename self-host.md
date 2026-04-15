@@ -8,13 +8,11 @@ Lithic is a TiddlyWiki-powered PKMS that stores your data in `.lith` files. The 
 
 Deploy Lithic to Railway with a single click. Railway will build the Caddy+WebDAV server from source and provision a persistent volume automatically.
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/template?referralCode=lithic)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/lithic-uk-remote)
 
 > **Note:** After creating the template in the Railway dashboard, set these environment variables:
 > - `LITHIC_USER` — your username
-> - `LITHIC_PASSWORD` — use `${{secret()}}` in the template to auto-generate a secure password
->
-> Railway injects `PORT` automatically — no manual port config needed.
+> - `LITHIC_PASSWORD` — use `${{secret()}}` in the template to auto-generate a secure password, please don't change this as 2fa is not provided.
 
 ### Method B: Docker
 
