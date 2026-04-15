@@ -522,6 +522,30 @@
       display: none;
     }
 
+    .mode-pill {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-left: 8px;
+      flex-shrink: 0;
+      line-height: 1.4;
+    }
+
+    .mode-pill.remote {
+      background: rgba(138, 180, 248, 0.15);
+      color: #8ab4f8;
+      border: 1px solid rgba(138, 180, 248, 0.3);
+    }
+
+    .mode-pill.app {
+      background: rgba(129, 199, 132, 0.15);
+      color: #81c784;
+      border: 1px solid rgba(129, 199, 132, 0.3);
+    }
+
     /* --- PENDING IMPORTS WINDOW --- */
     #pending-imports-window {
       display: none;
@@ -1725,6 +1749,15 @@
       if (IS_WEBDAV) {
         document.body.classList.add('webdav-mode');
 
+        // Inject REMOTE pill
+        const titleDiv = document.querySelector('h1 div');
+        if (titleDiv) {
+          const pill = document.createElement('span');
+          pill.className = 'mode-pill remote';
+          pill.textContent = 'REMOTE';
+          titleDiv.appendChild(pill);
+        }
+
         const mountBtn = document.getElementById('btn-mount');
         const newLithBtn = document.getElementById('btn-new-lith');
 
@@ -1783,6 +1816,17 @@
 
       // --- LOCAL MODE ---
       displayRecentFiles();
+
+      // Inject APP pill if running in Tauri
+      if (window.__TAURI__ || window.__TAURI_INTERNALS__) {
+        const titleDiv = document.querySelector('h1 div');
+        if (titleDiv) {
+          const pill = document.createElement('span');
+          pill.className = 'mode-pill app';
+          pill.textContent = 'APP';
+          titleDiv.appendChild(pill);
+        }
+      }
 
       // --- URL QUERY STRING INJECTION ---
       const urlParams = new URLSearchParams(window.location.search);
