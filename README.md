@@ -16,8 +16,10 @@ Lithic is a bespoke Personal Knowledge Management System (PKMS) built on the pow
 * **Logseq-Inspired, Markdown Native:**
     Lithic abandons traditional wikitext in favor of standard **Markdown**. This ensures a frictionless writing experience familiar to Logseq users, keeping your data portable and compatible with industry-standard editors.
 
-* **Academic Rigor:**
-    Designed as a digital lab bench, Lithic excels at managing complex project notebooks, typed research, and handwritten notes. It provides a cohesive environment for tracking creative or engineering projects from ideation to documentation.
+* **Smart Inferences:**
+  * **Frictionless Time Tracking:** Log your work via interstitial journaling and let Lithic implicitly calculate the time spent. (Includes manual overrides for when you inevitably walk away from your keyboard and forget to log off).
+  * **Contextual Implicit Tagging:** Lithic understands your outline's hierarchy. When a parent node references a specific note or context, its nested children automatically inherit that relationship without tedious, redundant tagging.
+  * **Declarative Scheduling:** Manage your time purely by dropping journal date references onto to-do items. The integrated calendar also doubles as a date-picker, allowing you to right-click any date to copy the exact pointer needed to link tasks to your timeline.
 
 * **Sane, Print-Ready PDFs:**
     Web-based knowledge bases often fail when physical media is required. Lithic prioritizes "paper-first" CSS, ensuring that your digital notes convert into clean, professional, and sane PDFs for homework submissions, lab reports, and archiving.
@@ -50,39 +52,25 @@ Version 1.95 released:
 - A few other cross-plugin teaks and improvments. 
 
 Version 1.98 released:
+- I stopped doing changelogs and official versioning around here. Bunch of stuff added.
 
 TODO:
-Update this list as several planned featuers has been updated.
 
 SELF-HOST IMPROVEMENTS:
-Update launcher.html to support webdav enviroment saving.
-Create 'official' .tar.gz self-host package (caddy and html with preconfig)
-Create Docker and LCX Wrapper
-Create https://railway.app or Render.com configuration for users to self-host.
+**Public Sharing**
+- Create mechanism for self-hosters to specify 'public' *.liths. (hook into existing external *.lith payload url injection?)
+- Change self-hoster entrypoint to /login? (so public is default?)
+  
 
-BYOAI improvements?
-Create a vs-code extension? or extend an existing extension for viewing, editing, and folding *.lith files.
-With per-section syntax highlighting, etc.
-
-2. Version 2 plans:
-
+MISC
 - "Full-screen" long-from editor when clicking on bullet points.
 - Simple UI Mode toggle. (Hide a lot of Tiddlywiki-specific UI, on by default.)
-- Expanded Slashcommands
-- Expanded Syntax Highlighting for Overtype?
-- Upgrade default editor CodeMiorror6? (once it supports streams plugin)
-- Include codemirror 6 for non-streams "edit mode"
-
-
-3. Version 3 plans
-- automate build pipeline
+- Fully Expanded Slashcommands
+- Replace overtype with omni-editor
 - Rust Backend for Launcher apps
 - Multiplatform Launcher apps
-- Failover webgui launcher for non-mac devices (TiddlyStow v2)
-- Payload URL sharing
-
-4. Version 4 plans:
-- Integrated 3rd party syncing
 - native e2ec p2p syncing via Iroh Docs?
+- Create a vs-code extension? or extend an existing extension for viewing, editing, and folding *.lith files.
+With per-section syntax highlighting, section folding, etc.
 
   
