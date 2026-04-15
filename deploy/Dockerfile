@@ -57,8 +57,6 @@ COPY src/app-icon.png         /app/public/src/app-icon.png
 
 EXPOSE 8080
 
-VOLUME ["/data"]
-
 ENV LITHIC_USER=admin
 ENV LITHIC_PASSWORD=changeme
 ENV LITHIC_PORT=8080
