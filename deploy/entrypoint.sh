@@ -81,19 +81,26 @@ cat > "${CADDYFILE}" <<EOF
 		}
 	}
 
-	# 2. Private WebDAV Syncd UI
-	basicauth * {
+	# 2. Private Content (Locked via Basic Auth)
+	# We authenticate everything EXCEPT the PWA assets and healthcheck
+	@protected {
+		not path /manifest.json /site.webmanifest /offline-service-worker.js /android-chrome-* /apple-touch-icon.png /favicon* /health
+	}
+
+	basicauth @protected {
 		${LITHIC_USER} ${HASHED_PASSWORD}
 	}
 
-	route /sync/* {
+	# WebDAV Sync
+	handle /sync/* {
 		uri strip_prefix /sync
 		webdav {
 			root ${DATA_DIR}
 		}
 	}
 
-	route * {
+	# Web Server
+	handle * {
 		file_server {
 			root ${PUBLIC_DIR}
 		}
