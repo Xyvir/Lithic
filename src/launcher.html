@@ -510,13 +510,6 @@
     }
 
     /* --- WEBDAV MODE --- */
-    .webdav-modified {
-      font-size: 0.75rem;
-      color: #888;
-      white-space: nowrap;
-      flex-shrink: 0;
-      padding: 0 6px;
-    }
 
     body.webdav-mode .clear-btn {
       display: none;
@@ -1693,13 +1686,6 @@
             }
           });
 
-          const modLabel = document.createElement('span');
-          modLabel.className = 'webdav-modified';
-          if (file.lastModified) {
-            modLabel.textContent = file.lastModified.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-            modLabel.title = file.lastModified.toLocaleString();
-          }
-
           const removeBtn = document.createElement('button');
           removeBtn.type = 'button';
           removeBtn.innerHTML = '&times;';
@@ -1722,7 +1708,6 @@
           previewDiv.className = 'search-preview';
 
           li.appendChild(button);
-          li.appendChild(modLabel);
           li.appendChild(cacheBtn);
           li.appendChild(removeBtn);
           li.appendChild(previewDiv);
