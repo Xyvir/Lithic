@@ -12,7 +12,6 @@
         "mountPath": "/data"
       }
     ],
-    "sleepOnIdle": true,
     "generateDomain": true,
     "healthcheckPath": "/health"
   }
