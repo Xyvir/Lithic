@@ -22,6 +22,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   build:
@@ -126,15 +127,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: debug-logs hiding
+          name: debug-logs
           path: |
             wiki/mirror.log
             wiki/flatten-manifest.log
-
             wiki/tiddlywiki.log
 
   build-tauri:
-
     needs: build
     if: ${{ inputs.create_release == true && inputs.build_config == 'prod' }}
     uses: ./.github/workflows/windows-release.yaml
@@ -143,11 +142,9 @@ jobs:
     secrets: inherit
 
   build-server:
-
     needs: build
     if: ${{ inputs.create_release == true && inputs.build_config == 'prod' }}
     uses: ./.github/workflows/build-server.yml
     with:
       tag_name: build-${{ needs.build.outputs.tag_name }}
     secrets: inherit
-
