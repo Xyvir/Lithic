@@ -4,7 +4,19 @@ Lithic is a TiddlyWiki-powered PKMS that stores your data in `.lith` files. The 
 
 ## Quick Start
 
-### Method A: Docker (Recommended)
+### Method A: Railway (One-Click)
+
+Deploy Lithic to Railway with a single click. Railway will build the Caddy+WebDAV server from source and provision a persistent volume automatically.
+
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/template?referralCode=lithic)
+
+> **Note:** After creating the template in the Railway dashboard, set these environment variables:
+> - `LITHIC_USER` — your username
+> - `LITHIC_PASSWORD` — use `${{secret()}}` in the template to auto-generate a secure password
+>
+> Railway injects `PORT` automatically — no manual port config needed.
+
+### Method B: Docker
 
 ```bash
 docker run -d --name lithic \
@@ -15,11 +27,10 @@ docker run -d --name lithic \
   ghcr.io/xyvir/lithic-uk:latest
 ```
 
-Or build from the Dockerfile:
+Or build from source:
 
 ```bash
-cd deploy/
-docker build -t lithic .
+docker build -t lithic -f deploy/Dockerfile .
 docker run -d --name lithic \
   -p 8080:8080 \
   -e LITHIC_USER=admin \
@@ -28,7 +39,7 @@ docker run -d --name lithic \
   lithic
 ```
 
-### Method B: Proxmox LXC (One-Liner)
+### Method C: Proxmox LXC (One-Liner)
 
 Run this inside a Debian/Ubuntu LXC container:
 
@@ -43,7 +54,7 @@ sudo nano /etc/default/lithic
 sudo systemctl restart lithic
 ```
 
-### Method C: Manual Install
+### Method D: Manual Install
 
 1. Download the latest `lithic-server.tar.gz` from [GitHub Releases](https://github.com/Xyvir/Lithic-UK/releases).
 2. Extract it:

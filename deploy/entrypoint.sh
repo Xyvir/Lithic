@@ -14,7 +14,7 @@ CADDYFILE="${APP_DIR}/Caddyfile"
 # --- Environment Variables ---
 LITHIC_USER="${LITHIC_USER:-admin}"
 LITHIC_PASSWORD="${LITHIC_PASSWORD:-changeme}"
-LITHIC_PORT="${LITHIC_PORT:-8080}"
+LITHIC_PORT="${PORT:-${LITHIC_PORT:-8080}}"
 
 echo "============================================"
 echo "  Lithic Server"
