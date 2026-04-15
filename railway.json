@@ -12,6 +12,7 @@
         "mountPath": "/data"
       }
     ],
-    "sleepOnIdle": true
+    "sleepOnIdle": true,
+    "generateDomain": true
   }
 }
