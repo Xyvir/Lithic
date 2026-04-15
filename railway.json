@@ -13,7 +13,6 @@
       }
     ],
     "sleepApplication": true,
-    "generateDomain": true,
-    "healthcheckPath": "/health"
+    "generateDomain": true
   }
 }
