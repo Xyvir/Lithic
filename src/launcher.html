@@ -511,8 +511,9 @@
 
     /* --- WEBDAV MODE --- */
 
-    body.webdav-mode .clear-btn {
-      display: none;
+    body.webdav-mode .clear-btn, 
+    body.webdav-mode #install-pwa {
+      display: none !important;
     }
 
     .mode-pill {
@@ -2152,6 +2153,9 @@
     const installBtn = document.getElementById('install-pwa');
 
     window.addEventListener('beforeinstallprompt', (e) => {
+      // Don't show install prompt in Tauri or WebDAV mode
+      if (window.__TAURI__ || window.__TAURI_INTERNALS__ || document.body.classList.contains('webdav-mode')) return;
+      
       e.preventDefault();
       deferredPrompt = e;
       installBtn.style.display = 'block';
