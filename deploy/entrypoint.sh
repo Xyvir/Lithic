@@ -37,6 +37,8 @@ mkdir -p "${DATA_DIR}"
 
 # --- Hash the password ---
 echo "Generating password hash..."
+# Jane's Note: Passing plaintext passwords in CLI args can leak to process lists (`ps`).
+# In a transient Docker container, we'll tolerate it, but keep it in mind.
 HASHED_PASSWORD=$("${APP_DIR}/caddy" hash-password --plaintext "${LITHIC_PASSWORD}")
 echo "Password hash generated."
 
@@ -44,67 +46,36 @@ echo "Password hash generated."
 echo "Writing Caddyfile..."
 cat > "${CADDYFILE}" <<EOF
 {
-	auto_https off
+    auto_https off
+    order webdav last
 }
 
 :${LITHIC_PORT} {
-	# 1. Public Assets (PWA)
-	# PWA support: manifest, icons, and service worker must be public for browsers to install correctly
-	handle /manifest.json {
-		file_server {
-			root ${PUBLIC_DIR}
-		}
-	}
-	handle /site.webmanifest {
-		file_server {
-			root ${PUBLIC_DIR}
-		}
-	}
-	handle /offline-service-worker.js {
-		file_server {
-			root ${PUBLIC_DIR}
-		}
-	}
-	handle /android-chrome-* {
-		file_server {
-			root ${PUBLIC_DIR}
-		}
-	}
-	handle /apple-touch-icon.png {
-		file_server {
-			root ${PUBLIC_DIR}
-		}
-	}
-	handle /favicon* {
-		file_server {
-			root ${PUBLIC_DIR}
-		}
-	}
+    # 1. Protection Rules
+    # Authenticate everything EXCEPT the PWA installation assets and healthcheck
+    @protected {
+        not path /manifest.json /site.webmanifest /offline-service-worker.js /android-chrome-* /apple-touch-icon.png /favicon* /health
+    }
 
-	# 2. Private Content (Locked via Basic Auth)
-	# We authenticate everything EXCEPT the PWA assets and healthcheck
-	@protected {
-		not path /manifest.json /site.webmanifest /offline-service-worker.js /android-chrome-* /apple-touch-icon.png /favicon* /health
-	}
+    basic_auth @protected {
+        ${LITHIC_USER} ${HASHED_PASSWORD}
+    }
 
-	basicauth @protected {
-		${LITHIC_USER} ${HASHED_PASSWORD}
-	}
+    # 2. WebDAV Sync
+    handle /sync/* {
+        uri strip_prefix /sync
+        webdav {
+            root ${DATA_DIR}
+        }
+    }
 
-	# WebDAV Sync
-	handle /sync/* {
-		uri strip_prefix /sync
-		webdav {
-			root ${DATA_DIR}
-		}
-	}
-
-	# Web Server
-	handle * {
-		file_server {
-			root ${PUBLIC_DIR}
-		}
-	}
+    # 3. Web Server 
+    # Serves all public assets. If a request made it past basic_auth, it lands here.
+    handle * {
+        file_server {
+            root ${PUBLIC_DIR}
+        }
+    }
 }
 EOF
 
