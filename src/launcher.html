@@ -1890,6 +1890,7 @@
       // --- WEBDAV MODE ---
       if (IS_WEBDAV) {
         document.body.classList.add('webdav-mode');
+        if (document.getElementById('intro-link')) document.getElementById('intro-link').style.display = 'none';
 
         // Inject REMOTE pill
         const titleDiv = document.querySelector('h1 div');
