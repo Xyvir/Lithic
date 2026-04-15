@@ -12,7 +12,7 @@
 # ==============================================================================
 
 # --- Stage 1: Build Caddy with WebDAV ---
-FROM golang:1.22-alpine AS caddy-builder
+FROM golang:1.25-alpine AS caddy-builder
 
 RUN apk add --no-cache git
 RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
