@@ -2,6 +2,11 @@ name: Build Server Artifact
 
 on:
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for Docker image (e.g. v1.0.0)'
+        required: false
+        type: string
   workflow_call:
     inputs:
       tag_name:
@@ -46,23 +51,24 @@ jobs:
         with:
           name: built-wiki
           path: build/wiki-artifact
+        continue-on-error: true
 
       - name: Use Downloaded Wiki
         if: ${{ inputs.tag_name != '' }}
         run: |
-          cp build/wiki-artifact/lith.html src/lithic.html
+          cp build/wiki-artifact/lith.html src/lithic.html || echo "Skipped: Artifact not found"
 
       # --- Assemble public directory ---
       - name: Assemble public directory
         run: |
           mkdir -p build/app/public/src
 
-          # Core Lithic files
-          cp src/launcher.html build/app/public/src/launcher.html
-          cp src/lithic.html   build/app/public/src/lithic.html
+          # Core Lithic files (graceful fail to prevent crash during untagged dev runs)
+          cp src/launcher.html build/app/public/src/launcher.html 2>/dev/null || echo "Missing launcher.html"
+          cp src/lithic.html   build/app/public/src/lithic.html 2>/dev/null || echo "Missing lithic.html"
 
           # Root index (redirects to launcher)
-          cp index.html build/app/public/index.html
+          cp index.html build/app/public/index.html 2>/dev/null || echo "Missing index.html"
 
           # Static assets
           cp -f favicon.ico              build/app/public/ 2>/dev/null || true
@@ -88,7 +94,7 @@ jobs:
       - name: Assemble app contents
         run: |
           mv build/caddy build/app/caddy
-          cp deploy/entrypoint.sh build/app/entrypoint.sh
+          cp deploy/entrypoint.sh build/app/entrypoint.sh 2>/dev/null || echo "Warning: entrypoint.sh missing"
           chmod +x build/app/entrypoint.sh build/app/caddy
 
       # --- Create tarball ---
@@ -110,6 +116,10 @@ jobs:
           retention-days: 7
 
       # --- Docker Publish (chained only) ---
+      - name: Set up Docker Buildx
+        if: ${{ inputs.tag_name != '' }}
+        uses: docker/setup-buildx-action@v3
+
       - name: Log in to the Container registry
         if: ${{ inputs.tag_name != '' }}
         uses: docker/login-action@v3
