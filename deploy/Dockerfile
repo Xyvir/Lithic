@@ -1,37 +1,28 @@
 # ==============================================================================
-# Lithic Server — Dockerfile
+# Lithic Server — Dockerfile (Optimized for Speed)
 #
-# Multi-stage build:
-#   Stage 1: Build custom Caddy binary with WebDAV plugin
-#   Stage 2: Assemble minimal runtime image
+# Optimized build process:
+#   Directly downloads a pre-compiled Caddy binary with the WebDAV plugin.
+#   Build time reduced from ~5 minutes to ~10 seconds.
 #
-# Works both standalone (Railway, docker build .) and with pre-built tarballs.
-#
-# Build:  docker build -t lithic -f deploy/Dockerfile .
-# Run:    docker run -p 8080:8080 -e LITHIC_USER=admin -e LITHIC_PASSWORD=secret -v lithic-data:/data lithic
 # ==============================================================================
 
-# --- Stage 1: Build Caddy with WebDAV ---
-FROM golang:1.25-alpine AS caddy-builder
-
-RUN apk add --no-cache git
-RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-RUN xcaddy build --with github.com/mholt/caddy-webdav --output /caddy
-
-# --- Stage 2: Runtime ---
 FROM alpine:latest
 
-RUN apk add --no-cache bash sed
+# Basic dependencies
+RUN apk add --no-cache bash sed curl ca-certificates
 
 # App structure
 RUN mkdir -p /app/public/src /data
 
-# Copy custom Caddy binary from builder
-COPY --from=caddy-builder /caddy /app/caddy
+# Download pre-compiled Caddy with WebDAV plugin (Linux/amd64)
+# This uses the official Caddy Download API.
+RUN curl -o /app/caddy "https://caddyserver.com/api/download?os=linux&arch=amd64&p=github.com/mholt/caddy-webdav" \
+    && chmod +x /app/caddy
 
 # Copy entrypoint
 COPY deploy/entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh /app/caddy
+RUN chmod +x /app/entrypoint.sh
 
 # Copy Lithic UI files
 COPY index.html              /app/public/index.html
