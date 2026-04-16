@@ -7,6 +7,7 @@ title: $:/lithic/ui/RevertButton
     tooltip="Return to Launcher" 
     class=<<tv-config-toolbar-class>>
 >
+    <$action-sendmessage $message="tm-lithic-stop-lock"/>
     <$action-sendmessage $message="tm-clear-browser-storage"/>
     
     <$action-sendmessage $message="tm-browser-refresh"/>

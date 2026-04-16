@@ -689,7 +689,8 @@
   <script type="module">
     // Global State
     window.pendingImports = [];
-    window.lithicSessionId = Math.random().toString(36).substring(2, 15);
+    window.lithicSessionId = sessionStorage.getItem('lithicSessionId') || Math.random().toString(36).substring(2, 15);
+    sessionStorage.setItem('lithicSessionId', window.lithicSessionId);
     window.currentLockFileName = null;
     let isNewOrInjected = false;
 
@@ -872,6 +873,7 @@
 
     /* --- CORE ENGINE FETCHER --- */
     const REMOTE_CORE_URL = 'https://lithic.uk/src/lithic.html';
+    const WEBDAV_UTILS_JS = `/*\\ntitle: $:/lithic/startup/webdav-utils.js\\ntype: application/javascript\\nmodule-type: startup\\n\\nWebDAV Utilities for Lithic\\n*/\\n(function(){\\n"use strict";\\nexports.name = "webdav-utils";\\nexports.platforms = ["browser"];\\nexports.after = ["startup"];\\nexports.synchronous = true;\\nexports.startup = function() {\\n    if(typeof window === "undefined") return;\\n    $tw.rootWidget.addEventListener("tm-lithic-stop-lock", function(event) {\\n        if (window.webdavStopHeartbeat) window.webdavStopHeartbeat();\\n        return false;\\n    });\\n};\\n})();`;
 
     async function fetchCoreEngine(url = 'lithic.html') {
       const isLocalFile = window.location.protocol === 'file:';
@@ -941,10 +943,14 @@
         heartbeatInterval = null;
       }
       if (window.currentLockFileName) {
-        fetch(WEBDAV_BASE + encodeURIComponent(window.currentLockFileName) + '.lock', { method: 'DELETE' }).catch(() => {});
+        fetch(WEBDAV_BASE + encodeURIComponent(window.currentLockFileName) + '.lock', { 
+          method: 'DELETE',
+          keepalive: true
+        }).catch(() => {});
         window.currentLockFileName = null;
       }
     }
+    window.webdavStopHeartbeat = webdavStopHeartbeat;
 
     window.addEventListener('beforeunload', () => {
       if (window.currentLockFileName) {
@@ -1095,6 +1101,13 @@
             window.$tw = { customSaver: { save: createWebdavSaver(fileName) } };
             // Acquire lock
             webdavStartHeartbeat(fileName).catch(console.error);
+            // Inject cleanup helper
+            window.pendingImports.push({
+              title: "$:/lithic/startup/webdav-utils.js",
+              text: WEBDAV_UTILS_JS,
+              type: "application/javascript",
+              "module-type": "startup"
+            });
           }
 
           replacePageContents(coreHtml, true);
