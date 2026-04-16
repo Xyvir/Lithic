@@ -873,7 +873,27 @@
 
     /* --- CORE ENGINE FETCHER --- */
     const REMOTE_CORE_URL = 'https://lithic.uk/src/lithic.html';
-    const WEBDAV_UTILS_JS = `/*\\ntitle: $:/lithic/startup/webdav-utils.js\\ntype: application/javascript\\nmodule-type: startup\\n\\nWebDAV Utilities for Lithic\\n*/\\n(function(){\\n"use strict";\\nexports.name = "webdav-utils";\\nexports.platforms = ["browser"];\\nexports.after = ["startup"];\\nexports.synchronous = true;\\nexports.startup = function() {\\n    if(typeof window === "undefined") return;\\n    $tw.rootWidget.addEventListener("tm-lithic-stop-lock", function(event) {\\n        if (window.webdavStopHeartbeat) window.webdavStopHeartbeat();\\n        return false;\\n    });\\n};\\n})();`;
+    const WEBDAV_UTILS_JS = `/*
+title: $:/lithic/startup/webdav-utils.js
+type: application/javascript
+module-type: startup
+
+WebDAV Utilities for Lithic
+*/
+(function(){
+"use strict";
+exports.name = "webdav-utils";
+exports.platforms = ["browser"];
+exports.after = ["startup"];
+exports.synchronous = true;
+exports.startup = function() {
+    if(typeof window === "undefined") return;
+    $tw.rootWidget.addEventListener("tm-lithic-stop-lock", function(event) {
+        if (window.webdavStopHeartbeat) window.webdavStopHeartbeat();
+        return false;
+    });
+};
+})();`;
 
     async function fetchCoreEngine(url = 'lithic.html') {
       const isLocalFile = window.location.protocol === 'file:';
@@ -1084,7 +1104,10 @@
 
           if (tiddlers.length > 0) {
             const stripped = tiddlerArrayText.trim().replace(/^\[/, '').replace(/\]$/, '').trim();
-            coreHtml = coreHtml.replace(/\]\s*<\/script>/is, () => ',' + stripped + ']<\/script>');
+            coreHtml = coreHtml.replace(/(<script class="tiddlywiki-tiddler-store" type="application\/json">\[)([\s\S]*?)(\]\s*<\/script>)/is, (match, p1, p2, p3) => {
+              const hasItems = p2.trim().length > 0;
+              return p1 + p2 + (hasItems ? ',' : '') + stripped + p3;
+            });
           }
 
           // Populate search cache
@@ -1423,7 +1446,11 @@
 
           if (contents.includes('<script class="tiddlywiki-tiddler-store" type="application/json">')) {
             // Appending to an existing JSON store boot script.
-            contents = contents.replace(/\]\s*<\/script>/is, () => ',' + jsonBundle.substring(1) + '<\/script>');
+            const items = jsonBundle.substring(1, jsonBundle.length - 1);
+            contents = contents.replace(/(<script class="tiddlywiki-tiddler-store" type="application\/json">\[)([\s\S]*?)(\]\s*<\/script>)/is, (match, p1, p2, p3) => {
+              const hasItems = p2.trim().length > 0;
+              return p1 + p2 + (hasItems ? ',' : '') + items + p3;
+            });
           } else {
             // Injecting a new script block before </body>
             const scriptTag = `<script class="tiddlywiki-tiddler-store" type="application/json">${jsonBundle}<\/script>`;
