@@ -2,9 +2,6 @@
 title: $:/core/modules/widgets/text.js
 type: application/javascript
 module-type: widget
-
-An override of the core text widget that automatically linkifies the text, including Aliases.
-
 \*/
 
 "use strict";
