@@ -1969,6 +1969,15 @@ exports.startup = function() {
               try {
                 const body = await file.text();
                 const uploadName = file.name.endsWith('.lith') ? file.name : file.name.replace(/\.[^.]+$/, '') + '.lith';
+
+                // Collision check
+                const files = await webdavPropfind();
+                if (files.some(f => f.name.toLowerCase() === uploadName.toLowerCase())) {
+                  if (overlay) overlay.style.display = 'none';
+                  document.getElementById('name-collision-modal').style.display = 'flex';
+                  return;
+                }
+
                 await webdavUpload(uploadName, body);
                 await displayRemoteFiles();
               } catch (err) {
@@ -1987,12 +1996,23 @@ exports.startup = function() {
             const name = prompt('Enter a name for the new lith:');
             if (!name || !name.trim()) return;
             const fileName = name.trim().replace(/\.lith$/i, '') + '.lith';
-            const todayTitle = getTodayTitle();
-            const twDate = getTwTime();
-            const minimalLith = `created: ${twDate}\nmodified: ${twDate}\ntags: Journal\ntitle: ${todayTitle}\ntype: \n\n`;
+
             const overlay = document.getElementById('loading-overlay');
             if (overlay) overlay.style.display = 'flex';
+
             try {
+              // Collision check
+              const files = await webdavPropfind();
+              if (files.some(f => f.name.toLowerCase() === fileName.toLowerCase())) {
+                if (overlay) overlay.style.display = 'none';
+                document.getElementById('name-collision-modal').style.display = 'flex';
+                return;
+              }
+
+              const todayTitle = getTodayTitle();
+              const twDate = getTwTime();
+              const minimalLith = `created: ${twDate}\nmodified: ${twDate}\ntags: Journal\ntitle: ${todayTitle}\ntype: \n\n`;
+              
               await webdavUpload(fileName, minimalLith);
               await displayRemoteFiles();
             } catch (err) {
@@ -2407,6 +2427,17 @@ exports.startup = function() {
         <button id="collision-btn-readonly" style="background: var(--button-bg); border: 1px solid var(--border-color);">Open Read-Only</button>
         <button id="collision-btn-ignore" style="background: #e53935; color: white; border: none;">Ignore and Open (Overwrite Risk)</button>
         <button onclick="document.getElementById('collision-modal').style.display='none'; if(document.getElementById('loading-overlay'))document.getElementById('loading-overlay').style.display='none';" style="background: transparent; border: 1px solid var(--border-color); opacity: 0.7;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAME COLLISION MODAL -->
+  <div id="name-collision-modal" class="modal-overlay">
+    <div class="modal-content">
+      <h2 style="color:var(--accent-color)">Lith name already in use</h2>
+      <p>Please pick a unique name for your new lith.</p>
+      <div class="modal-buttons">
+        <button onclick="document.getElementById('name-collision-modal').style.display='none';" style="background: var(--button-bg); border: 1px solid var(--border-color);">Close</button>
       </div>
     </div>
   </div>
