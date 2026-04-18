@@ -2007,13 +2007,11 @@ exports.startup = function() {
         list.addEventListener('scroll', () => { if (window.updatePreviewsPosition) window.updatePreviewsPosition(); });
         sectionDiv.appendChild(list);
 
-        console.log("Lithic: Creating Clear Search Cache button for WebDAV mode.");
         const clearButton = document.createElement('button');
         clearButton.type = 'button';
         clearButton.onclick = clearRemoteSearchCache;
         clearButton.innerText = 'Clear Local Search Cache';
         clearButton.className = 'clear-btn';
-        clearButton.style.border = '1px solid #ff5555'; // Stand out for debug
         sectionDiv.appendChild(clearButton);
 
         elem.appendChild(sectionDiv);
