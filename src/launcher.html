@@ -803,6 +803,47 @@
       }
     }
 
+    /* --- SEARCH CACHE BACKUP SYSTEM --- */
+    async function saveSearchCache(fileName, text) {
+      const now = Date.now();
+      const latestKey = 'search_cache_' + fileName;
+      const bk1Key = 'search_cache_bk1_' + fileName;
+      const bk2Key = 'search_cache_bk2_' + fileName;
+
+      const currentCache = await idbKeyval.get(latestKey);
+      const bk1 = await idbKeyval.get(bk1Key);
+      const bk2 = await idbKeyval.get(bk2Key);
+
+      const TWO_HOURS = 2 * 60 * 60 * 1000;
+      const lastBackupTime = (currentCache && currentCache.backupTimestamp) ? currentCache.backupTimestamp : 0;
+      const backupsNotFull = !bk1 || !bk2;
+
+      if (currentCache && (backupsNotFull || (now - lastBackupTime >= TWO_HOURS))) {
+        // Rotate: bk1 -> bk2, latest -> bk1
+        if (bk1) await idbKeyval.set(bk2Key, bk1);
+        await idbKeyval.set(bk1Key, currentCache);
+
+        // Save new latest and reset backup timer
+        await idbKeyval.set(latestKey, {
+          text: text,
+          lastModified: new Date().toLocaleString(),
+          backupTimestamp: now
+        });
+        if (backupsNotFull) {
+          console.log(`[Lithic] Filling backup slots for ${fileName}...`);
+        } else {
+          console.log(`[Lithic] Search cache rotated for ${fileName}. Next backup in 2h.`);
+        }
+      } else {
+        // Update latest but keep previous backup timestamp
+        await idbKeyval.set(latestKey, {
+          text: text,
+          lastModified: new Date().toLocaleString(),
+          backupTimestamp: lastBackupTime
+        });
+      }
+    }
+
     /* --- LITHIC FORMAT HELPERS --- */
     function parseLithToJSON(lithText) {
       const blocks = lithText.split(/(?:\r?\n)*⁂⁂⁂(?:\r?\n)*/);
@@ -1059,7 +1100,7 @@ exports.startup = function() {
             "xyvir/lithic-python-codeblocks", "xyvir/lithic-pdf-to-whiteboard"
           ];
           const pluginExclusions = defaultPlugins.map(p => `-[[$:/plugins/${p}]]`).join(' ');
-          const baseFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] [is[shadow]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]]";
+          const baseFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] [is[shadow]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]] -[[$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/new-journal]]";
           const userTiddlerFilter = `${baseFilter} ${pluginExclusions}`;
           let jsonText = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
           const lithContent = serializeJsonToLith(jsonText);
@@ -1069,10 +1110,7 @@ exports.startup = function() {
             body: lithContent
           }).then(res => {
             if (res.ok || res.status === 201 || res.status === 204) {
-              idbKeyval.set('search_cache_' + fileName, {
-                text: jsonText,
-                lastModified: new Date().toLocaleString()
-              });
+              saveSearchCache(fileName, jsonText);
               callback(null);
             } else {
               callback('WebDAV save failed: ' + res.status);
@@ -1111,10 +1149,7 @@ exports.startup = function() {
           }
 
           // Populate search cache
-          await idbKeyval.set('search_cache_' + fileName, {
-            text: tiddlerArrayText,
-            lastModified: new Date().toLocaleString()
-          });
+          await saveSearchCache(fileName, tiddlerArrayText);
 
           if (readOnly) {
             // In Read-Only, we do NOT set $tw.customSaver and we disable autosaver
@@ -1194,7 +1229,7 @@ exports.startup = function() {
               "xyvir/lithic-python-codeblocks", "xyvir/lithic-pdf-to-whiteboard"
             ];
             const pluginExclusions = defaultPlugins.map(p => `-[[$:/plugins/${p}]]`).join(' ');
-            const baseFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] [is[shadow]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]]";
+            const baseFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] [is[shadow]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]] -[[$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/new-journal]]";
 
             const userTiddlerFilter = `${baseFilter} ${pluginExclusions}`;
             let jsonText = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
@@ -1216,10 +1251,7 @@ exports.startup = function() {
           .then(writable => {
             writable.close();
             if (isJsonMode) {
-              idbKeyval.set('search_cache_' + fileHandle.name, {
-                text: textToWrite,
-                lastModified: new Date().toLocaleString()
-              });
+              saveSearchCache(fileHandle.name, textToWrite);
             }
             callback(null);
           })
@@ -1554,9 +1586,14 @@ exports.startup = function() {
     function clearRecent() {
       twFileManager.getRecent().then(recentFiles => {
         if (recentFiles && recentFiles.length > 0) {
-          const promises = recentFiles.map(r => {
-            if (r.handle && r.handle.name) return idbKeyval.del('search_cache_' + r.handle.name);
-            return Promise.resolve();
+          const promises = [];
+          recentFiles.forEach(r => {
+            if (r.handle && r.handle.name) {
+              const name = r.handle.name;
+              promises.push(idbKeyval.del('search_cache_' + name));
+              promises.push(idbKeyval.del('search_cache_bk1_' + name));
+              promises.push(idbKeyval.del('search_cache_bk2_' + name));
+            }
           });
           return Promise.all(promises);
         }
@@ -1772,15 +1809,24 @@ exports.startup = function() {
                   if (cache && cache.text) {
                     cacheBtn.classList.add('has-cache');
                     cacheBtn.title = `Browser Storage Search Cache\n(Last updated: ${cache.lastModified})\nClick to download for disaster recovery.`;
-                    cacheBtn.onclick = (e) => {
+                    cacheBtn.onclick = async (e) => {
                       e.stopPropagation();
-                      const blob = new Blob([cache.text], { type: 'application/x-lith' });
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = recent.handle.name.replace(/\.lith$/, '') + '_recovered.lith';
-                      a.click();
-                      URL.revokeObjectURL(url);
+                      const name = recent.handle.name;
+                      const keys = ['search_cache_' + name, 'search_cache_bk1_' + name, 'search_cache_bk2_' + name];
+                      for (let i = 0; i < keys.length; i++) {
+                        const cache = await idbKeyval.get(keys[i]);
+                        if (cache && cache.text) {
+                          const blob = new Blob([cache.text], { type: 'application/x-lith' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          const suffix = i === 0 ? '_recovered' : `_bk${i}`;
+                          a.download = name.replace(/\.lith$/, '') + `${suffix}.lith`;
+                          a.click();
+                          URL.revokeObjectURL(url);
+                          if (i < keys.length - 1) await new Promise(r => setTimeout(r, 200));
+                        }
+                      }
                     };
                   }
                 });
@@ -1793,7 +1839,10 @@ exports.startup = function() {
                 removeBtn.onclick = async (e) => {
                   e.stopPropagation();
                   await twFileManager.removeRecent(recent.handle);
-                  await idbKeyval.del('search_cache_' + recent.handle.name);
+                  const name = recent.handle.name;
+                  await idbKeyval.del('search_cache_' + name);
+                  await idbKeyval.del('search_cache_bk1_' + name);
+                  await idbKeyval.del('search_cache_bk2_' + name);
                   displayRecentFiles();
                 };
 
@@ -1872,15 +1921,24 @@ exports.startup = function() {
             if (cache && cache.text) {
               cacheBtn.classList.add('has-cache');
               cacheBtn.title = `Search Cache\n(Last updated: ${cache.lastModified})\nClick to download.`;
-              cacheBtn.onclick = (e) => {
+              cacheBtn.onclick = async (e) => {
                 e.stopPropagation();
-                const blob = new Blob([cache.text], { type: 'application/x-lith' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = file.name.replace(/\.lith$/, '') + '_recovered.lith';
-                a.click();
-                URL.revokeObjectURL(url);
+                const name = file.name;
+                const keys = ['search_cache_' + name, 'search_cache_bk1_' + name, 'search_cache_bk2_' + name];
+                for (let i = 0; i < keys.length; i++) {
+                  const cache = await idbKeyval.get(keys[i]);
+                  if (cache && cache.text) {
+                    const blob = new Blob([cache.text], { type: 'application/x-lith' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    const suffix = i === 0 ? '_recovered' : `_bk${i}`;
+                    a.download = name.replace(/\.lith$/, '') + `${suffix}.lith`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    if (i < keys.length - 1) await new Promise(r => setTimeout(r, 200));
+                  }
+                }
               };
             }
           });
@@ -1895,7 +1953,10 @@ exports.startup = function() {
             if (!confirm('Are you sure? This will permanently delete the file from remote storage.')) return;
             try {
               await webdavDelete(file.name);
-              await idbKeyval.del('search_cache_' + file.name);
+              const name = file.name;
+              await idbKeyval.del('search_cache_' + name);
+              await idbKeyval.del('search_cache_bk1_' + name);
+              await idbKeyval.del('search_cache_bk2_' + name);
               li.remove();
             } catch (err) {
               console.error('Delete failed:', err);

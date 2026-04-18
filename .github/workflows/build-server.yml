@@ -58,6 +58,21 @@ jobs:
         run: |
           cp build/wiki-artifact/lith.html src/lithic.html || echo "Skipped: Artifact not found"
 
+      # --- Bump PWA Version ---
+      - name: Bump PWA Version
+        run: |
+          VERSION="${{ inputs.tag_name }}"
+          if [ -z "$VERSION" ]; then
+            VERSION="dev-$(date +'%Y.%m.%d-%H%M')"
+          fi
+          echo "Bumping version to $VERSION"
+          
+          # Update manifest.json
+          sed -i "s/\"version\": \"0.0.0\"/\"version\": \"$VERSION\"/" manifest.json
+          
+          # Update offline-service-worker.js
+          sed -i "s/const VERSION = '0.0.0'/const VERSION = '$VERSION'/" offline-service-worker.js
+
       # --- Assemble public directory ---
       - name: Assemble public directory
         run: |
