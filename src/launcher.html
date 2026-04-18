@@ -524,7 +524,7 @@
     /* --- WEBDAV MODE --- */
 
     body.webdav-mode .clear-btn {
-      display: none !important;
+      /* display: none !important; */
     }
 
     .mode-pill {
@@ -1605,6 +1605,25 @@ exports.startup = function() {
         if (elem) elem.innerHTML = "";
       });
     }
+    window.clearRemoteSearchCache = async function() {
+      if (!confirm('Are you sure? This will clear all local search caches and backups for your remote files. The remote files themselves will NOT be affected.')) return;
+
+      try {
+        const files = await webdavPropfind();
+        const promises = [];
+        files.forEach(f => {
+          const name = f.name;
+          promises.push(idbKeyval.del('search_cache_' + name));
+          promises.push(idbKeyval.del('search_cache_bk1_' + name));
+          promises.push(idbKeyval.del('search_cache_bk2_' + name));
+        });
+        await Promise.all(promises);
+        displayRemoteFiles(); // Refresh to update icons
+      } catch (err) {
+        console.error('Failed to clear search cache:', err);
+      }
+    };
+
 
     const mobilePreviewQuery = window.matchMedia('(max-width: 950px)');
 
@@ -1985,6 +2004,14 @@ exports.startup = function() {
 
         list.addEventListener('scroll', () => { if (window.updatePreviewsPosition) window.updatePreviewsPosition(); });
         sectionDiv.appendChild(list);
+
+        const clearButton = document.createElement('button');
+        clearButton.type = 'button';
+        clearButton.onclick = clearRemoteSearchCache;
+        clearButton.innerText = 'Clear Local Search Cache';
+        clearButton.className = 'clear-btn';
+        sectionDiv.appendChild(clearButton);
+
         elem.appendChild(sectionDiv);
       } catch (err) {
         console.error('Failed to list remote files:', err);
