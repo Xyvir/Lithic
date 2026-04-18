@@ -1100,7 +1100,7 @@ exports.startup = function() {
             "xyvir/lithic-python-codeblocks", "xyvir/lithic-pdf-to-whiteboard"
           ];
           const pluginExclusions = defaultPlugins.map(p => `-[[$:/plugins/${p}]]`).join(' ');
-          const baseFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] [is[shadow]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]] -[[$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/new-journal]]";
+          const baseFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] [is[shadow]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]] -[[$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/new-journal]] -[[$:/lithic/startup/webdav-utils.js]]";
           const userTiddlerFilter = `${baseFilter} ${pluginExclusions}`;
           let jsonText = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
           const lithContent = serializeJsonToLith(jsonText);
@@ -1229,7 +1229,7 @@ exports.startup = function() {
               "xyvir/lithic-python-codeblocks", "xyvir/lithic-pdf-to-whiteboard"
             ];
             const pluginExclusions = defaultPlugins.map(p => `-[[$:/plugins/${p}]]`).join(' ');
-            const baseFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] [is[shadow]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]] -[[$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/new-journal]]";
+            const baseFilter = "[all[tiddlers]!is[system]] [all[tiddlers]is[system]!prefix[$:/core]!prefix[$:/themes]!prefix[$:/temp]!prefix[$:/state]!prefix[$:/HistoryList]] [is[shadow]] -[prefix[$:/boot/]] -[[$:/isEncrypted]] -[[$:/library/sjcl.js]] -[[$:/status/RequireReloadDueToPluginChange]] -[[$:/StoryList]] -[[$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/new-journal]] -[[$:/lithic/startup/webdav-utils.js]]";
 
             const userTiddlerFilter = `${baseFilter} ${pluginExclusions}`;
             let jsonText = window.$tw.wiki.getTiddlersAsJson(userTiddlerFilter);
@@ -1251,7 +1251,7 @@ exports.startup = function() {
           .then(writable => {
             writable.close();
             if (isJsonMode) {
-              saveSearchCache(fileHandle.name, textToWrite);
+              saveSearchCache(fileHandle.name, jsonText);
             }
             callback(null);
           })
@@ -1816,7 +1816,11 @@ exports.startup = function() {
                       for (let i = 0; i < keys.length; i++) {
                         const cache = await idbKeyval.get(keys[i]);
                         if (cache && cache.text) {
-                          const blob = new Blob([cache.text], { type: 'application/x-lith' });
+                          let textToDownload = cache.text;
+                          if (textToDownload && textToDownload.trim().startsWith('[')) {
+                            textToDownload = serializeJsonToLith(textToDownload);
+                          }
+                          const blob = new Blob([textToDownload], { type: 'application/x-lith' });
                           const url = URL.createObjectURL(blob);
                           const a = document.createElement('a');
                           a.href = url;
@@ -1928,7 +1932,12 @@ exports.startup = function() {
                 for (let i = 0; i < keys.length; i++) {
                   const cache = await idbKeyval.get(keys[i]);
                   if (cache && cache.text) {
-                    const blob = new Blob([cache.text], { type: 'application/x-lith' });
+                    let textToDownload = cache.text;
+                    if (textToDownload && textToDownload.trim().startsWith('[')) {
+                      textToDownload = serializeJsonToLith(textToDownload);
+                    }
+                    const blob = new Blob([textToDownload], { type: 'application/x-lith' });
+
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
