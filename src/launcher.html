@@ -2333,7 +2333,7 @@ exports.startup = function() {
         };
 
         function setGithubState(state) {
-          const states = ['disconnected', 'connecting', 'selecting', 'connected'];
+          const states = ['disconnected', 'installing', 'connecting', 'selecting', 'connected'];
           states.forEach(s => {
             const el = document.getElementById(`github-state-${s}`);
             if (el) el.style.display = (s === state) ? 'block' : 'none';
@@ -2351,6 +2351,39 @@ exports.startup = function() {
           tempToken = null;
           isAuthFlowActive = true;
 
+          setGithubState('installing');
+          resetInstallStep();
+        };
+
+        function resetInstallStep() {
+          const btn = document.getElementById('btn-github-proceed-to-auth');
+          btn.disabled = true;
+          btn.textContent = 'Wait for Installation...';
+          document.getElementById('github-install-check').style.display = 'none';
+        }
+
+        window.onGithubInstallClick = () => {
+          const btn = document.getElementById('btn-github-proceed-to-auth');
+          let count = 15;
+          const timer = setInterval(() => {
+            count--;
+            if (count > 0) {
+              btn.textContent = `Wait for GitHub (${count}s)...`;
+            } else {
+              clearInterval(timer);
+              unlockAuthStep();
+            }
+          }, 1000);
+        };
+
+        window.unlockAuthStep = () => {
+          const btn = document.getElementById('btn-github-proceed-to-auth');
+          btn.disabled = false;
+          btn.textContent = 'Generate Authorization Code';
+          document.getElementById('github-install-check').style.display = 'inline-block';
+        };
+
+        window.generateDeviceCode = async () => {
           setGithubState('connecting');
           document.getElementById('btn-github-connect').disabled = true;
 
@@ -2977,6 +3010,24 @@ exports.startup = function() {
         <div class="modal-buttons">
           <button id="btn-github-connect" onclick="initiateGithubAuth()">Connect to GitHub</button>
           <button onclick="document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); opacity:0.7;">Cancel</button>
+        </div>
+      </div>
+
+      <div id="github-state-installing" style="display:none;">
+        <p style="font-size:0.95rem; margin-bottom:15px; line-height:1.4;">
+          Step 1: Install the Lithic Backup app on your GitHub account to enable access.
+        </p>
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); padding:15px; border-radius:8px; text-align:center;">
+          <a href="https://github.com/apps/lithic-backup" target="_blank" onclick="onGithubInstallClick()" 
+             style="display:inline-block; background:var(--accent-color); color:#000; padding:10px 20px; border-radius:6px; font-weight:600; text-decoration:none;">
+             Install Lithic Backup
+          </a>
+          <div id="github-install-check" style="display:none; color:#4caf50; margin-left:10px; font-size:1.2rem;">✓</div>
+        </div>
+        <div class="modal-buttons" style="margin-top:20px; flex-direction:column; gap:10px;">
+          <button id="btn-github-proceed-to-auth" onclick="generateDeviceCode()" disabled style="width:100%;">Wait for Installation...</button>
+          <button onclick="unlockAuthStep()" style="background:transparent; border:none; font-size:0.75rem; opacity:0.5; cursor:pointer; text-decoration:underline;">I've already installed the app</button>
+          <button onclick="resetAuthUI(); document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); width:100%;">Cancel</button>
         </div>
       </div>
 
