@@ -82,9 +82,8 @@ elif [[ "$REQUEST_URI" == */setup* ]] && [[ "$METHOD" == "POST" ]]; then
         exit 0
     fi
 
-    # Save token & setup remote
+    # Setup remote (Delay token write to prevent watcher race condition)
     mkdir -p "${DATA_DIR}/.git"
-    echo "$TOKEN" > "${DATA_DIR}/.git/backup_token"
     git -C "${DATA_DIR}" remote remove origin >/dev/null 2>&1
     git -C "${DATA_DIR}" remote add origin "https://oauth2:${TOKEN}@github.com/${REPO_NAME}.git"
 
@@ -97,20 +96,30 @@ elif [[ "$REQUEST_URI" == */setup* ]] && [[ "$METHOD" == "POST" ]]; then
         git -C "${DATA_DIR}" commit -m "Initial Backup: $(date)" >/dev/null 2>&1
     fi
 
-    # 1. Pull from remote (allow to fail if repo is empty/new)
-    # This brings in any existing files (including old junk)
-    git -C "${DATA_DIR}" pull origin main --allow-unrelated-histories --strategy-option=ours > /tmp/git_sync.log 2>&1
+    # 1. Fetch from remote (safe, no merges yet)
+    git -C "${DATA_DIR}" fetch origin main > /tmp/git_sync.log 2>&1 || true
     
-    # 2. DEFINITIVE PURGE (Run AFTER pull to catch both local and remote junk)
+    # 2. Graceful Rescue: Download any liths we don't have locally
+    if git -C "${DATA_DIR}" rev-parse origin/main >/dev/null 2>&1; then
+        for file in $(git -C "${DATA_DIR}" ls-tree -r --name-only origin/main | grep -E '\.(lith|json)$'); do
+            if [ ! -f "${DATA_DIR}/$file" ]; then
+                git -C "${DATA_DIR}" checkout origin/main -- "$file" >> /tmp/git_sync.log 2>&1
+            fi
+        done
+    fi
+    
+    # 3. DEFINITIVE PURGE
     git -C "${DATA_DIR}" add .gitignore >/dev/null 2>&1
     git -C "${DATA_DIR}" rm -r --cached . >/dev/null 2>&1
     git -C "${DATA_DIR}" add . >/dev/null 2>&1
-    git -C "${DATA_DIR}" commit -m "System: Finalizing .gitignore enforcement" >/dev/null 2>&1
+    git -C "${DATA_DIR}" commit -m "System: Finalizing sync and .gitignore enforcement" >/dev/null 2>&1
 
-    # 3. Push to establish tracking and update remote with clean state
-    git -C "${DATA_DIR}" push -u origin main >> /tmp/git_sync.log 2>&1
+    # 4. Force Push to establish tracking and update remote with unified clean state
+    git -C "${DATA_DIR}" push -f -u origin main >> /tmp/git_sync.log 2>&1
     
     if [ $? -eq 0 ]; then
+        # Setup successful: Enable Watcher
+        echo "$TOKEN" > "${DATA_DIR}/.git/backup_token"
         echo "last_sync=$(date +%s)" > "${DATA_DIR}/.git/backup_status"
         echo "{\"status\":\"success\",\"repo\":\"$REPO_NAME\"}"
     else
