@@ -88,13 +88,16 @@ elif [[ "$REQUEST_URI" == */setup* ]] && [[ "$METHOD" == "POST" ]]; then
     git -C "${DATA_DIR}" remote remove origin >/dev/null 2>&1
     git -C "${DATA_DIR}" remote add origin "https://oauth2:${TOKEN}@github.com/${REPO_NAME}.git"
 
-    # Clean up any accidentally tracked lock files (now ignored via .gitignore)
-    git -C "${DATA_DIR}" rm --cached *.lock >/dev/null 2>&1
-
-    # Ensure local branch is named 'main' (for consistency with GitHub)
+    # Ensure local branch is named 'main'
     git -C "${DATA_DIR}" branch -M main > /dev/null 2>&1
 
-    # Ensure there is something to push (Git won't push an empty history)
+    # Force re-evaluate .gitignore (cleans up any already-tracked lock files)
+    git -C "${DATA_DIR}" add .gitignore >/dev/null 2>&1
+    git -C "${DATA_DIR}" rm -r --cached . >/dev/null 2>&1
+    git -C "${DATA_DIR}" add . >/dev/null 2>&1
+    git -C "${DATA_DIR}" commit -m "System: Enforcing .gitignore" >/dev/null 2>&1
+
+    # Ensure there is something to push (in case it's a totally empty dir)
     if ! git -C "${DATA_DIR}" rev-parse HEAD >/dev/null 2>&1; then
         git -C "${DATA_DIR}" add .
         git -C "${DATA_DIR}" commit -m "Initial Backup: $(date)" >/dev/null 2>&1

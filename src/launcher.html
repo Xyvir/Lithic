@@ -752,7 +752,7 @@
       position: relative;
     }
 
-    .search-input {
+    .search-wrapper .search-input-gh {
       width: 100%;
       background: var(--button-bg);
       color: var(--text-color);
@@ -764,7 +764,7 @@
       transition: border-color 0.2s;
     }
 
-    .search-input:focus {
+    .search-wrapper .search-input-gh:focus {
       border-color: var(--accent-color);
     }
 
@@ -3037,7 +3037,7 @@ exports.startup = function() {
         </div>
         <div class="modal-buttons" style="margin-top:20px; flex-direction:column; gap:10px;">
           <button id="btn-github-proceed-to-auth" onclick="generateDeviceCode()" disabled style="width:100%;">Wait for Installation...</button>
-          <button onclick="unlockAuthStep()" style="background:transparent; border:none; font-size:0.75rem; opacity:0.5; cursor:pointer; text-decoration:underline;">I've already installed the app</button>
+          <button onclick="generateDeviceCode()" style="background:transparent; border:none; font-size:0.75rem; opacity:0.5; cursor:pointer; text-decoration:underline;">I've already installed the app</button>
           <button onclick="resetAuthUI(); document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); width:100%;">Cancel</button>
         </div>
       </div>
@@ -3061,7 +3061,7 @@ exports.startup = function() {
         </div>
         <div class="field">
           <div class="search-wrapper">
-            <input type="text" id="github-repo-search" class="search-input" placeholder="Search your repositories..." autocomplete="off">
+            <input type="text" id="github-repo-search" class="search-input-gh" placeholder="Search your repositories..." autocomplete="off">
             <div id="github-search-results" class="search-results"></div>
           </div>
         </div>

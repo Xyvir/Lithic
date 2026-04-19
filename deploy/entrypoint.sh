@@ -44,10 +44,19 @@ if [ ! -d "${DATA_DIR}/.git" ]; then
   git -C "${DATA_DIR}" init
   git -C "${DATA_DIR}" config user.email "backup@lithic.uk"
   git -C "${DATA_DIR}" config user.name "Lithic Backup"
-  # Initial commit if files exist
-  if [ -n "$(ls -A "${DATA_DIR}" | grep -v .git)" ]; then
-    git -C "${DATA_DIR}" add .
-    git -C "${DATA_DIR}" commit -m "Initial Backup: $(date)" || true
+  git -C "${DATA_DIR}" branch -M main > /dev/null 2>&1
+
+  # Ensure .gitignore is the VERY first thing committed to set the rules
+  if [ ! -f "${DATA_DIR}/.gitignore" ]; then
+    echo "*.lock" > "${DATA_DIR}/.gitignore"
+  fi
+  git -C "${DATA_DIR}" add .gitignore >/dev/null 2>&1
+  git -C "${DATA_DIR}" commit -m "System: Initialize .gitignore" >/dev/null 2>&1
+
+  # Initial commit if files exist (will now strictly follow .gitignore)
+  if ! git -C "${DATA_DIR}" rev-parse HEAD >/dev/null 2>&1; then
+      git -C "${DATA_DIR}" add .
+      git -C "${DATA_DIR}" commit -m "Initial Backup: $(date)" >/dev/null 2>&1
   fi
 fi
 
