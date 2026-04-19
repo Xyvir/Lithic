@@ -2235,6 +2235,7 @@ exports.startup = function() {
         const clearButton = document.createElement('button');
         clearButton.type = 'button';
         clearButton.onclick = window.clearAndReloadRemoteSearchCache;
+        clearButton.innerText = 'Reset local search cache';
         clearButton.className = 'clear-btn';
         sectionDiv.appendChild(clearButton);
         elem.appendChild(sectionDiv);
