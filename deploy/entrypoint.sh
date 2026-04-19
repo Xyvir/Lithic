@@ -98,9 +98,9 @@ cat > "${CADDYFILE}" <<EOF
 
     # 3. WebDAV Sync
     handle /sync/* {
-        uri strip_prefix /sync
         webdav {
             root ${DATA_DIR}
+            prefix /sync
         }
     }
 
