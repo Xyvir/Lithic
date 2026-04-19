@@ -2234,11 +2234,9 @@ exports.startup = function() {
 
         const clearButton = document.createElement('button');
         clearButton.type = 'button';
-        clearButton.onclick = clearRemoteSearchCache;
-        clearButton.innerText = 'Clear Local Search Cache';
+        clearButton.onclick = window.clearAndReloadRemoteSearchCache;
         clearButton.className = 'clear-btn';
         sectionDiv.appendChild(clearButton);
-
         elem.appendChild(sectionDiv);
       } catch (err) {
         console.error('Failed to list remote files:', err);
@@ -2246,9 +2244,66 @@ exports.startup = function() {
       }
     }
 
+    /* --- GLOBAL UI HELPERS --- */
+    function showLoading(text) {
+      const overlay = document.getElementById('github-loading-overlay');
+      if (overlay) {
+        document.getElementById('github-loading-text').textContent = text || 'Processing...';
+        overlay.style.display = 'flex';
+      }
+    }
+
+    function hideLoading() {
+      const overlay = document.getElementById('github-loading-overlay');
+      if (overlay) overlay.style.display = 'none';
+    }
+
+    window.clearAndReloadRemoteSearchCache = async function() {
+      if (!confirm('This will crawl all remote files and index them for global search. Depending on your server speed, this may take a moment. Proceed?')) return;
+      
+      showLoading('Crawling remote liths...');
+      try {
+        const files = await webdavPropfind();
+        if (files.length === 0) {
+          hideLoading();
+          return;
+        }
+
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          showLoading(`Indexing [${i+1}/${files.length}]: ${file.name}...`);
+          
+          try {
+            const res = await fetch(WEBDAV_BASE + encodeURIComponent(file.name));
+            if (res.ok) {
+              const contents = await res.text();
+              let parsedData;
+              if (file.name.toLowerCase().endsWith('.lith')) {
+                parsedData = parseLithToJSON(contents);
+              } else if (file.name.toLowerCase().endsWith('.json')) {
+                parsedData = JSON.parse(contents);
+              }
+              
+              if (Array.isArray(parsedData)) {
+                await updateLocalSearchCache(file.name, parsedData);
+              }
+            }
+          } catch (e) {
+            console.warn(`Failed to index ${file.name}:`, e);
+          }
+        }
+        
+        hideLoading();
+        displayRemoteFiles();
+      } catch (err) {
+        console.error('Crawl failed:', err);
+        hideLoading();
+        alert('Crawl failed: ' + err.message);
+      }
+    };
+
     // --- INITIALIZATION INTERCEPT ---
     window.onload = async () => {
-      purgeOldestCachesIfNeeded(); // fire-and-forget, non-blocking
 
       const debugLog = document.getElementById('debug-log');
       const log = (msg) => {
@@ -2509,16 +2564,6 @@ exports.startup = function() {
         let allRepos = [];
         let highlightIndex = -1;
         let pendingRepoName = "";
-
-        function showLoading(text) {
-          const overlay = document.getElementById('github-loading-overlay');
-          document.getElementById('github-loading-text').textContent = text || 'Processing...';
-          overlay.style.display = 'flex';
-        }
-
-        function hideLoading() {
-          document.getElementById('github-loading-overlay').style.display = 'none';
-        }
 
         function generateRepoName() {
           const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Avoid ambiguous chars
