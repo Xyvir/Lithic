@@ -58,8 +58,13 @@ elif [[ "$REQUEST_URI" == */list-repos* ]]; then
 elif [[ "$REQUEST_URI" == */create-repo* ]] && [[ "$METHOD" == "POST" ]]; then
     read -r PAYLOAD
     TOKEN=$(extract_json_val "token" "$PAYLOAD")
-    RAND_ID=$(head /dev/urandom | tr -dc A-Z0-9 | head -c 4)
-    REPO_NAME="lithic-backup-$RAND_ID"
+    REPO_NAME=$(extract_json_val "name" "$PAYLOAD")
+    
+    # Generate a random ID only if no name was provided
+    if [ -z "$REPO_NAME" ] || [ "$REPO_NAME" == "null" ]; then
+        RAND_ID=$(head /dev/urandom | tr -dc A-Z0-9 | head -c 4)
+        REPO_NAME="lithic-backup-$RAND_ID"
+    fi
     
     RESPONSE=$(curl -s -X POST "https://api.github.com/user/repos" \
         -H "Authorization: Bearer $TOKEN" \

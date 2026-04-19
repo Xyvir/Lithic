@@ -2436,9 +2436,20 @@ exports.startup = function() {
 
         let allRepos = [];
         let highlightIndex = -1;
+        let pendingRepoName = "";
+
+        function generateRepoName() {
+          const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Avoid ambiguous chars
+          let id = '';
+          for (let i = 0; i < 4; i++) id += chars.charAt(Math.floor(Math.random() * chars.length));
+          pendingRepoName = `lithic-backup-${id.toLowerCase()}`;
+          const btn = document.getElementById('btn-github-create-new');
+          if (btn) btn.textContent = `+ Create ${pendingRepoName} and sync`;
+        }
 
         async function showRepoSelection() {
           setGithubState('selecting');
+          generateRepoName();
           const searchInput = document.getElementById('github-repo-search');
           const resultsDiv = document.getElementById('github-search-results');
           searchInput.value = '';
@@ -2526,11 +2537,11 @@ exports.startup = function() {
         });
 
         window.createGithubRepo = async () => {
-          if (!tempToken) return;
+          if (!tempToken || !pendingRepoName) return;
           try {
             const res = await fetch('/api/github/create-repo', {
               method: 'POST',
-              body: JSON.stringify({ token: tempToken })
+              body: JSON.stringify({ token: tempToken, name: pendingRepoName })
             });
             const data = await res.json();
             if (data.full_name) {
@@ -3042,19 +3053,19 @@ exports.startup = function() {
       </div>
 
       <div id="github-state-selecting" style="display:none;">
+        <button id="btn-github-create-new" onclick="createGithubRepo()" style="width:100%; background:rgba(138, 180, 248, 0.1); border:1px dashed var(--accent-color); color:var(--accent-color); padding:12px; border-radius:6px; cursor:pointer; font-weight:600;">
+          + Create lithic-backup-xxxx and sync
+        </button>
+        <div style="text-align:center; margin:15px 0;">
+          <span style="opacity:0.3; font-size:0.75rem;">— OR CHOOSE EXISTING —</span>
+        </div>
         <div class="field">
-          <label>Choose Backup Repository</label>
           <div class="search-wrapper">
             <input type="text" id="github-repo-search" class="search-input" placeholder="Search your repositories..." autocomplete="off">
             <div id="github-search-results" class="search-results"></div>
           </div>
         </div>
-        <div style="text-align:center; margin:15px 0;">
-          <span style="opacity:0.5; font-size:0.8rem;">— OR —</span>
-        </div>
-        <button onclick="createGithubRepo()" style="width:100%; background:rgba(138, 180, 248, 0.1); border:1px dashed var(--accent-color); color:var(--accent-color); padding:10px; border-radius:6px; cursor:pointer;">
-          + Create New Repository
-        </button>
+
         <div class="modal-buttons" style="margin-top:20px;">
           <button onclick="finalizeGithubSetup()" id="btn-github-finalize">Start Sync</button>
           <button onclick="resetAuthUI(); document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); font-size:0.8rem;">Cancel</button>
