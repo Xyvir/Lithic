@@ -91,23 +91,23 @@ elif [[ "$REQUEST_URI" == */setup* ]] && [[ "$METHOD" == "POST" ]]; then
     # Ensure local branch is named 'main'
     git -C "${DATA_DIR}" branch -M main > /dev/null 2>&1
 
-    # DEFINITIVE GITIGNORE PURGE (Fixes tracked .lock files once and for all)
-    git -C "${DATA_DIR}" add .gitignore >/dev/null 2>&1
-    git -C "${DATA_DIR}" rm -r --cached . >/dev/null 2>&1
-    git -C "${DATA_DIR}" add . >/dev/null 2>&1
-    git -C "${DATA_DIR}" commit -m "System: Enforcing .gitignore" >/dev/null 2>&1
-
-    # Ensure there is something to push (in case it's a totally empty dir)
+    # Ensure there is an initial commit if local is empty (required for pull/push)
     if ! git -C "${DATA_DIR}" rev-parse HEAD >/dev/null 2>&1; then
         git -C "${DATA_DIR}" add .
         git -C "${DATA_DIR}" commit -m "Initial Backup: $(date)" >/dev/null 2>&1
     fi
 
-    # Polite Merge logic (captured to log)
     # 1. Pull from remote (allow to fail if repo is empty/new)
+    # This brings in any existing files (including old junk)
     git -C "${DATA_DIR}" pull origin main --allow-unrelated-histories --strategy-option=ours > /tmp/git_sync.log 2>&1
     
-    # 2. Push to establish tracking (establishing the 'main' ref on GitHub)
+    # 2. DEFINITIVE PURGE (Run AFTER pull to catch both local and remote junk)
+    git -C "${DATA_DIR}" add .gitignore >/dev/null 2>&1
+    git -C "${DATA_DIR}" rm -r --cached . >/dev/null 2>&1
+    git -C "${DATA_DIR}" add . >/dev/null 2>&1
+    git -C "${DATA_DIR}" commit -m "System: Finalizing .gitignore enforcement" >/dev/null 2>&1
+
+    # 3. Push to establish tracking and update remote with clean state
     git -C "${DATA_DIR}" push -u origin main >> /tmp/git_sync.log 2>&1
     
     if [ $? -eq 0 ]; then
