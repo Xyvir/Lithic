@@ -715,8 +715,8 @@
     }
 
     #github-backup-btn.syncing {
-      color: #ffc107;
-      border-color: #ffc107;
+      color: #bb86fc;
+      border-color: #bb86fc;
       animation: pulse 1.5s infinite;
     }
 
@@ -2248,10 +2248,13 @@ exports.startup = function() {
               
               if (data.last_sync > 0) {
                 const date = new Date(data.last_sync * 1000);
-                document.getElementById('github-last-sync').textContent = date.toLocaleString();
+                const timeStr = date.toLocaleString();
+                document.getElementById('github-last-sync').textContent = timeStr;
+                btn.title = `GitHub Backup: Last synced at ${timeStr}`;
                 
+                // If synced in the last 5 seconds, show active state
                 const age = (Date.now() / 1000) - data.last_sync;
-                if (age < 60) {
+                if (age < 5) {
                   btn.classList.add('syncing');
                 } else {
                   btn.classList.remove('syncing');
