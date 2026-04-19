@@ -2235,15 +2235,13 @@ exports.startup = function() {
             if (data.connected) {
               btn.classList.add('active');
               btn.classList.remove('error');
-              document.getElementById('github-connected-state').style.display = 'block';
-              document.getElementById('github-disconnected-state').style.display = 'none';
+              setGithubState('connected');
               document.getElementById('github-active-repo').textContent = data.repo;
               
               if (data.last_sync > 0) {
                 const date = new Date(data.last_sync * 1000);
                 document.getElementById('github-last-sync').textContent = date.toLocaleString();
                 
-                // If synced in the last 60 seconds, show active state
                 const age = (Date.now() / 1000) - data.last_sync;
                 if (age < 60) {
                   btn.classList.add('syncing');
@@ -2253,8 +2251,7 @@ exports.startup = function() {
               }
             } else {
               btn.classList.remove('active', 'syncing');
-              document.getElementById('github-connected-state').style.display = 'none';
-              document.getElementById('github-disconnected-state').style.display = 'block';
+              setGithubState('disconnected');
             }
           } catch (err) {
             console.error('Failed to get GitHub status:', err);
@@ -2263,67 +2260,62 @@ exports.startup = function() {
           }
         };
 
+        function setGithubState(state) {
+          const states = ['disconnected', 'connecting', 'selecting', 'connected'];
+          states.forEach(s => {
+            const el = document.getElementById(`github-state-${s}`);
+            if (el) el.style.display = (s === state) ? 'block' : 'none';
+          });
+        }
+
         window.openGithubBackupModal = () => {
           document.getElementById('github-backup-modal').style.display = 'flex';
           window.updateGithubStatus();
         };
 
+        let tempToken = null;
+
         window.initiateGithubAuth = async () => {
-          const repoInput = document.getElementById('github-repo-input');
-          const repo = repoInput.value.trim();
-
-          if (!repo || !repo.includes('/')) {
-            alert('Please enter a valid repository name (e.g., username/repo)');
-            return;
-          }
-
-          document.getElementById('github-device-flow').style.display = 'block';
+          setGithubState('connecting');
           document.getElementById('btn-github-connect').disabled = true;
-          document.getElementById('btn-github-connect').textContent = 'Waiting for GitHub...';
 
           try {
-            const url = `/api/github/device-code`;
-            const res = await fetch(url);
+            const res = await fetch('/api/github/device-code');
             const data = await res.json();
             
             if (data.user_code) {
               document.getElementById('github-user-code').textContent = data.user_code;
-              pollGithubToken(data.device_code, (data.interval || 5) * 1000, repo);
+              pollGithubToken(data.device_code, (data.interval || 5) * 1000);
             } else if (data.error) {
-              alert(`Error: ${data.error_description || data.error}\n\nCheck your backend configurations.`);
-              resetAuthUI();
-            } else {
-              alert('Received an unexpected response from the server.');
+              alert(`Error: ${data.error_description || data.error}`);
               resetAuthUI();
             }
           } catch (err) {
-            alert('Failed to initiate GitHub auth. Check container logs or console.');
-            console.error(err);
+            alert('Failed to initiate GitHub auth.');
             resetAuthUI();
           }
         };
 
         function resetAuthUI() {
-          document.getElementById('github-device-flow').style.display = 'none';
+          setGithubState('disconnected');
           document.getElementById('btn-github-connect').disabled = false;
-          document.getElementById('btn-github-connect').textContent = 'Connect to GitHub';
+          tempToken = null;
         }
 
-        async function pollGithubToken(deviceCode, interval, repo) {
+        async function pollGithubToken(deviceCode, interval) {
           const poll = async () => {
             try {
-              const url = `/api/github/poll?device_code=${deviceCode}`;
-              const res = await fetch(url);
+              const res = await fetch(`/api/github/poll?device_code=${deviceCode}`);
               const data = await res.json();
 
               if (data.access_token) {
-                setupGithubBackup(data.access_token, repo);
+                tempToken = data.access_token;
+                showRepoSelection();
               } else if (data.error === 'authorization_pending') {
                 setTimeout(poll, interval);
               } else {
                 alert('Auth failed or expired: ' + (data.error_description || data.error));
-                document.getElementById('github-device-flow').style.display = 'none';
-                document.getElementById('btn-github-connect').disabled = false;
+                resetAuthUI();
               }
             } catch (err) {
               console.error('Polling error:', err);
@@ -2333,27 +2325,75 @@ exports.startup = function() {
           poll();
         }
 
-        async function setupGithubBackup(token, repo) {
+        async function showRepoSelection() {
+          setGithubState('selecting');
+          const select = document.getElementById('github-repo-select');
+          select.innerHTML = '<option>Loading repositories...</option>';
+
+          try {
+            const res = await fetch(`/api/github/list-repos?token=${tempToken}`);
+            const repos = await res.json();
+            
+            select.innerHTML = '';
+            if (Array.isArray(repos)) {
+              repos.forEach(repo => {
+                const opt = document.createElement('option');
+                opt.value = repo.full_name;
+                opt.textContent = repo.full_name;
+                select.appendChild(opt);
+              });
+            } else {
+              select.innerHTML = '<option value="">No repositories found</option>';
+            }
+          } catch (err) {
+            select.innerHTML = '<option value="">Failed to load repositories</option>';
+          }
+        }
+
+        window.createGithubRepo = async () => {
+          if (!tempToken) return;
+          try {
+            const res = await fetch('/api/github/create-repo', {
+              method: 'POST',
+              body: JSON.stringify({ token: tempToken })
+            });
+            const data = await res.json();
+            if (data.full_name) {
+              alert(`Created new repository: ${data.full_name}`);
+              showRepoSelection().then(() => {
+                document.getElementById('github-repo-select').value = data.full_name;
+              });
+            } else {
+              alert('Failed to create repository: ' + (data.message || 'Unknown error'));
+            }
+          } catch (err) {
+            alert('Creation failed. Check console.');
+          }
+        };
+
+        window.finalizeGithubSetup = async () => {
+          const repo = document.getElementById('github-repo-select').value;
+          if (!repo) {
+            alert('Please select or create a repository.');
+            return;
+          }
+
           try {
             const res = await fetch('/api/github/setup', {
               method: 'POST',
-              body: JSON.stringify({ token, repo })
+              body: JSON.stringify({ token: tempToken, repo: repo })
             });
             const data = await res.json();
             if (data.status === 'success') {
               alert('GitHub Backup connected successfully!');
               window.updateGithubStatus();
-              document.getElementById('github-device-flow').style.display = 'none';
-              document.getElementById('btn-github-connect').disabled = false;
-              document.getElementById('btn-github-connect').textContent = 'Connect to GitHub';
             } else {
               alert('Setup failed: ' + data.message);
             }
           } catch (err) {
             alert('Setup failed. Check console.');
-            console.error(err);
           }
-        }
+        };
 
         // Initial status check and periodic refresh
         window.updateGithubStatus();
@@ -2789,24 +2829,40 @@ exports.startup = function() {
         GitHub Backup
       </h2>
       
-      <div id="github-disconnected-state">
-        <div class="field">
-          <label>Target Repository</label>
-          <input type="text" id="github-repo-input" placeholder="username/repository" value="tyler/lithic-backup">
-        </div>
-        <div id="github-device-flow" style="display:none;">
-          <p style="font-size:0.9rem; opacity:0.8;">1. Open <a href="https://github.com/login/device" target="_blank" style="color:var(--accent-color)">github.com/login/device</a></p>
-          <p style="font-size:0.9rem; opacity:0.8;">2. Enter the code below:</p>
-          <div id="github-user-code" class="user-code-display">---- ----</div>
-          <p style="font-size:0.8rem; opacity:0.6; text-align:center;">Waiting for authorization...</p>
-        </div>
+      <div id="github-state-disconnected">
         <div class="modal-buttons">
           <button id="btn-github-connect" onclick="initiateGithubAuth()">Connect to GitHub</button>
           <button onclick="document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); opacity:0.7;">Cancel</button>
         </div>
       </div>
 
-      <div id="github-connected-state" style="display:none;">
+      <div id="github-state-connecting" style="display:none;">
+        <p style="font-size:0.9rem; opacity:0.8;">1. Open <a href="https://github.com/login/device" target="_blank" style="color:var(--accent-color)">github.com/login/device</a></p>
+        <p style="font-size:0.9rem; opacity:0.8;">2. Enter the code below:</p>
+        <div id="github-user-code" class="user-code-display">---- ----</div>
+        <p style="font-size:0.8rem; opacity:0.6; text-align:center;">Waiting for authorization...</p>
+      </div>
+
+      <div id="github-state-selecting" style="display:none;">
+        <div class="field">
+          <label>Choose Backup Repository</label>
+          <select id="github-repo-select" style="width:100%; background:var(--button-bg); color:var(--text-color); border:1px solid var(--border-color); padding:10px; border-radius:6px; font-family:inherit;">
+            <option value="">Loading repositories...</option>
+          </select>
+        </div>
+        <div style="text-align:center; margin:15px 0;">
+          <span style="opacity:0.5; font-size:0.8rem;">— OR —</span>
+        </div>
+        <button onclick="createGithubRepo()" style="width:100%; background:rgba(138, 180, 248, 0.1); border:1px dashed var(--accent-color); color:var(--accent-color); padding:10px; border-radius:6px; cursor:pointer;">
+          + Create New Repository
+        </button>
+        <div class="modal-buttons" style="margin-top:20px;">
+          <button onclick="finalizeGithubSetup()">Start Sync</button>
+          <button onclick="resetAuthUI()" style="background:transparent; border:1px solid var(--border-color); font-size:0.8rem;">Back</button>
+        </div>
+      </div>
+
+      <div id="github-state-connected" style="display:none;">
         <div class="field">
           <label>Connected Repository</label>
           <div id="github-active-repo" style="font-weight:600; font-size:1.1rem;">-</div>
@@ -2817,7 +2873,7 @@ exports.startup = function() {
         </div>
         <p style="font-size:0.85rem; opacity:0.7;">Last successful sync: <span id="github-last-sync">Never</span></p>
         <div class="modal-buttons" style="margin-top:30px;">
-          <button onclick="initiateGithubAuth()" style="background:var(--button-bg); font-size:0.9rem;">Change Repository / Reconnect</button>
+          <button onclick="initiateGithubAuth()" style="background:var(--button-bg); border:1px solid var(--border-color); font-size:0.9rem;">Change Repo / Reconnect</button>
           <button onclick="document.getElementById('github-backup-modal').style.display='none';">Close</button>
         </div>
       </div>
