@@ -83,8 +83,20 @@ elif [[ "$REQUEST_URI" == */setup* ]] && [[ "$METHOD" == "POST" ]]; then
     git -C "${DATA_DIR}" remote remove origin >/dev/null 2>&1
     git -C "${DATA_DIR}" remote add origin "https://oauth2:${TOKEN}@github.com/${REPO_NAME}.git"
 
+    # Ensure local branch is named 'main' (for consistency with GitHub)
+    git -C "${DATA_DIR}" branch -M main > /dev/null 2>&1
+
+    # Ensure there is something to push (Git won't push an empty history)
+    if ! git -C "${DATA_DIR}" rev-parse HEAD >/dev/null 2>&1; then
+        git -C "${DATA_DIR}" add .
+        git -C "${DATA_DIR}" commit -m "Initial Backup: $(date)" >/dev/null 2>&1
+    fi
+
     # Polite Merge logic (captured to log)
+    # 1. Pull from remote (allow to fail if repo is empty/new)
     git -C "${DATA_DIR}" pull origin main --allow-unrelated-histories --strategy-option=ours > /tmp/git_sync.log 2>&1
+    
+    # 2. Push to establish tracking (establishing the 'main' ref on GitHub)
     git -C "${DATA_DIR}" push -u origin main >> /tmp/git_sync.log 2>&1
     
     if [ $? -eq 0 ]; then

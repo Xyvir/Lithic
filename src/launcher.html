@@ -2311,7 +2311,7 @@ exports.startup = function() {
           }
         };
 
-        function resetAuthUI() {
+        window.resetAuthUI = function() {
           setGithubState('disconnected');
           document.getElementById('btn-github-connect').disabled = false;
           tempToken = null;
