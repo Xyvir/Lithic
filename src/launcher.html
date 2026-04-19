@@ -2271,6 +2271,7 @@ exports.startup = function() {
         window.initiateGithubAuth = async () => {
           const repoInput = document.getElementById('github-repo-input');
           const repo = repoInput.value.trim();
+
           if (!repo || !repo.includes('/')) {
             alert('Please enter a valid repository name (e.g., username/repo)');
             return;
@@ -2281,14 +2282,15 @@ exports.startup = function() {
           document.getElementById('btn-github-connect').textContent = 'Waiting for GitHub...';
 
           try {
-            const res = await fetch('/api/github/device-code');
+            const url = `/api/github/device-code`;
+            const res = await fetch(url);
             const data = await res.json();
             
             if (data.user_code) {
               document.getElementById('github-user-code').textContent = data.user_code;
               pollGithubToken(data.device_code, (data.interval || 5) * 1000, repo);
             } else if (data.error) {
-              alert(`GitHub Error: ${data.error_description || data.error}\n\nPlease check your Client ID or connectivity.`);
+              alert(`Error: ${data.error_description || data.error}\n\nCheck your backend configurations.`);
               resetAuthUI();
             } else {
               alert('Received an unexpected response from the server.');
@@ -2310,7 +2312,8 @@ exports.startup = function() {
         async function pollGithubToken(deviceCode, interval, repo) {
           const poll = async () => {
             try {
-              const res = await fetch(`/api/github/poll?device_code=${deviceCode}`);
+              const url = `/api/github/poll?device_code=${deviceCode}`;
+              const res = await fetch(url);
               const data = await res.json();
 
               if (data.access_token) {

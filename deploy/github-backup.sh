@@ -9,11 +9,13 @@ echo "Content-Type: application/json"
 echo ""
 
 DATA_DIR="/data"
-CLIENT_ID="Ov23likV8x7L0FfXoB1C" # Lithic Public App (Example - User may want to change this)
-# Note: For security, the user should provide their own CLIENT_ID via ENV.
-CLIENT_ID="${GITHUB_CLIENT_ID:-$CLIENT_ID}"
+# DEVELOPER NOTE: Create a Public GitHub App with Device Flow enabled and put its Client ID here.
+DEFAULT_CLIENT_ID="Iv23lippjEJMp4KLlLKI"
 
-# Parse Request
+# Diagnostic logging to stderr (visible in Railway/Docker logs)
+echo "[CGI] Request: $REQUEST_METHOD $REQUEST_URI" >&2
+
+CLIENT_ID="${GITHUB_CLIENT_ID:-$DEFAULT_CLIENT_ID}"
 REQUEST_URI="${REQUEST_URI:-}"
 METHOD="${REQUEST_METHOD:-GET}"
 
@@ -88,5 +90,5 @@ elif [[ "$REQUEST_URI" == */status* ]]; then
     fi
 
 else
-    echo '{"error":"not_found"}'
+    echo "{\"error\":\"route_not_found\",\"uri\":\"$REQUEST_URI\",\"method\":\"$REQUEST_METHOD\"}"
 fi
