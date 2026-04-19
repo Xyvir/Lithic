@@ -746,15 +746,14 @@
 
     /* Loading Spinner */
     .loading-overlay {
-      position: absolute;
+      position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.8);
       display: none;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 2000;
-      border-radius: 12px;
+      z-index: 9999;
     }
 
     .spinner {
@@ -2247,15 +2246,15 @@ exports.startup = function() {
 
     /* --- GLOBAL UI HELPERS --- */
     function showLoading(text) {
-      const overlay = document.getElementById('github-loading-overlay');
+      const overlay = document.getElementById('global-loading-overlay');
       if (overlay) {
-        document.getElementById('github-loading-text').textContent = text || 'Processing...';
+        document.getElementById('global-loading-text').textContent = text || 'Processing...';
         overlay.style.display = 'flex';
       }
     }
 
     function hideLoading() {
-      const overlay = document.getElementById('github-loading-overlay');
+      const overlay = document.getElementById('global-loading-overlay');
       if (overlay) overlay.style.display = 'none';
     }
 
@@ -3205,13 +3204,15 @@ exports.startup = function() {
     </div>
   </div>
 
+  <!-- GLOBAL LOADING OVERLAY -->
+  <div id="global-loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <div id="global-loading-text" style="color:var(--accent-color); font-weight:600; font-size:0.9rem;">Processing...</div>
+  </div>
+
   <!-- GITHUB BACKUP MODAL -->
   <div id="github-backup-modal" class="modal-overlay">
     <div class="modal-content github-modal-content">
-      <div id="github-loading-overlay" class="loading-overlay">
-        <div class="spinner"></div>
-        <div id="github-loading-text" style="color:var(--accent-color); font-weight:600; font-size:0.9rem;">Syncing...</div>
-      </div>
       <h2 style="color:var(--text-color); display:flex; align-items:center; gap:10px;">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
         GitHub Backup
