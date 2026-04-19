@@ -81,7 +81,7 @@ cat > "${CADDYFILE}" <<EOF
 
     # 2. GitHub Backup API (CGI)
     handle /api/github/* {
-        cgi /app/scripts/github-backup.sh
+        cgi * /app/scripts/github-backup.sh
     }
 
     # 3. WebDAV Sync
