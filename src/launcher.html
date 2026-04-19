@@ -2471,11 +2471,11 @@ exports.startup = function() {
           const matches = allRepos.filter(r => r.full_name.toLowerCase().includes(filter.toLowerCase()));
           
           resultsDiv.innerHTML = '';
-          highlightIndex = matches.length > 0 ? 0 : -1;
+          highlightIndex = -1; // Start unselected
 
           matches.forEach((repo, idx) => {
             const el = document.createElement('div');
-            el.className = 'search-item' + (idx === 0 ? ' highlight' : '');
+            el.className = 'search-item';
             el.textContent = repo.full_name;
             el.onclick = () => selectRepo(repo.full_name);
             resultsDiv.appendChild(el);
