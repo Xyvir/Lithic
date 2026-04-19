@@ -2225,6 +2225,9 @@ exports.startup = function() {
         const githubBtn = document.getElementById('github-backup-btn');
         if (githubBtn) githubBtn.style.display = 'flex';
         
+        let tempToken = null;
+        let isAuthFlowActive = false;
+
         window.updateGithubStatus = async function() {
           try {
             const res = await fetch('/api/github/status');
@@ -2235,7 +2238,12 @@ exports.startup = function() {
             if (data.connected) {
               btn.classList.add('active');
               btn.classList.remove('error');
-              setGithubState('connected');
+              
+              // Only auto-update the modal view if we aren't in the middle of setup
+              if (!tempToken && !isAuthFlowActive) {
+                setGithubState('connected');
+              }
+
               document.getElementById('github-active-repo').textContent = data.repo;
               
               if (data.last_sync > 0) {
@@ -2251,7 +2259,11 @@ exports.startup = function() {
               }
             } else {
               btn.classList.remove('active', 'syncing');
-              setGithubState('disconnected');
+              
+              // Only reset to disconnected if we aren't busy with a new setup
+              if (!tempToken && !isAuthFlowActive) {
+                setGithubState('disconnected');
+              }
             }
           } catch (err) {
             console.error('Failed to get GitHub status:', err);
@@ -2273,12 +2285,11 @@ exports.startup = function() {
           window.updateGithubStatus();
         };
 
-        let tempToken = null;
-
         window.initiateGithubAuth = async () => {
           // Immediately wipe existing session on backend and frontend
           try { await fetch('/api/github/disconnect'); } catch(e) {}
           tempToken = null;
+          isAuthFlowActive = true;
 
           setGithubState('connecting');
           document.getElementById('btn-github-connect').disabled = true;
@@ -2304,6 +2315,7 @@ exports.startup = function() {
           setGithubState('disconnected');
           document.getElementById('btn-github-connect').disabled = false;
           tempToken = null;
+          isAuthFlowActive = false;
         }
 
         async function pollGithubToken(deviceCode, interval) {
@@ -2390,6 +2402,8 @@ exports.startup = function() {
             const data = await res.json();
             if (data.status === 'success') {
               alert('GitHub Backup connected successfully!');
+              tempToken = null;
+              isAuthFlowActive = false;
               window.updateGithubStatus();
             } else {
               alert('Setup failed: ' + data.message);
