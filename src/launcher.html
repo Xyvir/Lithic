@@ -2280,12 +2280,15 @@ exports.startup = function() {
               let parsedData;
               if (file.name.toLowerCase().endsWith('.lith')) {
                 parsedData = parseLithToJSON(contents);
+                if (Array.isArray(parsedData)) {
+                  await saveSearchCache(file.name, JSON.stringify(parsedData));
+                }
               } else if (file.name.toLowerCase().endsWith('.json')) {
                 parsedData = JSON.parse(contents);
-              }
-              
-              if (Array.isArray(parsedData)) {
-                await updateLocalSearchCache(file.name, parsedData);
+                if (Array.isArray(parsedData)) {
+                  // If it's already valid JSON text, we can just save it directly
+                  await saveSearchCache(file.name, contents);
+                }
               }
             }
           } catch (e) {
