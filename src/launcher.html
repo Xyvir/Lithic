@@ -747,6 +747,63 @@
       opacity: 0.7;
     }
 
+    /* Searchable Dropdown */
+    .search-wrapper {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--button-bg);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      border-radius: 6px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-color);
+    }
+
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1100;
+      display: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .search-results.active {
+      display: block;
+    }
+
+    .search-item {
+      padding: 10px 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .search-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-item:hover, .search-item.highlight {
+      background: rgba(138, 180, 248, 0.1);
+      color: var(--accent-color);
+    }
+
     .github-modal-content input {
       width: 100%;
       background: var(--button-bg);
@@ -2344,30 +2401,96 @@ exports.startup = function() {
           poll();
         }
 
+        let allRepos = [];
+        let highlightIndex = -1;
+
         async function showRepoSelection() {
           setGithubState('selecting');
-          const select = document.getElementById('github-repo-select');
-          select.innerHTML = '<option>Loading repositories...</option>';
+          const searchInput = document.getElementById('github-repo-search');
+          const resultsDiv = document.getElementById('github-search-results');
+          searchInput.value = '';
+          resultsDiv.innerHTML = '<div class="search-item">Loading repositories...</div>';
+          resultsDiv.classList.add('active');
 
           try {
             const res = await fetch(`/api/github/list-repos?token=${tempToken}`);
-            const repos = await res.json();
-            
-            select.innerHTML = '';
-            if (Array.isArray(repos)) {
-              repos.forEach(repo => {
-                const opt = document.createElement('option');
-                opt.value = repo.full_name;
-                opt.textContent = repo.full_name;
-                select.appendChild(opt);
-              });
-            } else {
-              select.innerHTML = '<option value="">No repositories found</option>';
-            }
+            allRepos = await res.json();
+            if (!Array.isArray(allRepos)) allRepos = [];
+            renderRepos('');
           } catch (err) {
-            select.innerHTML = '<option value="">Failed to load repositories</option>';
+            resultsDiv.innerHTML = '<div class="search-item">Failed to load repositories</div>';
           }
         }
+
+        function renderRepos(filter) {
+          const resultsDiv = document.getElementById('github-search-results');
+          const matches = allRepos.filter(r => r.full_name.toLowerCase().includes(filter.toLowerCase()));
+          
+          resultsDiv.innerHTML = '';
+          highlightIndex = matches.length > 0 ? 0 : -1;
+
+          matches.forEach((repo, idx) => {
+            const el = document.createElement('div');
+            el.className = 'search-item' + (idx === 0 ? ' highlight' : '');
+            el.textContent = repo.full_name;
+            el.onclick = () => selectRepo(repo.full_name);
+            resultsDiv.appendChild(el);
+          });
+
+          if (matches.length === 0) {
+            resultsDiv.innerHTML = '<div class="search-item" style="opacity:0.5;">No matches found</div>';
+          }
+          resultsDiv.classList.add('active');
+        }
+
+        function selectRepo(name) {
+          document.getElementById('github-repo-search').value = name;
+          document.getElementById('github-search-results').classList.remove('active');
+          finalizeGithubSetup(name);
+        }
+
+        // Search Input listeners
+        document.addEventListener('input', e => {
+          if (e.target.id === 'github-repo-search') renderRepos(e.target.value);
+        });
+
+        document.addEventListener('keydown', e => {
+          const searchInput = document.getElementById('github-repo-search');
+          if (document.activeElement !== searchInput) return;
+
+          const resultsDiv = document.getElementById('github-search-results');
+          const items = resultsDiv.querySelectorAll('.search-item');
+          
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            highlightIndex = Math.min(highlightIndex + 1, items.length - 1);
+            updateHighlight(items);
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            highlightIndex = Math.max(highlightIndex - 1, 0);
+            updateHighlight(items);
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const highlighted = resultsDiv.querySelector('.search-item.highlight');
+            if (highlighted) selectRepo(highlighted.textContent);
+          }
+        });
+
+        function updateHighlight(items) {
+          items.forEach((item, idx) => {
+            item.classList.toggle('highlight', idx === highlightIndex);
+            if (idx === highlightIndex) item.scrollIntoView({ block: 'nearest' });
+          });
+        }
+
+        // Close dropdown on outside click
+        document.addEventListener('click', e => {
+          const wrapper = document.querySelector('.search-wrapper');
+          const resultsDiv = document.getElementById('github-search-results');
+          if (wrapper && !wrapper.contains(e.target) && resultsDiv) {
+            resultsDiv.classList.remove('active');
+          }
+        });
 
         window.createGithubRepo = async () => {
           if (!tempToken) return;
@@ -2378,20 +2501,18 @@ exports.startup = function() {
             });
             const data = await res.json();
             if (data.full_name) {
-              alert(`Created new repository: ${data.full_name}`);
-              showRepoSelection().then(() => {
-                document.getElementById('github-repo-select').value = data.full_name;
-              });
+              // Auto-select and immediately finalize setup for a "One-Click" experience
+              await finalizeGithubSetup(data.full_name);
             } else {
               alert('Failed to create repository: ' + (data.message || 'Unknown error'));
             }
           } catch (err) {
-            alert('Creation failed. Check console.');
+            console.error('Creation failed:', err);
           }
         };
 
-        window.finalizeGithubSetup = async () => {
-          const repo = document.getElementById('github-repo-select').value;
+        window.finalizeGithubSetup = async (targetRepo) => {
+          const repo = targetRepo || document.getElementById('github-repo-search').value;
           if (!repo) {
             alert('Please select or create a repository.');
             return;
@@ -2404,15 +2525,17 @@ exports.startup = function() {
             });
             const data = await res.json();
             if (data.status === 'success') {
-              alert('GitHub Backup connected successfully!');
+              // Success is now updated quietly via the status pulse
               tempToken = null;
               isAuthFlowActive = false;
               window.updateGithubStatus();
+              // Return to the main launcher automatically
+              document.getElementById('github-backup-modal').style.display = 'none';
             } else {
               alert('Setup failed: ' + data.message);
             }
           } catch (err) {
-            alert('Setup failed. Check console.');
+            console.error('Setup failed:', err);
           }
         };
 
@@ -2867,9 +2990,10 @@ exports.startup = function() {
       <div id="github-state-selecting" style="display:none;">
         <div class="field">
           <label>Choose Backup Repository</label>
-          <select id="github-repo-select" style="width:100%; background:var(--button-bg); color:var(--text-color); border:1px solid var(--border-color); padding:10px; border-radius:6px; font-family:inherit;">
-            <option value="">Loading repositories...</option>
-          </select>
+          <div class="search-wrapper">
+            <input type="text" id="github-repo-search" class="search-input" placeholder="Search your repositories..." autocomplete="off">
+            <div id="github-search-results" class="search-results"></div>
+          </div>
         </div>
         <div style="text-align:center; margin:15px 0;">
           <span style="opacity:0.5; font-size:0.8rem;">— OR —</span>
@@ -2878,7 +3002,7 @@ exports.startup = function() {
           + Create New Repository
         </button>
         <div class="modal-buttons" style="margin-top:20px;">
-          <button onclick="finalizeGithubSetup()">Start Sync</button>
+          <button onclick="finalizeGithubSetup()" id="btn-github-finalize">Start Sync</button>
           <button onclick="resetAuthUI()" style="background:transparent; border:1px solid var(--border-color); font-size:0.8rem;">Back</button>
         </div>
       </div>
