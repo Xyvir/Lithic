@@ -23,11 +23,15 @@ if [[ "$REQUEST_URI" == */device-code* ]]; then
     RESPONSE=$(curl -s -X POST https://github.com/login/device/code \
         -H "Accept: application/json" \
         -d "client_id=${CLIENT_ID}&scope=repo")
-    echo "$RESPONSE"
+    if [ $? -ne 0 ] || [ -z "$RESPONSE" ]; then
+        echo '{"error":"network_error","error_description":"Failed to reach GitHub. Check container internet access."}'
+    else
+        echo "$RESPONSE"
+    fi
 
 elif [[ "$REQUEST_URI" == */poll* ]]; then
     # Step 2: Poll for token
-    DEVICE_CODE=$(echo "$QUERY_STRING" | grep -oP 'device_code=\K[^&]+')
+    DEVICE_CODE=$(echo "$QUERY_STRING" | sed -n 's/.*device_code=\([^&]*\).*/\1/p')
     RESPONSE=$(curl -s -X POST https://github.com/login/oauth/access_token \
         -H "Accept: application/json" \
         -d "client_id=${CLIENT_ID}&device_code=${DEVICE_CODE}&grant_type=urn:ietf:params:oauth:grant-type:device_code")
@@ -37,8 +41,8 @@ elif [[ "$REQUEST_URI" == */setup* ]] && [[ "$METHOD" == "POST" ]]; then
     # Step 3: Setup Remote & Initial Sync
     # Read JS payload from stdin
     read -r PAYLOAD
-    TOKEN=$(echo "$PAYLOAD" | grep -oP '"token":"\K[^"]+')
-    REPO_NAME=$(echo "$PAYLOAD" | grep -oP '"repo":"\K[^"]+')
+    TOKEN=$(echo "$PAYLOAD" | sed -n 's/.*"token":"\([^"]*\)".*/\1/p')
+    REPO_NAME=$(echo "$PAYLOAD" | sed -n 's/.*"repo":"\([^"]*\)".*/\1/p')
 
     if [ -z "$TOKEN" ] || [ -z "$REPO_NAME" ]; then
         echo '{"error":"missing_params"}'

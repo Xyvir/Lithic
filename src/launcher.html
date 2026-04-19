@@ -2283,18 +2283,29 @@ exports.startup = function() {
           try {
             const res = await fetch('/api/github/device-code');
             const data = await res.json();
+            
             if (data.user_code) {
               document.getElementById('github-user-code').textContent = data.user_code;
               pollGithubToken(data.device_code, (data.interval || 5) * 1000, repo);
+            } else if (data.error) {
+              alert(`GitHub Error: ${data.error_description || data.error}\n\nPlease check your Client ID or connectivity.`);
+              resetAuthUI();
+            } else {
+              alert('Received an unexpected response from the server.');
+              resetAuthUI();
             }
           } catch (err) {
-            alert('Failed to initiate GitHub auth. Check console.');
+            alert('Failed to initiate GitHub auth. Check container logs or console.');
             console.error(err);
-            document.getElementById('github-device-flow').style.display = 'none';
-            document.getElementById('btn-github-connect').disabled = false;
-            document.getElementById('btn-github-connect').textContent = 'Connect to GitHub';
+            resetAuthUI();
           }
         };
+
+        function resetAuthUI() {
+          document.getElementById('github-device-flow').style.display = 'none';
+          document.getElementById('btn-github-connect').disabled = false;
+          document.getElementById('btn-github-connect').textContent = 'Connect to GitHub';
+        }
 
         async function pollGithubToken(deviceCode, interval, repo) {
           const poll = async () => {
