@@ -2539,6 +2539,7 @@ exports.startup = function() {
           document.getElementById('btn-github-connect').disabled = false;
           tempToken = null;
           isAuthFlowActive = false;
+          window.updateGithubStatus();
         }
 
         async function pollGithubToken(deviceCode, interval) {
