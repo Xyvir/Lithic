@@ -740,11 +740,83 @@
     }
 
     .github-modal-content label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
       margin-bottom: 8px;
       opacity: 0.7;
+    }
+
+    /* Loading Spinner */
+    .loading-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      border-radius: 12px;
+    }
+
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid rgba(255,255,255,0.1);
+      border-top-color: var(--accent-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Discovery Radio Cards */
+    .discovery-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .radio-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+
+    .radio-card:hover {
+      border-color: var(--accent-color);
+    }
+
+    .radio-card.selected {
+      background: rgba(138, 180, 248, 0.05);
+      border-color: var(--accent-color);
+    }
+
+    .radio-card input {
+      margin: 0;
+      cursor: pointer;
+      width: auto !important;
+    }
+
+    .radio-card .label {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .discovery-empty {
+      text-align: center;
+      padding: 20px;
+      opacity: 0.5;
+      font-size: 0.8rem;
+      border: 1px dashed var(--border-color);
+      border-radius: 8px;
     }
 
     /* Searchable Dropdown */
@@ -2438,6 +2510,16 @@ exports.startup = function() {
         let highlightIndex = -1;
         let pendingRepoName = "";
 
+        function showLoading(text) {
+          const overlay = document.getElementById('github-loading-overlay');
+          document.getElementById('github-loading-text').textContent = text || 'Processing...';
+          overlay.style.display = 'flex';
+        }
+
+        function hideLoading() {
+          document.getElementById('github-loading-overlay').style.display = 'none';
+        }
+
         function generateRepoName() {
           const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Avoid ambiguous chars
           let id = '';
@@ -2450,19 +2532,79 @@ exports.startup = function() {
         async function showRepoSelection() {
           setGithubState('selecting');
           generateRepoName();
-          const searchInput = document.getElementById('github-repo-search');
-          const resultsDiv = document.getElementById('github-search-results');
-          searchInput.value = '';
-          resultsDiv.innerHTML = '<div class="search-item">Loading repositories...</div>';
-          resultsDiv.classList.add('active');
+          const discoveryList = document.getElementById('github-discovery-list');
+          const searchWrapper = document.getElementById('github-custom-search-wrapper');
+          discoveryList.innerHTML = '<p style="text-align:center; opacity:0.5;">Scanning for backups...</p>';
+          searchWrapper.style.display = 'none';
 
           try {
             const res = await fetch(`/api/github/list-repos?token=${tempToken}`);
             allRepos = await res.json();
             if (!Array.isArray(allRepos)) allRepos = [];
-            renderRepos('');
+            
+            renderDiscovery();
           } catch (err) {
-            resultsDiv.innerHTML = '<div class="search-item">Failed to load repositories</div>';
+            discoveryList.innerHTML = '<p class="discovery-empty">Failed to load repositories</p>';
+          }
+        }
+
+        function renderDiscovery() {
+          const discoveryList = document.getElementById('github-discovery-list');
+          const managed = allRepos.filter(r => r.name.startsWith('lithic-backup-'));
+          
+          discoveryList.innerHTML = '';
+          
+          if (managed.length === 0) {
+            discoveryList.innerHTML = '<div class="discovery-empty">No existing backups found</div>';
+          } else {
+            managed.forEach((repo, idx) => {
+              const card = document.createElement('div');
+              card.className = 'radio-card' + (idx === 0 ? ' selected' : '');
+              card.innerHTML = `
+                <input type="radio" name="github-repo-choice" value="${repo.full_name}" ${idx === 0 ? 'checked' : ''}>
+                <span class="label">${repo.full_name}</span>
+              `;
+              card.onclick = (e) => {
+                if (e.target.tagName !== 'INPUT') card.querySelector('input').checked = true;
+                updateDiscoveryUI();
+              };
+              discoveryList.appendChild(card);
+            });
+          }
+
+          // Always add "Custom" card
+          const customCard = document.createElement('div');
+          customCard.className = 'radio-card';
+          customCard.innerHTML = `
+            <input type="radio" name="github-repo-choice" value="custom">
+            <span class="label">Advanced: Custom Repository</span>
+          `;
+          customCard.onclick = (e) => {
+            if (e.target.tagName !== 'INPUT') customCard.querySelector('input').checked = true;
+            updateDiscoveryUI();
+          };
+          discoveryList.appendChild(customCard);
+          
+          updateDiscoveryUI();
+          renderRepos(''); // In case they pick custom
+        }
+
+        function updateDiscoveryUI() {
+          const choice = document.querySelector('input[name="github-repo-choice"]:checked')?.value;
+          const searchWrapper = document.getElementById('github-custom-search-wrapper');
+          const finalizeBtn = document.getElementById('btn-github-finalize');
+          
+          // Style cards
+          document.querySelectorAll('.radio-card').forEach(card => {
+            card.classList.toggle('selected', card.querySelector('input').checked);
+          });
+
+          if (choice === 'custom') {
+            searchWrapper.style.display = 'block';
+            finalizeBtn.disabled = !document.getElementById('github-repo-search').value;
+          } else {
+            searchWrapper.style.display = 'none';
+            finalizeBtn.disabled = !choice;
           }
         }
 
@@ -2471,7 +2613,7 @@ exports.startup = function() {
           const matches = allRepos.filter(r => r.full_name.toLowerCase().includes(filter.toLowerCase()));
           
           resultsDiv.innerHTML = '';
-          highlightIndex = -1; // Start unselected
+          highlightIndex = -1; 
 
           matches.forEach((repo, idx) => {
             const el = document.createElement('div');
@@ -2490,7 +2632,7 @@ exports.startup = function() {
         function selectRepo(name) {
           document.getElementById('github-repo-search').value = name;
           document.getElementById('github-search-results').classList.remove('active');
-          finalizeGithubSetup(name);
+          updateDiscoveryUI();
         }
 
         // Search Input listeners
@@ -2538,6 +2680,7 @@ exports.startup = function() {
 
         window.createGithubRepo = async () => {
           if (!tempToken || !pendingRepoName) return;
+          showLoading(`Creating ${pendingRepoName}...`);
           try {
             const res = await fetch('/api/github/create-repo', {
               method: 'POST',
@@ -2545,23 +2688,30 @@ exports.startup = function() {
             });
             const data = await res.json();
             if (data.full_name) {
-              // Auto-select and immediately finalize setup for a "One-Click" experience
               await finalizeGithubSetup(data.full_name);
             } else {
+              hideLoading();
               alert('Failed to create repository: ' + (data.message || 'Unknown error'));
             }
           } catch (err) {
+            hideLoading();
             console.error('Creation failed:', err);
           }
         };
 
         window.finalizeGithubSetup = async (targetRepo) => {
-          const repo = targetRepo || document.getElementById('github-repo-search').value;
+          let repo = targetRepo;
           if (!repo) {
-            alert('Please select or create a repository.');
+            const choice = document.querySelector('input[name="github-repo-choice"]:checked')?.value;
+            repo = (choice === 'custom') ? document.getElementById('github-repo-search').value : choice;
+          }
+          
+          if (!repo) {
+            alert('Please select a repository.');
             return;
           }
 
+          showLoading(`Setting up ${repo}...`);
           try {
             const res = await fetch('/api/github/setup', {
               method: 'POST',
@@ -2569,17 +2719,17 @@ exports.startup = function() {
             });
             const data = await res.json();
             if (data.status === 'success') {
-              // Success is now updated quietly via the status pulse
               tempToken = null;
               isAuthFlowActive = false;
               window.updateGithubStatus();
-              // Return to the main launcher automatically
               document.getElementById('github-backup-modal').style.display = 'none';
             } else {
               alert('Setup failed: ' + data.message);
             }
           } catch (err) {
             console.error('Setup failed:', err);
+          } finally {
+            hideLoading();
           }
         };
 
@@ -3012,6 +3162,10 @@ exports.startup = function() {
   <!-- GITHUB BACKUP MODAL -->
   <div id="github-backup-modal" class="modal-overlay">
     <div class="modal-content github-modal-content">
+      <div id="github-loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <div id="github-loading-text" style="color:var(--accent-color); font-weight:600; font-size:0.9rem;">Syncing...</div>
+      </div>
       <h2 style="color:var(--text-color); display:flex; align-items:center; gap:10px;">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
         GitHub Backup
@@ -3056,13 +3210,20 @@ exports.startup = function() {
         <button id="btn-github-create-new" onclick="createGithubRepo()" style="width:100%; background:rgba(138, 180, 248, 0.1); border:1px dashed var(--accent-color); color:var(--accent-color); padding:12px; border-radius:6px; cursor:pointer; font-weight:600;">
           + Create lithic-backup-xxxx and sync
         </button>
-        <div style="text-align:center; margin:15px 0;">
-          <span style="opacity:0.3; font-size:0.75rem;">— OR CHOOSE EXISTING —</span>
+        
+        <div style="margin-top:20px;">
+          <label style="font-size:0.75rem; opacity:0.5; text-transform:uppercase; letter-spacing:0.05em;">Found Existing Backups</label>
+          <div id="github-discovery-list" class="discovery-group">
+            <!-- Populated via JS -->
+          </div>
         </div>
-        <div class="field">
-          <div class="search-wrapper">
-            <input type="text" id="github-repo-search" class="search-input-gh" placeholder="Search your repositories..." autocomplete="off">
-            <div id="github-search-results" class="search-results"></div>
+
+        <div id="github-custom-search-wrapper" style="display:none; margin-top:15px; border-top:1px solid rgba(255,255,255,0.05); padding-top:15px;">
+          <div class="field">
+            <div class="search-wrapper">
+              <input type="text" id="github-repo-search" class="search-input-gh" placeholder="Type custom repository name..." autocomplete="off">
+              <div id="github-search-results" class="search-results"></div>
+            </div>
           </div>
         </div>
 

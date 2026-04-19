@@ -91,6 +91,12 @@ elif [[ "$REQUEST_URI" == */setup* ]] && [[ "$METHOD" == "POST" ]]; then
     # Ensure local branch is named 'main'
     git -C "${DATA_DIR}" branch -M main > /dev/null 2>&1
 
+    # DEFINITIVE GITIGNORE PURGE (Fixes tracked .lock files once and for all)
+    git -C "${DATA_DIR}" add .gitignore >/dev/null 2>&1
+    git -C "${DATA_DIR}" rm -r --cached . >/dev/null 2>&1
+    git -C "${DATA_DIR}" add . >/dev/null 2>&1
+    git -C "${DATA_DIR}" commit -m "System: Enforcing .gitignore" >/dev/null 2>&1
+
     # Ensure there is something to push (in case it's a totally empty dir)
     if ! git -C "${DATA_DIR}" rev-parse HEAD >/dev/null 2>&1; then
         git -C "${DATA_DIR}" add .
