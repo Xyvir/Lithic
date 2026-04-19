@@ -2985,6 +2985,9 @@ exports.startup = function() {
         <p style="font-size:0.9rem; opacity:0.8;">2. Enter the code below:</p>
         <div id="github-user-code" class="user-code-display">---- ----</div>
         <p style="font-size:0.8rem; opacity:0.6; text-align:center;">Waiting for authorization...</p>
+        <div class="modal-buttons" style="margin-top:20px;">
+          <button onclick="resetAuthUI(); document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); width:100%;">Cancel</button>
+        </div>
       </div>
 
       <div id="github-state-selecting" style="display:none;">
@@ -3003,7 +3006,7 @@ exports.startup = function() {
         </button>
         <div class="modal-buttons" style="margin-top:20px;">
           <button onclick="finalizeGithubSetup()" id="btn-github-finalize">Start Sync</button>
-          <button onclick="resetAuthUI()" style="background:transparent; border:1px solid var(--border-color); font-size:0.8rem;">Back</button>
+          <button onclick="resetAuthUI(); document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); font-size:0.8rem;">Cancel</button>
         </div>
       </div>
 
@@ -3017,6 +3020,7 @@ exports.startup = function() {
           </div>
         </div>
         <p style="font-size:0.85rem; opacity:0.7;">Last successful sync: <span id="github-last-sync">Never</span></p>
+        
         <div class="modal-buttons" style="margin-top:30px;">
           <button onclick="initiateGithubAuth()" style="background:var(--button-bg); border:1px solid var(--border-color); font-size:0.9rem;">Change Repo / Reconnect</button>
           <button onclick="document.getElementById('github-backup-modal').style.display='none';">Close</button>
