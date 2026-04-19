@@ -10,19 +10,21 @@
 FROM alpine:latest
 
 # Basic dependencies
-RUN apk add --no-cache bash sed curl ca-certificates
+RUN apk add --no-cache bash sed curl ca-certificates git inotify-tools
 
 # App structure
-RUN mkdir -p /app/public/src /data
+RUN mkdir -p /app/public/src /app/scripts /data
 
-# Download pre-compiled Caddy with WebDAV plugin (Linux/amd64)
+# Download pre-compiled Caddy with WebDAV and CGI plugins (Linux/amd64)
 # This uses the official Caddy Download API.
-RUN curl -o /app/caddy "https://caddyserver.com/api/download?os=linux&arch=amd64&p=github.com/mholt/caddy-webdav" \
+RUN curl -o /app/caddy "https://caddyserver.com/api/download?os=linux&arch=amd64&p=github.com/mholt/caddy-webdav&p=github.com/aksdb/caddy-cgi/v2" \
     && chmod +x /app/caddy
 
 # Copy entrypoint
 COPY deploy/entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+COPY deploy/watcher.sh /app/watcher.sh
+COPY deploy/github-backup.sh /app/scripts/github-backup.sh
+RUN chmod +x /app/entrypoint.sh /app/watcher.sh /app/scripts/github-backup.sh
 
 # Copy Lithic UI files
 COPY index.html              /app/public/index.html

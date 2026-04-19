@@ -686,6 +686,102 @@
       padding: 12px;
       font-weight: 600;
     }
+
+    /* --- GITHUB BACKUP ICON & MODAL --- */
+    #github-backup-btn {
+      display: none;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      margin-left: 10px;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #github-backup-btn:hover {
+      background: rgba(138, 180, 248, 0.1);
+      border-color: var(--accent-color);
+    }
+
+    #github-backup-btn.active {
+      color: #4caf50;
+      border-color: #4caf50;
+    }
+
+    #github-backup-btn.syncing {
+      color: #ffc107;
+      border-color: #ffc107;
+      animation: pulse 1.5s infinite;
+    }
+
+    #github-backup-btn.error {
+      color: #f44336;
+      border-color: #f44336;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .github-modal-content {
+      text-align: left;
+    }
+
+    .github-modal-content .field {
+      margin-bottom: 20px;
+    }
+
+    .github-modal-content label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      opacity: 0.7;
+    }
+
+    .github-modal-content input {
+      width: 100%;
+      background: var(--button-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      padding: 10px;
+      border-radius: 6px;
+      font-family: inherit;
+    }
+
+    .user-code-display {
+      font-family: monospace;
+      font-size: 2.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed var(--accent-color);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center;
+      color: var(--accent-color);
+      letter-spacing: 5px;
+    }
+
+    .sync-status-pill {
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: rgba(76, 175, 80, 0.1);
+      color: #4caf50;
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+    }
   </style>
 
   <script type="module">
@@ -2124,6 +2220,131 @@ exports.startup = function() {
         }
 
         await displayRemoteFiles();
+        
+        // --- GITHUB BACKUP INTEGRATION ---
+        const githubBtn = document.getElementById('github-backup-btn');
+        if (githubBtn) githubBtn.style.display = 'flex';
+        
+        window.updateGithubStatus = async function() {
+          try {
+            const res = await fetch('/api/github/status');
+            const data = await res.json();
+            const btn = document.getElementById('github-backup-btn');
+            if (!btn) return;
+
+            if (data.connected) {
+              btn.classList.add('active');
+              btn.classList.remove('error');
+              document.getElementById('github-connected-state').style.display = 'block';
+              document.getElementById('github-disconnected-state').style.display = 'none';
+              document.getElementById('github-active-repo').textContent = data.repo;
+              
+              if (data.last_sync > 0) {
+                const date = new Date(data.last_sync * 1000);
+                document.getElementById('github-last-sync').textContent = date.toLocaleString();
+                
+                // If synced in the last 60 seconds, show active state
+                const age = (Date.now() / 1000) - data.last_sync;
+                if (age < 60) {
+                  btn.classList.add('syncing');
+                } else {
+                  btn.classList.remove('syncing');
+                }
+              }
+            } else {
+              btn.classList.remove('active', 'syncing');
+              document.getElementById('github-connected-state').style.display = 'none';
+              document.getElementById('github-disconnected-state').style.display = 'block';
+            }
+          } catch (err) {
+            console.error('Failed to get GitHub status:', err);
+            const btn = document.getElementById('github-backup-btn');
+            if (btn) btn.classList.add('error');
+          }
+        };
+
+        window.openGithubBackupModal = () => {
+          document.getElementById('github-backup-modal').style.display = 'flex';
+          window.updateGithubStatus();
+        };
+
+        window.initiateGithubAuth = async () => {
+          const repoInput = document.getElementById('github-repo-input');
+          const repo = repoInput.value.trim();
+          if (!repo || !repo.includes('/')) {
+            alert('Please enter a valid repository name (e.g., username/repo)');
+            return;
+          }
+
+          document.getElementById('github-device-flow').style.display = 'block';
+          document.getElementById('btn-github-connect').disabled = true;
+          document.getElementById('btn-github-connect').textContent = 'Waiting for GitHub...';
+
+          try {
+            const res = await fetch('/api/github/device-code');
+            const data = await res.json();
+            if (data.user_code) {
+              document.getElementById('github-user-code').textContent = data.user_code;
+              pollGithubToken(data.device_code, (data.interval || 5) * 1000, repo);
+            }
+          } catch (err) {
+            alert('Failed to initiate GitHub auth. Check console.');
+            console.error(err);
+            document.getElementById('github-device-flow').style.display = 'none';
+            document.getElementById('btn-github-connect').disabled = false;
+            document.getElementById('btn-github-connect').textContent = 'Connect to GitHub';
+          }
+        };
+
+        async function pollGithubToken(deviceCode, interval, repo) {
+          const poll = async () => {
+            try {
+              const res = await fetch(`/api/github/poll?device_code=${deviceCode}`);
+              const data = await res.json();
+
+              if (data.access_token) {
+                setupGithubBackup(data.access_token, repo);
+              } else if (data.error === 'authorization_pending') {
+                setTimeout(poll, interval);
+              } else {
+                alert('Auth failed or expired: ' + (data.error_description || data.error));
+                document.getElementById('github-device-flow').style.display = 'none';
+                document.getElementById('btn-github-connect').disabled = false;
+              }
+            } catch (err) {
+              console.error('Polling error:', err);
+              setTimeout(poll, interval);
+            }
+          };
+          poll();
+        }
+
+        async function setupGithubBackup(token, repo) {
+          try {
+            const res = await fetch('/api/github/setup', {
+              method: 'POST',
+              body: JSON.stringify({ token, repo })
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+              alert('GitHub Backup connected successfully!');
+              window.updateGithubStatus();
+              document.getElementById('github-device-flow').style.display = 'none';
+              document.getElementById('btn-github-connect').disabled = false;
+              document.getElementById('btn-github-connect').textContent = 'Connect to GitHub';
+            } else {
+              alert('Setup failed: ' + data.message);
+            }
+          } catch (err) {
+            alert('Setup failed. Check console.');
+            console.error(err);
+          }
+        }
+
+        // Initial status check and periodic refresh
+        window.updateGithubStatus();
+        setInterval(window.updateGithubStatus, 15000);
+
         return;
       }
 
@@ -2453,6 +2674,11 @@ exports.startup = function() {
         onmouseover="this.style.opacity='1'; this.style.borderColor='var(--accent-color)'; this.style.color='var(--accent-color)'"
         onmouseout="this.style.opacity='0.7'; this.style.borderColor='var(--border-color)'; this.style.color='var(--text-color)'"
         title="View Introduction">?</a>
+      <button id="github-backup-btn" onclick="openGithubBackupModal()" title="GitHub Backup Settings">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
+        </svg>
+      </button>
     </h1>
 
     <div class="section dual-buttons">
@@ -2537,6 +2763,49 @@ exports.startup = function() {
       <p>Please pick a unique name for your new lith.</p>
       <div class="modal-buttons">
         <button onclick="document.getElementById('name-collision-modal').style.display='none';" style="background: var(--button-bg); border: 1px solid var(--border-color);">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GITHUB BACKUP MODAL -->
+  <div id="github-backup-modal" class="modal-overlay">
+    <div class="modal-content github-modal-content">
+      <h2 style="color:var(--text-color); display:flex; align-items:center; gap:10px;">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
+        GitHub Backup
+      </h2>
+      
+      <div id="github-disconnected-state">
+        <div class="field">
+          <label>Target Repository</label>
+          <input type="text" id="github-repo-input" placeholder="username/repository" value="tyler/lithic-backup">
+        </div>
+        <div id="github-device-flow" style="display:none;">
+          <p style="font-size:0.9rem; opacity:0.8;">1. Open <a href="https://github.com/login/device" target="_blank" style="color:var(--accent-color)">github.com/login/device</a></p>
+          <p style="font-size:0.9rem; opacity:0.8;">2. Enter the code below:</p>
+          <div id="github-user-code" class="user-code-display">---- ----</div>
+          <p style="font-size:0.8rem; opacity:0.6; text-align:center;">Waiting for authorization...</p>
+        </div>
+        <div class="modal-buttons">
+          <button id="btn-github-connect" onclick="initiateGithubAuth()">Connect to GitHub</button>
+          <button onclick="document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); opacity:0.7;">Cancel</button>
+        </div>
+      </div>
+
+      <div id="github-connected-state" style="display:none;">
+        <div class="field">
+          <label>Connected Repository</label>
+          <div id="github-active-repo" style="font-weight:600; font-size:1.1rem;">-</div>
+          <div class="sync-status-pill">
+            <span style="width:8px; height:8px; background:#4caf50; border-radius:50%;"></span>
+            Active Sync
+          </div>
+        </div>
+        <p style="font-size:0.85rem; opacity:0.7;">Last successful sync: <span id="github-last-sync">Never</span></p>
+        <div class="modal-buttons" style="margin-top:30px;">
+          <button onclick="initiateGithubAuth()" style="background:var(--button-bg); font-size:0.9rem;">Change Repository / Reconnect</button>
+          <button onclick="document.getElementById('github-backup-modal').style.display='none';">Close</button>
+        </div>
       </div>
     </div>
   </div>

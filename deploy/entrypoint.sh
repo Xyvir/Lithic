@@ -35,6 +35,23 @@ fi
 # --- Ensure data directory exists ---
 mkdir -p "${DATA_DIR}"
 
+# --- Initialize Git if not present ---
+if [ ! -d "${DATA_DIR}/.git" ]; then
+  echo "Initializing Git repository in ${DATA_DIR}..."
+  git -C "${DATA_DIR}" init
+  git -C "${DATA_DIR}" config user.email "backup@lithic.uk"
+  git -C "${DATA_DIR}" config user.name "Lithic Backup"
+  # Initial commit if files exist
+  if [ -n "$(ls -A "${DATA_DIR}" | grep -v .git)" ]; then
+    git -C "${DATA_DIR}" add .
+    git -C "${DATA_DIR}" commit -m "Initial Backup: $(date)" || true
+  fi
+fi
+
+# --- Start Watcher ---
+echo "Starting backup watcher..."
+/app/watcher.sh &
+
 # --- Hash the password ---
 echo "Generating password hash..."
 # Jane's Note: Passing plaintext passwords in CLI args can leak to process lists (`ps`).
@@ -48,6 +65,7 @@ cat > "${CADDYFILE}" <<EOF
 {
     auto_https off
     order webdav last
+    order cgi last
 }
 
 :${LITHIC_PORT} {
@@ -61,7 +79,12 @@ cat > "${CADDYFILE}" <<EOF
         ${LITHIC_USER} ${HASHED_PASSWORD}
     }
 
-    # 2. WebDAV Sync
+    # 2. GitHub Backup API (CGI)
+    handle /api/github/* {
+        cgi /app/scripts/github-backup.sh
+    }
+
+    # 3. WebDAV Sync
     handle /sync/* {
         uri strip_prefix /sync
         webdav {
@@ -69,7 +92,7 @@ cat > "${CADDYFILE}" <<EOF
         }
     }
 
-    # 3. Web Server 
+    # 4. Web Server 
     # Serves all public assets. If a request made it past basic_auth, it lands here.
     handle * {
         file_server {
