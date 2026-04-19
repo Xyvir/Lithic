@@ -83,6 +83,9 @@ elif [[ "$REQUEST_URI" == */setup* ]] && [[ "$METHOD" == "POST" ]]; then
     git -C "${DATA_DIR}" remote remove origin >/dev/null 2>&1
     git -C "${DATA_DIR}" remote add origin "https://oauth2:${TOKEN}@github.com/${REPO_NAME}.git"
 
+    # Clean up any accidentally tracked lock files (now ignored via .gitignore)
+    git -C "${DATA_DIR}" rm --cached *.lock >/dev/null 2>&1
+
     # Ensure local branch is named 'main' (for consistency with GitHub)
     git -C "${DATA_DIR}" branch -M main > /dev/null 2>&1
 

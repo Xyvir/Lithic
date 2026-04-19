@@ -32,8 +32,11 @@ if [ "${LITHIC_PASSWORD}" = "changeme" ]; then
   echo ""
 fi
 
-# --- Ensure data directory exists ---
+# --- Ensure data directory and .gitignore exist ---
 mkdir -p "${DATA_DIR}"
+if [ ! -f "${DATA_DIR}/.gitignore" ]; then
+  echo "*.lock" > "${DATA_DIR}/.gitignore"
+fi
 
 # --- Initialize Git if not present ---
 if [ ! -d "${DATA_DIR}/.git" ]; then
