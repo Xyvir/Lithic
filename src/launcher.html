@@ -2276,6 +2276,10 @@ exports.startup = function() {
         let tempToken = null;
 
         window.initiateGithubAuth = async () => {
+          // Immediately wipe existing session on backend and frontend
+          try { await fetch('/api/github/disconnect'); } catch(e) {}
+          tempToken = null;
+
           setGithubState('connecting');
           document.getElementById('btn-github-connect').disabled = true;
 

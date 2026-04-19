@@ -107,6 +107,12 @@ elif [[ "$REQUEST_URI" == */status* ]]; then
         echo "{\"connected\":true,\"repo\":\"$REPO\",\"last_sync\":$LAST_SYNC}"
     fi
 
+elif [[ "$REQUEST_URI" == */disconnect* ]]; then
+    # Wipe credentials and status for a clean reconnect
+    rm -f "${DATA_DIR}/.git/backup_token"
+    rm -f "${DATA_DIR}/.git/backup_status"
+    echo '{"status":"disconnected"}'
+
 else
     echo "{\"error\":\"route_not_found\",\"uri\":\"$REQUEST_URI\"}"
 fi
