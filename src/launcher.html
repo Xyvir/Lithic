@@ -2771,6 +2771,9 @@ exports.startup = function() {
               isAuthFlowActive = false;
               window.updateGithubStatus();
               document.getElementById('github-backup-modal').style.display = 'none';
+              if (typeof displayRemoteFiles === 'function') {
+                displayRemoteFiles();
+              }
             } else {
               alert('Setup failed: ' + data.message);
             }
