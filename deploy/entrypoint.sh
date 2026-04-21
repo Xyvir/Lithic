@@ -39,9 +39,10 @@ if [ ! -f "${DATA_DIR}/.gitignore" ]; then
 fi
 
 # Ensure .agents rules are copied to the data directory for the IDE agent
-rm -rf "${DATA_DIR}/.agents"
 if [ -d "${APP_DIR}/.agents" ]; then
-  cp -r "${APP_DIR}/.agents" "${DATA_DIR}/.agents"
+  echo "Syncing agent rules..."
+  rm -rf "${DATA_DIR}/.agents"
+  cp -r "${APP_DIR}/.agents" "${DATA_DIR}/"
 fi
 
 # --- Initialize Git if not present ---
