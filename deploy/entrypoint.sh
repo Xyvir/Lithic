@@ -38,6 +38,8 @@ if [ ! -f "${DATA_DIR}/.gitignore" ]; then
   echo "*.lock" > "${DATA_DIR}/.gitignore"
 fi
 
+# If .agents exists as a stale directory (from a previous deploy), remove it first.
+[ -d "${DATA_DIR}/.agents" ] && rm -rf "${DATA_DIR}/.agents"
 if [ ! -f "${DATA_DIR}/.agents" ] && [ -f "/app/.agents" ]; then
   cp "/app/.agents" "${DATA_DIR}/.agents"
 fi
