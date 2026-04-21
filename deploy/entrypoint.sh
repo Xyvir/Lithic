@@ -38,11 +38,10 @@ if [ ! -f "${DATA_DIR}/.gitignore" ]; then
   echo "*.lock" > "${DATA_DIR}/.gitignore"
 fi
 
-# Ensure .agents rules are copied to the data directory for the IDE agent
-if [ -d "${APP_DIR}/.agents" ]; then
+# Ensure agent rules are copied to the data directory for the IDE agent
+if [ -f "${APP_DIR}/agents.md" ]; then
   echo "Syncing agent rules..."
-  rm -rf "${DATA_DIR}/.agents"
-  cp -r "${APP_DIR}/.agents" "${DATA_DIR}/"
+  cp "${APP_DIR}/agents.md" "${DATA_DIR}/agents.md"
 fi
 
 # --- Initialize Git if not present ---
