@@ -1363,7 +1363,20 @@ exports.startup = function() {
           let contents = await res.text();
 
           let coreHtml = await fetchCoreEngine();
-          const tiddlers = parseLithToJSON(contents);
+
+          // Parse lith content. If the file is actually a raw JSON array (e.g. uploaded
+          // as .json then renamed, or an older format), fall back to JSON parsing so
+          // it doesn't produce a single "super-tiddler" with all the rawtext.
+          let tiddlers = parseLithToJSON(contents);
+          if (tiddlers.length === 0 || (tiddlers.length === 1 && !tiddlers[0].title && contents.trim().startsWith('['))) {
+            try {
+              const jsonParsed = JSON.parse(contents);
+              if (Array.isArray(jsonParsed) && jsonParsed.length > 0) {
+                tiddlers = jsonParsed;
+                console.log('[Lithic] File appeared to be JSON-in-lith; parsed as JSON array.');
+              }
+            } catch (e) { /* not JSON, stick with lith parse result */ }
+          }
           const tiddlerArrayText = JSON.stringify(tiddlers);
 
           if (tiddlers.length > 0) {
@@ -2349,8 +2362,21 @@ exports.startup = function() {
               const overlay = document.getElementById('loading-overlay');
               if (overlay) overlay.style.display = 'flex';
               try {
-                const body = await file.text();
+                let body = await file.text();
                 const uploadName = file.name.endsWith('.lith') ? file.name : file.name.replace(/\.[^.]+$/, '') + '.lith';
+
+                // If uploading a .json file (being renamed to .lith), convert it to lith format
+                // so parseLithToJSON can correctly split it on ⁂⁂⁂ delimiters when opened.
+                if (!file.name.endsWith('.lith')) {
+                  try {
+                    const parsed = JSON.parse(body);
+                    if (Array.isArray(parsed)) {
+                      body = serializeJsonToLith(body);
+                    }
+                  } catch (jsonErr) {
+                    console.warn('Uploaded file is not valid JSON; uploading as-is.', jsonErr);
+                  }
+                }
 
                 // Collision check
                 const files = await webdavPropfind();
