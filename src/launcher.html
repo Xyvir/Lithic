@@ -2220,6 +2220,15 @@ exports.startup = function() {
             if (!confirm('Are you sure? This will permanently delete the file from remote storage.')) return;
             try {
               await webdavDelete(file.name);
+              // Also clean up the corresponding lock file (ignore 404 — it may not exist)
+              try {
+                const lockRes = await fetch(WEBDAV_BASE + encodeURIComponent(file.name) + '.lock', { method: 'DELETE' });
+                if (!lockRes.ok && lockRes.status !== 404 && lockRes.status !== 204) {
+                  console.warn('Lock file delete returned unexpected status:', lockRes.status);
+                }
+              } catch (lockErr) {
+                console.warn('Could not delete lock file (non-fatal):', lockErr);
+              }
               const name = file.name;
               await idbKeyval.del('search_cache_' + name);
               await idbKeyval.del('search_cache_bk1_' + name);

@@ -66,6 +66,37 @@ if [ ! -d "${DATA_DIR}/.git" ]; then
   fi
 fi
 
+# --- Purge Orphaned / Stale Lock Files ---
+echo "Scanning for orphaned and stale lock files..."
+orphaned=0
+stale=0
+now_epoch=$(date +%s)
+lock_max_age_seconds=120  # 2 minutes — heartbeat is every 30s, so anything older is dead
+
+while IFS= read -r lockfile; do
+  # Derive the corresponding .lith path (strip trailing .lock)
+  lithfile="${lockfile%.lock}"
+
+  # Case 1: Orphaned — no matching .lith file
+  if [ ! -f "${lithfile}" ]; then
+    echo "  Removing orphaned lock (no matching .lith): ${lockfile}"
+    rm -f "${lockfile}"
+    orphaned=$((orphaned + 1))
+    continue
+  fi
+
+  # Case 2: Stale — lock file's mtime is older than the heartbeat window
+  file_mtime=$(stat -c %Y "${lockfile}" 2>/dev/null || echo 0)
+  age=$(( now_epoch - file_mtime ))
+  if [ "${age}" -gt "${lock_max_age_seconds}" ]; then
+    echo "  Removing stale lock (age=${age}s): ${lockfile}"
+    rm -f "${lockfile}"
+    stale=$((stale + 1))
+  fi
+done < <(find "${DATA_DIR}" -maxdepth 1 -name "*.lock" -type f 2>/dev/null)
+
+echo "  Purge complete: ${orphaned} orphaned, ${stale} stale lock(s) removed."
+
 # --- Start Watcher ---
 echo "Starting backup watcher..."
 /app/watcher.sh &
