@@ -135,6 +135,11 @@ cat > "${CADDYFILE}" <<EOF
 
     # 3. WebDAV Sync
     handle /sync/* {
+        # Ensure .lith files are served with explicit UTF-8 encoding
+        # so clients (e.g. VS Code WebDAV) decode the triple-asterism ⁂ correctly.
+        @lithFiles path *.lith
+        header @lithFiles Content-Type "text/plain; charset=utf-8"
+
         webdav {
             root ${DATA_DIR}
             prefix /sync
