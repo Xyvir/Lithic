@@ -1,5 +1,5 @@
 {
-    "title": "$:/plugins/lithic/lithic-pdf-to-whiteboard",
+    "title": "$:/plugins/xyvir/lithic-pdf-to-whiteboard",
     "name": "PDF to Whiteboard",
     "description": "Intercepts PDF drops and converts them into TLDraw Whiteboard tiddlers.",
     "author": "Antigravity",
