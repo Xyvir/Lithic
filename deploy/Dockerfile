@@ -24,6 +24,7 @@ RUN curl -o /app/caddy "https://caddyserver.com/api/download?os=linux&arch=amd64
 COPY deploy/entrypoint.sh /app/entrypoint.sh
 COPY deploy/watcher.sh /app/watcher.sh
 COPY deploy/github-backup.sh /app/scripts/github-backup.sh
+COPY deploy/.agents /app/.agents
 RUN chmod +x /app/entrypoint.sh /app/watcher.sh /app/scripts/github-backup.sh
 
 # Copy Lithic UI files

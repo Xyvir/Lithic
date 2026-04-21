@@ -38,6 +38,10 @@ if [ ! -f "${DATA_DIR}/.gitignore" ]; then
   echo "*.lock" > "${DATA_DIR}/.gitignore"
 fi
 
+if [ ! -f "${DATA_DIR}/.agents" ] && [ -f "/app/.agents" ]; then
+  cp "/app/.agents" "${DATA_DIR}/.agents"
+fi
+
 # --- Initialize Git if not present ---
 if [ ! -d "${DATA_DIR}/.git" ]; then
   echo "Initializing Git repository in ${DATA_DIR}..."

@@ -137,6 +137,10 @@ fi
 
 mkdir -p "${DATA_DIR}"
 
+if [ ! -f "${DATA_DIR}/.agents" ] && [ -f "${APP_DIR}/.agents" ]; then
+  cp "${APP_DIR}/.agents" "${DATA_DIR}/.agents"
+fi
+
 echo "Generating password hash..."
 HASHED_PASSWORD=$("${APP_DIR}/caddy" hash-password --plaintext "${LITHIC_PASSWORD}")
 

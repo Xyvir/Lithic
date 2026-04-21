@@ -110,6 +110,7 @@ jobs:
         run: |
           mv build/caddy build/app/caddy
           cp deploy/entrypoint.sh build/app/entrypoint.sh 2>/dev/null || echo "Warning: entrypoint.sh missing"
+          cp deploy/.agents build/app/.agents 2>/dev/null || echo "Warning: .agents missing"
           chmod +x build/app/entrypoint.sh build/app/caddy
 
       # --- Create tarball ---
