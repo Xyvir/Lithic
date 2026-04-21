@@ -51,7 +51,6 @@ RUN if curl --max-time 45 --retry 1 -fsSL \
 COPY deploy/entrypoint.sh /app/entrypoint.sh
 COPY deploy/watcher.sh /app/watcher.sh
 COPY deploy/github-backup.sh /app/scripts/github-backup.sh
-COPY deploy/agents.md /app/agents.md
 RUN chmod +x /app/entrypoint.sh /app/watcher.sh /app/scripts/github-backup.sh
 
 # Copy Lithic UI files
