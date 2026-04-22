@@ -34,9 +34,26 @@ title: $:/plugins/sq/streams/templates/stream-row-template
 			<button type="button" class="tc-btn-invisible stream-node-ctrl-btn stream-node-collapser" data-btn-role="stream-node-visibility" data-rowchildren-visibility-state=<<row-children-visibility-state>>>
 				{{$:/plugins/sq/streams/icons/node-expand-arrow}}
 			</button>
-			<div class="stream-node-handle tc-btn-invisible stream-node-ctrl-btn" title={{{ [<currentTiddler>split[/]last[]] }}} data-btn-role="stream-node-decorator" data-node-title=<<currentTiddler>>>
+			<$list filter="[<currentTiddler>type[application/tldr]]" variable="null">
+				<$button
+					class="tc-btn-invisible stream-node-handle stream-node-ctrl-btn"
+					title={{{ [<currentTiddler>split[/]last[]] }}}
+					data-btn-role="stream-node-decorator"
+					data-node-title=<<currentTiddler>>
+					tooltip="Open in Whiteboard"
+				>
+					<$action-setfield $tiddler="$:/state/sidebar" text="no"/>
+					<$action-setfield $tiddler="$:/state/notebook-sidebar" text="no"/>
+					<$action-setfield $tiddler="$:/layout" text="$:/plugins/linonetwo/tw-whiteboard/tiddlywiki-ui/PageLayout/WhiteBoard"/>
+					<$action-setfield $tiddler="$:/state/Whiteboard/PageLayout/tiddler" text=<<currentTiddler>>/>
 					<div class="stream-node-handle-inner"/>
-			</div>
+				</$button>
+			</$list>
+			<$list filter="[<currentTiddler>!type[application/tldr]]" variable="null">
+				<div class="stream-node-handle tc-btn-invisible stream-node-ctrl-btn" title={{{ [<currentTiddler>split[/]last[]] }}} data-btn-role="stream-node-decorator" data-node-title=<<currentTiddler>>>
+					<div class="stream-node-handle-inner"/>
+				</div>
+			</$list>
 
             <$list filter="[<storyTiddler>tag[Journal]]" variable="ignore">
              <$let 

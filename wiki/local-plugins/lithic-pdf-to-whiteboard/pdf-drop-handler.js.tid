@@ -79,16 +79,30 @@ function generateWhiteboardData(images) {
         };
 
         // Initialize page state
-        // Zoom to fit calculation
-        // We assume a standard viewer width of ~800px and the 540px height from the Streams template.
-        const fitWidth = 800;
-        const fitHeight = 540;
-        const zoom = Math.min(fitWidth / img.width, fitHeight / img.height, 1);
+        // Zoom to fit: camera.point in TLDraw v1 is a screen-space offset.
+        // Positive values push content right/down, creating visible margins.
+        const sidebarMargin = 100; // desired screen-pixel margin (Page tab ≈ 80px, so 100px clears it)
+        const topMargin = 50;
+
+        // Use actual stream row height (540px) so the image fits within the viewer
+        const viewerWidth = 1200;
+        const viewerHeight = 540;
+
+        const zoom = Math.min(
+            (viewerWidth - sidebarMargin) / img.width,
+            (viewerHeight - topMargin) / img.height,
+            1
+        );
 
         pageStates[uuidPage] = {
             id: uuidPage,
             selectedIds: [],
-            camera: { point: [20, 20], zoom: zoom }
+            camera: {
+                // camera.point is in canvas space, so divide desired screen-pixel
+                // margin by zoom to get the correct canvas-unit offset.
+                point: [sidebarMargin / zoom, topMargin / zoom],
+                zoom: zoom
+            }
         };
     });
 
@@ -256,12 +270,15 @@ exports.startup = function() {
 
             // Create $:/Import tiddler listing what was imported
             var importList = createdTitles.map(function(t) { return "# [[" + t + "]]"; }).join("\n");
-            $tw.wiki.addTiddler(new $tw.Tiddler({
-                title: "$:/Import",
-                text: "The following tiddlers were imported:\n\n" + importList,
-                status: "complete",
-                tags: "$:/tags/Import"
-            }));
+            $tw.wiki.addTiddler(new $tw.Tiddler(
+                $tw.wiki.getCreationFields(),
+                $tw.wiki.getModificationFields(),
+                {
+                    title: "$:/Import",
+                    text: "The following tiddlers were imported:\n\n" + importList,
+                    status: "complete"
+                }
+            ));
 
             // Add $:/Import to the top of $:/StoryList
             var storyTiddler = $tw.wiki.getTiddler("$:/StoryList");
