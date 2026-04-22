@@ -1,4 +1,4 @@
-﻿title: $:/plugins/ahanniga/context-menu/ContextListener.js
+title: $:/plugins/ahanniga/context-menu/ContextListener.js
 type: application/javascript
 module-type: widget
 
@@ -68,8 +68,14 @@ This widgets implements context menus to tiddlers
     ContextListener.prototype.render = function (parent, nextSibling) {
         this.parentDomNode = parent;
         var self = this;
-        document.addEventListener("contextmenu", function (event) { self.contextmenu.call(self, event) });
-        document.onclick = this.hideMenu;
+        // Guard: only attach once to prevent stacking listeners across layout switches.
+        if (!ContextListener._listenerAttached) {
+            ContextListener._contextMenuHandler = function (event) { self.contextmenu.call(self, event); };
+            ContextListener._clickHandler = function () { self.hideMenu.call(self); };
+            document.addEventListener("contextmenu", ContextListener._contextMenuHandler);
+            document.addEventListener("click", ContextListener._clickHandler);
+            ContextListener._listenerAttached = true;
+        }
     };
 
     ContextListener.prototype.contextmenu = function (event) {
@@ -78,6 +84,11 @@ This widgets implements context menus to tiddlers
 
         if (getSelection().toString().trim().length > 0) {
             // User has selected text, so don't trigger this menu
+            return true;
+        }
+
+        // Skip when the whiteboard layout is active - TLDraw manages its own context menu.
+        if (event.target && event.target.closest && event.target.closest(".tw-whiteboard-layout-container")) {
             return true;
         }
 
