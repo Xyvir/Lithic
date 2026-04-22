@@ -131,6 +131,16 @@ jobs:
           path: lithic-server.tar.gz
           retention-days: 7
 
+      # --- Release (only if tag_name is provided) ---
+      - name: Add to Release
+        if: ${{ inputs.tag_name != '' }}
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ inputs.tag_name }}
+          files: lithic-server.tar.gz
+
       # --- Docker Publish (chained only) ---
       - name: Set up Docker Buildx
         if: ${{ inputs.tag_name != '' }}

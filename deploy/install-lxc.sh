@@ -8,10 +8,10 @@ set -euo pipefail
 # Fetches the latest release from GitHub Releases and sets up a systemd service.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/Xyvir/Lithic-UK/main/deploy/install-lxc.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Xyvir/Lithic/main/deploy/install-lxc.sh | bash
 # ==============================================================================
 
-REPO="Xyvir/Lithic-UK"
+REPO="${LITHIC_REPO:-Xyvir/Lithic}"
 INSTALL_DIR="/opt/lithic"
 DATA_DIR="/opt/lithic/data"
 ENV_FILE="/etc/default/lithic"

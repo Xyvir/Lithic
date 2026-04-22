@@ -8,7 +8,7 @@ Lithic is a TiddlyWiki-powered PKMS that stores your data in `.lith` files. The 
 
 Deploy Lithic to Railway with a single click. Railway will build the Caddy+WebDAV server from source and provision a persistent volume automatically.
 
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/lithic-uk-remote)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/lithic-remote)
 
 > **Note:** After creating the template in the Railway dashboard, set these environment variables:
 > - `LITHIC_USER` — your username
@@ -22,7 +22,7 @@ docker run -d --name lithic \
   -e LITHIC_USER=admin \
   -e LITHIC_PASSWORD=your-secret-password \
   -v lithic-data:/data \
-  ghcr.io/xyvir/lithic-uk:latest
+  ghcr.io/xyvir/lithic:latest
 ```
 
 Or build from source:
@@ -42,7 +42,7 @@ docker run -d --name lithic \
 Run this inside a Debian/Ubuntu LXC container:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Xyvir/Lithic-UK/main/deploy/install-lxc.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Xyvir/Lithic/main/deploy/install-lxc.sh | bash
 ```
 
 Then edit your credentials:
@@ -54,7 +54,7 @@ sudo systemctl restart lithic
 
 ### Method D: Manual Install
 
-1. Download the latest `lithic-server.tar.gz` from [GitHub Releases](https://github.com/Xyvir/Lithic-UK/releases).
+1. Download the latest `lithic-server.tar.gz` from [GitHub Releases](https://github.com/Xyvir/Lithic/releases).
 2. Extract it:
    ```bash
    mkdir -p /app
@@ -158,7 +158,7 @@ cp -r /opt/lithic/data ~/lithic-backup
 
 ### Docker
 ```bash
-docker pull ghcr.io/xyvir/lithic-uk:latest
+docker pull ghcr.io/xyvir/lithic:latest
 docker stop lithic && docker rm lithic
 # Re-run the docker run command above
 ```
@@ -166,7 +166,7 @@ docker stop lithic && docker rm lithic
 ### LXC
 Re-run the installer — it will download the latest release and restart the service:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Xyvir/Lithic-UK/main/deploy/install-lxc.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Xyvir/Lithic/main/deploy/install-lxc.sh | bash
 ```
 
 ---

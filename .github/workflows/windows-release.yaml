@@ -78,12 +78,14 @@ jobs:
 
       - name: Rename Offline Artifact
         run: |
-          $exe = Get-ChildItem -Path "src-tauri/target/release/*.exe" | Select-Object -First 1
+          $exe = Get-ChildItem -Path "src-tauri/target/release" -Filter "*.exe" -Recurse | Where-Object { $_.FullName -notmatch "deps" -and $_.FullName -notmatch "build" } | Select-Object -First 1
           if ($exe) {
-            Move-Item $exe.FullName -Destination "Lithic-Offline.exe"
+            Write-Host "Found EXE at: $($exe.FullName)"
+            Copy-Item $exe.FullName -Destination "Lithic-Offline.exe"
             Write-Host "Created Lithic-Offline.exe"
           } else {
-            Write-Error "Build failed: No .exe found in release folder."
+            Write-Error "Build failed: No .exe found in target/release folder."
+            exit 1
           }
 
       # --- ONLINE BUILD DISABLED ---
@@ -122,9 +124,10 @@ jobs:
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.tag.outputs.date }}
-          name: Release ${{ steps.tag.outputs.date }}
           draft: false
           prerelease: false
           files: |
