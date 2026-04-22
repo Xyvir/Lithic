@@ -57,11 +57,13 @@ Version 1.98 released:
 TODO:
 
 MODULARIZE LAUNCHER.HTML MONOLITH
+
 - need to break it up into invidiual files to keep development sane; and then roll it up with CI/CD using either:
 Vite + vite-plugin-singlefile OR esbuild
 and minify
 
 SELF-HOST IMPROVEMENTS:
+
 **Public Sharing**
 - Create mechanism for self-hosters to specify 'public' *.liths. (hook into existing external *.lith payload url injection?)
 - Change self-hoster entrypoint to /login? (so public is default?)
