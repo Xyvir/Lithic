@@ -205,30 +205,46 @@ exports.startup = function() {
                     }
                 }
 
-                // Create the whiteboard tiddler
+                // Create the tiddlers
                 setProgress("Converting " + file.name + " — creating tiddlers...");
-                const payload = generateWhiteboardData(images);
                 const baseName = file.name.replace(/\.pdf$/i, "");
-                const wbTitle = $tw.wiki.generateNewTitle(baseName + " Whiteboard");
+                
+                // Generate titles
+                const containerTitle = $tw.wiki.generateNewTitle(baseName);
+                const txtTitle = $tw.wiki.generateNewTitle(containerTitle + "-text");
+                const wbTitle = $tw.wiki.generateNewTitle(containerTitle + "-whiteboard");
 
+                // Create the container tiddler (streams node-parent)
                 $tw.wiki.addTiddler(new $tw.Tiddler({
-                    title: wbTitle,
-                    text: JSON.stringify(payload),
-                    type: "application/tldr"
+                    title: containerTitle,
+                    "stream-list": $tw.utils.stringifyList([txtTitle, wbTitle]),
+                    "stream-type": "default",
+                    text: ""
                 }));
 
                 // Create the plaintext markdown tiddler
                 var markdownBody = "# " + baseName + "\n\n" + pageTexts.join("\n\n---\n\n");
-                var txtTitle = $tw.wiki.generateNewTitle(baseName);
-
                 $tw.wiki.addTiddler(new $tw.Tiddler({
                     title: txtTitle,
+                    parent: containerTitle,
                     text: markdownBody,
-                    type: "text/x-markdown"
+                    type: "text/x-markdown",
+                    "stream-type": "default"
                 }));
 
-                createdTitles.push(wbTitle);
+                // Create the whiteboard tiddler
+                const payload = generateWhiteboardData(images);
+                $tw.wiki.addTiddler(new $tw.Tiddler({
+                    title: wbTitle,
+                    parent: containerTitle,
+                    text: JSON.stringify(payload),
+                    type: "application/tldr",
+                    "stream-type": "default"
+                }));
+
+                createdTitles.push(containerTitle);
                 createdTitles.push(txtTitle);
+                createdTitles.push(wbTitle);
             }
 
             // Clear progress
