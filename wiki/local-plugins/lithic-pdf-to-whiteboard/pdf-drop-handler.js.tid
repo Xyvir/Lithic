@@ -243,8 +243,6 @@ exports.startup = function() {
                 }));
 
                 createdTitles.push(containerTitle);
-                createdTitles.push(txtTitle);
-                createdTitles.push(wbTitle);
             }
 
             // Clear progress
