@@ -45,25 +45,43 @@ tc-page-container tc-page-view-$(storyviewTitle)$ tc-language-$(languageTitle)$ 
 		</$list>
 	</$select>
 
-	<$button tooltip="New" popup="$:/state/Whiteboard/PageLayout/CreateNewTiddlerPopup">{{$:/core/images/new-button}}</$button>
+	<$button tooltip="New Whiteboard" popup="$:/state/Whiteboard/PageLayout/CreateNewTiddlerPopup">
+		{{$:/core/images/new-button}}
+	</$button>
 	<$reveal type="popup" state="$:/state/Whiteboard/PageLayout/CreateNewTiddlerPopup">
 		{{$:/plugins/linonetwo/tw-whiteboard/tiddlywiki-ui/PageLayout/CreateNewTiddlerPopup}}
 	</$reveal>
 
+	<span class="lithic-wb-save-btn">{{$:/core/ui/Buttons/save-wiki}}</span>
+
 	<$reveal state="$:/state/Whiteboard/PageLayout/tiddler" type="nomatch" text="">
-		<$button tooltip="Open In StoryView">
-			{{$:/core/images/home-button}}
-			<$action-setfield $tiddler="$:/layout" text="$:/core/ui/PageTemplate"/>
-		</$button>
+		<$reveal state="$:/state/lithic/whiteboard-pending" type="match" text="yes">
+			<$button tooltip="Saving…" disabled="yes" class="tc-btn-invisible" style="opacity: 0.4; cursor: not-allowed;">
+				{{$:/core/images/home-button}} <small>saving…</small>
+			</$button>
+		</$reveal>
+		<$reveal state="$:/state/lithic/whiteboard-pending" type="nomatch" text="yes">
+			<$button tooltip="Open In StoryView">
+				{{$:/core/images/home-button}}
+				<$action-setfield $tiddler="$:/layout" text="$:/core/ui/PageTemplate"/>
+			</$button>
+		</$reveal>
 	</$reveal>
 	<!-- default value, when first opened, select widget's state tiddler is empty, but default value filter gives a value, we show that tiddler -->
 	<$reveal state="$:/state/Whiteboard/PageLayout/tiddler" type="match" text="">
 		<$list filter='[all[shadows+tiddlers]field:type[application/tldr]sort[modified]first[]]'>
-			<$button tooltip="Open In StoryView">
-				{{$:/core/images/home-button}}
-				<$action-setfield $tiddler="$:/layout" text="$:/core/ui/PageTemplate"/>
-				<$action-navigate $to={{{[all[shadows+tiddlers]field:type[application/tldr]sort[modified]first[]]}}} />
-			</$button>
+			<$reveal state="$:/state/lithic/whiteboard-pending" type="match" text="yes">
+				<$button tooltip="Saving…" disabled="yes" class="tc-btn-invisible" style="opacity: 0.4; cursor: not-allowed;">
+					{{$:/core/images/home-button}} <small>saving…</small>
+				</$button>
+			</$reveal>
+			<$reveal state="$:/state/lithic/whiteboard-pending" type="nomatch" text="yes">
+				<$button tooltip="Open In StoryView">
+					{{$:/core/images/home-button}}
+					<$action-setfield $tiddler="$:/layout" text="$:/core/ui/PageTemplate"/>
+					<$action-navigate $to={{{[all[shadows+tiddlers]field:type[application/tldr]sort[modified]first[]]}}} />
+				</$button>
+			</$reveal>
 		</$list>
 	</$reveal>
 </nav>

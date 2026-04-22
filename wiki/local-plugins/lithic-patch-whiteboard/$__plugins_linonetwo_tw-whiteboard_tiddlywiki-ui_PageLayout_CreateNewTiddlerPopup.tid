@@ -1,0 +1,43 @@
+created: 20260422195500000
+modified: 20260422195500000
+tags: 
+title: $:/plugins/linonetwo/tw-whiteboard/tiddlywiki-ui/PageLayout/CreateNewTiddlerPopup
+
+\whitespace trim
+
+\procedure do-create-whiteboard()
+<$set name="rawName" value={{$:/state/lithic/new-whiteboard-name}}>
+<$set name="ts" value={{{ [<now>format[YYYY0MM0DD0hh0mm0ss]] }}}>
+<$set name="finalTitle" value={{{ [<rawName>!is[blank]then<rawName>] ~[<ts>addsuffix[-whiteboard]] }}}>
+  <$action-createtiddler
+    $basetitle=<<finalTitle>>
+    $template="$:/DefaultCanvas"
+    type="application/tldr"
+    $createdtitle="newTitle"
+  />
+  <$action-setfield $tiddler="$:/state/Whiteboard/PageLayout/tiddler" text=<<newTitle>>/>
+  <$action-setfield $tiddler="$:/state/lithic/new-whiteboard-name" text=""/>
+  <$action-deletetiddler $tiddler="$:/state/Whiteboard/PageLayout/CreateNewTiddlerPopup"/>
+</$set>
+</$set>
+</$set>
+\end
+
+<div style="padding: 8px 10px; display: flex; gap: 6px; align-items: center;" onclick="event.stopPropagation();">
+  <$keyboard key="Enter" actions=<<do-create-whiteboard>>>
+    <$edit-text
+      tiddler="$:/state/lithic/new-whiteboard-name"
+      field="text"
+      placeholder="Name (blank → timestamp)"
+      tag="input"
+      type="text"
+      class="tc-edit-texteditor"
+      style="padding: 5px 8px;"
+      focus="true"
+    />
+  </$keyboard>
+  <$button class="tc-btn-big-green" style="padding: 4px 14px; white-space: nowrap;">
+    Create
+    <<do-create-whiteboard>>
+  </$button>
+</div>

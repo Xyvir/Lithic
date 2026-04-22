@@ -1,0 +1,38 @@
+created: 20260422200600000
+modified: 20260422200600000
+tags: $:/tags/Stylesheet
+title: $:/Lithic/Patches/Whiteboard/SaveButtonStyle
+type: text/css
+
+/* Ensure the save-wiki button in the whiteboard top bar
+   matches the size and pill styling of the adjacent buttons */
+
+.lithic-wb-save-btn {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 1px;
+}
+
+.lithic-wb-save-btn button {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 3.2em; /* Wider for pill shape */
+    height: 2.0em; /* Shorter to match neighbors */
+    border-radius: 1em; /* Pill shape */
+    background: #373d44; /* Darker, matching the screenshot color */
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.lithic-wb-save-btn button:hover {
+    background: #373d44; /* Consistent background */
+}
+
+/* Scale up the SVG icon inside */
+.lithic-wb-save-btn button svg {
+    width: 1.2em;
+    height: 1.2em;
+}
