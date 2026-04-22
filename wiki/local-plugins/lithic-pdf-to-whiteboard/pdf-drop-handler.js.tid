@@ -118,186 +118,201 @@ function generateWhiteboardData(images) {
     };
 }
 
+async function convertPdfDataToTiddlers(arrayBuffer, fileName, setProgress) {
+    const pdfjsLib = require("$:/plugins/lithic/lithic-pdf-to-whiteboard/pdf.js");
+    
+    // --- Worker Configuration ---
+    if (!globalThis.pdfjsWorker) {
+        var workerText = $tw.wiki.getTiddlerText("$:/plugins/lithic/lithic-pdf-to-whiteboard/pdf.worker.js");
+        if (workerText) {
+            (new Function(workerText))();
+        }
+    }
+    if (pdfjsLib.GlobalWorkerOptions && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "data:application/javascript,";
+    }
+
+    setProgress("Converting " + fileName + " — loading PDF...");
+    
+    const loadingTask = pdfjsLib.getDocument({ 
+        data: arrayBuffer,
+        isEvalSupported: false,
+        disableStream: true,
+        disableAutoFetch: true
+    });
+    
+    const pdf = await loadingTask.promise;
+    const images = [];
+    var pageTexts = [];
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+        setProgress("Converting " + fileName + " — rendering page " + i + "/" + pdf.numPages + "...");
+
+        const page = await pdf.getPage(i);
+        const scale = 2.0; 
+        const viewport = page.getViewport({ scale: scale });
+
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({ canvasContext: context, viewport: viewport }).promise;
+
+        const dataUri = canvas.toDataURL("image/png");
+        images.push({
+            filename: "page_" + i + ".png",
+            dataUri: dataUri,
+            width: viewport.width,
+            height: viewport.height
+        });
+
+        var textContent = await page.getTextContent();
+        var pageText = textContent.items
+            .map(function(item) { return item.str; })
+            .join(" ")
+            .replace(/\s+/g, " ")
+            .trim();
+        if (pageText) {
+            pageTexts.push("## Page " + i + "\n\n" + pageText);
+        }
+    }
+
+    const baseName = fileName.replace(/\.pdf$/i, "");
+    const containerTitle = $tw.wiki.generateNewTitle(baseName);
+    const txtTitle = $tw.wiki.generateNewTitle(containerTitle + "-text");
+    const wbTitle = $tw.wiki.generateNewTitle(containerTitle + "-whiteboard");
+
+    const tiddlers = [];
+    
+    // Container tiddler
+    tiddlers.push({
+        title: containerTitle,
+        "stream-list": $tw.utils.stringifyList([txtTitle, wbTitle]),
+        "stream-type": "default",
+        text: ""
+    });
+
+    // Plaintext markdown tiddler
+    var markdownBody = "# " + baseName + "\n\n" + pageTexts.join("\n\n---\n\n");
+    tiddlers.push({
+        title: txtTitle,
+        parent: containerTitle,
+        text: markdownBody,
+        type: "text/x-markdown",
+        "stream-type": "default"
+    });
+
+    // Whiteboard tiddler
+    const payload = generateWhiteboardData(images);
+    tiddlers.push({
+        title: wbTitle,
+        parent: containerTitle,
+        text: JSON.stringify(payload),
+        type: "application/tldr",
+        "stream-type": "default"
+    });
+
+    return tiddlers;
+}
+
 exports.startup = function() {
-    document.addEventListener("drop", async function(event) {
-        if (!event.dataTransfer || !event.dataTransfer.files || event.dataTransfer.files.length === 0) {
-            return;
-        }
+    var alertTitle = "$:/temp/alerts/pdf-import-progress";
+    function setProgress(msg) {
+        $tw.wiki.addTiddler(new $tw.Tiddler({
+            title: alertTitle,
+            text: msg,
+            component: "pdf-to-whiteboard",
+            tags: "$:/tags/Alert",
+            modified: new Date()
+        }));
+    }
+    function clearProgress() {
+        $tw.wiki.deleteTiddler(alertTitle);
+    }
 
-        const files = event.dataTransfer.files;
+    async function handleFiles(files, event) {
         const pdfFiles = Array.from(files).filter(f => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
+        if (pdfFiles.length > 0) {
+            // We found PDFs, so intercept this event completely
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
 
-        if (pdfFiles.length === 0) {
-            return; // Not a PDF
-        }
-
-        // We have a PDF, intercept!
-        event.preventDefault();
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-
-        // Dismiss TiddlyWiki's orange drop zone bar by firing a synthetic dragleave
-        document.dispatchEvent(new DragEvent("dragleave", { bubbles: true }));
-
-        // Single progress alert tiddler - updated in place
-        var alertTitle = "$:/temp/alerts/pdf-import-progress";
-        function setProgress(msg) {
-            $tw.wiki.addTiddler(new $tw.Tiddler({
-                title: alertTitle,
-                text: msg,
-                component: "pdf-to-whiteboard",
-                tags: "$:/tags/Alert",
-                modified: new Date()
-            }));
-        }
-        function clearProgress() {
-            $tw.wiki.deleteTiddler(alertTitle);
-        }
-
-        try {
-            const pdfjsLib = require("$:/plugins/lithic/lithic-pdf-to-whiteboard/pdf.js");
-            
-            // --- Worker Configuration for file:// protocol ---
-            // Execute the pdf.worker.js bundle on the main thread so that
-            // globalThis.pdfjsWorker.WorkerMessageHandler is available for
-            // pdf.js's fake-worker (main-thread) fallback via LoopbackPort.
-            if (!globalThis.pdfjsWorker) {
-                var workerText = $tw.wiki.getTiddlerText("$:/plugins/lithic/lithic-pdf-to-whiteboard/pdf.worker.js");
-                if (workerText) {
-                    (new Function(workerText))();
-                }
-            }
-            
-            // Set workerSrc so _initialize() doesn't throw.
-            if (pdfjsLib.GlobalWorkerOptions && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
-                pdfjsLib.GlobalWorkerOptions.workerSrc = "data:application/javascript,";
+            // If it was a drop, dismiss the TW dropzone UI
+            if (event.type === "drop") {
+                document.dispatchEvent(new DragEvent("dragleave", { bubbles: true }));
             }
 
-            var createdTitles = [];
-
-            for (const file of pdfFiles) {
-                setProgress("Converting " + file.name + " — loading PDF...");
-
-                const arrayBuffer = await file.arrayBuffer();
-                
-                const loadingTask = pdfjsLib.getDocument({ 
-                    data: arrayBuffer,
-                    isEvalSupported: false,
-                    disableStream: true,
-                    disableAutoFetch: true
-                });
-                
-                const pdf = await loadingTask.promise;
-
-                const images = [];
-                var pageTexts = [];
-                for (let i = 1; i <= pdf.numPages; i++) {
-                    setProgress("Converting " + file.name + " — rendering page " + i + "/" + pdf.numPages + "...");
-
-                    const page = await pdf.getPage(i);
-                    const scale = 2.0; 
-                    const viewport = page.getViewport({ scale: scale });
-
-                    const canvas = document.createElement("canvas");
-                    const context = canvas.getContext("2d");
-                    canvas.width = viewport.width;
-                    canvas.height = viewport.height;
-
-                    await page.render({ canvasContext: context, viewport: viewport }).promise;
-
-                    const dataUri = canvas.toDataURL("image/png");
-                    images.push({
-                        filename: "page_" + i + ".png",
-                        dataUri: dataUri,
-                        width: viewport.width,
-                        height: viewport.height
-                    });
-
-                    // Extract text content from this page
-                    var textContent = await page.getTextContent();
-                    var pageText = textContent.items
-                        .map(function(item) { return item.str; })
-                        .join(" ")
-                        .replace(/\s+/g, " ")
-                        .trim();
-                    if (pageText) {
-                        pageTexts.push("## Page " + i + "\n\n" + pageText);
+            try {
+                var createdTitles = [];
+                for (const file of pdfFiles) {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const tiddlers = await convertPdfDataToTiddlers(arrayBuffer, file.name, setProgress);
+                    
+                    // Add tiddlers to the wiki
+                    for (const fields of tiddlers) {
+                        $tw.wiki.addTiddler(new $tw.Tiddler(fields));
+                        if (!fields.parent) { // It's the container
+                            createdTitles.push(fields.title);
+                        }
                     }
                 }
 
-                // Create the tiddlers
-                setProgress("Converting " + file.name + " — creating tiddlers...");
-                const baseName = file.name.replace(/\.pdf$/i, "");
-                
-                // Generate titles
-                const containerTitle = $tw.wiki.generateNewTitle(baseName);
-                const txtTitle = $tw.wiki.generateNewTitle(containerTitle + "-text");
-                const wbTitle = $tw.wiki.generateNewTitle(containerTitle + "-whiteboard");
+                clearProgress();
 
-                // Create the container tiddler (streams node-parent)
+                // Update $:/Import and $:/StoryList
+                var importList = createdTitles.map(function(t) { return "# [[" + t + "]]"; }).join("\n");
+                $tw.wiki.addTiddler(new $tw.Tiddler(
+                    $tw.wiki.getCreationFields(),
+                    $tw.wiki.getModificationFields(),
+                    {
+                        title: "$:/Import",
+                        text: "The following tiddlers were imported:\n\n" + importList,
+                        status: "complete"
+                    }
+                ));
+
+                var storyTiddler = $tw.wiki.getTiddler("$:/StoryList");
+                var storyList = storyTiddler ? ($tw.utils.parseStringArray(storyTiddler.fields.list) || []) : [];
+                storyList = storyList.filter(function(t) { return t !== "$:/Import"; });
+                storyList.unshift("$:/Import");
                 $tw.wiki.addTiddler(new $tw.Tiddler({
-                    title: containerTitle,
-                    "stream-list": $tw.utils.stringifyList([txtTitle, wbTitle]),
-                    "stream-type": "default",
-                    text: ""
+                    title: "$:/StoryList",
+                    list: $tw.utils.stringifyList(storyList)
                 }));
 
-                // Create the plaintext markdown tiddler
-                var markdownBody = "# " + baseName + "\n\n" + pageTexts.join("\n\n---\n\n");
-                $tw.wiki.addTiddler(new $tw.Tiddler({
-                    title: txtTitle,
-                    parent: containerTitle,
-                    text: markdownBody,
-                    type: "text/x-markdown",
-                    "stream-type": "default"
-                }));
-
-                // Create the whiteboard tiddler
-                const payload = generateWhiteboardData(images);
-                $tw.wiki.addTiddler(new $tw.Tiddler({
-                    title: wbTitle,
-                    parent: containerTitle,
-                    text: JSON.stringify(payload),
-                    type: "application/tldr",
-                    "stream-type": "default"
-                }));
-
-                createdTitles.push(containerTitle);
-            }
-
-            // Clear progress
-            clearProgress();
-
-            // Create $:/Import tiddler listing what was imported
-            var importList = createdTitles.map(function(t) { return "# [[" + t + "]]"; }).join("\n");
-            $tw.wiki.addTiddler(new $tw.Tiddler(
-                $tw.wiki.getCreationFields(),
-                $tw.wiki.getModificationFields(),
-                {
-                    title: "$:/Import",
-                    text: "The following tiddlers were imported:\n\n" + importList,
-                    status: "complete"
+                // Handle other (non-PDF) files that were part of the same selection
+                const otherFiles = Array.from(files).filter(f => !pdfFiles.includes(f));
+                if (otherFiles.length > 0) {
+                    $tw.utils.each(otherFiles, function(file) {
+                        $tw.utils.deserializeTiddlers(file.type, file, {}, function(tiddlers) {
+                            $tw.rootWidget.dispatchEvent({type: "tm-import-tiddlers", tiddlers: tiddlers});
+                        });
+                    });
                 }
-            ));
 
-            // Add $:/Import to the top of $:/StoryList
-            var storyTiddler = $tw.wiki.getTiddler("$:/StoryList");
-            var storyList = storyTiddler ? ($tw.utils.parseStringArray(storyTiddler.fields.list) || []) : [];
-            // Remove any existing $:/Import from the list
-            storyList = storyList.filter(function(t) { return t !== "$:/Import"; });
-            // Prepend $:/Import
-            storyList.unshift("$:/Import");
-            $tw.wiki.addTiddler(new $tw.Tiddler({
-                title: "$:/StoryList",
-                list: $tw.utils.stringifyList(storyList)
-            }));
+            } catch (err) {
+                clearProgress();
+                console.error("PDF Processing error:", err);
+                setProgress("Failed to convert PDF: " + err.message);
+            }
+        }
+    }
 
-        } catch (err) {
-            clearProgress();
-            console.error("PDF to Whiteboard error:", err);
-            setProgress("Failed to convert PDF: " + err.message);
+    // Intercept drops
+    document.addEventListener("drop", function(event) {
+        if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+            handleFiles(event.dataTransfer.files, event);
         }
     }, true); 
+
+    // Intercept the native Import button (and any other file inputs)
+    document.addEventListener("change", function(event) {
+        if (event.target.tagName === "INPUT" && event.target.type === "file" && event.target.files && event.target.files.length > 0) {
+            handleFiles(event.target.files, event);
+        }
+    }, true);
 };
 
 })();
