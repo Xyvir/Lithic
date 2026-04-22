@@ -40,7 +40,12 @@ title: $:/plugins/sq/streams/templates/stream-row-body
 </$list>
 
 <$list filter="[all[current]get[text]!prefix<todo1>!prefix<todo2>!prefix<done1>!prefix<done2>!prefix<done3>!prefix<done4>]" variable="null">
-   <$transclude field="text" mode="block"/>
+   <$list filter="[all[current]type[application/tldr]]" variable="null">
+      <$whiteboard tiddler=<<currentTiddler>> height="540px" readonly="yes"/>
+   </$list>
+   <$list filter="[all[current]!type[application/tldr]]" variable="null">
+      <$transclude field="text" mode="block"/>
+   </$list>
 </$list>
 
 </$vars>

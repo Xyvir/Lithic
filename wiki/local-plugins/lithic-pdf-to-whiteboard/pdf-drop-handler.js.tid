@@ -79,10 +79,16 @@ function generateWhiteboardData(images) {
         };
 
         // Initialize page state
+        // Zoom to fit calculation
+        // We assume a standard viewer width of ~800px and the 540px height from the Streams template.
+        const fitWidth = 800;
+        const fitHeight = 540;
+        const zoom = Math.min(fitWidth / img.width, fitHeight / img.height, 1);
+
         pageStates[uuidPage] = {
             id: uuidPage,
             selectedIds: [],
-            camera: { point: [80, 80], zoom: 1 }
+            camera: { point: [20, 20], zoom: zoom }
         };
     });
 
