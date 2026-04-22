@@ -22,9 +22,10 @@ title: $:/core/ui/SideBar/Tools
 	text-align: center;
 }
 
-/* THE FLATTENER: Forces every hidden wrapper div to center its contents */
+/* THE FLATTENER: Forces every hidden wrapper div to center its contents 
+   Modified to only target the tool items and their immediate wrappers to avoid breaking dropdowns */
 .lith-sidebar-tools-item,
-.lith-sidebar-tools-item div {
+.lith-sidebar-tools-item > div {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -35,9 +36,10 @@ title: $:/core/ui/SideBar/Tools
 	margin: 0 !important;
 }
 
-/* Button Styling */
-.lith-sidebar-tools-item button,
-.lith-sidebar-tools-item label.tc-btn-invisible {
+/* Button Styling - Restricted to tool buttons to avoid affecting dropdown items */
+.lith-sidebar-tools-item > div > button,
+.lith-sidebar-tools-item > div > span > button,
+.lith-sidebar-tools-item > div > label.tc-btn-invisible {
 	display: flex !important;
 	flex-wrap: nowrap !important;
 	align-items: center;
@@ -52,6 +54,24 @@ title: $:/core/ui/SideBar/Tools
 	overflow: hidden;
 	container-type: inline-size;
 }
+
+/* Specific reset for dropdowns inside the tools grid */
+.lith-sidebar-tools-item .tc-drop-down {
+	display: block !important;
+	width: auto !important;
+	min-width: 160px;
+	text-align: left;
+}
+
+.lith-sidebar-tools-item .tc-drop-down button {
+	display: block !important;
+	width: 100% !important;
+	max-width: none !important;
+	padding: 4px 8px !important;
+	text-align: left;
+	font-size: 0.9em !important;
+}
+
 .lith-sidebar-tools-item button .tc-btn-text,
 .lith-sidebar-tools-item label.tc-btn-invisible .tc-btn-text {
 	font-size: clamp(8px, 12cqw, 0.9em) !important; 
