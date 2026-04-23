@@ -1,5 +1,5 @@
 created: 20251129175226799
-modified: 20251130033349811
+modified: 20260423135101000
 tags: $:/tags/Stylesheet
 title: $:/lithic/styles/printstyle.css
 type: text/css
@@ -180,6 +180,13 @@ type: text/css
        8. HIDE WHITEBOARD UI ELEMENTS
        (Ensures whiteboard content prints without menus)
        ======================================================= */
+
+    /* Hide TLDraw Left Menu Panel and Icon */
+    #TD-MenuPanel,
+    #TD-MenuIcon,
+    #TD-Page {
+        display: none !important;
+    }
 
     /* Hide TLDraw right-side UI (Zoom, Read Only indicator) */
     .c-bUEyht-jvfJsl-side-right,

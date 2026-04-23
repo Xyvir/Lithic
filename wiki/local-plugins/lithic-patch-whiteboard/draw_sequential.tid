@@ -5,10 +5,7 @@ tags: $:/tags/Global
 <div class="sequential-whiteboard-container">
 <$let pageCount={{{ [<source>get[text]jsonindexes[document],[pages]count[]] }}}>
 <$list filter="[range[0],<pageCount>!match<pageCount>]" variable="targetIndex">
-<div class="lithic-seq-step" style="margin-bottom: 50px; border-bottom: 2px solid #333; padding-bottom: 20px;">
-<div style="font-size: 11px; color: #666; font-family: monospace; margin-bottom: 10px; font-weight: bold;">
-PAGE <<targetIndex>> OF <<source>>
-</div>
+<div class="lithic-seq-step" style="margin-bottom: 5px; padding: 0; border: none; page-break-inside: avoid; break-inside: avoid;">
 <$let pageTiddler={{{ [<source>whiteboard-page<targetIndex>] }}}>
 <$whiteboard tiddler=<<pageTiddler>> height=<<height>> readonly="yes" />
 </$let>
