@@ -1,51 +1,88 @@
-# Editing Remote WebDAV Files Provided via extension Context
+\# Agent Directives for Lithic \& Antigravity IDE
 
-**CONTEXT:**
-When a USER provides a remote WebDAV file as context via the VSCode extension, it appears as an active document URI looking somewhat like this:
-`webdav://<user>:<password>@<domain.app>/<filename>?ssl=1&base=<basepath>/`
-*(Example: `webdav://xyvir:Dunko*fiver*555*@lithic-uk-production.up.railway.app/SP26_TM.lith?ssl=1&base=sync/`)*
 
-**PROBLEM:**
-1. Built-in file system tools (`view_file`, `replace_file_content`, etc.) cannot natively read or write `webdav://` absolute paths.
-2. The remote `.lith` files are often too large (e.g. 7MB+) for the agentic code editing tools' size limits (4MB limit). 
 
-**SOLUTION / STANDARD OPERATING PROCEDURE:**
-To view or modify these files, you *must* interact directly with the WebDAV HTTPS endpoint using your command shell (`curl`), circumventing typical local file APIs.
+\## 1. Antigravity \& WebDAV Context
 
-### 1. Formulating the Request
-Extract the credentials and path structure from the `webdav://` URI.
-- Authentication string: `-u "<user>:<password>"`
-- Target URL: `https://<domain.app>/<basepath>/<filename>`
+This workspace uses the Antigravity extension to interface with a remote WebDAV server. 
 
-### 2. Reading Contents
-To read the original file (if it's not cached locally or is too large to load in an editor payload):
-Use PowerShell / cmd `curl` to fetch. Keep in mind Windows PowerShell pipes might terminate early (`Exit Code 1`) when piping to `Select-Object`, but the output is still viable.
-```powershell
-curl.exe -s -u "<user>:<password>" "https://<domain.app>/<basepath>/<filename>" | Select-Object -First 20
-```
 
-### 3. Editing and Appending (Overcoming File Size Limits)
-For files too large for standard code-editing tools:
-1. Download a complete local copy to a temporary directory (e.g. `C:\scratch\<filename>`).
-   ```powershell
-   curl.exe -s -u "<user>:<password>" "https://<domain.app>/<basepath>/<filename>" -o C:\scratch\<filename>
-   ```
-2. Create the appended content (or perform edits/replacements) using `write_to_file` on a standard `C:\scratch\temp.txt` file. 
-3. Perform the concatenation or replacement at the shell level.
-   ```cmd
-   cmd.exe /c "type C:\scratch\temp.txt >> C:\scratch\<filename>"
-   ```
-4. Upload the modified file back to the server using the HTTP PUT (`-T`) method in `curl`.
-   ```powershell
-   curl.exe -s -u "<user>:<password>" -T C:\scratch\<filename> "https://<domain.app>/<basepath>/<filename>"
-   ```
-   
-*(Ensure to clean up `scratch/` files after successful upload to prevent leaving lingering copies).*
 
-### What is a `*.lith` File?
-A `.lith` file is an extension of the vanilla TiddlyWiki `*.tid` file format, which is based on an HTTP RFC format for headers and body.
+\* \*\*Sync Awareness\*\*: Files are synced via WebDAV. Do not suggest scripts that perform bulk local file system operations without acknowledging that the Antigravity sync provider must handle the actual upload/download.
 
-**Key differences and requirements for `.lith` formats:**
-1. It supports multiple tiddlers appended together within a single file.
-2. The **triple-asterism** (`⁂⁂⁂`) is used as a strict delimiter to separate each individual tiddler inside the file. Do NOT use standard asterisks.
-3. The `title` field is explicitly required for each tiddler entry within the file.
+\* \*\*TiddlyWiki Format\*\*: Most files in this workspace are `\*.lith` files. (explained below) When editing, you MUST preserve the header block (e.g., title, tags, created, modified) at the top of the file.
+
+\* \*\*Remote Latency\*\*: File I/O is slower than local disk. Prioritize methods that use the IDE's Search Index rather than external grep tools that trigger unnecessary WebDAV traffic.
+
+\* \*\*Conflict Resolution\*\*: Always check if the Antigravity status bar shows 'Synced' before assuming the remote WebDAV state matches the local editor.
+
+
+
+\## 2. Remote WebDAV Execution Protocol
+
+\*\*Trigger:\*\* Active document URI matches `webdav://<user>:<password>@<domain.app>/<filename>?ssl=1\&base=<basepath>/`
+
+
+
+\*\*Strict Limitations:\*\*
+
+\* \*\*NO NATIVE FILE APIs:\*\* Never use built-in tools (e.g., `view\_file`) on WebDAV URIs. They will fail.
+
+\* \*\*CURL ONLY:\*\* Translate the URI to `https://<domain.app>/<basepath>/<filename>` and use shell/PowerShell `curl.exe`.
+
+
+
+\*\*Execution Steps:\*\*
+
+1\. \*\*Read/Inspect (Preferred):\*\* For full file inspection, download to a local workspace path first to avoid terminal truncation:
+   \* `curl.exe -s -u "<user>:<password>" "https://..." -o ./temp_inspect.lith`
+   \* Then use `view\_file` on the local copy.
+
+2\. \*\*Read (Partial/Quick):\*\* `curl.exe -s -u "<user>:<password>" "https://..." | Select-Object -First 20`
+
+3\. \*\*Edit/Append:\*\*
+&#x20;  \* \*Download:\* `curl.exe -s -u "<user>:<password>" "https://..." -o ./temp/<filename>`
+&#x20;  \* \*Modify:\* Write changes to `./temp/temp.txt`, then append: `cmd.exe /c "type ./temp/temp.txt >> ./temp/<filename>"`
+&#x20;  \* \*Upload:\* `curl.exe -s -u "<user>:<password>" -T ./temp/<filename> "https://..."` (Use `-T` to avoid OS-level character conversion).
+&#x20;  \* \*Cleanup:\* Delete all temp files in `./temp/`.
+
+
+
+\## 3. `.lith` File Anatomy \& Streams Formatting
+
+A `.lith` file contains multiple tiddlers appended together. Each tiddler strictly follows this structure. 
+
+
+
+\*\*A. Metadata Block (Headers)\*\*
+
+\* Must be at the very top, consisting of lowercase `key: value` pairs (one per line, alphabetical order preferred).
+
+\* \*\*Mandatory Fields:\*\* `title` (must be unique), `created`/`modified` (format: YYYYMMDDHHMMSS000), and `stream-type: default`.
+
+\* \*\*Streams Relationships:\*\*
+
+&#x20; \* `parent`: Exact title of the parent tiddler.
+
+&#x20; \* `stream-list`: Space-separated children (e.g., `\[\[Child 1]] \[\[Child 2]]`).
+
+
+
+\*\*B. The Delimiter\*\*
+
+\* Exactly \*\*one blank line\*\* (two consecutive newlines) immediately following the final metadata field.
+
+
+
+\*\*C. The Body \& Separator\*\*
+
+\* The raw payload follows the delimiter.
+
+\* Each distinct tiddler must be separated by exactly `⁂⁂⁂` (triple-asterism) on its own line. Ensure UTF-8 encoding and no trailing whitespace.
+
+\* \*\*Spacing Patterns:\*\*
+
+&#x20; \* \*Tiddlers WITH Body Content:\* The `⁂⁂⁂` separator follows the body immediately without an extra blank line.
+
+&#x20; \* \*Empty Body (Parent/Journal):\* The body must contain a single newline, resulting in a triple-newline gap before the `⁂⁂⁂` separator.
+
