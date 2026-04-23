@@ -174,7 +174,7 @@ async function convertPdfDataToTiddlers(arrayBuffer, fileName, setProgress) {
             .replace(/\s+/g, " ")
             .trim();
         if (pageText) {
-            pageTexts.push("## Page " + i + "\n\n" + pageText);
+            pageTexts.push("#### Page " + i + "\n\n" + pageText);
         }
     }
 
@@ -194,7 +194,7 @@ async function convertPdfDataToTiddlers(arrayBuffer, fileName, setProgress) {
     });
 
     // Plaintext markdown tiddler
-    var markdownBody = "# " + baseName + "\n\n" + pageTexts.join("\n\n---\n\n");
+    var markdownBody = "## " + baseName + "\n\n" + pageTexts.join("\n\n");
     tiddlers.push({
         title: txtTitle,
         parent: containerTitle,
