@@ -1,4 +1,4 @@
-﻿created: 20251129175226799
+created: 20251129175226799
 modified: 20251130033349811
 tags: $:/tags/Stylesheet
 title: $:/lithic/styles/printstyle.css
@@ -174,5 +174,21 @@ type: text/css
         margin: 0 !important;
         height: 0 !important;
         page-break-after: always !important;
+    }
+
+    /* =======================================================
+       8. HIDE WHITEBOARD UI ELEMENTS
+       (Ensures whiteboard content prints without menus)
+       ======================================================= */
+
+    /* Hide TLDraw right-side UI (Zoom, Read Only indicator) */
+    .c-bUEyht-jvfJsl-side-right,
+    #TD-Zoom {
+        display: none !important;
+    }
+
+    /* Hide TLDraw helper buttons (e.g. Center/Focus) */
+    .c-chTrj {
+        display: none !important;
     }
 }

@@ -1,0 +1,90 @@
+created: 20260423120000000
+modified: 20260423122500000
+module-type: startup
+tags: 
+title: $:/Lithic/Patches/Whiteboard/ForkLithicBoard
+type: application/javascript
+
+/*\
+title: $:/Lithic/Patches/Whiteboard/ForkLithicBoard
+type: application/javascript
+module-type: startup
+
+Forks the tw-whiteboard widget into a read-only, multi-page capable 
+clone named <$lithicboard> and hotwires it into live memory.
+\*/
+
+"use strict";
+
+exports.name = "fork-lithic-board";
+exports.after = ["load-modules"];
+exports.platforms = ["browser"];
+exports.startup = function() {
+    var originalTitle = "$:/plugins/linonetwo/tw-whiteboard/widget.js";
+    var pluginTitle = "$:/plugins/linonetwo/tw-whiteboard";
+    var newTitle = "$:/Lithic/Widgets/LithicBoard.js";
+    
+    var pluginTiddler = $tw.wiki.getTiddler(pluginTitle);
+    if (!pluginTiddler) return; 
+    
+    try {
+        var pluginData = JSON.parse(pluginTiddler.fields.text);
+        var originalWidget = pluginData.tiddlers[originalTitle];
+        if (!originalWidget) return;
+        
+        var text = originalWidget.text;
+        
+        // 1. Destructure our new viewPageId prop
+        text = text.replace(/zoom,\s*saver:\s*\{\s*onSave,\s*lock\s*\},/g, 'zoom,\n    viewPageId,\n    saver: { onSave, lock },');
+        
+        // 2. The Surgical Strike
+        var injection = 'document: (function(doc, vid) { ' +
+            'if (!vid || !doc || !doc.pages) return doc; ' +
+            'try { ' +
+                'var d = JSON.parse(JSON.stringify(doc)); ' +
+                'Object.keys(d.pages).forEach(function(k){ if(k !== vid) delete d.pages[k]; }); ' +
+                'Object.keys(d.pageStates).forEach(function(k){ if(k !== vid) delete d.pageStates[k]; }); ' +
+                'return d; ' +
+            '} catch(err) { return doc; } ' +
+        '})(tldrawDocument, viewPageId), ' + 
+        'id: viewPageId ? "wb-" + String(viewPageId).replace(/[^a-zA-Z0-9]/g, "") + "-" + Math.random().toString(36).substring(7) : undefined, ' +
+        'autofocus: false, readOnly: readonly \x7D\x29';
+
+        text = text.replace(/document:\s*tldrawDocument,\s*autofocus:\s*false,\s*readOnly:\s*readonly\s*\}\)/g, injection);
+        
+        // 3. Extract the prop from the widget attributes
+        text = text.replace(/zoom:\s*this\.getAttribute\("zoom"\),\s*isDraft:\s*this\.editTitle\s*===/g, 'zoom: this.getAttribute("zoom"),\n      viewPageId: this.getAttribute("viewPageId"),\n      isDraft: this.editTitle ===');
+        
+        // 4. THE FORK: Rename the export
+        text = text.replace(/exports\.whiteboard\s*=\s*/g, 'exports.lithicboard = ');
+        
+        // 5. Add it to the store 
+        $tw.wiki.addTiddler(new $tw.Tiddler({
+            title: newTitle,
+            text: text,
+            type: "application/javascript",
+            "module-type": "widget"
+        }));
+        
+        // 6. HOTWIRE: Define the module directly to the core
+        $tw.modules.define(newTitle, "widget", function(module, exports, require) {
+            eval(text);
+        });
+        
+        // 7. Execute the newly defined module and extract our widget class
+        var widgetExports = $tw.modules.execute(newTitle);
+        
+        // 8. Shove it directly into the active UI registry safely
+        if (widgetExports && widgetExports.lithicboard) {
+            // THE FIX: Initialize the widget registry if we beat the core boot sequence to it
+            $tw.widgets = $tw.widgets || {}; 
+            $tw.widgets["lithicboard"] = widgetExports.lithicboard;
+            console.log("Jane: SUCCESS. <$lithicboard> created, stored, and hotwired into live memory.");
+        } else {
+            console.warn("Jane: Forked widget failed to return exports.");
+        }
+        
+    } catch (e) {
+        console.error("Jane: Failed to fork widget.", e);
+    }
+};

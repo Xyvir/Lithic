@@ -81,7 +81,7 @@ function generateWhiteboardData(images) {
         // Initialize page state
         // Zoom to fit: camera.point in TLDraw v1 is a screen-space offset.
         // Positive values push content right/down, creating visible margins.
-        const sidebarMargin = 100; // desired screen-pixel margin (Page tab ≈ 80px, so 100px clears it)
+        const sidebarMargin = 0; 
         const topMargin = 50;
 
         // Use actual stream row height (540px) so the image fits within the viewer

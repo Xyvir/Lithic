@@ -18,17 +18,18 @@ type: text/css
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
-    width: 3.2em; /* Wider for pill shape */
-    height: 2.0em; /* Shorter to match neighbors */
-    border-radius: 1em; /* Pill shape */
-    background: #373d44; /* Darker, matching the screenshot color */
-    border: none;
+    width: 3.2em !important;
+    height: 2.0em !important;
+    border-radius: 1.0em !important;
+    background: #373d44 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
     cursor: pointer;
-    padding: 0;
+    padding: 0 !important;
+    box-sizing: border-box !important;
 }
 
 .lithic-wb-save-btn button:hover {
-    background: #373d44; /* Consistent background */
+    background: #4a5159 !important; /* Slightly lighter on hover */
 }
 
 /* Scale up the SVG icon inside */

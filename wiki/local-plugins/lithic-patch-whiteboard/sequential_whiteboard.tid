@@ -1,0 +1,62 @@
+title: $:/Lithic/Filters/PruneWhiteboard.js
+type: application/javascript
+module-type: filteroperator
+
+(function(){
+"use strict";
+
+exports["whiteboard-page"] = function(source,operator,options) {
+    var results = [];
+    source(function(tiddler,title) {
+        var index = parseInt(operator.operand) || 0;
+        var sourceTiddler = options.wiki.getTiddler(title);
+        if(!sourceTiddler || sourceTiddler.fields.type !== "application/tldr") {
+            results.push(title); return;
+        }
+        try {
+            var data = JSON.parse(sourceTiddler.fields.text);
+            var root = data.document || data;
+            var pages = root.pages;
+            if(!pages) { results.push(title); return; }
+
+            // Sort existing page IDs by childIndex
+            var pageIds = Object.keys(pages).sort((a,b) => (pages[a].childIndex || 0) - (pages[b].childIndex || 0));
+            
+            // Boundary check
+            if(index < 0 || index >= pageIds.length) { results.push(title); return; }
+            
+            var targetId = pageIds[index];
+            var originalPage = pages[targetId];
+
+            // CRITICAL TRICK: Rename this page to "page" so the widget defaults to it
+            var newPages = { "page": JSON.parse(JSON.stringify(originalPage)) };
+            newPages["page"].id = "page";
+            newPages["page"].name = "Isolated Page " + (index + 1);
+
+            // Clone the page state if it exists, also renaming it to "page"
+            var newPageStates = {};
+            if(root.pageStates && root.pageStates[targetId]) {
+                newPageStates["page"] = JSON.parse(JSON.stringify(root.pageStates[targetId]));
+                newPageStates["page"].id = "page";
+            }
+
+            // Construct the single-page document
+            var snapshotData = JSON.parse(JSON.stringify(data));
+            var snapRoot = snapshotData.document || snapshotData;
+            snapRoot.pages = newPages;
+            snapRoot.pageStates = newPageStates;
+
+            var targetTitle = "$:/temp/lithic/split/" + title + "/p" + index;
+            var jsonString = JSON.stringify(snapshotData);
+
+            if(options.wiki.getTiddlerText(targetTitle) !== jsonString) {
+                options.wiki.addTiddler(new $tw.Tiddler({
+                    title: targetTitle, text: jsonString, type: "application/tldr", "hide-body": "yes"
+                }));
+            }
+            results.push(targetTitle);
+        } catch(e) { results.push(title); }
+    });
+    return results;
+};
+})();
