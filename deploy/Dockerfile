@@ -1,53 +1,26 @@
 # ==============================================================================
-# Lithic Server — Dockerfile (Resilient Build)
-#
-# Two-path Caddy acquisition strategy:
-#   Fast Path:  Downloads a pre-compiled Caddy binary via the Caddy API (~10s).
-#   Fallback:   If the API is rate-limited or times out, uses a binary compiled
-#               by xcaddy in Stage 0. Docker caches Stage 0, so after the first
-#               build the fallback is also instant.
-#
+# Lithic Server — Dockerfile (Fast Static Binary Deployment)
 # ==============================================================================
 
-# =============================================================================
-# Stage 0: Pre-build Caddy with xcaddy (cached fallback)
-# Docker layer-caches this stage. It only re-runs if the plugin list changes.
-# =============================================================================
-FROM caddy:2-builder AS caddy-builder
-
-RUN xcaddy build \
-    --with github.com/mholt/caddy-webdav \
-    --with github.com/aksdb/caddy-cgi/v2 \
-    --output /usr/bin/caddy
-
-# =============================================================================
-# Stage 1: Final Image
-# =============================================================================
 FROM alpine:latest
 
 # Basic dependencies
-RUN apk add --no-cache bash sed curl ca-certificates git inotify-tools
+RUN apk add --no-cache \
+    bash \
+    curl \
+    ca-certificates \
+    git \
+    inotify-tools
 
 # App structure
 RUN mkdir -p /app/public/src /app/scripts /data
 
-# Stage the xcaddy-built fallback binary (always available, cached after first build)
-COPY --from=caddy-builder /usr/bin/caddy /app/caddy-fallback
+# Acquisition Strategy:
+# 1. Attempt to download the latest pre-compiled God Artifact (contains static lighttpd + UI)
+# 2. If it fails (e.g. no releases yet), the local files copied below will be used.
+RUN curl -fsSL "https://github.com/Xyvir/Lithic/releases/latest/download/lithic-server.tar.gz" | tar -xz -C / 2>/dev/null || echo "No remote release found, using local files"
 
-# Acquire Caddy: try the fast API download first (45s timeout).
-# If it fails or is rate-limited, fall back to the pre-built xcaddy binary.
-RUN if curl --max-time 45 --retry 1 -fsSL \
-         -o /app/caddy \
-         "https://caddyserver.com/api/download?os=linux&arch=amd64&p=github.com/mholt/caddy-webdav&p=github.com/aksdb/caddy-cgi/v2"; then \
-       echo "✓ Caddy acquired via API download"; \
-    else \
-       echo "⚠ Caddy API unavailable or rate-limited — using pre-built xcaddy binary"; \
-       cp /app/caddy-fallback /app/caddy; \
-    fi \
-    && rm -f /app/caddy-fallback \
-    && chmod +x /app/caddy
-
-# Copy entrypoint
+# Copy local files (overrides/fallbacks)
 COPY deploy/entrypoint.sh /app/entrypoint.sh
 COPY deploy/watcher.sh /app/watcher.sh
 COPY deploy/github-sync.sh /app/scripts/github-sync.sh

@@ -24,25 +24,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.25'
-
-      # --- Build custom Caddy with WebDAV plugin ---
-      - name: Install xcaddy
-        run: go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-
-      - name: Build Caddy with WebDAV
+      # --- Build Static lighttpd ---
+      - name: Install build dependencies
         run: |
-          xcaddy build \
-            --with github.com/mholt/caddy-webdav \
-            --output build/caddy
+          sudo apt-get update
+          sudo apt-get install -y scons libpcre3-dev zlib1g-dev libxml2-dev libsqlite3-dev
 
-      - name: Verify Caddy binary
+      - name: Download and Build lighttpd
         run: |
-          ./build/caddy version
-          ./build/caddy list-modules | grep webdav || echo "WARNING: webdav module not found"
+          VERSION="1.4.76"
+          curl -fsSL https://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-$VERSION.tar.gz | tar -xz
+          cd lighttpd-$VERSION
+          # Build a fully static binary with WebDAV and CGI support (no SSL needed as user provides proxy)
+          scons -j$(nproc) build_fullstatic=1 build_dynamic=0 with_webdav=1 with_pcre=1 with_zlib=1
+          mkdir -p ../build
+          cp src/lighttpd ../build/lighttpd
+
+      - name: Verify lighttpd binary
+        run: |
+          ls -lh build/lighttpd
+          file build/lighttpd
+          ldd build/lighttpd || echo "Static check: success"
 
       # --- Download built wiki if chained from build-wiki ---
       - name: Download Built Wiki Artifact
@@ -108,10 +110,12 @@ jobs:
       # --- Assemble app directory ---
       - name: Assemble app contents
         run: |
-          mv build/caddy build/app/caddy
+          mv build/lighttpd build/app/lighttpd
           cp deploy/entrypoint.sh build/app/entrypoint.sh 2>/dev/null || echo "Warning: entrypoint.sh missing"
+          cp deploy/watcher.sh build/app/watcher.sh 2>/dev/null || echo "Warning: watcher.sh missing"
+          cp deploy/github-sync.sh build/app/scripts/github-sync.sh 2>/dev/null || echo "Warning: github-sync.sh missing"
           cp deploy/.agents build/app/.agents 2>/dev/null || echo "Warning: .agents missing"
-          chmod +x build/app/entrypoint.sh build/app/caddy
+          chmod +x build/app/entrypoint.sh build/app/watcher.sh build/app/scripts/github-sync.sh build/app/lighttpd
 
       # --- Create tarball ---
       - name: Create God Artifact tarball

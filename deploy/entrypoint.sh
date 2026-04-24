@@ -3,13 +3,12 @@ set -euo pipefail
 
 # ==============================================================================
 # Lithic Server — Entrypoint
-# Generates a Caddyfile from environment variables and boots Caddy.
+# Generates a lighttpd.conf from environment variables and boots lighttpd.
 # ==============================================================================
-
 APP_DIR="/app"
 PUBLIC_DIR="${APP_DIR}/public"
 DATA_DIR="/data"
-CADDYFILE="${APP_DIR}/Caddyfile"
+LIGHTTPD_CONF="${APP_DIR}/lighttpd.conf"
 
 # --- Environment Variables ---
 LITHIC_USER="${LITHIC_USER:-admin}"
@@ -17,7 +16,7 @@ LITHIC_PASSWORD="${LITHIC_PASSWORD:-changeme}"
 LITHIC_PORT="${PORT:-${LITHIC_PORT:-8080}}"
 
 echo "============================================"
-echo "  Lithic Server"
+echo "  Lithic Server (lighttpd)"
 echo "============================================"
 echo "  User:  ${LITHIC_USER}"
 echo "  Port:  ${LITHIC_PORT}"
@@ -35,7 +34,7 @@ fi
 # --- Ensure data directory and .gitignore exist ---
 mkdir -p "${DATA_DIR}"
 if [ ! -f "${DATA_DIR}/.gitignore" ]; then
-  echo "*.lock" > "${DATA_DIR}/.gitignore"
+  printf "*.lock\nwebdav.db\n" > "${DATA_DIR}/.gitignore"
 fi
 
 
@@ -49,7 +48,7 @@ if [ ! -d "${DATA_DIR}/.git" ]; then
 
   # Ensure .gitignore is the VERY first thing committed to set the rules
   if [ ! -f "${DATA_DIR}/.gitignore" ]; then
-    echo "*.lock" > "${DATA_DIR}/.gitignore"
+    printf "*.lock\nwebdav.db\n" > "${DATA_DIR}/.gitignore"
   fi
   git -C "${DATA_DIR}" add .gitignore >/dev/null 2>&1
   git -C "${DATA_DIR}" commit -m "System: Initialize .gitignore" >/dev/null 2>&1
@@ -96,62 +95,76 @@ echo "  Purge complete: ${orphaned} orphaned, ${stale} stale lock(s) removed."
 echo "Starting sync watcher..."
 /app/watcher.sh &
 
-# --- Hash the password ---
-echo "Generating password hash..."
-# Jane's Note: Passing plaintext passwords in CLI args can leak to process lists (`ps`).
-# In a transient Docker container, we'll tolerate it, but keep it in mind.
-HASHED_PASSWORD=$("${APP_DIR}/caddy" hash-password --plaintext "${LITHIC_PASSWORD}")
-echo "Password hash generated."
+# --- Generate Auth File ---
+echo "Generating auth file..."
+echo "${LITHIC_USER}:${LITHIC_PASSWORD}" > "${APP_DIR}/lighttpd.user"
 
-# --- Write Caddyfile ---
-echo "Writing Caddyfile..."
-cat > "${CADDYFILE}" <<EOF
-{
-    auto_https off
-    order webdav last
-    order cgi last
+# --- Write lighttpd.conf ---
+echo "Writing lighttpd.conf..."
+cat > "${LIGHTTPD_CONF}" <<EOF
+server.modules = (
+    "mod_access",
+    "mod_alias",
+    "mod_auth",
+    "mod_authn_file",
+    "mod_cgi",
+    "mod_webdav",
+    "mod_setenv"
+)
+
+server.document-root = "${PUBLIC_DIR}"
+server.port = ${LITHIC_PORT}
+server.bind = "0.0.0.0"
+
+index-file.names = ( "index.html" )
+
+mimetype.assign = (
+    ".html" => "text/html",
+    ".js" => "application/javascript",
+    ".css" => "text/css",
+    ".png" => "image/png",
+    ".jpg" => "image/jpeg",
+    ".gif" => "image/gif",
+    ".svg" => "image/svg+xml",
+    ".ico" => "image/x-icon",
+    ".json" => "application/json",
+    ".lith" => "text/plain; charset=utf-8",
+    "" => "application/octet-stream"
+)
+
+auth.backend = "plain"
+auth.backend.plain.userfile = "${APP_DIR}/lighttpd.user"
+
+auth.require = (
+    "/" => (
+        "method" => "basic",
+        "realm" => "Lithic",
+        "require" => "valid-user"
+    )
+)
+
+# Exempt public assets from auth
+\$HTTP["url"] =~ "^/(manifest\\.json|site\\.webmanifest|offline-service-worker\\.js|android-chrome-.*|apple-touch-icon\\.png|favicon.*|health)" {
+    auth.require = ()
 }
 
-:${LITHIC_PORT} {
-    # 1. Protection Rules
-    # Authenticate everything EXCEPT the PWA installation assets and healthcheck
-    @protected {
-        not path /manifest.json /site.webmanifest /offline-service-worker.js /android-chrome-* /apple-touch-icon.png /favicon* /health
-    }
+# CGI for GitHub Sync
+alias.url += ( "/api/github/" => "/app/scripts/github-sync.sh" )
+\$HTTP["url"] =~ "^/api/github/" {
+    cgi.assign = ( "" => "" )
+    setenv.add-environment = ( "DATA_DIR" => "${DATA_DIR}" )
+}
 
-    basic_auth @protected {
-        ${LITHIC_USER} ${HASHED_PASSWORD}
-    }
-
-    # 2. GitHub Sync API (CGI)
-    handle /api/github/* {
-        cgi * /app/scripts/github-sync.sh
-    }
-
-    # 3. WebDAV Sync
-    handle /sync/* {
-        # Ensure .lith files are served with explicit UTF-8 encoding
-        # so clients (e.g. VS Code WebDAV) decode the triple-asterism ⁂ correctly.
-        @lithFiles path *.lith
-        header @lithFiles Content-Type "text/plain; charset=utf-8"
-
-        webdav {
-            root ${DATA_DIR}
-            prefix /sync
-        }
-    }
-
-    # 4. Web Server 
-    # Serves all public assets. If a request made it past basic_auth, it lands here.
-    handle * {
-        file_server {
-            root ${PUBLIC_DIR}
-        }
-    }
+# WebDAV for Sync
+alias.url += ( "/sync/" => "${DATA_DIR}/" )
+\$HTTP["url"] =~ "^/sync/" {
+    webdav.activate = "enable"
+    webdav.is-readonly = "disable"
+    webdav.sqlite-db-name = "${DATA_DIR}/webdav.db"
 }
 EOF
 
-echo "Caddyfile written to ${CADDYFILE}"
+echo "lighttpd.conf written to ${LIGHTTPD_CONF}"
 echo ""
-echo "Starting Caddy..."
-exec "${APP_DIR}/caddy" run --config "${CADDYFILE}"
+echo "Starting lighttpd..."
+exec lighttpd -D -f "${LIGHTTPD_CONF}"

@@ -23,10 +23,10 @@ echo "============================================"
 echo ""
 
 # --- Check dependencies ---
-for cmd in curl tar jq; do
+for cmd in curl tar jq lighttpd; do
   if ! command -v "$cmd" &> /dev/null; then
     echo "Installing missing dependency: ${cmd}..."
-    apt-get update -qq && apt-get install -y -qq "$cmd"
+    apt-get update -qq && apt-get install -y -qq curl tar jq lighttpd lighttpd-mod-webdav
   fi
 done
 
@@ -48,9 +48,8 @@ echo "Downloading and installing to ${INSTALL_DIR}..."
 mkdir -p "${INSTALL_DIR}"
 curl -fsSL "${RELEASE_URL}" | tar -xz -C "${INSTALL_DIR}" --strip-components=1
 
-# The tarball contains app/{caddy, entrypoint.sh, public/}
-# After strip-components=1, we get caddy, entrypoint.sh, public/ in INSTALL_DIR
-chmod +x "${INSTALL_DIR}/caddy" "${INSTALL_DIR}/entrypoint.sh"
+# The tarball contains app/{entrypoint.sh, public/, watcher.sh, scripts/}
+chmod +x "${INSTALL_DIR}/entrypoint.sh"
 
 # --- Create data directory ---
 mkdir -p "${DATA_DIR}"
@@ -74,7 +73,7 @@ fi
 echo "Creating systemd service..."
 cat > "/etc/systemd/system/${SERVICE_NAME}.service" <<EOF
 [Unit]
-Description=Lithic Server (Caddy + WebDAV)
+Description=Lithic Server (lighttpd + WebDAV)
 After=network.target
 
 [Service]
@@ -86,7 +85,7 @@ WorkingDirectory=${INSTALL_DIR}
 # Override paths for the non-Docker layout
 Environment="APP_DIR=${INSTALL_DIR}"
 
-ExecStart=${INSTALL_DIR}/entrypoint.sh
+ExecStart=${INSTALL_DIR}/start.sh
 Restart=always
 RestartSec=5
 
@@ -108,7 +107,7 @@ cat > "${INSTALL_DIR}/start.sh" <<'WRAPPER'
 export APP_DIR="${APP_DIR:-/opt/lithic}"
 export DATA_DIR="${DATA_DIR:-/opt/lithic/data}"
 export PUBLIC_DIR="${APP_DIR}/public"
-export CADDYFILE="${APP_DIR}/Caddyfile"
+export LIGHTTPD_CONF="${APP_DIR}/lighttpd.conf"
 
 # Source the environment file if present
 [ -f /etc/default/lithic ] && . /etc/default/lithic
@@ -121,7 +120,7 @@ LITHIC_PASSWORD="${LITHIC_PASSWORD:-changeme}"
 LITHIC_PORT="${LITHIC_PORT:-8080}"
 
 echo "============================================"
-echo "  Lithic Server (LXC)"
+echo "  Lithic Server (LXC - lighttpd)"
 echo "============================================"
 echo "  User:  ${LITHIC_USER}"
 echo "  Port:  ${LITHIC_PORT}"
@@ -136,42 +135,85 @@ if [ "${LITHIC_PASSWORD}" = "changeme" ]; then
 fi
 
 mkdir -p "${DATA_DIR}"
-
-if [ ! -f "${DATA_DIR}/.agents" ] && [ -f "${APP_DIR}/.agents" ]; then
-  cp "${APP_DIR}/.agents" "${DATA_DIR}/.agents"
+if [ ! -f "${DATA_DIR}/.gitignore" ]; then
+  printf "*.lock\nwebdav.db\n" > "${DATA_DIR}/.gitignore"
 fi
 
-echo "Generating password hash..."
-HASHED_PASSWORD=$("${APP_DIR}/caddy" hash-password --plaintext "${LITHIC_PASSWORD}")
+# --- Start Watcher ---
+echo "Starting sync watcher..."
+${APP_DIR}/watcher.sh &
 
-echo "Writing Caddyfile..."
-cat > "${CADDYFILE}" <<CADDY
-{
-	auto_https off
+# --- Generate Auth File ---
+echo "Generating auth file..."
+echo "${LITHIC_USER}:${LITHIC_PASSWORD}" > "${APP_DIR}/lighttpd.user"
+
+# --- Write lighttpd.conf ---
+echo "Writing lighttpd.conf..."
+cat > "${LIGHTTPD_CONF}" <<EOF
+server.modules = (
+    "mod_access",
+    "mod_alias",
+    "mod_auth",
+    "mod_authn_file",
+    "mod_cgi",
+    "mod_webdav",
+    "mod_setenv"
+)
+
+server.document-root = "${PUBLIC_DIR}"
+server.port = ${LITHIC_PORT}
+server.bind = "0.0.0.0"
+
+index-file.names = ( "index.html" )
+
+mimetype.assign = (
+    ".html" => "text/html",
+    ".js" => "application/javascript",
+    ".css" => "text/css",
+    ".png" => "image/png",
+    ".jpg" => "image/jpeg",
+    ".gif" => "image/gif",
+    ".svg" => "image/svg+xml",
+    ".ico" => "image/x-icon",
+    ".json" => "application/json",
+    ".lith" => "text/plain; charset=utf-8",
+    "" => "application/octet-stream"
+)
+
+auth.backend = "plain"
+auth.backend.plain.userfile = "${APP_DIR}/lighttpd.user"
+
+auth.require = (
+    "/" => (
+        "method" => "basic",
+        "realm" => "Lithic",
+        "require" => "valid-user"
+    )
+)
+
+# Exempt public assets from auth
+\$HTTP["url"] =~ "^/(manifest\\.json|site\\.webmanifest|offline-service-worker\\.js|android-chrome-.*|apple-touch-icon\\.png|favicon.*|health)" {
+    auth.require = ()
 }
 
-:${LITHIC_PORT} {
-	basicauth * {
-		${LITHIC_USER} ${HASHED_PASSWORD}
-	}
-
-	route /sync/* {
-		uri strip_prefix /sync
-		webdav {
-			root ${DATA_DIR}
-		}
-	}
-
-	route * {
-		file_server {
-			root ${PUBLIC_DIR}
-		}
-	}
+# CGI for GitHub Sync
+alias.url += ( "/api/github/" => "${APP_DIR}/scripts/github-sync.sh" )
+\$HTTP["url"] =~ "^/api/github/" {
+    cgi.assign = ( "" => "" )
+    setenv.add-environment = ( "DATA_DIR" => "${DATA_DIR}" )
 }
-CADDY
 
-echo "Starting Caddy..."
-exec "${APP_DIR}/caddy" run --config "${CADDYFILE}"
+# WebDAV for Sync
+alias.url += ( "/sync/" => "${DATA_DIR}/" )
+\$HTTP["url"] =~ "^/sync/" {
+    webdav.activate = "enable"
+    webdav.is-readonly = "disable"
+    webdav.sqlite-db-name = "${DATA_DIR}/webdav.db"
+}
+EOF
+
+echo "Starting lighttpd..."
+exec lighttpd -D -f "${LIGHTTPD_CONF}"
 WRAPPER
 
 chmod +x "${INSTALL_DIR}/start.sh"

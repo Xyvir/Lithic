@@ -1,12 +1,12 @@
 # Self-Hosting Lithic
 
-Lithic is a TiddlyWiki-powered PKMS that stores your data in `.lith` files. The self-hosted server bundles a custom **Caddy** binary with a **WebDAV** plugin, providing a static file server for the Lithic UI and a WebDAV sync endpoint for your data — all protected by BasicAuth.
+Lithic is a TiddlyWiki-powered PKMS that stores your data in `.lith` files. The self-hosted server bundles a lightweight **lighttpd** server with **WebDAV** support, providing a static file server for the Lithic UI and a WebDAV sync endpoint for your data — all protected by BasicAuth.
 
 ## Quick Start
 
 ### Method A: Railway (One-Click)
 
-Deploy Lithic to Railway with a single click. Railway will build the Caddy+WebDAV server from source and provision a persistent volume automatically.
+Deploy Lithic to Railway with a single click. Railway will build the lighttpd+WebDAV server automatically.
 
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/lithic-remote)
 
@@ -84,10 +84,13 @@ For the LXC install, these are stored in `/etc/default/lithic`.
 
 ## Architecture
 
+The Lithic server is designed to be lightweight and simple, listening on a single port and serving both the application and the sync endpoint.
+
 ```
 :8080
 ├── /              → Static file server (Lithic Launcher + Engine)
 ├── /sync/*        → WebDAV endpoint (your .lith files)
+├── /api/github/*  → GitHub Sync CGI
 └── BasicAuth      → Protects everything
 ```
 
@@ -115,7 +118,9 @@ The Lithic Launcher will appear in **WebDAV mode** with the following features:
 
 ## Reverse Proxy
 
-The server listens on HTTP (no TLS) by default, designed to sit behind your existing reverse proxy. Example Caddy reverse proxy config:
+The Lithic server listens on HTTP (no TLS) by default, designed to sit behind your existing reverse proxy (e.g., Railway's public URL, Cloudflare Tunnel, or a local Nginx/Caddy instance).
+
+Example Caddy reverse proxy config (External):
 
 ```caddyfile
 lithic.yourdomain.com {
