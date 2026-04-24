@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==============================================================================
-# Lithic GitHub Backup — API Handler (CGI) V3
+# Lithic GitHub Sync — API Handler (CGI) V3
 # Handles OAuth Device Flow, Repo Listing, and Git Initialization
 # ==============================================================================
 
@@ -63,13 +63,13 @@ elif [[ "$REQUEST_URI" == */create-repo* ]] && [[ "$METHOD" == "POST" ]]; then
     # Generate a random ID only if no name was provided
     if [ -z "$REPO_NAME" ] || [ "$REPO_NAME" == "null" ]; then
         RAND_ID=$(head /dev/urandom | tr -dc A-Z0-9 | head -c 4)
-        REPO_NAME="lithic-backup-$RAND_ID"
+        REPO_NAME="lithic-sync-$RAND_ID"
     fi
     
     RESPONSE=$(curl -s -X POST "https://api.github.com/user/repos" \
         -H "Authorization: Bearer $TOKEN" \
         -H "Accept: application/vnd.github.v3+json" \
-        -d "{\"name\":\"$REPO_NAME\",\"private\":true,\"description\":\"Lithic Automated Backup\"}")
+        -d "{\"name\":\"$REPO_NAME\",\"private\":true,\"description\":\"Lithic Automated Sync\"}")
     echo "$RESPONSE"
 
 elif [[ "$REQUEST_URI" == */setup* ]] && [[ "$METHOD" == "POST" ]]; then
@@ -93,7 +93,7 @@ elif [[ "$REQUEST_URI" == */setup* ]] && [[ "$METHOD" == "POST" ]]; then
     # Ensure there is an initial commit if local is empty (required for pull/push)
     if ! git -C "${DATA_DIR}" rev-parse HEAD >/dev/null 2>&1; then
         git -C "${DATA_DIR}" add .
-        git -C "${DATA_DIR}" commit -m "Initial Backup: $(date)" >/dev/null 2>&1
+        git -C "${DATA_DIR}" commit -m "Initial Sync: $(date)" >/dev/null 2>&1
     fi
 
     # 1. Fetch from remote (safe, no merges yet)

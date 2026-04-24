@@ -43,8 +43,8 @@ fi
 if [ ! -d "${DATA_DIR}/.git" ]; then
   echo "Initializing Git repository in ${DATA_DIR}..."
   git -C "${DATA_DIR}" init
-  git -C "${DATA_DIR}" config user.email "backup@lithic.uk"
-  git -C "${DATA_DIR}" config user.name "Lithic Backup"
+  git -C "${DATA_DIR}" config user.email "sync@lithic.uk"
+  git -C "${DATA_DIR}" config user.name "Lithic Sync"
   git -C "${DATA_DIR}" branch -M main > /dev/null 2>&1
 
   # Ensure .gitignore is the VERY first thing committed to set the rules
@@ -57,7 +57,7 @@ if [ ! -d "${DATA_DIR}/.git" ]; then
   # Initial commit if files exist (will now strictly follow .gitignore)
   if ! git -C "${DATA_DIR}" rev-parse HEAD >/dev/null 2>&1; then
       git -C "${DATA_DIR}" add .
-      git -C "${DATA_DIR}" commit -m "Initial Backup: $(date)" >/dev/null 2>&1
+      git -C "${DATA_DIR}" commit -m "Initial Sync: $(date)" >/dev/null 2>&1
   fi
 fi
 
@@ -93,7 +93,7 @@ done < <(find "${DATA_DIR}" -maxdepth 1 -name "*.lock" -type f 2>/dev/null)
 echo "  Purge complete: ${orphaned} orphaned, ${stale} stale lock(s) removed."
 
 # --- Start Watcher ---
-echo "Starting backup watcher..."
+echo "Starting sync watcher..."
 /app/watcher.sh &
 
 # --- Hash the password ---
@@ -123,9 +123,9 @@ cat > "${CADDYFILE}" <<EOF
         ${LITHIC_USER} ${HASHED_PASSWORD}
     }
 
-    # 2. GitHub Backup API (CGI)
+    # 2. GitHub Sync API (CGI)
     handle /api/github/* {
-        cgi * /app/scripts/github-backup.sh
+        cgi * /app/scripts/github-sync.sh
     }
 
     # 3. WebDAV Sync

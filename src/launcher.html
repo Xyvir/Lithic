@@ -687,8 +687,8 @@
       font-weight: 600;
     }
 
-    /* --- GITHUB BACKUP ICON & MODAL --- */
-    #github-backup-btn {
+    /* --- GITHUB SYNC ICON & MODAL --- */
+    #github-sync-btn {
       display: none;
       width: 32px;
       height: 32px;
@@ -704,23 +704,23 @@
       transition: all 0.2s;
     }
 
-    #github-backup-btn:hover {
+    #github-sync-btn:hover {
       background: rgba(138, 180, 248, 0.1);
       border-color: var(--accent-color);
     }
 
-    #github-backup-btn.active {
+    #github-sync-btn.active {
       color: #4caf50;
       border-color: #4caf50;
     }
 
-    #github-backup-btn.syncing {
+    #github-sync-btn.syncing {
       color: #bb86fc;
       border-color: #bb86fc;
       animation: pulse 1.5s infinite;
     }
 
-    #github-backup-btn.error {
+    #github-sync-btn.error {
       color: #f44336;
       border-color: #f44336;
     }
@@ -2445,8 +2445,8 @@ exports.startup = function() {
 
         await displayRemoteFiles();
         
-        // --- GITHUB BACKUP INTEGRATION ---
-        const githubBtn = document.getElementById('github-backup-btn');
+        // --- GITHUB SYNC INTEGRATION ---
+        const githubBtn = document.getElementById('github-sync-btn');
         if (githubBtn) githubBtn.style.display = 'flex';
         
         let tempToken = null;
@@ -2456,7 +2456,7 @@ exports.startup = function() {
           try {
             const res = await fetch('/api/github/status');
             const data = await res.json();
-            const btn = document.getElementById('github-backup-btn');
+            const btn = document.getElementById('github-sync-btn');
             if (!btn) return;
 
             if (data.connected) {
@@ -2474,7 +2474,7 @@ exports.startup = function() {
                 const date = new Date(data.last_sync * 1000);
                 const timeStr = date.toLocaleString();
                 document.getElementById('github-last-sync').textContent = timeStr;
-                btn.title = `GitHub Backup: Last synced at ${timeStr}`;
+                btn.title = `GitHub Sync: Last synced at ${timeStr}`;
                 
                 // If synced in the last 5 seconds, show active state
                 const age = (Date.now() / 1000) - data.last_sync;
@@ -2494,7 +2494,7 @@ exports.startup = function() {
             }
           } catch (err) {
             console.error('Failed to get GitHub status:', err);
-            const btn = document.getElementById('github-backup-btn');
+            const btn = document.getElementById('github-sync-btn');
             if (btn) btn.classList.add('error');
           }
         };
@@ -2507,8 +2507,8 @@ exports.startup = function() {
           });
         }
 
-        window.openGithubBackupModal = () => {
-          document.getElementById('github-backup-modal').style.display = 'flex';
+        window.openGithubSyncModal = () => {
+          document.getElementById('github-sync-modal').style.display = 'flex';
           window.updateGithubStatus();
         };
 
@@ -2610,7 +2610,7 @@ exports.startup = function() {
           const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Avoid ambiguous chars
           let id = '';
           for (let i = 0; i < 4; i++) id += chars.charAt(Math.floor(Math.random() * chars.length));
-          pendingRepoName = `lithic-backup-${id.toLowerCase()}`;
+          pendingRepoName = `lithic-sync-${id.toLowerCase()}`;
           const btn = document.getElementById('btn-github-create-new');
           if (btn) btn.textContent = `+ Create ${pendingRepoName} and sync`;
         }
@@ -2620,7 +2620,7 @@ exports.startup = function() {
           generateRepoName();
           const discoveryList = document.getElementById('github-discovery-list');
           const searchWrapper = document.getElementById('github-custom-search-wrapper');
-          discoveryList.innerHTML = '<p style="text-align:center; opacity:0.5;">Scanning for backups...</p>';
+          discoveryList.innerHTML = '<p style="text-align:center; opacity:0.5;">Scanning for sync repos...</p>';
           searchWrapper.style.display = 'none';
 
           try {
@@ -2636,12 +2636,12 @@ exports.startup = function() {
 
         function renderDiscovery() {
           const discoveryList = document.getElementById('github-discovery-list');
-          const managed = allRepos.filter(r => r.name.startsWith('lithic-backup-'));
+          const managed = allRepos.filter(r => r.name.startsWith('lithic-sync-') || r.name.startsWith('lithic-backup-'));
           
           discoveryList.innerHTML = '';
           
           if (managed.length === 0) {
-            discoveryList.innerHTML = '<div class="discovery-empty">No existing backups found</div>';
+            discoveryList.innerHTML = '<div class="discovery-empty">No existing sync repos found</div>';
           } else {
             managed.forEach((repo, idx) => {
               const card = document.createElement('div');
@@ -2808,7 +2808,7 @@ exports.startup = function() {
               tempToken = null;
               isAuthFlowActive = false;
               window.updateGithubStatus();
-              document.getElementById('github-backup-modal').style.display = 'none';
+              document.getElementById('github-sync-modal').style.display = 'none';
               if (typeof displayRemoteFiles === 'function') {
                 displayRemoteFiles();
               }
@@ -3155,7 +3155,7 @@ exports.startup = function() {
         onmouseover="this.style.opacity='1'; this.style.borderColor='var(--accent-color)'; this.style.color='var(--accent-color)'"
         onmouseout="this.style.opacity='0.7'; this.style.borderColor='var(--border-color)'; this.style.color='var(--text-color)'"
         title="View Introduction">?</a>
-      <button id="github-backup-btn" onclick="openGithubBackupModal()" title="GitHub Backup Settings">
+      <button id="github-sync-btn" onclick="openGithubSyncModal()" title="GitHub Sync Settings">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path>
         </svg>
@@ -3254,36 +3254,36 @@ exports.startup = function() {
     <div id="global-loading-text" style="color:var(--accent-color); font-weight:600; font-size:0.9rem;">Processing...</div>
   </div>
 
-  <!-- GITHUB BACKUP MODAL -->
-  <div id="github-backup-modal" class="modal-overlay">
+  <!-- GITHUB SYNC MODAL -->
+  <div id="github-sync-modal" class="modal-overlay">
     <div class="modal-content github-modal-content">
       <h2 style="color:var(--text-color); display:flex; align-items:center; gap:10px;">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
-        GitHub Backup
+        GitHub Sync
       </h2>
       
       <div id="github-state-disconnected">
         <div class="modal-buttons">
           <button id="btn-github-connect" onclick="initiateGithubAuth()">Connect to GitHub</button>
-          <button onclick="document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); opacity:0.7;">Cancel</button>
+          <button onclick="document.getElementById('github-sync-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); opacity:0.7;">Cancel</button>
         </div>
       </div>
 
       <div id="github-state-installing" style="display:none;">
         <p style="font-size:0.95rem; margin-bottom:15px; line-height:1.4;">
-          Step 1: Install the Lithic Backup app on your GitHub account to enable access.
+          Step 1: Install the Lithic Sync app on your GitHub account to enable access.
         </p>
         <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); padding:15px; border-radius:8px; text-align:center;">
-          <a href="https://github.com/apps/lithic-backup" target="_blank" onclick="onGithubInstallClick()" 
+          <a href="https://github.com/apps/lithic-sync" target="_blank" onclick="onGithubInstallClick()" 
              style="display:inline-block; background:var(--accent-color); color:#000; padding:10px 20px; border-radius:6px; font-weight:600; text-decoration:none;">
-             Install Lithic Backup
+             Install Lithic Sync
           </a>
           <div id="github-install-check" style="display:none; color:#4caf50; margin-left:10px; font-size:1.2rem;">✓</div>
         </div>
         <div class="modal-buttons" style="margin-top:20px; flex-direction:column; gap:10px;">
           <button id="btn-github-proceed-to-auth" onclick="generateDeviceCode()" disabled style="width:100%;">Wait for Installation...</button>
           <button onclick="generateDeviceCode()" style="background:transparent; border:none; font-size:0.75rem; opacity:0.5; cursor:pointer; text-decoration:underline;">I've already installed the app</button>
-          <button onclick="resetAuthUI(); document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); width:100%;">Cancel</button>
+          <button onclick="resetAuthUI(); document.getElementById('github-sync-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); width:100%;">Cancel</button>
         </div>
       </div>
 
@@ -3293,17 +3293,17 @@ exports.startup = function() {
         <div id="github-user-code" class="user-code-display">---- ----</div>
         <p style="font-size:0.8rem; opacity:0.6; text-align:center;">Waiting for authorization...</p>
         <div class="modal-buttons" style="margin-top:20px;">
-          <button onclick="resetAuthUI(); document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); width:100%;">Cancel</button>
+          <button onclick="resetAuthUI(); document.getElementById('github-sync-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); width:100%;">Cancel</button>
         </div>
       </div>
 
       <div id="github-state-selecting" style="display:none;">
         <button id="btn-github-create-new" onclick="createGithubRepo()" style="width:100%; background:rgba(138, 180, 248, 0.1); border:1px dashed var(--accent-color); color:var(--accent-color); padding:12px; border-radius:6px; cursor:pointer; font-weight:600;">
-          + Create lithic-backup-xxxx and sync
+          + Create lithic-sync-xxxx and sync
         </button>
         
         <div style="margin-top:20px;">
-          <label style="font-size:0.75rem; opacity:0.5; text-transform:uppercase; letter-spacing:0.05em;">Found Existing Backups</label>
+          <label style="font-size:0.75rem; opacity:0.5; text-transform:uppercase; letter-spacing:0.05em;">Found Existing Sync Repos</label>
           <div id="github-discovery-list" class="discovery-group">
             <!-- Populated via JS -->
           </div>
@@ -3320,7 +3320,7 @@ exports.startup = function() {
 
         <div class="modal-buttons" style="margin-top:20px;">
           <button onclick="finalizeGithubSetup()" id="btn-github-finalize">Start Sync</button>
-          <button onclick="resetAuthUI(); document.getElementById('github-backup-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); font-size:0.8rem;">Cancel</button>
+          <button onclick="resetAuthUI(); document.getElementById('github-sync-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); font-size:0.8rem;">Cancel</button>
         </div>
       </div>
 
@@ -3337,7 +3337,7 @@ exports.startup = function() {
         
         <div class="modal-buttons" style="margin-top:30px;">
           <button onclick="initiateGithubAuth()" style="background:var(--button-bg); border:1px solid var(--border-color); font-size:0.9rem;">Change Repo / Reconnect</button>
-          <button onclick="document.getElementById('github-backup-modal').style.display='none';">Close</button>
+          <button onclick="document.getElementById('github-sync-modal').style.display='none';">Close</button>
         </div>
       </div>
     </div>
