@@ -32,9 +32,17 @@ jobs:
             build-base \
             scons \
             pcre-dev \
+            pcre-static \
             zlib-dev \
+            zlib-static \
             libxml2-dev \
+            libxml2-static \
             sqlite-dev \
+            sqlite-static \
+            expat-dev \
+            expat-static \
+            util-linux-dev \
+            util-linux-static \
             linux-headers
 
       - name: Checkout
