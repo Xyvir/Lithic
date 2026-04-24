@@ -89,15 +89,18 @@ type: text/css
     }
 
     /* =======================================================
-       2. OPTIMIZE CONTENT DISPLAY
-       (Ensures text takes up full page width)
+       2. OPTIMIZE CONTENT DISPLAY & FRAME FIXES
+       (Ensures text takes up full page width and removes outlines)
        ======================================================= */
 
-    /* Ensure the main content takes up the full width */
+    /* Ensure the main content takes up the full width and strips shadows/borders */
     .tc-tiddler-frame {
         width: 100% !important;
         margin-left: 0 !important;
         padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important; /* <-- This kills the shadow box at low zoom */
+        background: transparent !important;
         /* Set page break to keep tiddlers from splitting awkwardly */
         page-break-inside: avoid;
     }
@@ -108,14 +111,8 @@ type: text/css
     }
 
     /* =======================================================
-       3. GENERAL TIDDLER FRAME MODIFICATIONS
-       (Removes borders and stream indentation lines)
+       3. GENERAL STREAM MODIFICATIONS
        ======================================================= */
-
-    /* Remove the top border from ALL Tiddler frames being printed */
-    .tc-tiddler-frame {
-        border-top: none !important;
-    }
 
     /* Remove the left indentation border from ALL stream children */
     .stream-row-children {
