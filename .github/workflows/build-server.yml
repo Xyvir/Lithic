@@ -20,30 +20,45 @@ permissions:
 jobs:
   build-server:
     runs-on: ubuntu-latest
+    container: alpine:latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # --- Build Static lighttpd ---
       - name: Install build dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y scons libpcre3-dev zlib1g-dev libxml2-dev libsqlite3-dev
+          apk add --no-cache \
+            curl \
+            tar \
+            bash \
+            git \
+            build-base \
+            scons \
+            pcre-dev \
+            zlib-dev \
+            libxml2-dev \
+            sqlite-dev \
+            linux-headers
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Download and Build lighttpd
         run: |
           VERSION="1.4.76"
           curl -fsSL https://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-$VERSION.tar.gz | tar -xz
           cd lighttpd-$VERSION
-          # Build a fully static binary with WebDAV and CGI support (no SSL needed as user provides proxy)
+          # Build a fully static binary with WebDAV and CGI support
           scons -j$(nproc) build_fullstatic=1 build_dynamic=0 with_webdav=1 with_pcre=1 with_zlib=1
-          mkdir -p ../build
-          cp src/lighttpd ../build/lighttpd
+          
+          # Find and copy the binary (it might be in src/ or a build/ dir)
+          find . -name lighttpd -type f -executable -exec cp {} ../lighttpd_binary \;
+          cd ..
+          mkdir -p build
+          mv lighttpd_binary build/lighttpd
 
       - name: Verify lighttpd binary
         run: |
           ls -lh build/lighttpd
           file build/lighttpd
+          # On musl/alpine, ldd should show "Not a valid dynamic program" or similar
           ldd build/lighttpd || echo "Static check: success"
 
       # --- Download built wiki if chained from build-wiki ---
