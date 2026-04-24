@@ -2579,6 +2579,18 @@ exports.startup = function() {
           window.updateGithubStatus();
         }
 
+        window.disconnectGithub = async () => {
+          if (!confirm('Are you sure you want to disconnect from GitHub? Automatic sync will stop.')) return;
+          try {
+            await fetch('/api/github/disconnect');
+            window.resetAuthUI();
+            document.getElementById('github-sync-modal').style.display = 'none';
+          } catch (err) {
+            console.error('Failed to disconnect:', err);
+            alert('Failed to disconnect.');
+          }
+        };
+
         async function pollGithubToken(deviceCode, interval) {
           const poll = async () => {
             try {
@@ -3335,9 +3347,12 @@ exports.startup = function() {
         </div>
         <p style="font-size:0.85rem; opacity:0.7;">Last successful sync: <span id="github-last-sync">Never</span></p>
         
-        <div class="modal-buttons" style="margin-top:30px;">
-          <button onclick="initiateGithubAuth()" style="background:var(--button-bg); border:1px solid var(--border-color); font-size:0.9rem;">Change Repo / Reconnect</button>
-          <button onclick="document.getElementById('github-sync-modal').style.display='none';">Close</button>
+        <div class="modal-buttons" style="margin-top:30px; flex-direction:column; gap:10px;">
+          <button onclick="initiateGithubAuth()" style="background:var(--button-bg); border:1px solid var(--border-color); font-size:0.9rem; width:100%;">Change</button>
+          <div style="display:flex; gap:10px; width:100%;">
+            <button onclick="document.getElementById('github-sync-modal').style.display='none';" style="flex:1; background:transparent; border:1px solid var(--border-color); opacity:0.7;">Cancel</button>
+            <button onclick="disconnectGithub()" style="flex:1; background:transparent; border:1px solid var(--border-color); color:#f44336;">Disconnect</button>
+          </div>
         </div>
       </div>
     </div>
