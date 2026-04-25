@@ -1,0 +1,20 @@
+title: $:/Lithic/transcludify-search-results
+tags: $:/tags/AdvancedSearch/FilterButton
+caption: Transcludify Results
+description: Create a temporary tiddler that transcludes all results from the current filter
+
+<$reveal state="$:/temp/advancedsearch" type="nomatch" text="">
+<$set name="search-input" value={{$:/temp/advancedsearch}}>
+<$list filter="[subfilter{$:/temp/advancedsearch}limit[1]]" variable="ignore">
+   <$button tooltip="Create a tiddler transcluding these results" class="tc-btn-invisible">
+      <$action-createtiddler 
+         $title="$:/temp/TranscludedFilter"
+         text={{{ [<search-input>addprefix[{{{ ]addsuffix[ || $:/core/ui/ViewTemplate/body }}}]] }}}
+         overwrite="yes"
+      />
+      <$action-navigate $to="$:/temp/TranscludedFilter"/>
+      {{$:/core/images/transcludify}}
+   </$button>
+</$list>
+</$set>
+</$reveal>
