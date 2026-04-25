@@ -7,12 +7,13 @@ description: Create a temporary tiddler that transcludes all results from the cu
 <$set name="search-input" value={{$:/temp/advancedsearch}}>
 <$list filter="[subfilter{$:/temp/advancedsearch}limit[1]]" variable="ignore">
    <$button tooltip="Create a tiddler transcluding these results" class="tc-btn-invisible">
-      <$action-createtiddler 
-         $title="$:/temp/TranscludedFilter"
-         text={{{ [<search-input>addprefix[{{{ ]addsuffix[ || $:/core/ui/ViewTemplate/body }}}]] }}}
-         overwrite="yes"
+      <$action-setfield 
+         $tiddler="$:/TranscludedFilter"
+         filter-string=<<search-input>>
+         text="<$list filter='[subfilter{!!filter-string}]' template='$:/core/ui/ViewTemplate/body'/>"
+         type="text/vnd.tiddlywiki"
       />
-      <$action-navigate $to="$:/temp/TranscludedFilter"/>
+      <$action-navigate $to="$:/TranscludedFilter"/>
       {{$:/core/images/transcludify}}
    </$button>
 </$list>
