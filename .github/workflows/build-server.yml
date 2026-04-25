@@ -133,11 +133,11 @@ jobs:
       # --- Assemble app directory ---
       - name: Assemble app contents
         run: |
+          mkdir -p build/app/scripts
           mv build/lighttpd build/app/lighttpd
-          cp deploy/entrypoint.sh build/app/entrypoint.sh 2>/dev/null || echo "Warning: entrypoint.sh missing"
-          cp deploy/watcher.sh build/app/watcher.sh 2>/dev/null || echo "Warning: watcher.sh missing"
-          cp deploy/github-sync.sh build/app/scripts/github-sync.sh 2>/dev/null || echo "Warning: github-sync.sh missing"
-          cp deploy/.agents build/app/.agents 2>/dev/null || echo "Warning: .agents missing"
+          cp deploy/entrypoint.sh build/app/entrypoint.sh
+          cp deploy/watcher.sh build/app/watcher.sh
+          cp deploy/github-sync.sh build/app/scripts/github-sync.sh
           chmod +x build/app/entrypoint.sh build/app/watcher.sh build/app/scripts/github-sync.sh build/app/lighttpd
 
       # --- Create tarball ---
