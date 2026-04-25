@@ -18,58 +18,52 @@ permissions:
   packages: write
 
 jobs:
-  build-server:
+  build-binary:
     runs-on: ubuntu-latest
     container: alpine:latest
     steps:
       - name: Install build dependencies
         run: |
           apk add --no-cache \
-            curl \
-            tar \
-            bash \
-            git \
-            build-base \
-            scons \
-            pcre-dev \
-            pcre-static \
-            zlib-dev \
-            zlib-static \
-            libxml2-dev \
-            libxml2-static \
-            sqlite-dev \
-            sqlite-static \
-            expat-dev \
-            expat-static \
-            util-linux-dev \
-            util-linux-static \
-            linux-headers
+            curl tar bash git build-base scons \
+            pcre-dev pcre-static zlib-dev zlib-static \
+            libxml2-dev libxml2-static sqlite-dev sqlite-static \
+            expat-dev expat-static util-linux-dev util-linux-static linux-headers
 
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download and Build lighttpd
+      - name: Build lighttpd
         run: |
           VERSION="1.4.76"
           curl -fsSL https://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-$VERSION.tar.gz | tar -xz
           cd lighttpd-$VERSION
-          # Build a fully static binary with WebDAV and CGI support
           scons -j$(nproc) build_fullstatic=1 build_dynamic=0 with_webdav=1 with_pcre=1 with_zlib=1
-          
-          # Find and copy the binary (it might be in src/ or a build/ dir)
-          find . -name lighttpd -type f -executable -exec cp {} ../lighttpd_binary \;
-          cd ..
-          mkdir -p build
-          mv lighttpd_binary build/lighttpd
+          find . -name lighttpd -type f -executable -exec cp {} ../lighttpd \;
+      
+      - name: Upload Binary Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighttpd-binary
+          path: lighttpd
+          retention-days: 1
 
-      - name: Verify lighttpd binary
-        run: |
-          ls -lh build/lighttpd
-          file build/lighttpd
-          # On musl/alpine, ldd should show "Not a valid dynamic program" or similar
-          ldd build/lighttpd || echo "Static check: success"
+  package-server:
+    needs: build-binary
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # --- Download built wiki if chained from build-wiki ---
+      - name: Download lighttpd Binary
+        uses: actions/download-artifact@v4
+        with:
+          name: lighttpd-binary
+          path: ./
+
       - name: Download Built Wiki Artifact
         if: ${{ inputs.tag_name != '' }}
         uses: actions/download-artifact@v4
@@ -83,7 +77,6 @@ jobs:
         run: |
           cp build/wiki-artifact/lith.html src/lithic.html || echo "Skipped: Artifact not found"
 
-      # --- Bump PWA Version ---
       - name: Bump PWA Version
         run: |
           VERSION="${{ inputs.tag_name }}"
@@ -91,89 +84,63 @@ jobs:
             VERSION="dev-$(date +'%Y.%m.%d-%H%M')"
           fi
           echo "Bumping version to $VERSION"
-          
-          # Update manifest.json
           sed -i "s/\"version\": \"0.0.0\"/\"version\": \"$VERSION\"/" manifest.json
-          
-          # Update offline-service-worker.js
           sed -i "s/const VERSION = '0.0.0'/const VERSION = '$VERSION'/" offline-service-worker.js
 
-      # --- Assemble public directory ---
       - name: Assemble public directory
         run: |
           mkdir -p build/app/public/src
-
-          # Core Lithic files (graceful fail to prevent crash during untagged dev runs)
-          cp src/launcher.html build/app/public/src/launcher.html 2>/dev/null || echo "Missing launcher.html"
-          cp src/lithic.html   build/app/public/src/lithic.html 2>/dev/null || echo "Missing lithic.html"
-
-          # Root index (redirects to launcher)
-          cp index.html build/app/public/index.html 2>/dev/null || echo "Missing index.html"
-
-          # Static assets
-          cp -f favicon.ico              build/app/public/ 2>/dev/null || true
-          cp -f favicon-16x16.png        build/app/public/ 2>/dev/null || true
-          cp -f favicon-32x32.png        build/app/public/ 2>/dev/null || true
-          cp -f mstile-150x150.png       build/app/public/ 2>/dev/null || true
-          cp -f mstile-310x310.png       build/app/public/ 2>/dev/null || true
-          cp -f android-chrome-192x192.png build/app/public/ 2>/dev/null || true
-          cp -f android-chrome-512x512.png build/app/public/ 2>/dev/null || true
-          cp -f apple-touch-icon.png     build/app/public/ 2>/dev/null || true
-          cp -f manifest.json            build/app/public/ 2>/dev/null || true
-          cp -f site.webmanifest         build/app/public/ 2>/dev/null || true
+          cp src/launcher.html build/app/public/src/launcher.html 2>/dev/null || true
+          cp src/lithic.html   build/app/public/src/lithic.html 2>/dev/null || true
+          cp index.html build/app/public/index.html 2>/dev/null || true
+          cp -f favicon* build/app/public/ 2>/dev/null || true
+          cp -f mstile* build/app/public/ 2>/dev/null || true
+          cp -f android-chrome* build/app/public/ 2>/dev/null || true
+          cp -f apple-touch-icon.png build/app/public/ 2>/dev/null || true
+          cp -f manifest.json build/app/public/ 2>/dev/null || true
+          cp -f site.webmanifest build/app/public/ 2>/dev/null || true
           cp -f offline-service-worker.js build/app/public/ 2>/dev/null || true
-          cp -f intro.html               build/app/public/ 2>/dev/null || true
-          cp -f intro.lith               build/app/public/ 2>/dev/null || true
-          cp -f 404.html                 build/app/public/ 2>/dev/null || true
+          cp -f intro.* build/app/public/ 2>/dev/null || true
+          cp -f 404.html build/app/public/ 2>/dev/null || true
+          cp -f src/mstile* build/app/public/src/ 2>/dev/null || true
+          cp -f src/app-icon.png build/app/public/src/ 2>/dev/null || true
 
-          # Copy src/ static assets
-          cp -f src/mstile-150x150.png   build/app/public/src/ 2>/dev/null || true
-          cp -f src/app-icon.png         build/app/public/src/ 2>/dev/null || true
-
-      # --- Assemble app directory ---
-      - name: Assemble app contents
+      - name: Assemble app directory
         run: |
           mkdir -p build/app/scripts
-          mv build/lighttpd build/app/lighttpd
+          mv lighttpd build/app/lighttpd
           cp deploy/entrypoint.sh build/app/entrypoint.sh
           cp deploy/watcher.sh build/app/watcher.sh
           cp deploy/github-sync.sh build/app/scripts/github-sync.sh
           chmod +x build/app/entrypoint.sh build/app/watcher.sh build/app/scripts/github-sync.sh build/app/lighttpd
 
-      # --- Create tarball ---
       - name: Create God Artifact tarball
         run: |
           cd build
           tar -czf ../lithic-server.tar.gz app/
           cd ..
-          ls -lh lithic-server.tar.gz
-          echo "=== Contents ==="
-          tar -tzf lithic-server.tar.gz | head -30
 
-      # --- Upload artifact (always) ---
-      - name: Upload build artifact
+      - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
           name: lithic-server
           path: lithic-server.tar.gz
           retention-days: 7
 
-      # --- Release (only if tag_name is provided) ---
       - name: Add to Release
         if: ${{ inputs.tag_name != '' }}
         uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ inputs.tag_name }}
           files: lithic-server.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # --- Docker Publish (chained only) ---
       - name: Set up Docker Buildx
         if: ${{ inputs.tag_name != '' }}
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to the Container registry
+      - name: Log in to GHCR
         if: ${{ inputs.tag_name != '' }}
         uses: docker/login-action@v3
         with:
@@ -181,7 +148,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - name: Extract Docker metadata
         if: ${{ inputs.tag_name != '' }}
         id: meta
         uses: docker/metadata-action@v5
@@ -199,4 +166,4 @@ jobs:
           file: deploy/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta.outputs.labels }}
