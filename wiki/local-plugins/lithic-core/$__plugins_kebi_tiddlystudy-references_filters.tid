@@ -32,17 +32,31 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 <<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/transclusions" filter:"[enlist<targets>backtranscludes[]] -[is[current]] -[is[system]] -[all[shadows]] -[is[image]]" class:"filtertransclude">>
 <<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/tags" filter:"[enlist<targets>tagging[]] -[enlist<targets>backtranscludes[]] -[is[current]] -[is[system]] -[all[shadows]]" class:"filtertag">>
 <<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/backlinks" filter:"[enlist<allBacklinks>] -[enlist<targets>backtranscludes[]] -[enlist<targets>tagging[]] -[is[current]] -[is[system]] -[all[shadows]] -[is[image]] +[unique[]]" class:"filterbacklink">>
-<<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/mentions-title" filter:"[all[tiddlers]!is[system]search:title<targetTitle>] [all[tiddlers]!is[system]search:title<safeAlias>] +[unique[]] -[enlist<allBacklinks>] -[enlist<targets>backtranscludes[]] -[enlist<targets>tagging[]] -[has[parent]] -[is[current]] -[all[shadows]]" class:"filtertitle">>
+<<generate-list statetiddler:"$:/plugins/kebi/tiddlystudy-references/config/filters/mentions-title" filter:"[all[tiddlers]!is[system]search:title:literal<targetTitle>] [all[tiddlers]!is[system]search:title:literal<safeAlias>] +[unique[]] -[enlist<allBacklinks>] -[enlist<targets>backtranscludes[]] -[enlist<targets>tagging[]] -[has[parent]] -[is[current]] -[all[shadows]]" class:"filtertitle">>
 </$let>
 </$vars>
 </ul>
 <$list filter="[<currentTiddler>has[next]] [<currentTiddler>has[prev]] +[limit[1]]" variable="ignore">
 <ul class="footer">
 <$list filter="[<currentTiddler>has[prev]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No previous'>&lt;&lt; Prev</li>">
-<li class="filtertag" style="background-color:<<colour primary>>;" title={{!!prev}}><$link to={{!!prev}} tooltip={{!!prev}}>&lt;&lt; Prev</$link></li>
+<li class="filtertag" style="background-color:<<colour primary>>;" title={{!!prev}}>
+<$button class="tc-btn-invisible tc-tiddlylink" tooltip={{!!prev}} style="color:inherit; cursor:pointer;">
+<$action-navigate $to={{!!prev}}/>
+<$action-listops $tiddler=<<currentTiddler>> $tags="-Journal"/>
+<$action-listops $tiddler={{!!prev}} $tags="Journal"/>
+&lt;&lt; Prev
+</$button>
+</li>
 </$list>
 <$list filter="[<currentTiddler>has[next]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No next'>Next &gt;&gt;</li>">
-<li class="filtertag" style="background-color:<<colour primary>>;" title={{!!next}}><$link to={{!!next}} tooltip={{!!next}}>Next &gt;&gt;</$link></li>
+<li class="filtertag" style="background-color:<<colour primary>>;" title={{!!next}}>
+<$button class="tc-btn-invisible tc-tiddlylink" tooltip={{!!next}} style="color:inherit; cursor:pointer;">
+<$action-navigate $to={{!!next}}/>
+<$action-listops $tiddler=<<currentTiddler>> $tags="-Journal"/>
+<$action-listops $tiddler={{!!next}} $tags="Journal"/>
+Next &gt;&gt;
+</$button>
+</li>
 </$list>
 </ul>
 </$list>
