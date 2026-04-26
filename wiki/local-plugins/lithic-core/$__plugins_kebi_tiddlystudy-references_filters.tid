@@ -36,3 +36,13 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 </$let>
 </$vars>
 </ul>
+<$list filter="[<currentTiddler>has[next]] [<currentTiddler>has[prev]] +[limit[1]]" variable="ignore">
+<ul class="footer">
+<$list filter="[<currentTiddler>has[prev]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No previous'>&lt;&lt; Prev</li>">
+<li class="filtertag" style="background-color:<<colour primary>>;" title={{!!prev}}><$link to={{!!prev}} tooltip={{!!prev}}>&lt;&lt; Prev</$link></li>
+</$list>
+<$list filter="[<currentTiddler>has[next]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No next'>Next &gt;&gt;</li>">
+<li class="filtertag" style="background-color:<<colour primary>>;" title={{!!next}}><$link to={{!!next}} tooltip={{!!next}}>Next &gt;&gt;</$link></li>
+</$list>
+</ul>
+</$list>
