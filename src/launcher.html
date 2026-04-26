@@ -659,6 +659,33 @@
       width: 90%;
       text-align: center;
       box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .close-modal-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 30px;
+      height: 30px;
+      background: transparent;
+      border: none;
+      color: #ff5252;
+      font-size: 1.8rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      opacity: 0.6;
+      transition: all 0.2s;
+      z-index: 10;
+    }
+
+    .close-modal-btn:hover {
+      opacity: 1;
+      transform: scale(1.1);
     }
 
     .modal-content h2 {
@@ -2513,13 +2540,20 @@ exports.startup = function() {
         };
 
         window.initiateGithubAuth = async () => {
-          // Immediately wipe existing session on backend and frontend
-          try { await fetch('/api/github/disconnect'); } catch(e) {}
+          // Do NOT disconnect immediately anymore, so user can cancel back to current sync
           tempToken = null;
           isAuthFlowActive = true;
 
           setGithubState('installing');
           resetInstallStep();
+          
+          // Show disconnect button in the nested view if we are already connected
+          const res = await fetch('/api/github/status');
+          const data = await res.json();
+          const nestedDisconnect = document.getElementById('btn-github-disconnect-nested');
+          if (nestedDisconnect) {
+            nestedDisconnect.style.display = data.connected ? 'block' : 'none';
+          }
         };
 
         function resetInstallStep() {
@@ -3269,6 +3303,7 @@ exports.startup = function() {
   <!-- GITHUB SYNC MODAL -->
   <div id="github-sync-modal" class="modal-overlay">
     <div class="modal-content github-modal-content">
+      <button class="close-modal-btn" onclick="resetAuthUI(); document.getElementById('github-sync-modal').style.display='none';" title="Close">&times;</button>
       <h2 style="color:var(--text-color); display:flex; align-items:center; gap:10px;">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
         GitHub Sync
@@ -3277,7 +3312,6 @@ exports.startup = function() {
       <div id="github-state-disconnected">
         <div class="modal-buttons">
           <button id="btn-github-connect" onclick="initiateGithubAuth()">Connect to GitHub</button>
-          <button onclick="document.getElementById('github-sync-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); opacity:0.7;">Cancel</button>
         </div>
       </div>
 
@@ -3295,7 +3329,7 @@ exports.startup = function() {
         <div class="modal-buttons" style="margin-top:20px; flex-direction:column; gap:10px;">
           <button id="btn-github-proceed-to-auth" onclick="generateDeviceCode()" disabled style="width:100%;">Wait for Installation...</button>
           <button onclick="generateDeviceCode()" style="background:transparent; border:none; font-size:0.75rem; opacity:0.5; cursor:pointer; text-decoration:underline;">I've already installed the app</button>
-          <button onclick="resetAuthUI(); document.getElementById('github-sync-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); width:100%;">Cancel</button>
+          <button id="btn-github-disconnect-nested" onclick="disconnectGithub()" style="display:none; background:transparent; border:1px solid var(--border-color); color:#f44336; width:100%; margin-top:10px;">Disconnect</button>
         </div>
       </div>
 
@@ -3304,9 +3338,6 @@ exports.startup = function() {
         <p style="font-size:0.9rem; opacity:0.8;">2. Enter the code below:</p>
         <div id="github-user-code" class="user-code-display">---- ----</div>
         <p style="font-size:0.8rem; opacity:0.6; text-align:center;">Waiting for authorization...</p>
-        <div class="modal-buttons" style="margin-top:20px;">
-          <button onclick="resetAuthUI(); document.getElementById('github-sync-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); width:100%;">Cancel</button>
-        </div>
       </div>
 
       <div id="github-state-selecting" style="display:none;">
@@ -3332,7 +3363,6 @@ exports.startup = function() {
 
         <div class="modal-buttons" style="margin-top:20px;">
           <button onclick="finalizeGithubSetup()" id="btn-github-finalize">Start Sync</button>
-          <button onclick="resetAuthUI(); document.getElementById('github-sync-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); font-size:0.8rem;">Cancel</button>
         </div>
       </div>
 
@@ -3349,10 +3379,6 @@ exports.startup = function() {
         
         <div class="modal-buttons" style="margin-top:30px; flex-direction:column; gap:10px;">
           <button onclick="initiateGithubAuth()" style="background:var(--button-bg); border:1px solid var(--border-color); font-size:0.9rem; width:100%;">Change</button>
-          <div style="display:flex; gap:10px; width:100%;">
-            <button onclick="document.getElementById('github-sync-modal').style.display='none';" style="flex:1; background:transparent; border:1px solid var(--border-color); opacity:0.7;">Cancel</button>
-            <button onclick="disconnectGithub()" style="flex:1; background:transparent; border:1px solid var(--border-color); color:#f44336;">Disconnect</button>
-          </div>
         </div>
       </div>
     </div>
