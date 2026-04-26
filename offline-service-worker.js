@@ -42,12 +42,13 @@ let idbKeyval = (function (exports) {
 }({}));
 
 /* Service Worker Logic */
-const VERSION = '0.0.0'; // Updated by build pipeline
+const VERSION = '0.0.1'; // Updated by build pipeline
 const CACHE_NAME = 'lithic-cache-v' + VERSION;
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/src/launcher.html',
+  '/src/lithic.html',
   '/manifest.json',
   '/offline-service-worker.js',
   '/favicon.ico',
