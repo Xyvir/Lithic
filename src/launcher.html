@@ -2441,6 +2441,8 @@ exports.startup = function() {
                 return;
               }
 
+              const twDate = getTwTime();
+              const todayTitle = getTodayTitle();
               const minimalLith = `created: ${twDate}\nmodified: ${twDate}\ntags: Journal\ntitle: ${todayTitle}\ntype: \n\n`;
               
               await webdavUpload(fileName, minimalLith);
