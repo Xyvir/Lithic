@@ -45,9 +45,9 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
   prevTarget={{{ [<currentTiddler>get[prev]] ~[enlist<streamList>before<currentTiddler>] }}}
   nextTarget={{{ [<currentTiddler>get[next]] ~[enlist<streamList>after<currentTiddler>] }}}
 >
-<$list filter="[<prevTarget>] [<nextTarget>] +[limit[1]]" variable="ignore">
+<$list filter="[<prevTarget>minlength[1]] [<nextTarget>minlength[1]] +[limit[1]]" variable="ignore">
 <ul class="footer">
-<$list filter="[<prevTarget>]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No previous'>&lt;&lt; Prev</li>">
+<$list filter="[<prevTarget>minlength[1]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No previous'>&lt;&lt; Prev</li>" variable="ignore">
 <li class="filtertag" style=<<pillStyle>> title=<<prevTarget>>>
 <$button class="tc-btn-invisible tc-tiddlylink" tooltip=<<prevTarget>> style="color:inherit; cursor:pointer;">
 <$action-navigate $to=<<prevTarget>>/>
@@ -59,7 +59,7 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 </li>
 </$list>
 
-<$list filter="[<currentTiddler>tag[Dogear]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No active dogear'>X</li>">
+<$list filter="[<currentTiddler>tag[Dogear]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No active dogear'>X</li>" variable="ignore">
 <li class="filtertag" style=<<pillStyle>> title="Stop Reading">
 <$button class="tc-btn-invisible tc-tiddlylink" tooltip="Stop Reading" style="color:inherit; cursor:pointer;">
 <$action-confirm $message="Are you sure you want to stop reading and remove the dogear from this page?">
@@ -70,7 +70,7 @@ X
 </li>
 </$list>
 
-<$list filter="[<nextTarget>]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No next'>Next &gt;&gt;</li>">
+<$list filter="[<nextTarget>minlength[1]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No next'>Next &gt;&gt;</li>" variable="ignore">
 <li class="filtertag" style=<<pillStyle>> title=<<nextTarget>>>
 <$button class="tc-btn-invisible tc-tiddlylink" tooltip=<<nextTarget>> style="color:inherit; cursor:pointer;">
 <$action-navigate $to=<<nextTarget>>/>
