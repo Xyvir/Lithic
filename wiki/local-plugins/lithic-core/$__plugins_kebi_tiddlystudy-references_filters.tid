@@ -48,6 +48,7 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 <$action-navigate $to={{!!prev}}/>
 <$action-listops $tiddler=<<currentTiddler>> $tags="-Journal"/>
 <$action-listops $tiddler={{!!prev}} $tags="Journal"/>
+<$action-sendmessage $message="tm-close-tiddler" $param=<<currentTiddler>>/>
 &lt;&lt; Prev
 </$button>
 </li>
@@ -58,6 +59,7 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 <$action-navigate $to={{!!next}}/>
 <$action-listops $tiddler=<<currentTiddler>> $tags="-Journal"/>
 <$action-listops $tiddler={{!!next}} $tags="Journal"/>
+<$action-sendmessage $message="tm-close-tiddler" $param=<<currentTiddler>>/>
 Next &gt;&gt;
 </$button>
 </li>
