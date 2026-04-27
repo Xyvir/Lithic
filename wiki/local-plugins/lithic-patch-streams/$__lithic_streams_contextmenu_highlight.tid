@@ -1,0 +1,6 @@
+title: $:/lithic/streams/contextmenu/highlight
+tags: $:/tags/streams/contextmenu
+sq-contextmenu-name: Highlight
+type: text/vnd.tiddlywiki
+
+<$action-listops $tiddler=<<currentTiddler>> $tags="+[toggle[Highlight]]"/>
