@@ -4,6 +4,7 @@ tags: $:/tags/ViewTemplate $:/tags/Macro
 title: $:/plugins/kebi/tiddlystudy-references/filters
 
 \whitespace trim
+\whitespace trim
 \define generate-list(statetiddler, filter, class)
 \whitespace trim
   <$reveal type="match" state="$statetiddler$" text="enable">
@@ -36,10 +37,13 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 </$let>
 </$vars>
 </ul>
+
+<$wikify name="primaryColor" text="<<colour primary>>">
+<$let pillStyle={{{ [[background-color:transparent; border:1px solid ]] [<primaryColor>] [[;]] +[join[]] }}}>
 <$list filter="[<currentTiddler>has[next]] [<currentTiddler>has[prev]] +[limit[1]]" variable="ignore">
 <ul class="footer">
 <$list filter="[<currentTiddler>has[prev]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No previous'>&lt;&lt; Prev</li>">
-<li class="filtertag" style="background-color:<<colour primary>>;" title={{!!prev}}>
+<li class="filtertag" style=<<pillStyle>> title={{!!prev}}>
 <$button class="tc-btn-invisible tc-tiddlylink" tooltip={{!!prev}} style="color:inherit; cursor:pointer;">
 <$action-navigate $to={{!!prev}}/>
 <$action-listops $tiddler=<<currentTiddler>> $tags="-Journal"/>
@@ -49,7 +53,7 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 </li>
 </$list>
 <$list filter="[<currentTiddler>has[next]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No next'>Next &gt;&gt;</li>">
-<li class="filtertag" style="background-color:<<colour primary>>;" title={{!!next}}>
+<li class="filtertag" style=<<pillStyle>> title={{!!next}}>
 <$button class="tc-btn-invisible tc-tiddlylink" tooltip={{!!next}} style="color:inherit; cursor:pointer;">
 <$action-navigate $to={{!!next}}/>
 <$action-listops $tiddler=<<currentTiddler>> $tags="-Journal"/>
@@ -60,3 +64,5 @@ Next &gt;&gt;
 </$list>
 </ul>
 </$list>
+</$let>
+</$wikify>
