@@ -1,6 +1,8 @@
 
 - [ ] Add "Alpha Sort" option to tiddler right-click menu.
     (Do twice to toggle ascending/descending)
+- [ ] Create simple "Presentation" view / layout based on existing backlink nav pills.
+   - [ ] possibly apply "prinstyles.css" to this view.
 - [ ] Modularize launcher.html into seperate javascript / html / css files
     - [ ] create unit tests for all launcher.html UI elements, logic and functions.
     - [ ] being modularizing launcher.html and test packaging into prelauncher.html
