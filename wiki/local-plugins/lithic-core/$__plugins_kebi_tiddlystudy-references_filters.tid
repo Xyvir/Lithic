@@ -60,11 +60,9 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 </$list>
 
 <$list filter="[<currentTiddler>tag[Dogear]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No active dogear'>X</li>" variable="ignore">
-<li class="filtertag" style=<<pillStyle>> title="Stop Reading">
-<$button class="tc-btn-invisible tc-tiddlylink" tooltip="Stop Reading" style="color:inherit; cursor:pointer;">
-<$action-confirm $message="Are you sure you want to stop reading and remove the dogear from this page?">
+<li class="filtertag" style=<<pillStyle>> title="Clear dogear">
+<$button class="tc-btn-invisible tc-tiddlylink" tooltip="Clear dogear" style="color:inherit; cursor:pointer;">
 <$action-listops $tiddler=<<currentTiddler>> $tags="-Dogear"/>
-</$action-confirm>
 X
 </$button>
 </li>
