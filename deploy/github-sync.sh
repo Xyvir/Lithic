@@ -101,7 +101,7 @@ elif [[ "$REQUEST_URI" == */setup* ]] && [[ "$METHOD" == "POST" ]]; then
     
     # 2. Graceful Rescue: Download any liths we don't have locally
     if git -C "${DATA_DIR}" rev-parse origin/main >/dev/null 2>&1; then
-        for file in $(git -C "${DATA_DIR}" ls-tree -r --name-only origin/main | grep -E '\.(lith|json)$'); do
+        git -C "${DATA_DIR}" ls-tree -r --name-only origin/main | grep -E '\.(lith|json)$' | while IFS= read -r file; do
             if [ ! -f "${DATA_DIR}/$file" ]; then
                 git -C "${DATA_DIR}" checkout origin/main -- "$file" >> /tmp/git_sync.log 2>&1
             fi
