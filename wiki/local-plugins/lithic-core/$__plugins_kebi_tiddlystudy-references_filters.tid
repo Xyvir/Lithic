@@ -40,14 +40,19 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 
 <$wikify name="primaryColor" text="<<colour primary>>">
 <$let pillStyle={{{ [[background-color:transparent; border:1px solid ]] [<primaryColor>] [[;]] +[join[]] }}}>
-<$list filter="[<currentTiddler>has[next]] [<currentTiddler>has[prev]] +[limit[1]]" variable="ignore">
+<$let 
+  streamList={{{ [<currentTiddler>get[parent]get[stream-list]] }}}
+  prevTarget={{{ [<currentTiddler>get[prev]] ~[enlist<streamList>before<currentTiddler>] }}}
+  nextTarget={{{ [<currentTiddler>get[next]] ~[enlist<streamList>after<currentTiddler>] }}}
+>
+<$list filter="[<prevTarget>] [<nextTarget>] +[limit[1]]" variable="ignore">
 <ul class="footer">
-<$list filter="[<currentTiddler>has[prev]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No previous'>&lt;&lt; Prev</li>">
-<li class="filtertag" style=<<pillStyle>> title={{!!prev}}>
-<$button class="tc-btn-invisible tc-tiddlylink" tooltip={{!!prev}} style="color:inherit; cursor:pointer;">
-<$action-navigate $to={{!!prev}}/>
+<$list filter="[<prevTarget>]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No previous'>&lt;&lt; Prev</li>">
+<li class="filtertag" style=<<pillStyle>> title=<<prevTarget>>>
+<$button class="tc-btn-invisible tc-tiddlylink" tooltip=<<prevTarget>> style="color:inherit; cursor:pointer;">
+<$action-navigate $to=<<prevTarget>>/>
 <$action-listops $tiddler=<<currentTiddler>> $tags="-Dogear"/>
-<$action-listops $tiddler={{!!prev}} $tags="Dogear"/>
+<$action-listops $tiddler=<<prevTarget>> $tags="Dogear"/>
 <$action-sendmessage $message="tm-close-tiddler" $param=<<currentTiddler>>/>
 &lt;&lt; Prev
 </$button>
@@ -65,12 +70,12 @@ X
 </li>
 </$list>
 
-<$list filter="[<currentTiddler>has[next]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No next'>Next &gt;&gt;</li>">
-<li class="filtertag" style=<<pillStyle>> title={{!!next}}>
-<$button class="tc-btn-invisible tc-tiddlylink" tooltip={{!!next}} style="color:inherit; cursor:pointer;">
-<$action-navigate $to={{!!next}}/>
+<$list filter="[<nextTarget>]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No next'>Next &gt;&gt;</li>">
+<li class="filtertag" style=<<pillStyle>> title=<<nextTarget>>>
+<$button class="tc-btn-invisible tc-tiddlylink" tooltip=<<nextTarget>> style="color:inherit; cursor:pointer;">
+<$action-navigate $to=<<nextTarget>>/>
 <$action-listops $tiddler=<<currentTiddler>> $tags="-Dogear"/>
-<$action-listops $tiddler={{!!next}} $tags="Dogear"/>
+<$action-listops $tiddler=<<nextTarget>> $tags="Dogear"/>
 <$action-sendmessage $message="tm-close-tiddler" $param=<<currentTiddler>>/>
 Next &gt;&gt;
 </$button>
@@ -78,5 +83,6 @@ Next &gt;&gt;
 </$list>
 </ul>
 </$list>
+</$let>
 </$let>
 </$wikify>
