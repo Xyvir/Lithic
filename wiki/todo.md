@@ -13,4 +13,5 @@
 - [ ] Create "Offifcial" Lithic plugin store for Lithic specific plugins/extensions.
     - [ ] circuitJS
     - [ ] Treevis / Chesstree
+    - [ ] text-based adventure game plugin
 - [ ] Add local 2fa topt for backend wiki access.
