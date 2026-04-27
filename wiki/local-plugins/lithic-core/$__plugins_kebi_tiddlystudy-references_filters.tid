@@ -46,19 +46,31 @@ title: $:/plugins/kebi/tiddlystudy-references/filters
 <li class="filtertag" style=<<pillStyle>> title={{!!prev}}>
 <$button class="tc-btn-invisible tc-tiddlylink" tooltip={{!!prev}} style="color:inherit; cursor:pointer;">
 <$action-navigate $to={{!!prev}}/>
-<$action-listops $tiddler=<<currentTiddler>> $tags="-Journal"/>
-<$action-listops $tiddler={{!!prev}} $tags="Journal"/>
+<$action-listops $tiddler=<<currentTiddler>> $tags="-Dogear"/>
+<$action-listops $tiddler={{!!prev}} $tags="Dogear"/>
 <$action-sendmessage $message="tm-close-tiddler" $param=<<currentTiddler>>/>
 &lt;&lt; Prev
 </$button>
 </li>
 </$list>
+
+<$list filter="[<currentTiddler>tag[Dogear]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No active dogear'>X</li>">
+<li class="filtertag" style=<<pillStyle>> title="Stop Reading">
+<$button class="tc-btn-invisible tc-tiddlylink" tooltip="Stop Reading" style="color:inherit; cursor:pointer;">
+<$action-confirm $message="Are you sure you want to stop reading and remove the dogear from this page?">
+<$action-listops $tiddler=<<currentTiddler>> $tags="-Dogear"/>
+</$action-confirm>
+X
+</$button>
+</li>
+</$list>
+
 <$list filter="[<currentTiddler>has[next]]" emptyMessage="<li class='filtertag' style='background-color:gray; opacity:0.5;' title='No next'>Next &gt;&gt;</li>">
 <li class="filtertag" style=<<pillStyle>> title={{!!next}}>
 <$button class="tc-btn-invisible tc-tiddlylink" tooltip={{!!next}} style="color:inherit; cursor:pointer;">
 <$action-navigate $to={{!!next}}/>
-<$action-listops $tiddler=<<currentTiddler>> $tags="-Journal"/>
-<$action-listops $tiddler={{!!next}} $tags="Journal"/>
+<$action-listops $tiddler=<<currentTiddler>> $tags="-Dogear"/>
+<$action-listops $tiddler={{!!next}} $tags="Dogear"/>
 <$action-sendmessage $message="tm-close-tiddler" $param=<<currentTiddler>>/>
 Next &gt;&gt;
 </$button>
