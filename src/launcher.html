@@ -1709,29 +1709,6 @@ exports.startup = function() {
 
     function replacePageContents(contents, isJsonMode = false) {
       if (contents) {
-        // --- LITHIC MODE OVERRIDES ---
-        if (isJsonMode) {
-          window.pendingImports.push({
-            title: "$:/config/PageControlButtons/Visibility/$:/core/ui/Buttons/new-journal",
-            text: "hide"
-          });
-        }
-        // --- AUTO-INJECT DAILY JOURNAL ---
-        const todayTitle = getTodayTitle();
-        const jsonTitleRegex = new RegExp(`"title"\\s*:\\s*"${todayTitle}"`, 'i');
-        const htmlTitleRegex = new RegExp(`&quot;title&quot;\\s*:\\s*&quot;${todayTitle}&quot;`, 'i');
-
-        if (!jsonTitleRegex.test(contents) && !htmlTitleRegex.test(contents)) {
-          const twDate = getTwTime();
-          window.pendingImports.push({
-            created: twDate,
-            modified: twDate,
-            tags: "Journal",
-            title: todayTitle,
-            type: ""
-          });
-        }
-
         // --- CONTEXT SENSITIVE AUTO-SAVER SUPPRESSION ---
         // If this is a new or injected wiki, we disable auto-save until the first manual save.
         if (isNewOrInjected) {
@@ -1843,7 +1820,16 @@ exports.startup = function() {
         let coreHtml = await fetchCoreEngine();
         isNewOrInjected = true;
         setTwCustomSaveAsSaver(true);
-        replacePageContents(coreHtml, true);
+        const todayTitle = getTodayTitle();
+        const twDate = getTwTime();
+        window.pendingImports.push({
+          created: twDate,
+          modified: twDate,
+          tags: "Journal",
+          title: todayTitle,
+          type: ""
+        });
+        replacePageContents(coreHtml, false);
       } catch (err) {
         if (document.getElementById('loading-overlay')) document.getElementById('loading-overlay').style.display = 'none';
         console.error("Failed to load New Blank Lith:", err);
@@ -2455,8 +2441,6 @@ exports.startup = function() {
                 return;
               }
 
-              const todayTitle = getTodayTitle();
-              const twDate = getTwTime();
               const minimalLith = `created: ${twDate}\nmodified: ${twDate}\ntags: Journal\ntitle: ${todayTitle}\ntype: \n\n`;
               
               await webdavUpload(fileName, minimalLith);
