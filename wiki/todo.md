@@ -15,3 +15,4 @@
     - [ ] Treevis / Chesstree
     - [ ] text-based adventure game plugin
 - [ ] Add local 2fa topt for backend wiki access.
+- [ ] Create some way to disambiguate if someone once to self-host multiple backends for different groups of wikis.
