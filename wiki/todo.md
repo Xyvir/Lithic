@@ -15,4 +15,5 @@
     - [ ] Treevis / Chesstree
     - [ ] text-based adventure game plugin
 - [ ] Add local 2fa topt for backend wiki access.
-- [ ] Create some way to disambiguate if someone once to self-host multiple backends for different groups of wikis.
+- [ ] Create some way to disambiguate if someone wants to self-host multiple backends for different groups of wikis.
+- [ ] Add agents.md to back-end server if anyone wants to clone the github sync in their own LLM-IDE.

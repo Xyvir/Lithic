@@ -195,4 +195,22 @@ type: text/css
     .c-chTrj {
         display: none !important;
     }
+
+    /* =======================================================
+       9. PRINT SCALING
+       ======================================================= */
+
+    /* Bake in 75% zoom scaling for Chrome */
+    html {
+        zoom: 75% !important;
+    }
+
+    /* Leverage browser's native margin boxes for page numbering */
+    @page {
+        margin-bottom: 2.2cm; /* Moved up */
+        margin-right: 2.2cm;  /* Moved left */
+        @bottom-right {
+            content: counter(page);
+        }
+    }
 }
