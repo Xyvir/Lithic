@@ -54,5 +54,5 @@
   type: disable
 
 - name: quickview
-  url: https://raw.githubusercontent.com/kookma/TW-PluginLibrary/main/docs/library/recipes/library/tiddlers/%24%3A%2Fplugins%2Fkookma%2Fquickview.json
+  url: https://raw.githubusercontent.com/kookma/TW-PluginLibrary/main/docs/library/recipes/library/tiddlers/%2524%253A%252Fplugins%252Fkookma%252Fquickview.json
   type: json-plugin
