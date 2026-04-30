@@ -1,4 +1,5 @@
 
+- [ ] Add a viewfiler or somethign so transcluded nodestream parents show their children.
 - [ ] Add "Alpha Sort" option to tiddler right-click menu.
     (Do twice to toggle ascending/descending)
 - [ ] Create simple "Presentation" view / layout based on existing backlink nav pills.
@@ -15,5 +16,5 @@
     - [ ] Treevis / Chesstree
     - [ ] text-based adventure game plugin
 - [ ] Add local 2fa topt for backend wiki access.
-- [ ] Create some way to disambiguate if someone wants to self-host multiple backends for different groups of wikis.
+- [X] Create some way to disambiguate if someone wants to self-host multiple backends for different groups of wikis.
 - [ ] Add agents.md to back-end server if anyone wants to clone the github sync in their own LLM-IDE.
