@@ -2509,12 +2509,19 @@ exports.startup = function() {
     }
 
     /* --- EMOJI ICON PICKER --- */
-    const EMOJI_CATS = [
-      { label: '📚 Study & Work',      emojis: ['📚','📖','📝','📋','🗒️','📁','🗂️','📦','🔖','📌','📍','🗃️','🗄️','📊','📈','📉','🖊️','✏️','🖋️','🗑️'] },
-      { label: '🔬 Science & Tech',    emojis: ['🔬','🔭','⚗️','🧪','🧫','🧬','💡','🔋','🔌','💻','🖥️','⌨️','📱','📡','🛰️','🤖','🧲','⚙️','🔩','🧰'] },
-      { label: '🌐 World & Nature',    emojis: ['🌐','🗺️','🧭','🌍','🌎','🌏','⭐','🌙','☀️','🌊','⚡','🔥','❄️','🌿','🌱','🌸','🌺','🌻','🍃','🌴'] },
-      { label: '🏛️ Places & Things',  emojis: ['🏛️','🏰','⛩️','🗼','⏰','⌚','🕰️','🔐','🔑','🗝️','🔮','🎯','🧩','🎲','♟️','🎨','🎵','🎭','🏺','🗿'] },
-      { label: '🙂 A Few Faces',       emojis: ['😊','😄','😂','😍','🤔','😎','🤓','😤','😠','😢','😴','🥳','🤯','😇','🥶'] }
+    const EMOJI_LIST = [
+      // Study & Work
+      '📚','📖','📝','📋','🗒️','📁','🗂️','📦','🔖','📌','📍','🗃️','🗄️','📊','📈','📉',
+      // Science & Tech
+      '🔬','🔭','⚗️','🧪','🧫','🧬','💡','🔋','🔌','💻','🖥️','⌨️','📱','📡','🛰️','🤖','🧲','⚙️','🔩','🧰',
+      // World & Nature
+      '🌐','🗺️','🧭','🌍','🌎','🌏','⭐','🌙','☀️','🌊','⚡','🔥','❄️','🌿','🌱','🌸','🌺','🌻','🍃','🌴',
+      // Places & Things
+      '🏛️','🏰','⛩️','🗼','⏰','⌚','🕰️','🔐','🔑','🗝️','🔮','🎯','🧩','🎲','♟️','🎺','🗿',
+      // Art & Creative
+      '🎨','🖌️','🖍️','🗳️','🗯️','✏️','🖊️','🖋️','📷','📸','🎥','🎞️','🏗️','🎭','🎬','🎤','🎧','🎈','🎆','🎇','✨','🌈','🗣️','🐞',
+      // Faces (just a few)
+      '😊','😄','😂','😍','🤔','😎','🤓','😤','😠','😢','😴','🥳','🤯','😇','🥶'
     ];
     let _pickerEmoji = null;
 
@@ -2522,21 +2529,15 @@ exports.startup = function() {
       const gridWrap = document.getElementById('emoji-picker-scroll');
       if (gridWrap && !gridWrap.dataset.built) {
         gridWrap.dataset.built = '1';
-        EMOJI_CATS.forEach(cat => {
-          const lbl = document.createElement('div');
-          lbl.className = 'emoji-category-label';
-          lbl.textContent = cat.label;
-          gridWrap.appendChild(lbl);
-          const row = document.createElement('div');
-          row.className = 'emoji-grid';
-          cat.emojis.forEach(em => {
-            const b = document.createElement('button');
-            b.type = 'button'; b.className = 'emoji-btn'; b.textContent = em;
-            b.onclick = () => _setPickerPreview(em);
-            row.appendChild(b);
-          });
-          gridWrap.appendChild(row);
+        const row = document.createElement('div');
+        row.className = 'emoji-grid';
+        EMOJI_LIST.forEach(em => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'emoji-btn'; b.textContent = em;
+          b.onclick = () => _setPickerPreview(em);
+          row.appendChild(b);
         });
+        gridWrap.appendChild(row);
       }
       idbKeyval.get('lithic-icon-emoji').then(saved => { if (saved) _setPickerPreview(saved, false); });
       document.getElementById('emoji-save-status').textContent = '';
@@ -3646,30 +3647,17 @@ exports.startup = function() {
 
   <!-- EMOJI ICON PICKER MODAL -->
   <div id="emoji-picker-modal" class="modal-overlay">
-    <div class="modal-content" style="max-width:520px; text-align:left;">
+    <div class="modal-content" style="max-width:460px; text-align:left;">
       <button class="close-modal-btn" onclick="document.getElementById('emoji-picker-modal').style.display='none';" title="Close">&times;</button>
-      <h2 style="margin-bottom:4px; color:var(--text-color);">&#127912; Icon Picker</h2>
-      <p style="font-size:0.8rem; opacity:0.55; margin:0 0 14px 0;">Click an emoji to set it as the server icon. Disambiguate multiple Lithic instances at a glance.</p>
-
-      <div class="emoji-picker-preview">
-        <div class="emoji-preview-large" id="emoji-preview-display">&#8205;</div>
-        <div>
-          <div style="font-size:0.8rem; opacity:0.55;">Selected</div>
-          <div style="font-size:0.95rem; font-weight:600; margin-top:2px;">Click any emoji below</div>
-        </div>
-      </div>
-
-      <div class="emoji-picker-scroll" id="emoji-picker-scroll">
-        <!-- Populated by JS -->
-      </div>
-
+      <h2 style="margin-bottom:12px; color:var(--text-color); display:flex; align-items:center; gap:10px;">
+        <span id="emoji-preview-display" style="font-size:1.3em; line-height:1;">&#127912;</span> Icon Picker
+      </h2>
+      <div class="emoji-picker-scroll" id="emoji-picker-scroll"></div>
       <div id="emoji-save-status" class="emoji-save-status"></div>
-
       <div class="modal-buttons" style="margin-top:14px; flex-direction:row; flex-wrap:wrap; gap:8px;">
-        <button onclick="confirmEmojiIcon()" style="flex:1; min-width:130px; background:rgba(138,180,248,0.12); border:1px solid rgba(138,180,248,0.3); color:var(--accent-color); font-weight:600;">Apply &amp; Save</button>
-        <button onclick="restoreDefaultIcon()" style="flex:1; min-width:130px; background:transparent; border:1px dashed var(--border-color); opacity:0.65;">&#8617; Restore Default</button>
+        <button onclick="confirmEmojiIcon()" style="flex:1; min-width:120px; background:rgba(138,180,248,0.12); border:1px solid rgba(138,180,248,0.3); color:var(--accent-color); font-weight:600;">Apply &amp; Save</button>
+        <button onclick="restoreDefaultIcon()" style="flex:1; min-width:120px; background:transparent; border:1px dashed var(--border-color); opacity:0.65;">&#8617; Restore</button>
       </div>
-      <p style="font-size:0.7rem; opacity:0.35; text-align:center; margin:10px 0 0 0;">Attempts to update <code>/mstile-150x150.png</code> &amp; <code>/favicon.ico</code> on the server. Falls back to local-only if server blocks writes. The original icon is backed up to browser storage.</p>
     </div>
   </div>
 
