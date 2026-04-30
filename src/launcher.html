@@ -2559,7 +2559,8 @@ exports.startup = function() {
     function applyEmojiToHeader(em) {
       let el = document.querySelector('h1 img, h1 .fallback-icon, h1 .emoji-icon-trigger');
       if (!el) return;
-      if (!el.classList.contains('emoji-icon-trigger')) {
+      // Replace if it's still an <img> or the bare fallback span (not yet an emoji span)
+      if (el.tagName !== 'SPAN') {
         const span = document.createElement('span');
         span.className = 'fallback-icon emoji-icon-trigger';
         span.style.cssText = 'font-size:1em; background:transparent; cursor:pointer;';
@@ -2614,15 +2615,25 @@ exports.startup = function() {
         const blob = await _emojiToBlob(em, 512);
         const res = await fetch('/sync/custom.ico', { method:'PUT', body:blob, headers:{'Content-Type':'image/png'} });
         if (res.ok || res.status === 201 || res.status === 204) {
-          statusEl.textContent = '✓ Saved. Icon will update server-wide in a moment.';
+          statusEl.textContent = '\u2713 Saved. Refreshing icon cache\u2026';
           statusEl.className = 'emoji-save-status ok';
+          // Wait ~2.5s for the inotify watcher to finish writing resized icons,
+          // then tell the SW to evict + re-fetch all icon paths (no manual cache clear needed).
+          setTimeout(async () => {
+            try {
+              const sw = navigator.serviceWorker && navigator.serviceWorker.controller;
+              if (sw) { sw.postMessage({ type: 'BUST_ICON_CACHE' }); }
+            } catch(e) {}
+          }, 2500);
         } else {
           throw new Error('PUT ' + res.status);
         }
       } catch(e) {
-        statusEl.textContent = 'ℹ️ Saved locally only (server write failed).';
+        statusEl.textContent = '\u2139\ufe0f Saved locally only (server write failed).';
         statusEl.className = 'emoji-save-status';
       }
+      // Close picker briefly after so the status flashes, then the updated header is visible
+      setTimeout(() => { document.getElementById('emoji-picker-modal').style.display = 'none'; }, 900);
     };
 
     window.restoreDefaultIcon = async function() {

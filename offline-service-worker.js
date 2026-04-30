@@ -192,3 +192,40 @@ self.addEventListener('fetch', function (event) {
     })()
   );
 });
+
+// --- Icon cache-bust message handler ---
+// Receives { type: 'BUST_ICON_CACHE' } from the launcher after a custom icon is saved.
+// Evicts all icon entries from every open cache and re-fetches them so the
+// browser/PWA picks up the new artwork without a manual cache clear.
+const ICON_PATHS = [
+  '/favicon.ico',
+  '/favicon-16x16.png',
+  '/favicon-32x32.png',
+  '/mstile-150x150.png',
+  '/android-chrome-192x192.png',
+  '/android-chrome-512x512.png',
+  '/apple-touch-icon.png',
+];
+
+self.addEventListener('message', (event) => {
+  if (!event.data || event.data.type !== 'BUST_ICON_CACHE') return;
+  console.log('[SW] BUST_ICON_CACHE received — evicting and re-fetching icon entries.');
+  event.waitUntil(
+    caches.keys().then(async (cacheNames) => {
+      for (const name of cacheNames) {
+        const cache = await caches.open(name);
+        for (const path of ICON_PATHS) {
+          await cache.delete(new Request(path));
+        }
+      }
+      // Re-populate the current cache with fresh copies
+      const cache = await caches.open(CACHE_NAME);
+      await Promise.allSettled(ICON_PATHS.map(path =>
+        fetch(path, { cache: 'reload' }).then(res => {
+          if (res.ok) return cache.put(path, res);
+        }).catch(() => {})
+      ));
+      console.log('[SW] Icon cache busted and refreshed.');
+    })
+  );
+});
