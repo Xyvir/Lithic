@@ -535,6 +535,8 @@
       opacity: 0.5;
       flex-shrink: 0;
       white-space: nowrap;
+      min-width: 14ch;
+      text-align: right;
     }
 
     .offline-empty {
@@ -2368,7 +2370,17 @@ exports.startup = function() {
       const sectionDiv = document.createElement('div');
       sectionDiv.className = 'section';
 
-      // Offline notice header inside the section
+      // Search box (same as live remote list — handleSearch works on IDB cache)
+      const searchContainer = document.createElement('div');
+      searchContainer.className = 'search-container';
+      searchContainer.innerHTML = `
+        <input type="text" class="search-input" placeholder="Search cached liths..." oninput="handleSearch(this.value)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <button type="button" class="search-clear-btn" onclick="const i=this.previousElementSibling.previousElementSibling; i.value=''; handleSearch(''); i.focus();" title="Clear search">&times;</button>
+      `;
+      sectionDiv.appendChild(searchContainer);
+
+      // Offline notice
       const notice = document.createElement('p');
       notice.style.cssText = 'font-size:0.8rem; opacity:0.55; margin:0 0 10px 0; line-height:1.5;';
       notice.innerHTML = '&#9888; Server unreachable &mdash; showing <strong>local cache</strong>. Files open in <strong>read-only</strong> mode.';
@@ -2614,6 +2626,14 @@ exports.startup = function() {
               if (overlay) overlay.style.display = 'none';
             }
           };
+        }
+
+        // Show a mini spinner in #recent-files while PROPFIND resolves
+        const recentElem = document.getElementById('recent-files');
+        if (recentElem) {
+          recentElem.innerHTML = `<div class="section" style="display:flex; align-items:center; justify-content:center; padding:30px; opacity:0.5;">
+            <div class="spinner" style="width:28px; height:28px; border-width:3px; margin:0;"></div>
+          </div>`;
         }
 
         await displayRemoteFiles();
