@@ -529,55 +529,7 @@
       opacity: 1 !important;
     }
 
-    /* --- OFFLINE FALLBACK MODAL --- */
-    #offline-fallback-modal .modal-content {
-      max-width: 500px;
-    }
-
-    #offline-fallback-modal h2 {
-      color: #ffb74d;
-    }
-
-    #offline-fallback-modal .offline-subtitle {
-      font-size: 0.85rem;
-      opacity: 0.65;
-      margin-bottom: 16px;
-      margin-top: -8px;
-    }
-
-    #offline-cache-list {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 20px 0;
-      max-height: 260px;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: var(--button-hover) transparent;
-    }
-
-    #offline-cache-list li {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-
-    #offline-cache-list li > button:first-child {
-      flex-grow: 1;
-      text-align: left;
-      padding-left: 12px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      border-color: rgba(255, 183, 77, 0.25);
-      transition: background-color 0.2s, border-color 0.2s;
-    }
-
-    #offline-cache-list li > button:first-child:hover {
-      border-color: #ffb74d;
-      background-color: rgba(255, 183, 77, 0.07);
-    }
-
+    /* --- OFFLINE FALLBACK (inline) --- */
     .offline-meta {
       font-size: 0.7rem;
       opacity: 0.5;
@@ -592,6 +544,16 @@
       padding: 20px 0;
       border: 1px dashed var(--border-color);
       border-radius: 8px;
+    }
+
+    /* Amber tinted file buttons in offline mode */
+    .offline-file-btn {
+      border-color: rgba(255, 183, 77, 0.25) !important;
+    }
+
+    .offline-file-btn:hover {
+      border-color: #ffb74d !important;
+      background-color: rgba(255, 183, 77, 0.07) !important;
     }
 
     .mode-pill {
@@ -610,6 +572,13 @@
       background: rgba(138, 180, 248, 0.15);
       color: #8ab4f8;
       border: 1px solid rgba(138, 180, 248, 0.3);
+
+    }
+
+    .mode-pill.offline {
+      background: rgba(255, 183, 77, 0.15);
+      color: #ffb74d;
+      border: 1px solid rgba(255, 183, 77, 0.35);
     }
 
     .mode-pill.app {
@@ -2342,17 +2311,13 @@ exports.startup = function() {
         elem.appendChild(sectionDiv);
       } catch (err) {
         console.error('Failed to list remote files:', err);
-        // --- OFFLINE FALLBACK ---
-        showOfflineFallbackModal();
-        elem.innerHTML = '<div class="section" style="text-align:center; opacity:0.5; padding:20px; font-size:0.9rem;">⚠️ WebDAV server unreachable — showing cached liths above.</div>';
+        // --- OFFLINE FALLBACK: render cached liths inline ---
+        await displayOfflineCacheFiles(elem);
       }
     }
 
     /* --- OFFLINE FALLBACK: Load from IDB cache in read-only mode --- */
     async function openCachedLithReadOnly(fileName) {
-      const modal = document.getElementById('offline-fallback-modal');
-      if (modal) modal.style.display = 'none';
-
       const overlay = document.getElementById('loading-overlay');
       if (overlay) overlay.style.display = 'flex';
 
@@ -2386,32 +2351,50 @@ exports.startup = function() {
       }
     }
 
-    async function showOfflineFallbackModal() {
-      const modal = document.getElementById('offline-fallback-modal');
-      const list = document.getElementById('offline-cache-list');
-      if (!modal || !list) return;
+    /* --- OFFLINE CACHE FILE LIST (inline in #recent-files) --- */
+    async function displayOfflineCacheFiles(elem) {
+      if (!elem) return;
 
-      list.innerHTML = '';
+      // Update the mode pill to REMOTE-OFFLINE
+      const pill = document.querySelector('.mode-pill.remote');
+      if (pill) {
+        pill.textContent = 'REMOTE-OFFLINE';
+        pill.classList.remove('remote');
+        pill.classList.add('offline');
+      }
 
-      // Gather all search_cache_* keys (not backups)
+      elem.innerHTML = '';
+
+      const sectionDiv = document.createElement('div');
+      sectionDiv.className = 'section';
+
+      // Offline notice header inside the section
+      const notice = document.createElement('p');
+      notice.style.cssText = 'font-size:0.8rem; opacity:0.55; margin:0 0 10px 0; line-height:1.5;';
+      notice.innerHTML = '&#9888; Server unreachable &mdash; showing <strong>local cache</strong>. Files open in <strong>read-only</strong> mode.';
+      sectionDiv.appendChild(notice);
+
+      const list = document.createElement('ul');
+
       try {
         const allKeys = await idbKeyval.keys();
         const cacheKeys = allKeys.filter(k => typeof k === 'string' && k.startsWith('search_cache_') && !k.startsWith('search_cache_bk'));
 
         if (cacheKeys.length === 0) {
-          list.innerHTML = '<li><div class="offline-empty">No cached liths found in local storage.</div></li>';
+          const emptyLi = document.createElement('li');
+          emptyLi.style.cssText = 'display:block;';
+          emptyLi.innerHTML = '<div class="offline-empty">No cached liths found in local storage.</div>';
+          list.appendChild(emptyLi);
         } else {
-          // Build entries with metadata
+          // Build entries with metadata, sorted alphabetically
           const entries = [];
           for (const key of cacheKeys) {
             const cache = await idbKeyval.get(key);
             if (cache && cache.text) {
               const fileName = key.replace(/^search_cache_/, '');
-              entries.push({ fileName, lastModified: cache.lastModified || 'Unknown' });
+              entries.push({ fileName, lastModified: cache.lastModified || '' });
             }
           }
-
-          // Sort alphabetically
           entries.sort((a, b) => a.fileName.localeCompare(b.fileName));
 
           for (const entry of entries) {
@@ -2419,9 +2402,9 @@ exports.startup = function() {
 
             const btn = document.createElement('button');
             btn.type = 'button';
+            btn.className = 'offline-file-btn';
             btn.innerText = entry.fileName;
             btn.onclick = () => {
-              // Show read-only warning before loading
               const roModal = document.getElementById('offline-readonly-confirm-modal');
               const roFileName = document.getElementById('offline-readonly-filename');
               if (roModal && roFileName) {
@@ -2447,10 +2430,15 @@ exports.startup = function() {
         }
       } catch (err) {
         console.error('Failed to enumerate IDB caches:', err);
-        list.innerHTML = '<li><div class="offline-empty">Error reading local cache.</div></li>';
+        const errLi = document.createElement('li');
+        errLi.style.cssText = 'display:block;';
+        errLi.innerHTML = '<div class="offline-empty">Error reading local cache.</div>';
+        list.appendChild(errLi);
       }
 
-      modal.style.display = 'flex';
+      list.addEventListener('scroll', () => { if (window.updatePreviewsPosition) window.updatePreviewsPosition(); });
+      sectionDiv.appendChild(list);
+      elem.appendChild(sectionDiv);
     }
 
     /* --- GLOBAL UI HELPERS --- */
@@ -3428,28 +3416,16 @@ exports.startup = function() {
     <div class="spinner"></div>
   </div>
 
-  <!-- OFFLINE FALLBACK MODAL -->
-  <div id="offline-fallback-modal" class="modal-overlay">
-    <div class="modal-content">
-      <button class="close-modal-btn" onclick="document.getElementById('offline-fallback-modal').style.display='none';" title="Close">&times;</button>
-      <h2>⚡ Offline Mode</h2>
-      <p class="offline-subtitle">WebDAV server is unreachable. These liths are available from your local search cache and will open in <strong>read-only</strong> mode.</p>
-      <ul id="offline-cache-list"></ul>
-      <div class="modal-buttons">
-        <button onclick="document.getElementById('offline-fallback-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); opacity:0.7;">Dismiss</button>
-      </div>
-    </div>
-  </div>
 
   <!-- OFFLINE READ-ONLY CONFIRM MODAL -->
   <div id="offline-readonly-confirm-modal" class="modal-overlay">
     <div class="modal-content">
-      <h2 style="color:#ffb74d;">📖 Read-Only Mode</h2>
+      <h2 style="color:#ffb74d;">&#128218; Read-Only Mode</h2>
       <p>You are about to open <strong id="offline-readonly-filename"></strong> from your local cache.</p>
       <p style="font-size:0.88rem; opacity:0.75; line-height:1.6;">Since the server is offline, <strong>any changes you make will only be saved as a local HTML download</strong> and will need to be manually merged back to the server the next time you are online.</p>
       <div class="modal-buttons">
         <button id="offline-readonly-confirm-btn" style="background:rgba(255,183,77,0.15); border:1px solid rgba(255,183,77,0.4); color:#ffb74d;">Open Read-Only</button>
-        <button onclick="document.getElementById('offline-readonly-confirm-modal').style.display='none'; document.getElementById('offline-fallback-modal').style.display='flex';" style="background:transparent; border:1px solid var(--border-color); opacity:0.7;">Cancel</button>
+        <button onclick="document.getElementById('offline-readonly-confirm-modal').style.display='none';" style="background:transparent; border:1px solid var(--border-color); opacity:0.7;">Cancel</button>
       </div>
     </div>
   </div>
