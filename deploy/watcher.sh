@@ -2,11 +2,47 @@
 # ==============================================================================
 # Lithic Sync Watcher
 # Monitors /data for changes and performs bidirectional sync with GitHub.
-# Specialized Conflict Resolution: GitHub is the Source of Truth.
+# Also handles custom.ico propagation to /app/public/ icon slots.
 # ==============================================================================
 
 DATA_DIR="/data"
+PUBLIC_DIR="/app/public"
+ICON_DEFAULTS_DIR="${PUBLIC_DIR}/_icon-defaults"
 LOCK_FILE="/tmp/github-sync.lock"
+
+# --- Custom Icon Functions ---
+apply_custom_icon() {
+  local src="$1"
+  local pub="${2:-${PUBLIC_DIR}}"
+  echo "[Watcher] Applying custom icon from ${src}..."
+  # Resize to each required slot using ImageMagick
+  convert "${src}" -resize 16x16   "${pub}/favicon-16x16.png"        2>/dev/null
+  convert "${src}" -resize 32x32   "${pub}/favicon-32x32.png"        2>/dev/null
+  convert "${src}" -resize 32x32   "${pub}/favicon.ico"              2>/dev/null
+  convert "${src}" -resize 150x150 "${pub}/mstile-150x150.png"       2>/dev/null
+  convert "${src}" -resize 192x192 "${pub}/android-chrome-192x192.png" 2>/dev/null
+  convert "${src}" -resize 512x512 "${pub}/android-chrome-512x512.png" 2>/dev/null
+  convert "${src}" -resize 180x180 "${pub}/apple-touch-icon.png"     2>/dev/null
+  echo "[Watcher] Custom icon applied to all slots."
+}
+
+restore_default_icons() {
+  local pub="${PUBLIC_DIR}"
+  echo "[Watcher] Restoring default icons..."
+  for icon in favicon.ico favicon-16x16.png favicon-32x32.png mstile-150x150.png \
+               android-chrome-192x192.png android-chrome-512x512.png apple-touch-icon.png; do
+    if [ -f "${ICON_DEFAULTS_DIR}/${icon}" ]; then
+      cp "${ICON_DEFAULTS_DIR}/${icon}" "${pub}/${icon}"
+    fi
+  done
+  echo "[Watcher] Default icons restored."
+}
+
+# --- CLI mode: called by entrypoint.sh at startup ---
+if [ "${1:-}" = "--apply-custom-icon" ]; then
+  apply_custom_icon "${2}" "${3:-${PUBLIC_DIR}}"
+  exit 0
+fi
 
 echo "[Watcher] Starting inotifywait on ${DATA_DIR}..."
 
@@ -122,7 +158,20 @@ sync_now() {
 ) &
 
 # --- Main Inotify Loop ---
-inotifywait -m -e close_write "${DATA_DIR}" | while read path action file; do
+inotifywait -m -e close_write,create,delete "${DATA_DIR}" | while read path action file; do
+    # Handle custom icon file
+    if [[ "$file" == "custom.ico" ]]; then
+        if [[ "$action" == "DELETE" ]]; then
+            echo "[Watcher] custom.ico deleted — restoring defaults."
+            restore_default_icons
+        else
+            echo "[Watcher] custom.ico updated — applying to icon slots."
+            sleep 1  # Let the write finish
+            apply_custom_icon "${DATA_DIR}/custom.ico"
+        fi
+        continue
+    fi
+
     if [[ "$file" == *.lith ]] || [[ "$file" == *.json ]]; then
         # Skip if it's a lock file or hidden file
         if [[ "$file" == .* ]]; then continue; fi

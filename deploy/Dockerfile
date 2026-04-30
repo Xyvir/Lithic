@@ -26,10 +26,10 @@ RUN xcaddy build \
 FROM alpine:latest
 
 # Basic dependencies
-RUN apk add --no-cache bash sed curl ca-certificates git inotify-tools
+RUN apk add --no-cache bash sed curl ca-certificates git inotify-tools imagemagick
 
 # App structure
-RUN mkdir -p /app/public/src /app/scripts /data
+RUN mkdir -p /app/public/src /app/scripts /data /app/public/_icon-defaults
 
 # Stage the xcaddy-built fallback binary (always available, cached after first build)
 COPY --from=caddy-builder /usr/bin/caddy /app/caddy-fallback

@@ -2607,27 +2607,25 @@ exports.startup = function() {
       const statusEl = document.getElementById('emoji-save-status');
       applyEmojiToHeader(em);
       await idbKeyval.set('lithic-icon-emoji', em);
-      statusEl.textContent = 'Saving to server…'; statusEl.className = 'emoji-save-status';
-      await _backupOriginalIcon();
+      statusEl.textContent = 'Saving…'; statusEl.className = 'emoji-save-status';
       try {
-        const blob150 = await _emojiToBlob(em, 150);
-        const blob32  = await _emojiToBlob(em, 32);
-        const put = (path, blob) => fetch(path, { method:'PUT', body:blob, headers:{'Content-Type':'image/png'} });
-        const [r1, r2] = await Promise.all([put('/mstile-150x150.png', blob150), put('/favicon.ico', blob32)]);
-        if ((r1.ok||r1.status===204||r1.status===201) && (r2.ok||r2.status===204||r2.status===201)) {
-          statusEl.textContent = '✓ Saved to server. Reinstall PWA to update home screen icon.';
+        // PUT a 512px PNG to /sync/custom.ico — the inotify watcher propagates it
+        // to all icon slots in /app/public/. Caddy serves /sync/ as writable WebDAV.
+        const blob = await _emojiToBlob(em, 512);
+        const res = await fetch('/sync/custom.ico', { method:'PUT', body:blob, headers:{'Content-Type':'image/png'} });
+        if (res.ok || res.status === 201 || res.status === 204) {
+          statusEl.textContent = '✓ Saved. Icon will update server-wide in a moment.';
           statusEl.className = 'emoji-save-status ok';
         } else {
-          throw new Error('PUT returned ' + r1.status);
+          throw new Error('PUT ' + res.status);
         }
       } catch(e) {
-        statusEl.textContent = 'ℹ️ Saved locally. Server did not accept the write (static hosting).';
+        statusEl.textContent = 'ℹ️ Saved locally only (server write failed).';
         statusEl.className = 'emoji-save-status';
       }
     };
 
     window.restoreDefaultIcon = async function() {
-      const backup = await idbKeyval.get('lithic-original-icon-backup');
       await idbKeyval.del('lithic-icon-emoji');
       // Reset header to original img
       let el = document.querySelector('h1 .emoji-icon-trigger');
@@ -2639,18 +2637,17 @@ exports.startup = function() {
         img.classList.add('emoji-icon-trigger');
         el.replaceWith(img);
       }
-      // Reset browser favicon
+      // Reset browser favicon to default
       let lnk = document.querySelector("link[rel='shortcut icon']") || document.querySelector("link[rel='icon']");
-      if (lnk) lnk.href = backup || '/favicon.ico';
-      // Try to restore server files
-      if (backup) {
-        try {
-          const dataUrlToBlob = (d) => { const [h,b]=d.split(','); const bin=atob(b); const arr=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i); return new Blob([arr],{type:'image/png'}); };
-          await fetch('/mstile-150x150.png', { method:'PUT', body:dataUrlToBlob(backup), headers:{'Content-Type':'image/png'} });
-        } catch(e) {}
-      }
+      if (lnk) lnk.href = '/favicon.ico';
+      // Signal the backend to restore defaults by deleting custom.ico
       const statusEl = document.getElementById('emoji-save-status');
-      if (statusEl) { statusEl.textContent = 'Icon restored.'; statusEl.className = 'emoji-save-status ok'; }
+      try {
+        await fetch('/sync/custom.ico', { method: 'DELETE' });
+        if (statusEl) { statusEl.textContent = '✓ Default icon restored server-wide.'; statusEl.className = 'emoji-save-status ok'; }
+      } catch(e) {
+        if (statusEl) { statusEl.textContent = 'Restored locally.'; statusEl.className = 'emoji-save-status ok'; }
+      }
     };
 
     /* --- GLOBAL UI HELPERS --- */

@@ -38,6 +38,22 @@ if [ ! -f "${DATA_DIR}/.gitignore" ]; then
   echo "*.lock" > "${DATA_DIR}/.gitignore"
 fi
 
+# --- Backup default icons (once, at first boot) ---
+ICON_DEFAULTS_DIR="${PUBLIC_DIR}/_icon-defaults"
+mkdir -p "${ICON_DEFAULTS_DIR}"
+for icon in favicon.ico favicon-16x16.png favicon-32x32.png mstile-150x150.png \
+             android-chrome-192x192.png android-chrome-512x512.png apple-touch-icon.png; do
+  if [ -f "${PUBLIC_DIR}/${icon}" ] && [ ! -f "${ICON_DEFAULTS_DIR}/${icon}" ]; then
+    cp "${PUBLIC_DIR}/${icon}" "${ICON_DEFAULTS_DIR}/${icon}"
+  fi
+done
+
+# --- Apply custom icon if one was persisted from a previous session ---
+if [ -f "${DATA_DIR}/custom.ico" ]; then
+  echo "Applying persisted custom.ico..."
+  /app/watcher.sh --apply-custom-icon "${DATA_DIR}/custom.ico" "${PUBLIC_DIR}" || true
+fi
+
 
 # --- Initialize Git if not present ---
 if [ ! -d "${DATA_DIR}/.git" ]; then
