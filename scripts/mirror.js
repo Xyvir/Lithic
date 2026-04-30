@@ -93,8 +93,9 @@ sources.forEach(source => {
 
     if (!isFresh || source.force) {
         log(`🔄 Updating source...`);
+        const isJsonPlugin = source.type === 'json-plugin';
         const isZip = source.url.toLowerCase().endsWith('.zip');
-        const ext = isZip ? '.zip' : '.html';
+        const ext = isJsonPlugin ? '.json' : isZip ? '.zip' : '.html';
         const tempFile = `temp_${source.name}${ext}`;
 
         let downloadSuccess = false;
@@ -153,13 +154,20 @@ sources.forEach(source => {
                             fs.mkdirSync(targetDir, { recursive: true });
                             execSync(`unzip -q -o ${tempFile} -d ${targetDir}`, { stdio: 'inherit' });
                         }
+                    } else if (isJsonPlugin) {
+                        // JSON plugin tiddler: copy directly into wiki/tiddlers/
+                        log(`📄 Installing JSON plugin tiddler into wiki/tiddlers/...`);
+                        if (!fs.existsSync(TIDDLERS_DIR)) fs.mkdirSync(TIDDLERS_DIR, { recursive: true });
+                        const destFile = path.join(TIDDLERS_DIR, `${source.name}.json`);
+                        fs.copyFileSync(tempFile, destFile);
+                        log(`✅ Copied to ${destFile}`);
                     } else {
                         log(`💥 Exploding TiddlyWiki...`);
                         execSync(`npx tiddlywiki --load ${tempFile} --savewikifolder ${targetDir}`, { stdio: 'inherit' });
                     }
 
-                    // Pruning Logic based on 'type'
-                    if (updateSuccess) {
+                    // Pruning Logic based on 'type' (json-plugin skips pruning, it's already placed)
+                    if (updateSuccess && !isJsonPlugin) {
                         const tiddlersDir = path.join(targetDir, 'tiddlers');
                         const pluginsDir = path.join(targetDir, 'plugins');
                         const themesDir = path.join(targetDir, 'themes');

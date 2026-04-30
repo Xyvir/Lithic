@@ -52,3 +52,7 @@
 - name: captivate
   url: https://cdruan.github.io/tw5-captivate/
   type: disable
+
+- name: quickview
+  url: https://raw.githubusercontent.com/kookma/TW-PluginLibrary/main/docs/library/recipes/library/tiddlers/%24%3A%2Fplugins%2Fkookma%2Fquickview.json
+  type: json-plugin
