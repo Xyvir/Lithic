@@ -1,0 +1,8 @@
+{
+    "title": "$:/plugins/xyvir/lithic-patch-appear",
+    "description": "Restricted Quickview/Appear integration for Lithic UI components and Streams.",
+    "name": "Lithic Patch Appear",
+    "plugin-type": "plugin",
+    "version": "0.0.1",
+    "plugin-priority": "10"
+}

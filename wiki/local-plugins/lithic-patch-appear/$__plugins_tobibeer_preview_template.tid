@@ -1,0 +1,12 @@
+title: $:/plugins/tobibeer/preview/template
+
+<div class="tc-title">&nbsp;<i class="fa fa-file-alt"/>&ensp;{{!!title}}</div>
+{{||$:/core/ui/ViewTemplate/subtitle}}
+{{||$:/core/ui/ViewTemplate/tags}}
+
+<$list filter="[all[current]has[streams-list]!has[text]]" variable="ignore">
+  <<transclude-streams>>
+</$list>
+<$list filter="[all[current]!has[streams-list]] [all[current]has[text]] +[limit[1]]" variable="ignore">
+  <$transclude mode="block"/>
+</$list>

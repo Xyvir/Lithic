@@ -34,7 +34,8 @@
         "xyvir/lithic-patch-context-menu",
         "xyvir/lithic-wikitext-highlight",
         "xyvir/lithic-python-codeblocks",
-        "xyvir/lithic-pdf-to-whiteboard"
+        "xyvir/lithic-pdf-to-whiteboard",
+        "xyvir/lithic-patch-appear"
     ],
     "themes": [
         "tiddlywiki/vanilla",
