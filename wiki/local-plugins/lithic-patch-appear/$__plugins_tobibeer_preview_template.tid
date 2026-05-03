@@ -4,9 +4,23 @@ title: $:/plugins/tobibeer/preview/template
 {{||$:/core/ui/ViewTemplate/subtitle}}
 {{||$:/core/ui/ViewTemplate/tags}}
 
-<$list filter="[all[current]has[streams-list]!has[text]]" variable="ignore">
-  <<embed-stream parent:<<currentTiddler>>>>
+<$list filter="[all[current]get-stream-nodes[]search:text:regexp[\[[ xX]\]]limit[1]]" variable="ignore">
+  <div style="font-size:0.7rem; font-weight:bold; border-bottom:1px solid <<colour muted-foreground>>; margin: 12px 0 6px 0; opacity:0.5; text-transform:uppercase; letter-spacing:0.1em;">Tasks</div>
+  <div style="font-size:0.9rem; line-height:1.4;">
+  <$list filter="[all[current]get-stream-nodes[]search:text:regexp[\[[ xX]\]]]">
+    <div style="margin-bottom:4px; padding-left:4px; border-left:2px solid <<colour primary>>;">
+      <$text text={{!!text}}/>
+    </div>
+  </$list>
+  </div>
 </$list>
-<$list filter="[all[current]!has[streams-list]] [all[current]has[text]] +[limit[1]]" variable="ignore">
-  <$transclude mode="block"/>
+<$list filter="[all[current]get-stream-nodes[]search:text:regexp[\[[ xX]\]]count[]match[0]]" variable="ignore">
+  <div style="margin-top:10px;">
+  <$list filter="[all[current]has[streams-list]!has[text]]" variable="ignore">
+    <<embed-stream parent:<<currentTiddler>>>>
+  </$list>
+  <$list filter="[all[current]!has[streams-list]] [all[current]has[text]] +[limit[1]]" variable="ignore">
+    <$transclude mode="block"/>
+  </$list>
+  </div>
 </$list>

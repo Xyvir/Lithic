@@ -34,7 +34,7 @@ t.prototype.render=function(){
     },d=function(){
         // --- CUSTOM LITHIC RESTRICTION ---
         // Only allow quickview in specific containers
-        var allowedClasses = ["footer", "tc-search-results", "tc-advanced-search", "tc-sidebar-search", "tc-block-dropdown"];
+        var allowedClasses = ["footer", "tc-search-results", "tc-advanced-search", "tc-sidebar-search", "tc-block-dropdown", "calendar-table"];
         var isAllowed = false;
         var node = p;
         while(node) {
