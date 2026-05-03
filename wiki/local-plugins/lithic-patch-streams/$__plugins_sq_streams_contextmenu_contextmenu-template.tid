@@ -8,7 +8,7 @@ type: text/vnd.tiddlywiki
 				<span class="sq-contextmenu-itemicon"><$macrocall $name="displayshortcuts" $output="text/plain" shortcuts="$subtitle$" prefix="" separator=" " suffix=""/></span>
 			</span>
 		</$button>
-\end
+\
 
 \define menu-divider() <div class="sq-contextmenu-divider"/>
 

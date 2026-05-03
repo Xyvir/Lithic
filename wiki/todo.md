@@ -2,6 +2,7 @@
 - [ ] Add a viewfiler or somethign so transcluded nodestream parents show their children.
 - [ ] Add "Alpha Sort" option to tiddler right-click menu.
     (Do twice to toggle ascending/descending)
+- [ ] Add "Toggle Todo" option to right-click menu for mass-cycling todo checkbox children.
 - [ ] Create simple "Presentation" view / layout based on existing backlink nav pills.
    - [ ] possibly apply "prinstyles.css" to this view.
 - [ ] Create/Integrate EPUB Serialization based on current to_lithic logic (but have user provide shortcode instead of AI-generated one)

@@ -5,7 +5,7 @@ title: $:/plugins/tobibeer/preview/template
 {{||$:/core/ui/ViewTemplate/tags}}
 
 <$list filter="[all[current]has[streams-list]!has[text]]" variable="ignore">
-  <<transclude-streams>>
+  <<embed-stream parent:<<currentTiddler>>>>
 </$list>
 <$list filter="[all[current]!has[streams-list]] [all[current]has[text]] +[limit[1]]" variable="ignore">
   <$transclude mode="block"/>

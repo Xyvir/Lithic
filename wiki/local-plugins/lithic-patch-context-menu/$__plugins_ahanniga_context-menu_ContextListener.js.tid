@@ -87,6 +87,11 @@ This widgets implements context menus to tiddlers
             return true;
         }
 
+        // Ignore right-clicks on Streams node handles to let the specialized menu handle it
+        if (event.target.closest(".stream-node-handle")) {
+            return true;
+        }
+
         // Skip when the whiteboard layout is active - TLDraw manages its own context menu.
         if (event.target && event.target.closest && event.target.closest(".tw-whiteboard-layout-container")) {
             return true;
