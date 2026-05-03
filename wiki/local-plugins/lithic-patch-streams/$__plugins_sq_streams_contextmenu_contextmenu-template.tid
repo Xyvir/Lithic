@@ -1,6 +1,5 @@
 title: $:/plugins/sq/streams/contextmenu/contextmenu-template
 type: text/vnd.tiddlywiki
-
 \define menu-item(title,subtitle:"",actions:"")
 		<$button class="tc-menu-list-item tc-btn-invisible" actions=<<__actions__>> >
 			<span class="sq-contextmenu-itemwrapper">
